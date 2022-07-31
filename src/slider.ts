@@ -154,7 +154,6 @@ export default class Slider {
    * Update the content clones if the screen is bigger.
    */
   refresh() {
-    console.log("refresh");
     const previousRepetitions = this.currentRepetitions;
 
     const delta = this.getRepititions() - previousRepetitions;
