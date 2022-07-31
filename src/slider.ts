@@ -1,4 +1,5 @@
 import { debounce } from "./interaction";
+import { clearArray } from "./helpers";
 
 /**
  * The HTML Slider that Billboard sets up and manipulates
@@ -10,6 +11,8 @@ export default class Slider {
   currentRepetitions: number = 0;
   contentBoundingBox: DOMRect;
   animations: Animation[] = [];
+  clones: HTMLElement[] = [];
+  private styles: HTMLStyleElement;
 
   /**
    * Setup an individual slider
@@ -22,20 +25,6 @@ export default class Slider {
       throw "Billboard Ticker Element not found. Make sure your IDs are correctly defined.";
     }
 
-    // Setup required CSS
-    const sliderStyles = document.createElement("style");
-    document.head.appendChild(sliderStyles);
-    sliderStyles.sheet?.insertRule(
-      `
-      #${id} {
-        white-space: nowrap;
-        overflow: hidden;
-
-        position: relative;
-      }
-    `
-    );
-
     this.tickerItems = this.tickerHTMLElement.querySelectorAll(`#${id} > *`)!;
 
     if (!this.tickerItems.length) {
@@ -43,7 +32,6 @@ export default class Slider {
     }
 
     this.setup();
-    this.animate();
   }
 
   /**
@@ -53,6 +41,23 @@ export default class Slider {
    * the single source of truth in terms of dimensions from the starting point.
    */
   setup() {
+    // Reset
+    this.destroy();
+
+    // Setup required CSS
+    this.styles = document.createElement("style");
+    document.head.appendChild(this.styles);
+    this.styles.sheet?.insertRule(
+      `
+      #${this.id} {
+        white-space: nowrap;
+        overflow: hidden;
+
+        position: relative;
+      }
+      `
+    );
+
     // Create a content wrapper to determine the total width and repetitions we need to fill the ticker
     this.content = document.createElement("div");
     this.content.style.display = "inline-block";
@@ -71,6 +76,9 @@ export default class Slider {
 
     // Attach events that should update our slider
     this.setupEvents();
+
+    // Animate
+    this.animate();
   }
 
   /**
@@ -98,9 +106,10 @@ export default class Slider {
     this.content.style.transform = `translateX(${-this.content.clientWidth}px)`;
 
     for (let i = 0; i < amount; i++) {
-      const clones = this.content.cloneNode(true) as HTMLElement;
-      clones.style.transform = `translateX(${-this.content.clientWidth}px)`;
-      this.tickerHTMLElement.append(clones);
+      const clone = this.content.cloneNode(true) as HTMLElement;
+      clone.style.transform = `translateX(${-this.content.clientWidth}px)`;
+      this.clones.push(clone);
+      this.tickerHTMLElement.append(clone);
     }
   }
 
@@ -166,5 +175,43 @@ export default class Slider {
         this.refresh();
       }, 250)
     );
+  }
+
+  /**
+   * Deletes all modifications and resets the slider
+   * to original HTML state.
+   *
+   * Must support graceful degredation / progressive enhancement
+   */
+  destroy() {
+    // Clear animations
+    if (!!this.animations.length) {
+      this.animations.forEach((e) => {
+        e.cancel();
+      });
+
+      clearArray(this.animations);
+    }
+
+    // Delete clones
+    if (!!this.clones.length) {
+      this.clones.forEach((e) => {
+        e.remove();
+      });
+    }
+
+    // Delete content and reset html to original
+    if (!!this.content) {
+      Array.from(this.content.children).forEach((e) => {
+        this.tickerHTMLElement.appendChild(e);
+      });
+
+      this.content.remove();
+    }
+
+    // Delete custom injected styles
+    if (!!this.styles) {
+      this.styles.remove();
+    }
   }
 }

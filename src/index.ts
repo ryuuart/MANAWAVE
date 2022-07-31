@@ -13,4 +13,12 @@ export default class Billboard {
   constructor(public id: string = "billboard") {
     this.slider = new Slider(id);
   }
+
+  init() {
+    this.slider.setup();
+  }
+
+  destroy() {
+    this.slider.destroy();
+  }
 }

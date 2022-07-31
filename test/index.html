@@ -33,6 +33,10 @@
         .inline-block {
             display: inline-block;
         }
+
+        section {
+            margin-bottom: 1rem;
+        }
     </style>
     <title>Billboard Test Zone</title>
 </head>
@@ -40,6 +44,11 @@
 <body>
     <h1>Hello</h1>
     <p>This is a wonderful test area</p>
+    <section>
+        <h2>Creation / Destruction</h2>
+        <button id="setup" setup>Setup</button>
+        <button id="destroy">Destroy</button>
+    </section>
     <div id="billboard">
         <div class="inline-block">
             <div class="grid">
