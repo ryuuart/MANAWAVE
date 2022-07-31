@@ -1,5 +1,3 @@
-import anime from "animejs";
-
 import { debounce } from "./interaction";
 
 /**
