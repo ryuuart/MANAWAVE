@@ -21,6 +21,7 @@
     "rimraf": "^3.0.2"
   },
   "dependencies": {
+    "@types/animejs": "^3.1.5",
     "animejs": "^3.2.1"
   }
 }
