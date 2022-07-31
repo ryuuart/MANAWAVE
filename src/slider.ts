@@ -20,7 +20,21 @@ export default class Slider {
       throw "Billboard Ticker Element not found. Make sure your IDs are correctly defined.";
     }
 
-    this.tickerItems = this.tickerHTMLElement.querySelectorAll("*")!;
+    // Setup required CSS
+    const sliderStyles = document.createElement("style");
+    document.head.appendChild(sliderStyles);
+    sliderStyles.sheet?.insertRule(
+      `
+      #${id} {
+        white-space: nowrap;
+        overflow: hidden;
+
+        position: relative;
+      }
+    `
+    );
+
+    this.tickerItems = this.tickerHTMLElement.querySelectorAll(`#${id} > *`)!;
 
     if (!this.tickerItems.length) {
       throw "Make sure there is something to repeat in the billboard";
