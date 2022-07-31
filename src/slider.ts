@@ -1,5 +1,7 @@
 import anime from "animejs";
 
+import { debounce } from "./interaction";
+
 /**
  * The HTML Slider that Billboard sets up and manipulates
  */
@@ -7,7 +9,9 @@ export default class Slider {
   tickerHTMLElement: HTMLElement;
   tickerItems: NodeList;
   content: HTMLElement;
+  currentRepetitions: number = 0;
   contentBoundingBox: DOMRect;
+  animations: Animation[] = [];
 
   /**
    * Setup an individual slider
@@ -64,22 +68,38 @@ export default class Slider {
 
     this.tickerHTMLElement.append(this.content);
 
-    this.clone();
+    // Calculate the number of repetitions needed
+    this.clone(this.getRepititions());
+
+    // Attach events that should update our slider
+    this.setupEvents();
   }
 
   /**
-   * Stretch and repeat the content across the width of the slider
+   * Reusable method to calculate the current amount of
+   * content repetitions required for the screen
+   *
+   * @returns The amount of times the content repeats
    */
-  clone() {
-    // Calculate the number of repetitions needed
+  getRepititions() {
     const repetitions = Math.ceil(
       this.tickerHTMLElement.clientWidth / this.content.clientWidth
     );
 
+    this.currentRepetitions = repetitions;
+
+    return repetitions;
+  }
+
+  /**
+   * Stretch and repeat the content across the width of the slider
+   * @param {number} amount The amount of times to clone
+   */
+  clone(amount: number) {
     // Offset it depending on direction
     this.content.style.transform = `translateX(${-this.content.clientWidth}px)`;
 
-    for (let i = 0; i < repetitions; i++) {
+    for (let i = 0; i < amount; i++) {
       const clones = this.content.cloneNode(true) as HTMLElement;
       clones.style.transform = `translateX(${-this.content.clientWidth}px)`;
       this.tickerHTMLElement.append(clones);
@@ -90,12 +110,63 @@ export default class Slider {
    * Animate the slider based on the width of the content
    */
   animate() {
-    anime({
-      targets: this.tickerHTMLElement.children,
-      translateX: `+=${this.content.clientWidth}`,
-      easing: "linear",
-      duration: 10 * this.content.clientWidth, // has to scale with width to keep speed consistent
-      loop: true,
-    });
+    /**
+     * Wrapper to animate the individual elements consistently
+     *
+     * @param e The HTML Element to animate
+     * @returns An Animation object
+     */
+    const elementAnimate = (e) => {
+      return e.animate(
+        [{ transform: `translateX(${this.content.clientWidth}px)` }],
+        {
+          duration: 10 * this.content.clientWidth, // has to scale with width to keep speed consistent
+          iterations: Infinity,
+          composite: "add",
+        }
+      );
+    };
+
+    // Setup new animation entirely or update the existing one
+    if (!this.animations.length) {
+      Array.from(this.tickerHTMLElement.children).forEach((e) => {
+        this.animations.push(elementAnimate(e));
+      });
+    } else {
+      Array.from(this.tickerHTMLElement.children).forEach((e) => {
+        if (!e.getAnimations().length) {
+          this.animations.push(elementAnimate(e));
+        } else {
+          e.getAnimations()[0].currentTime = 0;
+        }
+      });
+    }
+  }
+
+  /**
+   * Update the content clones if the screen is bigger.
+   */
+  refresh() {
+    console.log("refresh");
+    const previousRepetitions = this.currentRepetitions;
+
+    const delta = this.getRepititions() - previousRepetitions;
+
+    if (delta > 0) {
+      this.clone(delta);
+      this.animate();
+    }
+  }
+
+  /**
+   * Set up events that should update the slider when occurred
+   */
+  setupEvents() {
+    window.addEventListener(
+      "resize",
+      debounce(() => {
+        this.refresh();
+      }, 250)
+    );
   }
 }
