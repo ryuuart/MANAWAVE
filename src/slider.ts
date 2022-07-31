@@ -62,10 +62,11 @@ export default class Slider {
       this.tickerHTMLElement.clientWidth / this.content.clientWidth
     );
 
+    // Offset it depending on direction
+    this.content.style.transform = `translateX(${-this.content.clientWidth}px)`;
+
     for (let i = 0; i < repetitions; i++) {
       const clones = this.content.cloneNode(true) as HTMLElement;
-      this.content.style.transform = `translateX(${-this.content
-        .clientWidth}px)`;
       clones.style.transform = `translateX(${-this.content.clientWidth}px)`;
       this.tickerHTMLElement.append(clones);
     }
