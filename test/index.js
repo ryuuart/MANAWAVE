@@ -2,12 +2,13 @@ import Billboard from "../dist/billboard.module";
 
 const ticker = new Billboard("billboard", {
     autoplay: true,
+    direction: "left"
 })
 
 const ticker2 = new Billboard("billboard-2", {
     autoplay: true,
     speed: 2,
-    direction: "up"
+    direction: "right"
 })
 
 const ticker3 = new Billboard("billboard-3", {

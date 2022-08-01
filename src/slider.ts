@@ -104,6 +104,7 @@ export class Slider {
     this.wrapperHTMLElement.style.height = `${outerHeight(
       this.tickerHTMLElement
     )}px`;
+    this.wrapperHTMLElement.style.width = `${this.tickerHTMLElement.clientWidth}px`;
 
     // Calculate the number of repetitions needed
     this.clone(this.getRepititions());
