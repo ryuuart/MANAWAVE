@@ -3,9 +3,9 @@ import { clearArray } from "./helpers";
 import { Controls } from "./animation";
 
 export interface SliderOptions {
-  autoplay?: boolean;
-  direction?: "right" | "left" | "up" | "down" | number;
-  speed?: number;
+  autoplay: boolean;
+  direction: "right" | "left" | "up" | "down" | number;
+  speed: number;
 }
 
 /**
@@ -28,12 +28,20 @@ export class Slider {
    * @param {SliderOptions} options The options provided for the slider
    */
   constructor(public id: string = "billboard", public options: SliderOptions) {
-    this.options = Object.assign(this.options, {
+    // Set up options
+    const DEFAULT_OPTIONS: SliderOptions = {
       autoplay: true,
       direction: "right",
       speed: 1,
-    });
+    };
 
+    if (!options) {
+      this.options = DEFAULT_OPTIONS;
+    } else {
+      this.options = Object.assign(this.options, DEFAULT_OPTIONS);
+    }
+
+    // Find billboard element
     this.tickerHTMLElement = document.getElementById(id)!;
 
     if (!this.tickerHTMLElement) {

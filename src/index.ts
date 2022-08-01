@@ -15,7 +15,7 @@ export default class Billboard {
    */
   constructor(
     public id: string = "billboard",
-    public options: BillboardOptions = {}
+    public options: BillboardOptions
   ) {
     this.slider = new Slider(this.id, this.options);
   }
