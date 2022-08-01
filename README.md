@@ -5,6 +5,6 @@ I've seen plent of marquees out there but we ain't out here just to make a simpl
 ## Planned Features
 
 - [ ] _not-a-marquee_ text sliding
-- [ ] Infinite slider tsukiyomi
+- [x] Infinite slider tsukiyomi
 - [ ] Animated thingies in the _not-a-marquee_
 - [ ] Some billboards are as big as a house
