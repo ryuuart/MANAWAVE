@@ -1,6 +1,10 @@
 import Billboard from "../dist/billboard.module";
 
-const ticker = new Billboard()
+const ticker = new Billboard("billboard", {
+    autoplay: true,
+})
+
+const ticker2 = new Billboard("billboard-2")
 
 document.getElementById("destroy").addEventListener("click", () => {
     ticker.destroy();

@@ -2,10 +2,16 @@ import { debounce } from "./interaction";
 import { clearArray } from "./helpers";
 import { Controls } from "./animation";
 
+export interface SliderOptions {
+  autoplay?: boolean;
+  direction?: "right" | "left" | "up" | "down" | number;
+  speed?: number;
+}
+
 /**
  * The HTML Slider that Billboard sets up and manipulates
  */
-export default class Slider {
+export class Slider {
   tickerHTMLElement: HTMLElement;
   tickerItems: NodeList;
   content: HTMLElement;
@@ -19,8 +25,15 @@ export default class Slider {
   /**
    * Setup an individual slider
    * @param {string} id  - The HTML ID that will be selected as the slider container
+   * @param {SliderOptions} options The options provided for the slider
    */
-  constructor(public id: string = "billboard") {
+  constructor(public id: string = "billboard", public options: SliderOptions) {
+    this.options = Object.assign(this.options, {
+      autoplay: true,
+      direction: "right",
+      speed: 1,
+    });
+
     this.tickerHTMLElement = document.getElementById(id)!;
 
     if (!this.tickerHTMLElement) {
@@ -33,7 +46,9 @@ export default class Slider {
       throw "Make sure there is something to repeat in the billboard";
     }
 
-    this.setup();
+    if (this.options.autoplay) {
+      this.setup();
+    }
   }
 
   /**
@@ -132,7 +147,7 @@ export default class Slider {
       return e.animate(
         [{ transform: `translateX(${this.content.clientWidth}px)` }],
         {
-          duration: 10 * this.content.clientWidth, // has to scale with width to keep speed consistent
+          duration: 10 * this.content.clientWidth * (1 / this.options.speed), // has to scale with width to keep speed consistent
           iterations: Infinity,
           composite: "add",
         }
