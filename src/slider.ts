@@ -1,5 +1,5 @@
 import { debounce } from "./interaction";
-import { clearArray } from "./helpers";
+import { clearArray, outerHeight } from "./helpers";
 import { Controls } from "./animation";
 
 export interface SliderOptions {
@@ -13,6 +13,7 @@ export interface SliderOptions {
  */
 export class Slider {
   tickerHTMLElement: HTMLElement;
+  wrapperHTMLElement: HTMLElement;
   tickerItems: NodeList;
   content: HTMLElement;
   clones: HTMLElement[] = [];
@@ -38,7 +39,7 @@ export class Slider {
     if (!options) {
       this.options = DEFAULT_OPTIONS;
     } else {
-      this.options = Object.assign(this.options, DEFAULT_OPTIONS);
+      this.options = Object.assign(DEFAULT_OPTIONS, this.options);
     }
 
     // Find billboard element
@@ -54,9 +55,7 @@ export class Slider {
       throw "Make sure there is something to repeat in the billboard";
     }
 
-    if (this.options.autoplay) {
-      this.setup();
-    }
+    this.setup();
   }
 
   /**
@@ -82,10 +81,14 @@ export class Slider {
       `
     );
 
+    // Create a wrapper for the content to frame repetitions
+    this.wrapperHTMLElement = document.createElement("div");
+    this.tickerHTMLElement.appendChild(this.wrapperHTMLElement);
+
     // Create a content wrapper to determine the total width and repetitions we need to fill the ticker
     this.content = document.createElement("div");
     if (this.options.direction === "up" || this.options.direction === "down") {
-      this.content.style.display = "block";
+      this.content.style.display = "flow-root"; // A very strange solution to margin collapsing troubles
     } else {
       this.content.style.display = "inline-block";
     }
@@ -97,8 +100,10 @@ export class Slider {
 
     this.contentBoundingBox = this.content.getBoundingClientRect();
 
-    this.tickerHTMLElement.append(this.content);
-    this.tickerHTMLElement.style.height = `${this.content.clientHeight}px`;
+    this.wrapperHTMLElement.append(this.content);
+    this.wrapperHTMLElement.style.height = `${outerHeight(
+      this.tickerHTMLElement
+    )}px`;
 
     // Calculate the number of repetitions needed
     this.clone(this.getRepititions());
@@ -107,7 +112,9 @@ export class Slider {
     this.setupEvents();
 
     // Animate
-    this.animate();
+    if (!!this.options.autoplay) {
+      this.animate();
+    }
 
     // Setup playback controls
     this.playback = new Controls(this.animations);
@@ -120,17 +127,18 @@ export class Slider {
    * @returns The amount of times the content repeats
    */
   getRepititions() {
-    let tickerDimension = this.tickerHTMLElement.clientWidth;
-    let contentDimension = this.content.clientWidth;
+    // Calculate directionality
+    let tickerDimension = this.wrapperHTMLElement.offsetWidth;
+    let contentDimension = this.content.offsetWidth;
 
     switch (this.options.direction) {
       case "up":
-        tickerDimension = this.tickerHTMLElement.clientHeight;
-        contentDimension = this.content.clientHeight;
+        tickerDimension = this.wrapperHTMLElement.clientHeight;
+        contentDimension = this.content.offsetHeight;
         break;
       case "down":
-        tickerDimension = this.tickerHTMLElement.clientHeight;
-        contentDimension = this.content.clientHeight;
+        tickerDimension = this.wrapperHTMLElement.clientHeight;
+        contentDimension = this.content.offsetHeight;
         break;
     }
 
@@ -146,8 +154,7 @@ export class Slider {
    * @param {number} amount The amount of times to clone
    */
   clone(amount: number) {
-    // Offset it depending on direction
-
+    // Calculate directionality
     let sign = 0;
     let axis = "translateX";
     let dimension = this.content.clientWidth;
@@ -158,12 +165,12 @@ export class Slider {
         break;
       case "up":
         axis = "translateY";
-        dimension = this.content.clientHeight;
+        dimension = this.content.offsetHeight;
         break;
       case "down":
         sign = -1;
         axis = "translateY";
-        dimension = this.content.clientHeight;
+        dimension = this.content.offsetHeight;
         break;
     }
 
@@ -173,7 +180,7 @@ export class Slider {
       const clone = this.content.cloneNode(true) as HTMLElement;
       clone.style.transform = `${axis}(${sign * dimension}px)`;
       this.clones.push(clone);
-      this.tickerHTMLElement.append(clone);
+      this.wrapperHTMLElement.append(clone);
     }
   }
 
@@ -188,9 +195,10 @@ export class Slider {
      * @returns An Animation object
      */
     const elementAnimate = (e) => {
+      // Calculate directionality
       let sign = 1;
       let axis = "translateX";
-      let dimension = this.content.clientWidth;
+      let dimension = this.content.offsetWidth;
 
       switch (this.options.direction) {
         case "left":
@@ -199,11 +207,11 @@ export class Slider {
         case "up":
           sign = -1;
           axis = "translateY";
-          dimension = this.content.clientHeight;
+          dimension = this.content.offsetHeight;
           break;
         case "down":
           axis = "translateY";
-          dimension = this.content.clientHeight;
+          dimension = this.content.offsetHeight;
           break;
       }
       return e.animate([{ transform: `${axis}(${sign * dimension}px)` }], {
@@ -215,11 +223,11 @@ export class Slider {
 
     // Setup new animation entirely or update the existing one
     if (!this.animations.length) {
-      Array.from(this.tickerHTMLElement.children).forEach((e) => {
+      Array.from(this.wrapperHTMLElement.children).forEach((e) => {
         this.animations.push(elementAnimate(e));
       });
     } else {
-      Array.from(this.tickerHTMLElement.children).forEach((e) => {
+      Array.from(this.wrapperHTMLElement.children).forEach((e) => {
         if (!e.getAnimations().length) {
           this.animations.push(elementAnimate(e));
         } else {
@@ -284,7 +292,7 @@ export class Slider {
         this.tickerHTMLElement.appendChild(e);
       });
 
-      this.tickerHTMLElement.removeAttribute("style");
+      this.wrapperHTMLElement.remove();
 
       this.content.remove();
     }

@@ -5,15 +5,23 @@ const ticker = new Billboard("billboard", {
 })
 
 const ticker2 = new Billboard("billboard-2", {
-    autoplay: false
+    autoplay: true,
+    speed: 2,
+    direction: "up"
+})
+
+const ticker3 = new Billboard("billboard-3", {
+    autoplay: true,
+    speed: 2,
+    direction: "up"
 })
 
 document.getElementById("destroy").addEventListener("click", () => {
-    ticker.destroy();
+    ticker3.destroy();
 })
 
 document.getElementById("setup").addEventListener("click", () => {
-    ticker.init();
+    ticker3.init();
 })
 
 document.getElementById("play").addEventListener("click", () => {
