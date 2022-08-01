@@ -4,7 +4,9 @@ const ticker = new Billboard("billboard", {
     autoplay: true,
 })
 
-const ticker2 = new Billboard("billboard-2")
+const ticker2 = new Billboard("billboard-2", {
+    autoplay: false
+})
 
 document.getElementById("destroy").addEventListener("click", () => {
     ticker.destroy();

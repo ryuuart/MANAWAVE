@@ -75,9 +75,8 @@ export class Slider {
     this.styles.sheet?.insertRule(
       `
       #${this.id} {
-        white-space: nowrap;
         overflow: hidden;
-
+        white-space: nowrap;
         position: relative;
       }
       `
@@ -85,7 +84,11 @@ export class Slider {
 
     // Create a content wrapper to determine the total width and repetitions we need to fill the ticker
     this.content = document.createElement("div");
-    this.content.style.display = "inline-block";
+    if (this.options.direction === "up" || this.options.direction === "down") {
+      this.content.style.display = "block";
+    } else {
+      this.content.style.display = "inline-block";
+    }
 
     // Fill the base content wrapper
     this.tickerItems.forEach((e) => {
@@ -95,6 +98,7 @@ export class Slider {
     this.contentBoundingBox = this.content.getBoundingClientRect();
 
     this.tickerHTMLElement.append(this.content);
+    this.tickerHTMLElement.style.height = `${this.content.clientHeight}px`;
 
     // Calculate the number of repetitions needed
     this.clone(this.getRepititions());
@@ -116,9 +120,21 @@ export class Slider {
    * @returns The amount of times the content repeats
    */
   getRepititions() {
-    const repetitions = Math.ceil(
-      this.tickerHTMLElement.clientWidth / this.content.clientWidth
-    );
+    let tickerDimension = this.tickerHTMLElement.clientWidth;
+    let contentDimension = this.content.clientWidth;
+
+    switch (this.options.direction) {
+      case "up":
+        tickerDimension = this.tickerHTMLElement.clientHeight;
+        contentDimension = this.content.clientHeight;
+        break;
+      case "down":
+        tickerDimension = this.tickerHTMLElement.clientHeight;
+        contentDimension = this.content.clientHeight;
+        break;
+    }
+
+    const repetitions = Math.ceil(tickerDimension / contentDimension);
 
     this.currentRepetitions = repetitions;
 
@@ -131,11 +147,31 @@ export class Slider {
    */
   clone(amount: number) {
     // Offset it depending on direction
-    this.content.style.transform = `translateX(${-this.content.clientWidth}px)`;
+
+    let sign = 0;
+    let axis = "translateX";
+    let dimension = this.content.clientWidth;
+
+    switch (this.options.direction) {
+      case "right":
+        sign = -1;
+        break;
+      case "up":
+        axis = "translateY";
+        dimension = this.content.clientHeight;
+        break;
+      case "down":
+        sign = -1;
+        axis = "translateY";
+        dimension = this.content.clientHeight;
+        break;
+    }
+
+    this.content.style.transform = `${axis}(${sign * dimension}px)`;
 
     for (let i = 0; i < amount; i++) {
       const clone = this.content.cloneNode(true) as HTMLElement;
-      clone.style.transform = `translateX(${-this.content.clientWidth}px)`;
+      clone.style.transform = `${axis}(${sign * dimension}px)`;
       this.clones.push(clone);
       this.tickerHTMLElement.append(clone);
     }
@@ -152,14 +188,29 @@ export class Slider {
      * @returns An Animation object
      */
     const elementAnimate = (e) => {
-      return e.animate(
-        [{ transform: `translateX(${this.content.clientWidth}px)` }],
-        {
-          duration: 10 * this.content.clientWidth * (1 / this.options.speed), // has to scale with width to keep speed consistent
-          iterations: Infinity,
-          composite: "add",
-        }
-      );
+      let sign = 1;
+      let axis = "translateX";
+      let dimension = this.content.clientWidth;
+
+      switch (this.options.direction) {
+        case "left":
+          sign = -1;
+          break;
+        case "up":
+          sign = -1;
+          axis = "translateY";
+          dimension = this.content.clientHeight;
+          break;
+        case "down":
+          axis = "translateY";
+          dimension = this.content.clientHeight;
+          break;
+      }
+      return e.animate([{ transform: `${axis}(${sign * dimension}px)` }], {
+        duration: 10 * dimension * (1 / this.options.speed), // has to scale with width to keep speed consistent
+        iterations: Infinity,
+        composite: "add",
+      });
     };
 
     // Setup new animation entirely or update the existing one
@@ -232,6 +283,8 @@ export class Slider {
       Array.from(this.content.children).forEach((e) => {
         this.tickerHTMLElement.appendChild(e);
       });
+
+      this.tickerHTMLElement.removeAttribute("style");
 
       this.content.remove();
     }
