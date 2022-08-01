@@ -17,8 +17,17 @@
             background: red;
         }
 
+        .green {
+            background: green;
+        }
+
         .square {
             margin-right: 1rem;
+        }
+
+        .vertical {
+            display: block;
+            margin-bottom: 1rem;
         }
 
         .grid {
@@ -37,6 +46,12 @@
         section {
             margin-bottom: 1rem;
         }
+
+        #billboard-3 {
+            display: inline-block;
+
+            height: 100vh;
+        }
     </style>
     <title>Billboard Test Zone</title>
 </head>
@@ -54,28 +69,52 @@
         <button id="play" setup>Play</button>
         <button id="pause">Pause</button>
     </section>
-    <div id="billboard">
-        <div class="inline-block">
-            <div class="grid">
+    <section>
+        <div id="billboard-2">
+            <div class="square green">5</div>
+            <div class="square green">6</div>
+            <div class="square green">7</div>
+            <div class="square green">8</div>
+        </div>
+    </section>
+    <section>
+        <div id="billboard">
+            <div class="inline-block">
+                <div class="grid">
+                    <div class="square">1</div>
+                    <div class="square">2</div>
+                    <div class="square">3</div>
+                    <div class="square">4</div>
+                </div>
+            </div>
+            <div class="square">5</div>
+            <div class="square">6</div>
+            <div class="square">7</div>
+            <div class="square">8</div>
+            <div class="inline-block">
+                <div class="grid">
+                    <div class="square">1</div>
+                    <div class="square">2</div>
+                    <div class="square">3</div>
+                    <div class="square">4</div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <section>
+        <div id="billboard-3">
+            <div class="square green vertical">5</div>
+            <div class="square green vertical">6</div>
+            <div class="vertical grid">
                 <div class="square">1</div>
                 <div class="square">2</div>
                 <div class="square">3</div>
                 <div class="square">4</div>
             </div>
+            <div class="square green vertical">7</div>
+            <div class="square green vertical">8</div>
         </div>
-        <div class="square">5</div>
-        <div class="square">6</div>
-        <div class="square">7</div>
-        <div class="square">8</div>
-        <div class="inline-block">
-            <div class="grid">
-                <div class="square">1</div>
-                <div class="square">2</div>
-                <div class="square">3</div>
-                <div class="square">4</div>
-            </div>
-        </div>
-    </div>
+    </section>
     <script type="module" src="index.js"></script>
 </body>
 

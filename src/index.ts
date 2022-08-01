@@ -1,4 +1,6 @@
-import Slider from "./slider";
+import { Slider, SliderOptions } from "./slider";
+
+type BillboardOptions = {} & SliderOptions;
 
 /**
  * The main class used to set up the Billboard all in one spot
@@ -9,9 +11,13 @@ export default class Billboard {
   /**
    * Set up, configure, and control the overall Billboard system
    * @param {string} id the ID we use to select for the main slider
+   * @param {string} options the options provided for the overall Billboard system
    */
-  constructor(public id: string = "billboard") {
-    this.slider = new Slider(id);
+  constructor(
+    public id: string = "billboard",
+    public options: BillboardOptions
+  ) {
+    this.slider = new Slider(this.id, this.options);
   }
 
   init() {
