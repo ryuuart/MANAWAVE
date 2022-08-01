@@ -21,4 +21,18 @@ export default class Billboard {
   destroy() {
     this.slider.destroy();
   }
+
+  /**
+   * Continue the animations
+   */
+  play() {
+    this.slider.playback.play();
+  }
+
+  /**
+   * Pause the animations
+   */
+  pause() {
+    this.slider.playback.pause();
+  }
 }
