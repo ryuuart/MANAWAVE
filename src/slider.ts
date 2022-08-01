@@ -1,5 +1,6 @@
 import { debounce } from "./interaction";
 import { clearArray } from "./helpers";
+import { Controls } from "./animation";
 
 /**
  * The HTML Slider that Billboard sets up and manipulates
@@ -8,10 +9,11 @@ export default class Slider {
   tickerHTMLElement: HTMLElement;
   tickerItems: NodeList;
   content: HTMLElement;
+  clones: HTMLElement[] = [];
   currentRepetitions: number = 0;
   contentBoundingBox: DOMRect;
   animations: Animation[] = [];
-  clones: HTMLElement[] = [];
+  playback: Controls;
   private styles: HTMLStyleElement;
 
   /**
@@ -79,6 +81,9 @@ export default class Slider {
 
     // Animate
     this.animate();
+
+    // Setup playback controls
+    this.playback = new Controls(this.animations);
   }
 
   /**
