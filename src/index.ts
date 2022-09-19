@@ -1,4 +1,5 @@
 import { Slider, SliderOptions } from "./slider";
+import BillboardTicker from "./Billboard";
 
 type BillboardOptions = {} & SliderOptions;
 
@@ -18,6 +19,10 @@ export default class Billboard {
     public options: BillboardOptions
   ) {
     this.slider = new Slider(this.id, this.options);
+
+    if (!customElements.get("billboard-ticker")) {
+      customElements.define("billboard-ticker", BillboardTicker);
+    }
   }
 
   init() {
