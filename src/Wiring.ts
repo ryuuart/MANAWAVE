@@ -27,12 +27,12 @@ export default class Wiring {
   updateDimensions(container: HTMLElement, content: HTMLElement) {
     this.dimensions = {
       container: {
-        width: container.clientWidth,
-        height: container.clientHeight,
+        width: container.offsetWidth,
+        height: container.offsetHeight,
       },
       content: {
-        width: content.clientWidth,
-        height: content.clientHeight,
+        width: content.offsetWidth,
+        height: content.offsetHeight,
       },
     };
   }
