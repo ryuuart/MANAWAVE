@@ -1,67 +1,43 @@
-import Wiring from "./Wiring";
+import BillboardDirector from "./BillboardDirector";
+import Animation from "./animation";
+import BillboardState from "./State";
 
-import { animate } from "motion";
 export default class BillboardTicker extends HTMLElement {
-  wires: Wiring;
-  content: HTMLElement;
+  state: BillboardState;
 
   constructor() {
     super();
 
-    this.classList.add("billboard-ticker");
-    const styles = document.createElement("style");
-    document.head.appendChild(styles);
-    styles.sheet?.insertRule(`
-        .billboard-ticker {
-            display: block;
-            white-space: nowrap;
-            position: relative;
-            overflow: hidden;
-        }
-    `);
-    styles.sheet?.insertRule(`
-        .billboard-ticker > .container-wrapper > .row > div {
-            display: inline-block;
-        }
-    `);
-    styles.sheet?.insertRule(`
-        .billboard-ticker > .container-wrapper {
-          overflow: hidden;
-        }
-    `);
-    styles.sheet?.insertRule(`
-        .billboard-ticker > .container-wrapper > .row {
-            display: flow-root;
-            position: relative;
-        }
-    `);
+    const Director = new BillboardDirector(this);
+    const BillboardContent = Director.build();
 
-    this.content = document.createElement("div");
-    Array.from(this.children).forEach((element) => {
-      this.content.appendChild(element);
-    });
+    this.state = new BillboardState();
+    this.state.updateContentDimensions(BillboardContent.content);
 
-    this.wires = new Wiring(this, this.content);
+    if (this.hasAttribute("speed"))
+      this.state.data.speed = parseFloat(this.getAttribute("speed")!);
+    if (this.hasAttribute("direction"))
+      switch (this.getAttribute("direction")!) {
+        case "up":
+          this.state.data.direction = 90;
+          break;
+        case "down":
+          this.state.data.direction = 270;
+          break;
+        case "left":
+          this.state.data.direction = 180;
+          break;
+        case "right":
+          this.state.data.direction = 0;
+          break;
+        default:
+          this.state.data.direction = Math.min(
+            parseFloat(this.getAttribute("direction")!),
+            360
+          );
+      }
 
-    let angle = -(0 * Math.PI) / 4;
-    let directionVector = [Math.cos(angle), Math.sin(angle)];
-    let magnitude = [
-      this.wires.dimensions.content.width,
-      this.wires.dimensions.content.height,
-    ];
-
-    animate(
-      this.querySelectorAll(".container-wrapper > .row > div"),
-      {
-        transform: `translate(${
-          Math.sign(Math.round(directionVector[0])) * magnitude[0]
-        }px, ${Math.sign(Math.round(directionVector[1])) * magnitude[1]}px)`,
-      },
-      { duration: 0.5, easing: "linear", repeat: Infinity }
-    );
-  }
-
-  connectedCallback() {
-    // TODO: Add stuff
+    const AnimationController = new Animation(this.state);
+    AnimationController.animate(this);
   }
 }

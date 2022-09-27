@@ -60,76 +60,55 @@
 <body>
     <h1>Hello</h1>
     <p>This is a wonderful test area</p>
-    <section>
-        <h2>Creation / Destruction</h2>
-        <button id="setup" setup>Setup</button>
-        <button id="destroy">Destroy</button>
-    </section>
-    <section>
-        <h2>Controls</h2>
-        <button id="play" setup>Play</button>
-        <button id="pause">Pause</button>
-    </section>
+
+    <div style="column-count: 3;">
+        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Repudiandae, dolor! Id quos ex enim in
+            impedit facilis, aliquid odit fugit exercitationem culpa veniam optio voluptates eius ut minima
+            magni debitis!</p>
+        <p>Earum, quo consequuntur? Nesciunt praesentium voluptatem omnis ratione reprehenderit placeat minima
+            vitae animi optio necessitatibus! Quis quidem a exercitationem, totam, iste voluptatem deserunt nemo
+            tenetur magni cupiditate ea doloremque cum?</p>
+        <p>Amet asperiores vel ipsa fugit neque nulla laborum fugiat sequi eaque, nisi rerum, accusamus
+            doloribus. Nulla commodi est eaque pariatur quasi exercitationem delectus, unde aliquid, porro
+            deleniti, beatae eligendi minus?</p>
+        <p>don't for a second consider Lorem ipsum dolor sit amet consectetur adipisicing
+            elit. Hic
+            fugit ipsum facilis, soluta possimus iste perspiciatis, natus eveniet itaque cupiditate autem. Dicta
+            recusandae numquam aspernatur modi rerum reprehenderit nisi et.</p>
+    </div>
     <section>
         <h2>Web Component</h2>
-        <billboard-ticker>
+        <billboard-ticker direction="left">
             <div class="square green">5</div>
             <div class="square green">6</div>
             <div class="square green">7</div>
         </billboard-ticker>
-        <billboard-ticker>
+        <billboard-ticker direction="up">
+            <h1>LONG IS SO FREAKING COOL</h1>
+        </billboard-ticker>
+        <billboard-ticker direction="280" speed="5">
+            <div style="column-count: 3">
+                <p>Lorem, ipsum dolor sit amet consectetur adipisicing elit. Officia voluptatibus animi error obcaecati
+                    facilis, voluptates omnis, repellendus consectetur ad, iure deleniti. Nobis voluptates repellendus
+                    corrupti veniam dignissimos autem quaerat sit?</p>
+                <p>Lorem, ipsum dolor sit amet consectetur adipisicing elit. Officia voluptatibus animi error obcaecati
+                    facilis, voluptates omnis, repellendus consectetur ad, iure deleniti. Nobis voluptates repellendus
+                    corrupti veniam dignissimos autem quaerat sit?</p>
+                <p>Lorem, ipsum dolor sit amet consectetur adipisicing elit. Officia voluptatibus animi error obcaecati
+                    facilis, voluptates omnis, repellendus consectetur ad, iure deleniti. Nobis voluptates repellendus
+                    corrupti veniam dignissimos autem quaerat sit?</p>
+                <p>Lorem, ipsum dolor sit amet consectetur adipisicing elit. Officia voluptatibus animi error obcaecati
+                    facilis, voluptates omnis, repellendus consectetur ad, iure deleniti. Nobis voluptates repellendus
+                    corrupti veniam dignissimos autem quaerat sit?</p>
+            </div>
+        </billboard-ticker>
+        <billboard-ticker direction="right">
             <ul>
                 <li>1</li>
                 <li>2</li>
                 <li>3</li>
             </ul>
         </billboard-ticker>
-    </section>
-    <section>
-        <div id="billboard-2">
-            <div class="square green">5</div>
-            <div class="square green">6</div>
-            <div class="square green">7</div>
-            <div class="square green">8</div>
-        </div>
-    </section>
-    <section>
-        <div id="billboard">
-            <div class="inline-block">
-                <div class="grid">
-                    <div class="square">1</div>
-                    <div class="square">2</div>
-                    <div class="square">3</div>
-                    <div class="square">4</div>
-                </div>
-            </div>
-            <div class="square">5</div>
-            <div class="square">6</div>
-            <div class="square">7</div>
-            <div class="square">8</div>
-            <div class="inline-block">
-                <div class="grid">
-                    <div class="square">1</div>
-                    <div class="square">2</div>
-                    <div class="square">3</div>
-                    <div class="square">4</div>
-                </div>
-            </div>
-        </div>
-    </section>
-    <section>
-        <div id="billboard-3">
-            <div class="square green vertical">5</div>
-            <div class="square green vertical">6</div>
-            <div class="vertical grid">
-                <div class="square">1</div>
-                <div class="square">2</div>
-                <div class="square">3</div>
-                <div class="square">4</div>
-            </div>
-            <div class="square green vertical">7</div>
-            <div class="square green vertical">8</div>
-        </div>
     </section>
     <script type="module" src="index.js"></script>
 </body>
