@@ -9,14 +9,24 @@ interface BillboardContentBundle {
   wrapper: HTMLElement;
 }
 
+/**
+ * A Builder that builds a standard 8-directional Billboard
+ */
 export class BillboardBuilder implements Builder {
   product: HTMLElement;
   contentBundle: BillboardContentBundle;
 
+  /**
+   * @param product {HTMLElement} The wrapper element around the whole Billboard
+   */
   constructor(product: HTMLElement) {
     this.product = product;
   }
 
+  /**
+   * Adds stylesheet to HTML that'll set default styling on the Billboard
+   * `HTMLElement` enabling it repeat in 8-directions.
+   */
   appendStyleSheet() {
     this.product.classList.add("billboard-ticker");
     const styles = document.createElement("style");
@@ -50,6 +60,12 @@ export class BillboardBuilder implements Builder {
     `);
   }
 
+  /**
+   * Wraps the elements under the wrapper to be compatible for repeated layout and animation. It's important
+   * to define Content refers to an individual instance of content to repeat (to cover cases where there are multiple
+   * `HTMLElements` under the root wrapper)
+   * @returns {BillboardContentBundle} access to the Billboard root wrapper and content that repeats.
+   */
   wrapContent(): BillboardContentBundle {
     const content = document.createElement("div");
     Array.from(this.product.children).forEach((element) => {
@@ -69,6 +85,11 @@ export class BillboardBuilder implements Builder {
     return this.contentBundle;
   }
 
+  /**
+   * Take the content and repeat it
+   *
+   * @param contentBundle Contains the root wrapper and its children wrapped in a Content `HTMLElement`
+   */
   cloneContent(contentBundle: BillboardContentBundle) {
     // Set up first row (top row)
     const firstRow = document.createElement("div");
@@ -108,6 +129,9 @@ export class BillboardBuilder implements Builder {
     }
   }
 
+  /**
+   * @returns Returns root wrapper and its children wrapped in a `content` `div`
+   */
   build(): BillboardContentBundle {
     this.appendStyleSheet();
     this.cloneContent(this.wrapContent());

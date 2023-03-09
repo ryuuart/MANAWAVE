@@ -2,6 +2,9 @@ import BillboardDirector from "./BillboardDirector";
 import Animation from "./animation";
 import BillboardState from "./State";
 
+/**
+ * HTML ShadowDOM element (with no shadowroot) that contains the repeated elements
+ */
 export default class BillboardTicker extends HTMLElement {
   state: BillboardState;
 
@@ -14,6 +17,7 @@ export default class BillboardTicker extends HTMLElement {
     this.state = new BillboardState();
     this.state.updateContentDimensions(BillboardContent.content);
 
+    // Parse the attributes specified in `HTMLElement`
     if (this.hasAttribute("speed"))
       this.state.data.speed = parseFloat(this.getAttribute("speed")!);
     if (this.hasAttribute("direction"))

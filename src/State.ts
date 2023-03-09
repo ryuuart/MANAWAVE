@@ -2,6 +2,9 @@ export interface State {
   data: {};
 }
 
+/**
+ * A data model that represents the current state of a Billboard
+ */
 export default class BillboardState implements State {
   data: {
     direction: number;
@@ -30,6 +33,11 @@ export default class BillboardState implements State {
     };
   }
 
+  /**
+   * Called when the Billboard size needs to be recalculated.
+   *
+   * @param content the HTMLElement that contains the repititions
+   */
   updateContentDimensions(content: HTMLElement) {
     this.data.dimensions["contentWidth"] = content.clientWidth;
     this.data.dimensions["contentHeight"] = content.clientHeight;

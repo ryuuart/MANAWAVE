@@ -1,4 +1,4 @@
-import BillboardTicker from "./Billboard";
+import BillboardTicker from "./BillboardTicker";
 
 /**
  * The main class used to set up the Billboard all in one spot
