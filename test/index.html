@@ -53,6 +53,10 @@
 
             height: 100vh;
         }
+
+        .green-ticker-1 {
+            width: 500px;
+        }
     </style>
     <title>Billboard Test Zone</title>
 </head>
@@ -78,15 +82,15 @@
     </div>
     <section>
         <h2>Web Component</h2>
-        <billboard-ticker direction="45" speed="8">
-            <div class="square green">5</div>
-            <div class="square green">6</div>
-            <div class="square green">7</div>
+        <billboard-ticker direction="45" speed="8" class="green-ticker-1">
+            <div class="square green">1</div>
+            <div class="square green">2</div>
+            <div class="square green">3</div>
         </billboard-ticker>
-        <billboard-ticker direction="up">
+        <!-- <billboard-ticker direction="up">
             <h1>LONG IS SO FREAKING COOL</h1>
-        </billboard-ticker>
-        <billboard-ticker direction="135" speed="2">
+        </billboard-ticker> -->
+        <!-- <billboard-ticker direction="135" speed="2">
             <div>
                 <p>Lorem, ipsum dolor sit amet consectetur adipisicing elit. Officia voluptatibus animi error obcaecati
                     facilis, voluptates omnis, repellendus consectetur ad, iure deleniti. Nobis voluptates repellendus
@@ -101,14 +105,14 @@
                     facilis, voluptates omnis, repellendus consectetur ad, iure deleniti. Nobis voluptates repellendus
                     corrupti veniam dignissimos autem quaerat sit?</p>
             </div>
-        </billboard-ticker>
-        <billboard-ticker direction="right">
+        </billboard-ticker> -->
+        <!-- <billboard-ticker direction="right">
             <ul>
                 <li>1</li>
                 <li>2</li>
                 <li>3</li>
             </ul>
-        </billboard-ticker>
+        </billboard-ticker> -->
     </section>
     <script type="module" src="index.js"></script>
 </body>

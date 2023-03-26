@@ -1,46 +1,82 @@
-import { toRadians, vec2 } from "./Math";
-import { animate } from "motion";
-import BillboardState from "./State";
+import {
+  animate,
+  AnimationControls,
+  AnimationOptionsWithOverrides,
+  ElementOrSelector,
+  timeline,
+} from "motion";
+import { getXAttr } from "./tickerDomUtils";
 
-/**
- * Controls anything animatable in the Billboard
- */
-export default class Animation {
-  directionVector: vec2;
-  magnitude: vec2;
-  speed: number;
+const animationOptions: AnimationOptionsWithOverrides = {
+  duration: 1,
+  easing: "linear",
+};
 
-  /**
-   * @param state the data model that represents the properties and status of the Billboard
-   */
-  constructor(state: BillboardState) {
-    // TODO: Update to more general state
-    this.directionVector = [
-      Math.cos(-toRadians(state.data.direction)),
-      Math.sin(-toRadians(state.data.direction)),
-    ];
+export function translateXY(
+  element: ElementOrSelector,
+  amount: [number, number],
+  onFinished?: (value) => void
+) {
+  let animation = animate(
+    element,
+    {
+      x: `${amount[0]}px`,
+      y: `${amount[1]}px`,
+    },
+    animationOptions
+  );
 
-    this.magnitude = [
-      state.data.dimensions.contentWidth,
-      state.data.dimensions.contentHeight,
-    ];
+  if (onFinished) animation.finished.then(onFinished);
+}
 
-    this.speed = state.data.speed;
-  }
+// tmp
+export function translateX(
+  element: ElementOrSelector,
+  amount: number,
+  onFinished?: (value) => void
+) {
+  let animation = animate(
+    element,
+    {
+      x: `${amount}px`,
+    },
+    animationOptions
+  );
 
-  /**
-   * Animate the Billboard
-   * @param animationRoot base `HTMLElement` as a base to find whatever needs to be animated (repeated)
-   */
-  animate(animationRoot: HTMLElement) {
-    animate(
-      animationRoot.querySelectorAll(".container-wrapper > .row > div"), // TODO: Generalize Equation
-      {
-        transform: `translate(${
-          Math.round(this.directionVector[0]) * this.magnitude[0]
-        }px, ${Math.round(this.directionVector[1]) * this.magnitude[1]}px)`,
-      },
-      { duration: this.speed, easing: "linear", repeat: Infinity }
-    );
-  }
+  if (onFinished) animation.finished.then(onFinished);
+
+  return animation;
+}
+
+export function translateAllX(
+  elements: HTMLCollection,
+  getAmount: (element: Element) => number,
+  onFinished?: (value) => void
+) {
+  const sequences: Parameters<typeof timeline>[0] = [];
+
+  Array.from(elements).forEach((e) => {
+    sequences.push([e, { x: `${getAmount(e)}px` }, { at: "<" }]);
+  });
+
+  const animation = timeline(sequences, {
+    defaultOptions: animationOptions,
+  });
+
+  if (onFinished) animation.finished.then(onFinished);
+}
+
+export function setX(element: ElementOrSelector, amount: number) {
+  let animation = animate(
+    element,
+    {
+      x: `${amount}px`,
+    },
+    {
+      easing: "linear",
+      duration: 0,
+    }
+  );
+
+  animation.finish();
 }

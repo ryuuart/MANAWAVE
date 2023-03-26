@@ -1,47 +1,77 @@
-import BillboardDirector from "./BillboardDirector";
-import Animation from "./animation";
-import BillboardState from "./State";
+import { wrappedDiv, wrappedSpan, cloneChild } from "./dom";
+import Dimensions from "./dimensions";
+import anime from "animejs";
+import { getXAttr } from "./tickerDomUtils";
+import { setX, translateX } from "./animation";
+import TickerSystem from "./TickerSystem";
 
 /**
  * HTML ShadowDOM element (with no shadowroot) that contains the repeated elements
  */
 export default class BillboardTicker extends HTMLElement {
-  state: BillboardState;
+  tickerElementTemp: HTMLElement;
+  tickerElement: HTMLElement;
+  billboardTickerElement: HTMLElement;
 
   constructor() {
     super();
+    // Element represents the element to be repeated (the template if you will)
+    this.tickerElementTemp = wrappedDiv(this.children);
+    this.tickerElementTemp.classList.add("ticker-element-temp");
 
-    const Director = new BillboardDirector(this);
-    const BillboardContent = Director.build();
+    // Element-wrapper refers to a wrapper that allows for dimensional calculations
+    // What you want to clone
+    this.tickerElement = wrappedDiv(this.tickerElementTemp);
+    this.tickerElement.classList.add("ticker-element");
 
-    this.state = new BillboardState();
-    this.state.updateContentDimensions(BillboardContent.content);
+    // Billboard-ticker refers to what represents the entire Billboard-ticker itself
+    this.billboardTickerElement = wrappedDiv(this.tickerElement);
+    this.billboardTickerElement.classList.add("billboard-ticker");
 
-    // Parse the attributes specified in `HTMLElement`
-    if (this.hasAttribute("speed"))
-      this.state.data.speed = parseFloat(this.getAttribute("speed")!);
-    if (this.hasAttribute("direction"))
-      switch (this.getAttribute("direction")!) {
-        case "up":
-          this.state.data.direction = 90;
-          break;
-        case "down":
-          this.state.data.direction = 270;
-          break;
-        case "left":
-          this.state.data.direction = 180;
-          break;
-        case "right":
-          this.state.data.direction = 0;
-          break;
-        default:
-          this.state.data.direction = Math.min(
-            parseFloat(this.getAttribute("direction")!),
-            360
-          );
+    this.append(this.billboardTickerElement);
+  }
+
+  connectedCallback() {
+    let currAnim: anime.AnimeInstance;
+    let animLock: boolean = false;
+
+    Dimensions.init(this, this.tickerElement);
+
+    setX(this.tickerElement, 0);
+    TickerSystem.register(this.tickerElement, [0, 0]);
+    for (let i = 1; i <= 2; i++) {
+      const clonedChild = cloneChild(this.tickerElement);
+      if (clonedChild) {
+        setX(clonedChild as Element, i * Dimensions.TICKER_ELEMENT_WIDTH);
+        TickerSystem.register(clonedChild as Element, [
+          i * Dimensions.TICKER_ELEMENT_WIDTH,
+          0,
+        ]);
       }
+    }
 
-    const AnimationController = new Animation(this.state);
-    AnimationController.animate(this);
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((e) => {
+          if (
+            !e.isIntersecting &&
+            e.rootBounds &&
+            e.boundingClientRect.left >= e.rootBounds.width
+          ) {
+            console.log(e.boundingClientRect.left);
+            TickerSystem.message("loop", e.target);
+          }
+        });
+      },
+      {
+        root: this,
+        threshold: 0,
+      }
+    );
+    TickerSystem.start();
+
+    Array.from(this.billboardTickerElement.children).forEach((e) => {
+      observer.observe(e);
+    });
   }
 }

@@ -11,7 +11,50 @@ class BillboardManager {
    */
   constructor() {
     if (!customElements.get("billboard-ticker")) {
+      this.initCSS();
+
       customElements.define("billboard-ticker", BillboardTicker);
+    }
+  }
+
+  initCSS() {
+    const styleElement = document.createElement("style");
+    document.head.append(styleElement);
+
+    if (styleElement.sheet) {
+      styleElement.sheet.insertRule(`
+        billboard-ticker {
+          white-space: nowrap;
+          overflow: hidden;
+          
+          display: block;
+
+          border: 1px solid red;
+        }
+      `);
+      styleElement.sheet.insertRule(`
+        .billboard-ticker {
+          position: relative;
+
+          display: flow-root;
+
+          right: 100%;
+        }
+      `);
+      styleElement.sheet.insertRule(`
+        .ticker-element-temp {
+          display: inline-block;
+        }
+      `);
+      styleElement.sheet.insertRule(`
+        .ticker-element {
+          position: absolute;
+
+          will-change: transform;
+
+          display: inline-block;
+        }
+      `);
     }
   }
 }
