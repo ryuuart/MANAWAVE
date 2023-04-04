@@ -1,16 +1,23 @@
+type onStartChangeParams = { newStartX?: number; newStartY?: number };
+type eventMessagesParams = onStartChangeParams;
+
 class Dimensions {
   TICKER_ELEMENT_WIDTH: number;
   TICKER_ELEMENT_HEIGHT: number;
   TICKER_WIDTH: number;
   TICKER_HEIGHT: number;
-  DIRECTION: [number, number];
+  X_START: number;
+  Y_START: number;
+  MAGNITUDE: [number, number];
 
   constructor() {
     this.TICKER_ELEMENT_WIDTH = 0;
     this.TICKER_ELEMENT_HEIGHT = 0;
     this.TICKER_WIDTH = 0;
     this.TICKER_HEIGHT = 0;
-    this.DIRECTION = [0, 0];
+    this.MAGNITUDE = [420, 0];
+    this.X_START = 0;
+    this.Y_START = 0;
   }
 
   init(ticker: HTMLElement, tickerElement: HTMLElement) {
@@ -27,6 +34,21 @@ class Dimensions {
     this.TICKER_ELEMENT_HEIGHT = tickerElement.offsetHeight;
     this.TICKER_WIDTH = ticker.clientWidth;
     this.TICKER_HEIGHT = ticker.clientHeight;
+    this.X_START = this.MAGNITUDE[0] - this.TICKER_ELEMENT_WIDTH;
+    this.Y_START = 0;
+  }
+
+  onStartChange({ newStartX, newStartY }: onStartChangeParams) {
+    this.X_START = newStartX ?? this.X_START;
+    this.Y_START = newStartY ?? this.Y_START;
+  }
+
+  listen(event: string, message: eventMessagesParams) {
+    switch (event) {
+      case "startChange":
+        this.onStartChange(message);
+        break;
+    }
   }
 
   toString() {

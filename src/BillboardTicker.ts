@@ -13,6 +13,8 @@ export default class BillboardTicker extends HTMLElement {
   tickerElement: HTMLElement;
   billboardTickerElement: HTMLElement;
 
+  observer: IntersectionObserver;
+
   constructor() {
     super();
     // Element represents the element to be repeated (the template if you will)
@@ -35,14 +37,15 @@ export default class BillboardTicker extends HTMLElement {
     let currAnim: anime.AnimeInstance;
     let animLock: boolean = false;
 
-    Dimensions.init(this, this.tickerElement);
+    Dimensions.init(this.billboardTickerElement, this.tickerElement);
 
-    setX(this.tickerElement, 0);
+    // setX(this.tickerElement, 0);
     TickerSystem.register(this.tickerElement, [0, 0]);
+    TickerSystem.addTag(this.tickerElement, "first");
     for (let i = 1; i <= 2; i++) {
       const clonedChild = cloneChild(this.tickerElement);
       if (clonedChild) {
-        setX(clonedChild as Element, i * Dimensions.TICKER_ELEMENT_WIDTH);
+        // setX(clonedChild as Element, i * Dimensions.TICKER_ELEMENT_WIDTH);
         TickerSystem.register(clonedChild as Element, [
           i * Dimensions.TICKER_ELEMENT_WIDTH,
           0,
@@ -58,17 +61,16 @@ export default class BillboardTicker extends HTMLElement {
             e.rootBounds &&
             e.boundingClientRect.left >= e.rootBounds.width
           ) {
-            console.log(e.boundingClientRect.left);
             TickerSystem.message("loop", e.target);
           }
         });
       },
       {
         root: this,
-        threshold: 0,
+        threshold: [0, 1],
       }
     );
-    TickerSystem.start();
+    TickerSystem.start(observer);
 
     Array.from(this.billboardTickerElement.children).forEach((e) => {
       observer.observe(e);
