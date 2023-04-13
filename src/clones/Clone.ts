@@ -1,5 +1,4 @@
 import { setTranslate } from "../dom";
-import { cloneChild, wrappedDiv } from "../dom/DOM";
 import CloneState from "./CloneState";
 import Template from "./Template";
 
@@ -14,6 +13,9 @@ export default class Clone {
         this.element.classList.add("ticker-element");
 
         this.state = new CloneState();
+
+        // Just add it in some far off corner so it's not visible yet.
+        this.setPosition([-9999, -9999]);
     }
 
     setPosition(position: [x: number, y: number]) {

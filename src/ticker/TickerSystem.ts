@@ -8,7 +8,7 @@ export default class TickerSystem {
     constructor(element: HTMLElement) {
         this.ticker = new Ticker(element);
 
-        this.cloner = new Cloner();
+        this.cloner = new Cloner(this.ticker);
         this.cloner.register(this.ticker.initialTemplate);
 
         this.ticker.fillClones(this.cloner.clone(3));

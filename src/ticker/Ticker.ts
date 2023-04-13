@@ -32,13 +32,13 @@ export default class Ticker {
     fillClones(clones: Clone[]) {
         let pos: [number, number] = [-clones[0].element.offsetWidth, 0];
         for (const clone of clones) {
-            this.append(clone);
-            if (clone === clones[0]) pos[0] += -clone.element.offsetWidth;
-            else pos[0] += clone.element.offsetWidth;
-            clone.setPosition(pos);
+            clone.setPosition(pos); // has to update its appearance first :3
+            pos[0] += clone.element.offsetWidth;
         }
     }
 
+    // Add in a lil element but if it's a lil too big, then the ticker needs to resize
+    // [TODO] figure out responsiveness part
     append(clone: Clone) {
         this.element.append(clone.element);
         if (clone.element.offsetHeight > this.height) {

@@ -1,12 +1,15 @@
+import { Ticker } from "../ticker";
 import Clone from "./Clone";
 import Template from "./Template";
 
 // Continuously clone templates and returns it for use
 export default class Cloner {
     templates: Template[];
+    _referenceTicker: Ticker; // keep track of the ticker it should be adding clones to for loading purposes
     _currTemplateIndex: number = -1;
 
-    constructor() {
+    constructor(ticker: Ticker) {
+        this._referenceTicker = ticker;
         this.templates = [];
     }
 
@@ -20,6 +23,7 @@ export default class Cloner {
         const clones: Clone[] = [];
         for (let i = 0; i < n; i++) {
             const clone = new Clone(this.getNextTemplate());
+            this._referenceTicker.append(clone);
             clones.push(clone);
         }
 
