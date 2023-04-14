@@ -11,6 +11,6 @@ export default class TickerSystem {
         this.cloner = new Cloner(this.ticker);
         this.cloner.register(this.ticker.initialTemplate);
 
-        this.ticker.fillClones(this.cloner.clone(3));
+        this.ticker.initClones(this.cloner);
     }
 }
