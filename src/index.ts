@@ -1,4 +1,5 @@
-import BillboardTicker from "./BillboardTicker";
+import Billboard from "./Billboard";
+import Component from "./web/Component";
 
 /**
  * The main class used to set up the Billboard all in one spot
@@ -11,9 +12,51 @@ class BillboardManager {
    */
   constructor() {
     if (!customElements.get("billboard-ticker")) {
-      customElements.define("billboard-ticker", BillboardTicker);
+      this.initCSS();
+
+      customElements.define("billboard-ticker", Component);
+    }
+  }
+
+  initCSS() {
+    const styleElement = document.createElement("style");
+    document.head.append(styleElement);
+
+    if (styleElement.sheet) {
+      styleElement.sheet.insertRule(`
+        billboard-ticker, .billboard-ticker {
+          white-space: nowrap;
+          overflow: hidden;
+          
+          display: block;
+
+          border: 1px solid red;
+        }
+      `);
+      styleElement.sheet.insertRule(`
+        .billboard-ticker-container {
+          position: relative;
+
+          display: flow-root;
+        }
+      `);
+      styleElement.sheet.insertRule(`
+        .ticker-element-temp {
+          display: inline-block;
+        }
+      `);
+      styleElement.sheet.insertRule(`
+        .ticker-element {
+          position: absolute;
+
+          will-change: transform;
+
+          display: inline-block;
+        }
+      `);
     }
   }
 }
 
-export default new BillboardManager();
+export const billboard = new BillboardManager();
+export { Billboard };

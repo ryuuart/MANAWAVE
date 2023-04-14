@@ -6,7 +6,7 @@
   "main": "dist/billboard.js",
   "module": "dist/billboard.module.js",
   "scripts": {
-    "start": "parcel test/index.html --dist-dir output -p 8888",
+    "start": "parcel example/index.html --dist-dir output -p 8888",
     "watch": "parcel watch",
     "build": "parcel build",
     "clean": "rimraf dist/* output/*",
@@ -17,10 +17,12 @@
   "license": "ISC",
   "devDependencies": {
     "npm-run-all": "^4.1.5",
-    "parcel": "^2.6.2",
+    "parcel": "^2.8.3",
     "rimraf": "^3.0.2"
   },
   "dependencies": {
-    "motion": "^10.14.2"
+    "@types/animejs": "^3.1.7",
+    "animejs": "^3.2.1",
+    "motion": "^10.15.5"
   }
 }
