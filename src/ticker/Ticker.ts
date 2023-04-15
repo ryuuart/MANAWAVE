@@ -1,5 +1,7 @@
+import { TickerItem } from ".";
 import { Clone, Cloner, Template } from "../clones";
 import Component from "../web/Component";
+import TickerItemFactory from "./TickerItemFactory";
 
 // Represents front-facing Ticker that is rendered
 // Logic for placing clones in front-facing ticker should go here
@@ -32,16 +34,19 @@ export default class Ticker {
 
     init() {}
 
-    initClones(cloner: Cloner) {
-        const clones: Clone[] = cloner.clone(cloner.templates.length);
+    initClones(factory: TickerItemFactory) {
+        const tickerItems: TickerItem[] = factory.sequence();
 
         // measure sequence width and height
         let templateSequence = { width: 0, height: 0 };
-        for (const clone of clones) {
-            templateSequence.width += clone.element.offsetWidth;
+        for (const tickerItem of tickerItems) {
+            const { width: itemWidth, height: itemHeight } =
+                tickerItem.getDimensions();
+
+            templateSequence.width += itemWidth;
             templateSequence.height = Math.max(
                 templateSequence.height,
-                clone.element.offsetHeight
+                itemHeight
             );
         }
 
@@ -55,7 +60,7 @@ export default class Ticker {
         };
 
         // add all the new clones
-        clones.push(...cloner.clone(repetition.x * repetition.y - 1));
+        tickerItems.concat(factory.create(repetition.x * repetition.y - 1));
 
         let position: [number, number] = [
             -templateSequence.width,
@@ -64,13 +69,16 @@ export default class Ticker {
 
         // iterate through clones and properly set the positions
         let clonesIndex = 0;
-        let clone = clones[clonesIndex];
+        let currItem = tickerItems[clonesIndex];
         for (let i = 0; i < repetition.y; i++) {
             for (let j = 0; j < repetition.x; j++) {
-                clone = clones[clonesIndex];
-                clone.setPosition([
-                    position[0] + j * clone.element.offsetWidth,
-                    position[1] + i * clone.element.offsetHeight,
+                currItem = tickerItems[clonesIndex];
+                const { width: itemWidth, height: itemHeight } =
+                    currItem.getDimensions();
+
+                currItem.setPosition([
+                    position[0] + j * itemWidth,
+                    position[1] + i * itemHeight,
                 ]);
                 clonesIndex++;
             }
@@ -81,10 +89,11 @@ export default class Ticker {
     // [TODO] figure out responsiveness part
     // might need to remove this part if someone already gave it a height that's less
     // than any other height :/
-    append(clone: Clone) {
-        this.element.append(clone.element);
-        if (clone.element.offsetHeight > this.height) {
-            this.height = clone.element.offsetHeight;
+    append(item: TickerItem) {
+        const { height: itemHeight } = item.getDimensions();
+
+        if (itemHeight > this.height) {
+            this.height = itemHeight;
             this.element.style.minHeight = `${this.height}px`;
         }
     }

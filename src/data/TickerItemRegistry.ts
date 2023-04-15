@@ -5,11 +5,13 @@ export default class Registry {
     tickerElements: Map<number, TickerItem> = new Map();
     idCounter = 0;
 
-    register(clone: Clone) {
+    register(clone: Clone): TickerItem {
         const id = this.idCounter++; // tmp
 
-        const tickerElement = new TickerItem(clone);
-        this.tickerElements.set(id, tickerElement);
+        const tickerItem = new TickerItem(clone);
+        this.tickerElements.set(id, tickerItem);
+
+        return tickerItem;
     }
 
     getId(element: Element): number {
