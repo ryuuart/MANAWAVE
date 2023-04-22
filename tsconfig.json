@@ -1,0 +1,21 @@
+{
+  "compilerOptions": {
+    "strict": true,
+    "forceConsistentCasingInFileNames": true,
+    "target": "es2022",
+    "module": "ESNext",
+    "moduleResolution": "node",
+    "types": [
+      "node",
+      "@wdio/globals/types",
+      "@wdio/mocha-framework",
+      "expect-webdriverio",
+      "vite/client"
+    ],
+    "baseUrl": ".",
+    "paths": {
+      "~*": ["./*"],
+      "@test/*": ["test/*"]
+    }
+  }
+}

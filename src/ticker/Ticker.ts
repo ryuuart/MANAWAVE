@@ -21,7 +21,6 @@ export default class Ticker {
         }
 
         // Billboard-ticker refers to what represents the entire Billboard-ticker itself
-        // this.element = document.createElement("div");
         this.element = document.createElement("div");
         this.element.classList.add("billboard-ticker-container");
 
