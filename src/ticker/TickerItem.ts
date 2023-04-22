@@ -1,10 +1,14 @@
 import { Clone } from "../clones";
 
 export default class TickerItem {
+    id: number;
     clone: Clone;
 
-    constructor(clone: Clone) {
+    constructor(clone: Clone, id: number) {
+        this.id = id;
         this.clone = clone;
+
+        this.clone.element.dataset.id = this.id.toString();
     }
 
     setPosition(position: [x: number, y: number]) {

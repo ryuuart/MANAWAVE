@@ -8,14 +8,14 @@ export default class Registry {
     register(clone: Clone): TickerItem {
         const id = this.idCounter++; // tmp
 
-        const tickerItem = new TickerItem(clone);
+        const tickerItem = new TickerItem(clone, id);
         this.tickerElements.set(id, tickerItem);
 
         return tickerItem;
     }
 
     getId(element: Element): number {
-        let id;
+        let id = -1;
 
         const idAttrib = (element as HTMLElement).dataset.id;
         if (idAttrib) id = parseInt(idAttrib);
@@ -29,7 +29,7 @@ export default class Registry {
             id = this.getId(elementOrID);
         } else id = elementOrID;
 
-        if (id || id !== undefined) {
+        if (id !== undefined) {
             const tickerElement = this.tickerElements.get(id);
             if (tickerElement) return tickerElement;
             else {

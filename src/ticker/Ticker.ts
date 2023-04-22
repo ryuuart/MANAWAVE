@@ -91,6 +91,8 @@ export default class Ticker {
     append(item: TickerItem) {
         const { height: itemHeight } = item.getDimensions();
 
+        this.element.append(item.clone.element);
+
         if (itemHeight > this.height) {
             this.height = itemHeight;
             this.element.style.minHeight = `${this.height}px`;
