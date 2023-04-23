@@ -7,7 +7,7 @@
   "module": "dist/billboard.module.js",
   "type": "module",
   "scripts": {
-    "start": "parcel example/index.html --dist-dir output",
+    "start": "parcel example/index.html --dist-dir output -p 8888",
     "watch": "parcel watch",
     "build": "parcel build",
     "clean": "rimraf dist/* output/*",

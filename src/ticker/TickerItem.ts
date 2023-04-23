@@ -34,4 +34,8 @@ export default class TickerItem {
 
         return output;
     }
+
+    remove() {
+        this.clone.remove();
+    }
 }

@@ -17,4 +17,8 @@ export default class Clone {
     setPosition(position: [x: number, y: number]) {
         setTranslate(this.element, position);
     }
+
+    remove() {
+        this.element.remove();
+    }
 }

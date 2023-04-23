@@ -34,11 +34,11 @@ export default class Ticker {
     init() {}
 
     initClones(factory: TickerItemFactory) {
-        const tickerItems: TickerItem[] = factory.sequence();
+        const initialSequence: TickerItem[] = factory.sequence();
 
         // measure sequence width and height
         let templateSequence = { width: 0, height: 0 };
-        for (const tickerItem of tickerItems) {
+        for (const tickerItem of initialSequence) {
             const { width: itemWidth, height: itemHeight } =
                 tickerItem.getDimensions();
 
@@ -59,7 +59,9 @@ export default class Ticker {
         };
 
         // add all the new clones
-        tickerItems.concat(factory.create(repetition.x * repetition.y - 1));
+        const tickerItems = initialSequence.concat(
+            factory.create(repetition.x * repetition.y - 1)
+        );
 
         let position: [number, number] = [
             -templateSequence.width,

@@ -7,4 +7,9 @@ export default class Template {
         this.element = wrappedDiv(element);
         this.element.classList.add("ticker-element-temp");
     }
+
+    // TODO: not sure what this does lmao
+    remove(restore?: boolean) {
+        this.element.remove();
+    }
 }

@@ -31,7 +31,7 @@ export default class TickerItemFactory {
         this.cloner.cloneSequence({
             fn: (clone) => {
                 const item = this.tickerItemRegistry.register(clone);
-                console.log(item);
+                this._referenceTicker.append(item);
                 items.push(item);
             },
         });

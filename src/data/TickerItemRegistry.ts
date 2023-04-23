@@ -14,6 +14,22 @@ export default class Registry {
         return tickerItem;
     }
 
+    remove(item: TickerItem | Element | number) {
+        if (item instanceof TickerItem) {
+            item.remove();
+            this.tickerElements.delete(item.id);
+        }
+        if (item instanceof Element) {
+            item.remove();
+            this.tickerElements.delete(this.getId(item));
+        }
+        if (typeof item === "number") {
+            const selectedItem = this.get(item);
+            selectedItem?.remove();
+            this.tickerElements.delete(item);
+        }
+    }
+
     getId(element: Element): number {
         let id = -1;
 

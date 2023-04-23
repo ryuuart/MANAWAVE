@@ -43,7 +43,7 @@ describe("ticker item", () => {
         const ticker = new Ticker(Basic.ticker);
         const registry = new TickerItemRegistry();
         const cloner = new Cloner();
-        cloner.register(ticker.initialTemplate);
+        cloner.registerTemplate(ticker.initialTemplate);
 
         // probably should adjust ticker to a container
         // increase cohesion by removing tight coupling between units

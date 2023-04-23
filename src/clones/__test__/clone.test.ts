@@ -12,7 +12,7 @@ describe("Clones", () => {
 
         const template = new Template(Square.square);
         const cloner = new Cloner();
-        cloner.register(template);
+        cloner.registerTemplate(template);
 
         const cloneAmount = 10;
         const clones = cloner.clone(cloneAmount, (clone: Clone) => {
@@ -25,5 +25,29 @@ describe("Clones", () => {
         expect(document.body.children.length).toBeGreaterThanOrEqual(
             cloneAmount
         );
+    });
+
+    it("can be removed", async () => {
+        Square.loadContent();
+
+        const template = new Template(Square.square);
+        const clone = new Clone(template);
+
+        clone.remove();
+
+        expect(document.contains(clone.element)).toBeFalsy();
+    });
+
+    it("should not clone if there are no templates", async () => {
+        Square.loadContent();
+
+        const template = new Template(Square.square);
+        const cloner = new Cloner();
+        cloner.registerTemplate(template);
+        cloner.removeTemplate(template);
+
+        const clones = cloner.clone(100);
+
+        expect(clones.length).toBe(0);
     });
 });

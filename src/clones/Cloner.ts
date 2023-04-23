@@ -11,19 +11,31 @@ export default class Cloner {
     }
 
     // register a template
-    register(template: Template) {
+    registerTemplate(template: Template) {
         this.templates.push(template);
+    }
+
+    removeTemplate(selectedTemplate: Template) {
+        this.templates = this.templates.filter((currTemplate: Template) => {
+            if (currTemplate !== selectedTemplate) {
+                return currTemplate;
+            }
+        });
+
+        this._currTemplateIndex = -1;
     }
 
     // clone N clones
     // if you need to apply some custom operations on the clone while cloning
     clone(n: number, fn?: (clone: Clone) => void): Clone[] {
         const clones: Clone[] = [];
-        for (let i = 0; i < n; i++) {
-            const clone = new Clone(this.getNextTemplate());
-            clones.push(clone);
+        if (this.templates.length > 0) {
+            for (let i = 0; i < n; i++) {
+                const clone = new Clone(this.getNextTemplate());
+                clones.push(clone);
 
-            if (fn) fn(clone);
+                if (fn) fn(clone);
+            }
         }
 
         return clones;
