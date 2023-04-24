@@ -61,4 +61,18 @@ describe("ticker item registry", () => {
 
         expect(tickerItem).toBe(expectedTickerItem);
     });
+
+    it("should remove a ticker item in the store given a ticker item", () => {
+        Square.loadContent();
+
+        const registry = new TickerItemRegistry();
+        const template = new Template(Square.square);
+        const clone = new Clone(template);
+
+        const tickerItem = registry.register(clone);
+
+        registry.remove(tickerItem);
+
+        expect(registry.tickerElements.size).toBe(0);
+    });
 });

@@ -1,4 +1,4 @@
-import { Ticker } from ".";
+import { Ticker, TickerItem } from ".";
 import { Cloner, Template } from "../clones";
 import { TickerItemRegistry } from "../data";
 import TickerItemFactory from "./TickerItemFactory";
@@ -28,6 +28,11 @@ export default class TickerSystem {
         );
 
         this.ticker.initClones(this.tickerItemFactory);
+    }
+
+    removeTickerItem(item: TickerItem) {
+        item.remove();
+        this.tickerItemRegistry.remove(item);
     }
 
     init() {}

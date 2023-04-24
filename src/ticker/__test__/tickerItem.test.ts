@@ -60,4 +60,17 @@ describe("ticker item", () => {
             expect(element).toBe(expectedTickerItemsHTML[index]);
         });
     });
+
+    it("can remove a ticker item from the page", async () => {
+        Square.loadContent();
+
+        const template = new Template(Square.square);
+        const tickerItem = new TickerItem(new Clone(template), 999);
+
+        document.body.append(tickerItem.clone.element);
+
+        tickerItem.remove();
+
+        expect(document.contains(tickerItem.clone.element)).toBeFalsy();
+    });
 });

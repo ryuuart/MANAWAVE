@@ -5,9 +5,13 @@ import { TickerItemRegistry } from "../data";
 export default class TickerItemFactory {
     tickerItemRegistry: TickerItemRegistry;
     cloner: Cloner;
-    _referenceTicker: Ticker; // keep track of the ticker it should be adding clones to for loading purposes
+    _referenceTicker: { append: (tickerItem: TickerItem) => void }; // keep track of the ticker it should be adding clones to for loading purposes
 
-    constructor(registry: TickerItemRegistry, cloner: Cloner, ticker: Ticker) {
+    constructor(
+        registry: TickerItemRegistry,
+        cloner: Cloner,
+        ticker: { append: (tickerItem: TickerItem) => void }
+    ) {
         this._referenceTicker = ticker;
         this.tickerItemRegistry = registry;
         this.cloner = cloner;
