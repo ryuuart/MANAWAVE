@@ -64,5 +64,5 @@ class BillboardManager {
     }
 }
 
-export const billboard = new BillboardManager();
+export const billboardManager = new BillboardManager();
 export { Billboard };

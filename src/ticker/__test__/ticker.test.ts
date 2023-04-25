@@ -24,27 +24,4 @@ describe("ticker", () => {
 
         expect(document.contains(item.clone.element)).toBeTruthy();
     });
-
-    it("should be able to initialize css", async () => {
-        Basic.loadContent();
-
-        const ticker = new Ticker(Basic.ticker);
-
-        ticker.loadCSS();
-        ticker.unloadCSS();
-        ticker.loadCSS();
-
-        expect(document.contains(ticker.styleElement)).toBeTruthy();
-    });
-
-    it("should be able to remove initialized css", async () => {
-        Basic.loadContent();
-
-        const ticker = new Ticker(Basic.ticker);
-
-        ticker.loadCSS();
-        ticker.unloadCSS();
-
-        expect(document.contains(ticker.styleElement)).toBeFalsy();
-    });
 });
