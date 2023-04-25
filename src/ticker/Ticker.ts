@@ -10,10 +10,12 @@ export default class Ticker {
     wrapperElement: HTMLElement;
     element: HTMLElement;
     height: number; // needed to make the absolute positioning work
+    styleElement: HTMLStyleElement = document.createElement("style");
 
     initialTemplate: Template; // needed to restore the state of the ticker before start
 
     constructor(element: HTMLElement) {
+        this.loadCSS();
         // The main element that contains anything relating to Billboard
         this.wrapperElement = element;
         if (!(this.wrapperElement instanceof Component)) {
@@ -52,10 +54,13 @@ export default class Ticker {
         // actual calculations
         // likely to generate more than needed but better safe than sorry
         let repetition = {
-            x: Math.ceil(this.element.offsetWidth / templateSequence.width) + 2,
-            y:
-                Math.ceil(this.element.offsetHeight / templateSequence.height) +
+            x:
+                Math.round(this.element.offsetWidth / templateSequence.width) +
                 2,
+            y:
+                Math.round(
+                    this.element.offsetHeight / templateSequence.height
+                ) + 2,
         };
 
         // add all the new clones
@@ -99,5 +104,48 @@ export default class Ticker {
             this.height = itemHeight;
             this.element.style.minHeight = `${this.height}px`;
         }
+    }
+
+    loadCSS() {
+        if (!document.head.contains(this.styleElement)) {
+            document.head.append(this.styleElement);
+            if (this.styleElement.sheet) {
+                this.styleElement.sheet.insertRule(`
+                        billboard-ticker, .billboard-ticker {
+                            white-space: nowrap;
+                            overflow: hidden;
+                            
+                            display: block;
+                            
+                            border: 1px solid red;
+                        }
+                        `);
+                this.styleElement.sheet.insertRule(`
+                        .billboard-ticker-container {
+                            position: relative;
+                            
+                            display: flow-root;
+                        }
+                        `);
+                this.styleElement.sheet.insertRule(`
+                        .ticker-element-temp {
+                            display: inline-block;
+                        }
+                        `);
+                this.styleElement.sheet.insertRule(`
+                        .ticker-element {
+                            position: absolute;
+                            
+                            will-change: transform;
+                            
+                            display: inline-block;
+                        }
+                        `);
+            }
+        }
+    }
+
+    unloadCSS() {
+        this.styleElement.remove();
     }
 }

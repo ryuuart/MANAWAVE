@@ -15,7 +15,7 @@ export default class TickerSystem {
         this.tickerItemRegistry = new TickerItemRegistry();
 
         this.cloner = new Cloner();
-        this.cloner.registerTemplate(this.ticker.initialTemplate);
+        this.cloner.addTemplate(this.ticker.initialTemplate);
 
         // a bit apprehensive this is here
         // I feel like it has such heavy connection to

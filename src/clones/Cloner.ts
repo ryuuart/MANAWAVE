@@ -11,13 +11,14 @@ export default class Cloner {
     }
 
     // register a template
-    registerTemplate(template: Template) {
+    addTemplate(template: Template) {
         this.templates.push(template);
     }
 
-    removeTemplate(selectedTemplate: Template) {
+    removeTemplate(selectedTemplate: Template, restore?: boolean) {
         this.templates = this.templates.filter((currTemplate: Template) => {
             if (currTemplate !== selectedTemplate) {
+                if (restore) currTemplate.restore();
                 return currTemplate;
             }
         });

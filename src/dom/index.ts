@@ -1,2 +1,2 @@
 export { setTranslate } from "./Transforms";
-export { wrappedDiv } from "./DOM";
+export { wrappedDiv, moveElements, isDOMList } from "./DOM";
