@@ -33,6 +33,11 @@ export default class Ticker {
 
     init() {}
 
+    deinit() {
+        this.initialTemplate.restore();
+        this.element.remove();
+    }
+
     initClones(factory: TickerItemFactory) {
         const initialSequence: TickerItem[] = factory.sequence();
 

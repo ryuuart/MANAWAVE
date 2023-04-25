@@ -1,11 +1,14 @@
 import { isDOMList } from "~src/dom";
 import { Clone, Cloner, Template } from "../";
 import Square from "~test/pages/square/Square";
+import Basic from "@test/pages/basic/Basic";
+import { Ticker } from "~src/ticker";
 
 describe("Clones", () => {
     // boilerplate... has to be there every time
     afterEach(() => {
         Square.clearContent();
+        Basic.clearContent();
     });
 
     it("can clone multiple", async () => {
@@ -53,20 +56,31 @@ describe("Clones", () => {
     });
 
     it("can restore template contents to original state", async () => {
-        Square.loadContent();
+        Basic.loadContent();
 
-        const template = new Template(Square.square);
+        const ticker = new Ticker(Basic.ticker);
+        const template = ticker.initialTemplate;
         const cloner = new Cloner();
         cloner.addTemplate(template);
 
-        let original;
-        if (isDOMList(template.original)) original = template.original[0];
-        else original = template.original;
-
-        expect(document.contains(original)).toBeFalsy();
+        if (isDOMList(template.original)) {
+            for (const element of template.original) {
+                expect(ticker.wrapperElement.contains(element)).toBeFalsy();
+            }
+        } else
+            expect(
+                ticker.wrapperElement.contains(template.original)
+            ).toBeFalsy();
 
         template.restore();
 
-        expect(document.contains(original)).toBeTruthy();
+        if (isDOMList(template.original)) {
+            for (const element of template.original) {
+                expect(ticker.wrapperElement.contains(element)).toBeTruthy();
+            }
+        } else
+            expect(
+                ticker.wrapperElement.contains(template.original)
+            ).toBeTruthy();
     });
 });

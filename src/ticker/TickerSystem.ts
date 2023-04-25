@@ -31,9 +31,19 @@ export default class TickerSystem {
     }
 
     removeTickerItem(item: TickerItem) {
-        item.remove();
         this.tickerItemRegistry.remove(item);
     }
 
+    // remove all clones and templates
+    clear() {
+        this.tickerItemRegistry.clearTickerItems();
+        this.cloner.clearTemplates();
+    }
+
     init() {}
+
+    deinit() {
+        this.clear();
+        this.ticker.deinit();
+    }
 }

@@ -6,6 +6,10 @@ export default class Cloner {
     templates: Template[];
     _currTemplateIndex: number = -1;
 
+    get allTemplates() {
+        return this.templates;
+    }
+
     constructor() {
         this.templates = [];
     }
@@ -24,6 +28,12 @@ export default class Cloner {
         });
 
         this._currTemplateIndex = -1;
+    }
+
+    clearTemplates() {
+        for (const template of this.allTemplates) {
+            this.removeTemplate(template);
+        }
     }
 
     // clone N clones

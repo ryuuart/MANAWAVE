@@ -23,6 +23,7 @@ export function manipulateElements(
 
     return target;
 }
+
 export function moveElements(elements: AnyElementOrNode, target: HTMLElement) {
     return manipulateElements(elements, target, (e, t) => {
         t.append(e);

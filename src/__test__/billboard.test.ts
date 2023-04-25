@@ -1,5 +1,5 @@
 import Basic from "@test/pages/basic/Basic";
-import { billboardManager } from "~src";
+import BillboardManager from "../BillboardManager";
 import Billboard from "~src/Billboard";
 
 describe("billboard", () => {
@@ -10,19 +10,30 @@ describe("billboard", () => {
     it("should be able to initialize css", async () => {
         Basic.loadContent();
 
-        billboardManager.loadCSS();
-        billboardManager.unloadCSS();
-        billboardManager.loadCSS();
+        BillboardManager.loadCSS();
+        BillboardManager.unloadCSS();
+        BillboardManager.loadCSS();
 
-        expect(document.contains(billboardManager.styleElement)).toBeTruthy();
+        expect(document.contains(BillboardManager.styleElement)).toBeTruthy();
     });
 
     it("should be able to remove initialized css", async () => {
         Basic.loadContent();
 
-        billboardManager.loadCSS();
-        billboardManager.unloadCSS();
+        BillboardManager.loadCSS();
+        BillboardManager.unloadCSS();
 
-        expect(document.contains(billboardManager.styleElement)).toBeFalsy();
+        expect(document.contains(BillboardManager.styleElement)).toBeFalsy();
+    });
+
+    it("should return website to original state when deinitializing billboard", async () => {
+        Basic.loadContent();
+
+        const billboard = new Billboard(Basic.ticker);
+
+        billboard.deinit();
+        expect(billboard.ticker.ticker.element.children.length).toBe(0);
+
+        expect(document.contains(billboard.ticker.ticker.element)).toBeFalsy();
     });
 });

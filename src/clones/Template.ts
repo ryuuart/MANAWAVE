@@ -15,6 +15,10 @@ export default class Template {
         // Element represents the element to be repeated (the template if you will)
         this.element = wrappedDiv(this.original);
         this.element.classList.add("ticker-element-temp");
+
+        // recover the original after modification, unique hack...
+        // what's happening is that the original became the this.element
+        this.original = this.element.children;
     }
 
     restore() {

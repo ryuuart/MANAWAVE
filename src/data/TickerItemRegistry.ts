@@ -5,6 +5,10 @@ export default class Registry {
     tickerElements: Map<number, TickerItem> = new Map();
     idCounter = 0;
 
+    get allTickerItems() {
+        return this.tickerElements.values();
+    }
+
     register(clone: Clone): TickerItem {
         const id = this.idCounter++; // tmp
 
@@ -27,6 +31,12 @@ export default class Registry {
             const selectedItem = this.get(item);
             selectedItem?.remove();
             this.tickerElements.delete(item);
+        }
+    }
+
+    clearTickerItems() {
+        for (const item of this.allTickerItems) {
+            this.remove(item);
         }
     }
 
