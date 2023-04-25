@@ -35,6 +35,7 @@ export default class Ticker {
 
     deinit() {
         this.initialTemplate.restore();
+        this.wrapperElement.classList.remove("billboard-ticker");
         this.element.remove();
     }
 
