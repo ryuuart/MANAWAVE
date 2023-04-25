@@ -33,7 +33,10 @@ describe("billboard", () => {
 
         billboard.deinit();
         expect(billboard.ticker.ticker.element.children.length).toBe(0);
-
+        expect(
+            document.head.contains(BillboardManager.styleElement)
+        ).toBeFalsy();
+        expect(BillboardManager.hasBillboards).toBeFalsy();
         expect(document.contains(billboard.ticker.ticker.element)).toBeFalsy();
     });
 });
