@@ -27,6 +27,7 @@ export default class TickerSystem {
             this.ticker
         );
 
+        window.addEventListener("resize", this.resize.bind(this));
         this.ticker.initClones(this.tickerItemFactory);
     }
 
@@ -40,10 +41,19 @@ export default class TickerSystem {
         this.cloner.clearTemplates();
     }
 
-    init() {}
+    init() {
+        this.cloner.addTemplate(this.ticker.initialTemplate);
+        this.ticker.initClones(this.tickerItemFactory);
+    }
 
     deinit() {
         this.clear();
         this.ticker.deinit();
+    }
+
+    resize() {
+        this.clear();
+        this.ticker.updateHeight();
+        this.init();
     }
 }

@@ -39,9 +39,11 @@ export default class Ticker {
         this.element.remove();
     }
 
-    initClones(factory: TickerItemFactory) {
-        const initialSequence: TickerItem[] = factory.sequence();
-
+    getSequenceDimensions(sequence: TickerItem[]): {
+        width: number;
+        height: number;
+    } {
+        const initialSequence: TickerItem[] = sequence;
         // measure sequence width and height
         let templateSequence = { width: 0, height: 0 };
         for (const tickerItem of initialSequence) {
@@ -55,6 +57,12 @@ export default class Ticker {
             );
         }
 
+        return templateSequence;
+    }
+
+    getItemRepetitions(sequence: TickerItem[]): { x: number; y: number } {
+        const templateSequence = this.getSequenceDimensions(sequence);
+
         // actual calculations
         // likely to generate more than needed but better safe than sorry
         let repetition = {
@@ -66,6 +74,14 @@ export default class Ticker {
                     this.element.offsetHeight / templateSequence.height
                 ) + 2,
         };
+
+        return repetition;
+    }
+
+    initClones(factory: TickerItemFactory) {
+        const initialSequence: TickerItem[] = factory.sequence();
+        const templateSequence = this.getSequenceDimensions(initialSequence);
+        const repetition = this.getItemRepetitions(initialSequence);
 
         // add all the new clones
         const tickerItems = initialSequence.concat(
@@ -92,6 +108,13 @@ export default class Ticker {
                 ]);
                 clonesIndex++;
             }
+        }
+    }
+
+    updateHeight() {
+        if (this.wrapperElement.offsetHeight > this.height) {
+            this.height = this.wrapperElement.offsetHeight;
+            this.element.style.minHeight = `${this.height}px`;
         }
     }
 
