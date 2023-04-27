@@ -1,3 +1,4 @@
+import { debounce } from "~src/utils";
 import { Ticker, TickerItem } from ".";
 import { Cloner, Template } from "../clones";
 import { TickerItemRegistry } from "../data";
@@ -27,7 +28,10 @@ export default class TickerSystem {
             this.ticker
         );
 
-        window.addEventListener("resize", this.resize.bind(this));
+        window.addEventListener(
+            "resize",
+            debounce(this.resize.bind(this), 500)
+        );
         this.ticker.initClones(this.tickerItemFactory);
     }
 
