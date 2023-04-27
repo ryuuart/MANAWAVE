@@ -1,22 +1,24 @@
 import Square from "@test/pages/square/Square";
 import { Clone, Template } from "~src/clones";
-import { TickerItemRegistry } from "..";
+import { TickerStore } from "..";
+import { TickerItem } from "~src/ticker";
 
 describe("ticker item registry", () => {
     afterEach(() => {
         Square.clearContent();
     });
 
-    it("should register given a clone", async () => {
+    it("should store given a clone", async () => {
         Square.loadContent();
 
-        const registry = new TickerItemRegistry();
+        const store = new TickerStore();
         const template = new Template(Square.square);
         const clone = new Clone(template);
+        const item = new TickerItem(clone);
 
-        registry.register(clone);
+        store.add(item);
 
-        expect(registry.tickerElements.size).toBeGreaterThan(0);
+        expect(store.isEmpty).toBeFalsy();
     });
 
     it("should retrieve an id given an HTML element", async () => {
@@ -25,9 +27,9 @@ describe("ticker item registry", () => {
         const expectedID = 999;
         Square.square.dataset.id = expectedID.toString();
 
-        const registry = new TickerItemRegistry();
+        const store = new TickerStore();
 
-        const id = registry.getId(Square.square);
+        const id = store.getId(Square.square);
 
         expect(id).toBe(expectedID);
     });
@@ -35,15 +37,14 @@ describe("ticker item registry", () => {
     it("should retrieve a ticker item given an HTML element", async () => {
         Square.loadContent();
 
-        const registry = new TickerItemRegistry();
+        const store = new TickerStore();
         const template = new Template(Square.square);
         const clone = new Clone(template);
+        const item = new TickerItem(clone);
 
-        const expectedTickerItem = registry.register(clone);
+        const expectedTickerItem = store.add(item);
 
-        // have to use cloneElement because Square isn't on the page
-        // anymore after using Template
-        const tickerItem = registry.get(clone.element);
+        const tickerItem = store.get(item.id);
 
         expect(tickerItem).toBe(expectedTickerItem);
     });
@@ -51,13 +52,14 @@ describe("ticker item registry", () => {
     it("should retrieve a ticker item given an ID number", async () => {
         Square.loadContent();
 
-        const registry = new TickerItemRegistry();
+        const store = new TickerStore();
         const template = new Template(Square.square);
         const clone = new Clone(template);
+        const item = new TickerItem(clone);
 
-        const expectedTickerItem = registry.register(clone);
+        const expectedTickerItem = store.add(item);
 
-        const tickerItem = registry.get(expectedTickerItem.id);
+        const tickerItem = store.get(expectedTickerItem.id);
 
         expect(tickerItem).toBe(expectedTickerItem);
     });
@@ -65,14 +67,15 @@ describe("ticker item registry", () => {
     it("should remove a ticker item in the store given a ticker item", () => {
         Square.loadContent();
 
-        const registry = new TickerItemRegistry();
+        const store = new TickerStore();
         const template = new Template(Square.square);
         const clone = new Clone(template);
+        const item = new TickerItem(clone);
 
-        const tickerItem = registry.register(clone);
+        const tickerItem = store.add(item);
 
-        registry.remove(tickerItem);
+        store.remove(tickerItem);
 
-        expect(registry.tickerElements.size).toBe(0);
+        expect(store.isEmpty).toBeTruthy();
     });
 });

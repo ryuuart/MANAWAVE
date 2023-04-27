@@ -1,14 +1,14 @@
 import { Ticker, TickerItem } from "../ticker";
 import { Cloner } from "../clones";
-import { TickerItemRegistry } from "../data";
+import { TickerStore } from "../data";
 
 export default class TickerItemFactory {
-    tickerItemRegistry: TickerItemRegistry;
+    tickerItemRegistry: TickerStore;
     cloner: Cloner;
     _referenceTicker: { append: (tickerItem: TickerItem) => void }; // keep track of the ticker it should be adding clones to for loading purposes
 
     constructor(
-        registry: TickerItemRegistry,
+        registry: TickerStore,
         cloner: Cloner,
         ticker: { append: (tickerItem: TickerItem) => void }
     ) {
@@ -21,7 +21,8 @@ export default class TickerItemFactory {
     create(n: number): TickerItem[] {
         const items: TickerItem[] = [];
         this.cloner.clone(n, (clone) => {
-            const item = this.tickerItemRegistry.register(clone);
+            const item = new TickerItem(clone);
+            item.registerStore(this.tickerItemRegistry);
             this._referenceTicker.append(item);
             items.push(item);
         });
@@ -34,7 +35,8 @@ export default class TickerItemFactory {
         const items: TickerItem[] = [];
         this.cloner.cloneSequence({
             fn: (clone) => {
-                const item = this.tickerItemRegistry.register(clone);
+                const item = new TickerItem(clone);
+                item.registerStore(this.tickerItemRegistry);
                 this._referenceTicker.append(item);
                 items.push(item);
             },

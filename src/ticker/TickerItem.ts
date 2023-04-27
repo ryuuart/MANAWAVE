@@ -1,31 +1,41 @@
+import Item from "~src/lib/Item";
 import { Clone } from "../clones";
+import Ticker from "./Ticker";
+import { TickerStore } from "~src/data";
 
-export default class TickerItem {
-    id: number;
-    clone: Clone;
-
-    constructor(clone: Clone, id: number) {
-        this.id = id;
-        this.clone = clone;
-
-        this.clone.element.dataset.id = this.id.toString();
+export default class TickerItem extends Item {
+    private _storeRef: TickerStore | null | undefined;
+    constructor(clone: Clone) {
+        super(clone);
     }
 
-    setPosition(position: [x: number, y: number]) {
+    registerStore(store: TickerStore) {
+        this._storeRef = store;
+    }
+
+    remove() {
+        if (this._storeRef) {
+            this._storeRef.remove(this.id);
+            this._storeRef = null;
+        }
+        super.remove();
+    }
+
+    appendTo(element: HTMLElement) {
+        if (this._storeRef) {
+            this._storeRef.add(this);
+        }
+        super.appendTo(element);
+    }
+
+    set position(position: [x: number, y: number]) {
         this.clone.setPosition(position);
     }
 
-    getDimensions() {
-        return {
-            width: this.clone.element.offsetWidth,
-            height: this.clone.element.offsetHeight,
-        };
-    }
-
-    getPosition() {
-        const transform = this.clone.element.style.transform;
+    get position() {
+        const transform = this.clone.transformStyle;
         const values = transform.match(/\d+/g);
-        const output = [-9999, -9999];
+        const output: [x: number, y: number] = [-9999, -9999];
 
         if (values) {
             output[0] = parseInt(values[0]);
@@ -33,9 +43,5 @@ export default class TickerItem {
         }
 
         return output;
-    }
-
-    remove() {
-        this.clone.remove();
     }
 }

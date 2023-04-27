@@ -3,24 +3,24 @@ import Template from "./Template";
 
 // Continuously clone templates and returns it for use
 export default class Cloner {
-    templates: Template[];
-    _currTemplateIndex: number = -1;
+    private _templates: Template[];
+    private _currTemplateIndex: number = -1;
 
     get allTemplates() {
-        return this.templates;
+        return this._templates;
     }
 
     constructor() {
-        this.templates = [];
+        this._templates = [];
     }
 
     // register a template
     addTemplate(template: Template) {
-        this.templates.push(template);
+        this._templates.push(template);
     }
 
     removeTemplate(selectedTemplate: Template, restore?: boolean) {
-        this.templates = this.templates.filter((currTemplate: Template) => {
+        this._templates = this._templates.filter((currTemplate: Template) => {
             if (currTemplate !== selectedTemplate) {
                 if (restore) currTemplate.restore();
                 return currTemplate;
@@ -40,7 +40,7 @@ export default class Cloner {
     // if you need to apply some custom operations on the clone while cloning
     clone(n: number, fn?: (clone: Clone) => void): Clone[] {
         const clones: Clone[] = [];
-        if (this.templates.length > 0) {
+        if (this._templates.length > 0) {
             for (let i = 0; i < n; i++) {
                 const clone = new Clone(this.getNextTemplate());
                 clones.push(clone);
@@ -64,7 +64,7 @@ export default class Cloner {
         this._currTemplateIndex = 0;
 
         const clones = this.clone(
-            this.templates.length,
+            this._templates.length,
             options.fn ?? undefined
         );
 
@@ -75,10 +75,10 @@ export default class Cloner {
 
     // return next template that will be used to clone
     getNextTemplate(): Template {
-        if (this._currTemplateIndex + 1 >= this.templates.length)
+        if (this._currTemplateIndex + 1 >= this._templates.length)
             this._currTemplateIndex = 0;
         else this._currTemplateIndex++;
 
-        return this.templates[this._currTemplateIndex];
+        return this._templates[this._currTemplateIndex];
     }
 }

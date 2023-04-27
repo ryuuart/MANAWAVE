@@ -1,3 +1,3 @@
-import TickerItemRegistry from "./TickerItemRegistry";
+import TickerStore from "./TickerStore";
 
-export { TickerItemRegistry };
+export { TickerStore };

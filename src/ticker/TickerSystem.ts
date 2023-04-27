@@ -1,22 +1,22 @@
 import { debounce } from "~src/utils";
 import { Ticker, TickerItem } from ".";
 import { Cloner, Template } from "../clones";
-import { TickerItemRegistry } from "../data";
+import { TickerStore } from "../data";
 import TickerItemFactory from "./TickerItemFactory";
 
 export default class TickerSystem {
     cloner: Cloner;
     ticker: Ticker;
-    tickerItemRegistry: TickerItemRegistry;
+    tickerItemRegistry: TickerStore;
     tickerItemFactory: TickerItemFactory;
 
     constructor(element: HTMLElement) {
         this.ticker = new Ticker(element);
 
-        this.tickerItemRegistry = new TickerItemRegistry();
+        this.tickerItemRegistry = new TickerStore();
 
         this.cloner = new Cloner();
-        this.cloner.addTemplate(this.ticker.initialTemplate);
+        this.cloner.addTemplate(this.ticker.initialTemplate!);
 
         // a bit apprehensive this is here
         // I feel like it has such heavy connection to
@@ -35,6 +35,11 @@ export default class TickerSystem {
         this.ticker.initClones(this.tickerItemFactory);
     }
 
+    addTickerItem(item: TickerItem) {
+        item.registerStore(this.tickerItemRegistry);
+        this.tickerItemRegistry.add(item);
+    }
+
     removeTickerItem(item: TickerItem) {
         this.tickerItemRegistry.remove(item);
     }
@@ -46,7 +51,7 @@ export default class TickerSystem {
     }
 
     init() {
-        this.cloner.addTemplate(this.ticker.initialTemplate);
+        this.cloner.addTemplate(this.ticker.initialTemplate!);
         this.ticker.initClones(this.tickerItemFactory);
     }
 

@@ -1,37 +1,32 @@
 import { Clone } from "../clones";
 import { TickerItem } from "../ticker";
 
-export default class Registry {
-    tickerElements: Map<number, TickerItem> = new Map();
-    idCounter = 0;
+export default class TickerStore {
+    private _tickerItems: Map<number, TickerItem> = new Map();
 
     get allTickerItems() {
-        return this.tickerElements.values();
+        return this._tickerItems.values();
     }
 
-    register(clone: Clone): TickerItem {
-        const id = this.idCounter++; // tmp
+    add(item: TickerItem): TickerItem {
+        this._tickerItems.set(item.id, item);
 
-        const tickerItem = new TickerItem(clone, id);
-        this.tickerElements.set(id, tickerItem);
-
-        return tickerItem;
+        return item;
     }
 
     remove(item: TickerItem | Element | number) {
+        let id;
         if (item instanceof TickerItem) {
-            item.remove();
-            this.tickerElements.delete(item.id);
+            id = item.id;
         }
         if (item instanceof Element) {
-            item.remove();
-            this.tickerElements.delete(this.getId(item));
+            id = this.getId(item);
         }
         if (typeof item === "number") {
-            const selectedItem = this.get(item);
-            selectedItem?.remove();
-            this.tickerElements.delete(item);
+            id = item;
         }
+
+        if (id) this._tickerItems.delete(id);
     }
 
     clearTickerItems() {
@@ -56,7 +51,7 @@ export default class Registry {
         } else id = elementOrID;
 
         if (id !== undefined) {
-            const tickerElement = this.tickerElements.get(id);
+            const tickerElement = this._tickerItems.get(id);
             if (tickerElement) return tickerElement;
             else {
                 console.error("Element not registered.");
@@ -66,5 +61,9 @@ export default class Registry {
             console.error("ID Data is missing.");
             return null;
         }
+    }
+
+    get isEmpty() {
+        return this._tickerItems.size === 0;
     }
 }

@@ -19,16 +19,12 @@ describe("Clones", () => {
         cloner.addTemplate(template);
 
         const cloneAmount = 10;
-        const clones = cloner.clone(cloneAmount, (clone: Clone) => {
-            document.body.append(clone.element);
-        });
+        const clones = cloner.clone(cloneAmount);
 
         // TODO
         // This is a failing test because the first element should be removed from the
         // page we're temporarily allowing it to pass right now
-        expect(document.body.children.length).toBeGreaterThanOrEqual(
-            cloneAmount
-        );
+        expect(clones.length).toBeGreaterThanOrEqual(cloneAmount);
     });
 
     it("can be removed", async () => {
@@ -39,7 +35,7 @@ describe("Clones", () => {
 
         clone.remove();
 
-        expect(document.contains(clone.element)).toBeFalsy();
+        expect(clone.isRendered).toBeFalsy();
     });
 
     it("should not clone if there are no templates", async () => {
@@ -59,28 +55,22 @@ describe("Clones", () => {
         Basic.loadContent();
 
         const ticker = new Ticker(Basic.ticker);
-        const template = ticker.initialTemplate;
+        const template = ticker.initialTemplate!;
         const cloner = new Cloner();
         cloner.addTemplate(template);
 
         if (isDOMList(template.original)) {
             for (const element of template.original) {
-                expect(ticker.wrapperElement.contains(element)).toBeFalsy();
+                expect(Basic.ticker.contains(element)).toBeFalsy();
             }
-        } else
-            expect(
-                ticker.wrapperElement.contains(template.original)
-            ).toBeFalsy();
+        } else expect(Basic.ticker.contains(template.original)).toBeFalsy();
 
         template.restore();
 
         if (isDOMList(template.original)) {
             for (const element of template.original) {
-                expect(ticker.wrapperElement.contains(element)).toBeTruthy();
+                expect(Basic.ticker.contains(element)).toBeTruthy();
             }
-        } else
-            expect(
-                ticker.wrapperElement.contains(template.original)
-            ).toBeTruthy();
+        } else expect(Basic.ticker.contains(template.original)).toBeTruthy();
     });
 });

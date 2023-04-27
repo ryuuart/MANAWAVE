@@ -1,6 +1,6 @@
 import Basic from "~test/pages/basic/Basic";
 import { Ticker } from "..";
-import { TickerItemRegistry } from "~src/data";
+import { TickerStore } from "~src/data";
 import { Cloner } from "~src/clones";
 import TickerItemFactory from "../TickerItemFactory";
 
@@ -13,15 +13,15 @@ describe("ticker", () => {
         Basic.loadContent();
 
         const ticker = new Ticker(Basic.ticker);
-        const registry = new TickerItemRegistry();
+        const registry = new TickerStore();
         const cloner = new Cloner();
-        cloner.addTemplate(ticker.initialTemplate);
+        cloner.addTemplate(ticker.initialTemplate!);
         const factory = new TickerItemFactory(registry, cloner, ticker);
 
         const item = factory.create(1)[0];
 
         ticker.append(item);
 
-        expect(document.contains(item.clone.element)).toBeTruthy();
+        expect(item.isRendered).toBeTruthy();
     });
 });

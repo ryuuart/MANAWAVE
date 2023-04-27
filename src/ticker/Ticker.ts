@@ -7,36 +7,53 @@ import TickerItemFactory from "./TickerItemFactory";
 // Logic for placing clones in front-facing ticker should go here
 // Logic representing the system should not go here
 export default class Ticker {
-    wrapperElement: HTMLElement;
-    element: HTMLElement;
-    height: number; // needed to make the absolute positioning work
+    private _wrapperElement: HTMLElement;
+    private _element: HTMLElement;
+    private _height: number; // needed to make the absolute positioning work
 
-    initialTemplate: Template; // needed to restore the state of the ticker before start
+    private _initialTemplate: Template | undefined | null; // needed to restore the state of the ticker before start
 
     constructor(element: HTMLElement) {
         // The main element that contains anything relating to Billboard
-        this.wrapperElement = element;
-        if (!(this.wrapperElement instanceof Component)) {
-            this.wrapperElement.classList.add("billboard-ticker");
+        this._wrapperElement = element;
+        if (!(this._wrapperElement instanceof Component)) {
+            this._wrapperElement.classList.add("billboard-ticker");
         }
 
         // Billboard-ticker refers to what represents the entire Billboard-ticker itself
-        this.element = document.createElement("div");
-        this.element.classList.add("billboard-ticker-container");
+        this._element = document.createElement("div");
+        this._element.classList.add("billboard-ticker-container");
 
-        this.height = this.wrapperElement.offsetHeight;
-        this.element.style.minHeight = `${this.height}px`;
+        this._height = this._wrapperElement.offsetHeight;
+        this._element.style.minHeight = `${this._height}px`;
 
-        this.initialTemplate = new Template(this.wrapperElement.children);
-        this.wrapperElement.append(this.element);
+        this.init();
     }
 
-    init() {}
+    get isRendered() {
+        return this._wrapperElement.contains(this._element);
+    }
+
+    get initialTemplate() {
+        return this._initialTemplate;
+    }
+
+    init() {
+        this._initialTemplate = new Template(this._wrapperElement.children);
+        this._wrapperElement.append(this._element);
+    }
 
     deinit() {
-        this.initialTemplate.restore();
-        this.wrapperElement.classList.remove("billboard-ticker");
-        this.element.remove();
+        if (this._initialTemplate != undefined) {
+            this._initialTemplate.restore();
+            this._initialTemplate = null;
+        }
+        if (this._element != undefined) {
+            this._element.remove();
+        }
+        if (this._wrapperElement != undefined) {
+            this._wrapperElement.classList.remove("billboard-ticker");
+        }
     }
 
     getSequenceDimensions(sequence: TickerItem[]): {
@@ -48,7 +65,7 @@ export default class Ticker {
         let templateSequence = { width: 0, height: 0 };
         for (const tickerItem of initialSequence) {
             const { width: itemWidth, height: itemHeight } =
-                tickerItem.getDimensions();
+                tickerItem.dimensions;
 
             templateSequence.width += itemWidth;
             templateSequence.height = Math.max(
@@ -61,17 +78,18 @@ export default class Ticker {
     }
 
     getItemRepetitions(sequence: TickerItem[]): { x: number; y: number } {
+        let repetition = { x: 0, y: 0 };
         const templateSequence = this.getSequenceDimensions(sequence);
 
         // actual calculations
         // likely to generate more than needed but better safe than sorry
-        let repetition = {
+        repetition = {
             x:
-                Math.round(this.element.offsetWidth / templateSequence.width) +
+                Math.round(this._element.offsetWidth / templateSequence.width) +
                 2,
             y:
                 Math.round(
-                    this.element.offsetHeight / templateSequence.height
+                    this._element.offsetHeight / templateSequence.height
                 ) + 2,
         };
 
@@ -100,21 +118,21 @@ export default class Ticker {
             for (let j = 0; j < repetition.x; j++) {
                 currItem = tickerItems[clonesIndex];
                 const { width: itemWidth, height: itemHeight } =
-                    currItem.getDimensions();
+                    currItem.dimensions;
 
-                currItem.setPosition([
+                currItem.position = [
                     position[0] + j * itemWidth,
                     position[1] + i * itemHeight,
-                ]);
+                ];
                 clonesIndex++;
             }
         }
     }
 
     updateHeight() {
-        if (this.wrapperElement.offsetHeight > this.height) {
-            this.height = this.wrapperElement.offsetHeight;
-            this.element.style.minHeight = `${this.height}px`;
+        if (this._wrapperElement.offsetHeight > this._height) {
+            this._height = this._wrapperElement.offsetHeight;
+            this._element.style.minHeight = `${this._height}px`;
         }
     }
 
@@ -123,13 +141,13 @@ export default class Ticker {
     // might need to remove this part if someone already gave it a height that's less
     // than any other height :/
     append(item: TickerItem) {
-        const { height: itemHeight } = item.getDimensions();
+        const { height: itemHeight } = item.dimensions;
 
-        this.element.append(item.clone.element);
+        item.appendTo(this._element);
 
-        if (itemHeight > this.height) {
-            this.height = itemHeight;
-            this.element.style.minHeight = `${this.height}px`;
+        if (itemHeight > this._height) {
+            this._height = itemHeight;
+            this._element.style.minHeight = `${this._height}px`;
         }
     }
 }
