@@ -30,12 +30,33 @@ export default class Ticker {
         this.init();
     }
 
-    get isRendered() {
+    get isRendered(): boolean {
         return this._wrapperElement.contains(this._element);
     }
 
     get initialTemplate() {
         return this._initialTemplate;
+    }
+
+    get dimensions(): Dimensions {
+        return {
+            width: this._element.offsetWidth,
+            height: this._element.offsetHeight,
+        };
+    }
+
+    get height() {
+        return this._height;
+    }
+
+    set height(height: number) {
+        this._height = height;
+
+        if (this._wrapperElement.offsetHeight > this._height) {
+            this._height = this._wrapperElement.offsetHeight;
+        }
+
+        this._element.style.minHeight = `${this._height}px`;
     }
 
     init() {
@@ -53,86 +74,6 @@ export default class Ticker {
         }
         if (this._wrapperElement != undefined) {
             this._wrapperElement.classList.remove("billboard-ticker");
-        }
-    }
-
-    getSequenceDimensions(sequence: TickerItem[]): {
-        width: number;
-        height: number;
-    } {
-        const initialSequence: TickerItem[] = sequence;
-        // measure sequence width and height
-        let templateSequence = { width: 0, height: 0 };
-        for (const tickerItem of initialSequence) {
-            const { width: itemWidth, height: itemHeight } =
-                tickerItem.dimensions;
-
-            templateSequence.width += itemWidth;
-            templateSequence.height = Math.max(
-                templateSequence.height,
-                itemHeight
-            );
-        }
-
-        return templateSequence;
-    }
-
-    getItemRepetitions(sequence: TickerItem[]): { x: number; y: number } {
-        let repetition = { x: 0, y: 0 };
-        const templateSequence = this.getSequenceDimensions(sequence);
-
-        // actual calculations
-        // likely to generate more than needed but better safe than sorry
-        repetition = {
-            x:
-                Math.round(this._element.offsetWidth / templateSequence.width) +
-                2,
-            y:
-                Math.round(
-                    this._element.offsetHeight / templateSequence.height
-                ) + 2,
-        };
-
-        return repetition;
-    }
-
-    initClones(factory: TickerItemFactory) {
-        const initialSequence: TickerItem[] = factory.sequence();
-        const templateSequence = this.getSequenceDimensions(initialSequence);
-        const repetition = this.getItemRepetitions(initialSequence);
-
-        // add all the new clones
-        const tickerItems = initialSequence.concat(
-            factory.create(repetition.x * repetition.y - 1)
-        );
-
-        let position: [number, number] = [
-            -templateSequence.width,
-            -templateSequence.height,
-        ];
-
-        // iterate through clones and properly set the positions
-        let clonesIndex = 0;
-        let currItem = tickerItems[clonesIndex];
-        for (let i = 0; i < repetition.y; i++) {
-            for (let j = 0; j < repetition.x; j++) {
-                currItem = tickerItems[clonesIndex];
-                const { width: itemWidth, height: itemHeight } =
-                    currItem.dimensions;
-
-                currItem.position = [
-                    position[0] + j * itemWidth,
-                    position[1] + i * itemHeight,
-                ];
-                clonesIndex++;
-            }
-        }
-    }
-
-    updateHeight() {
-        if (this._wrapperElement.offsetHeight > this._height) {
-            this._height = this._wrapperElement.offsetHeight;
-            this._element.style.minHeight = `${this._height}px`;
         }
     }
 

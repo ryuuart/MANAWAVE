@@ -18,6 +18,10 @@ export default class TickerItemFactory {
         this._store = registry;
     }
 
+    get templateIsEmpty() {
+        return this._templates.length === 0;
+    }
+
     // register a template
     addTemplate(template: Template) {
         this._templates.push(template);
