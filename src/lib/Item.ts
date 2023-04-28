@@ -1,4 +1,4 @@
-import { Clone } from "~src/clones";
+import { Clone, Template } from "~src/clones";
 
 function* genId(): Generator<number, any> {
     let id = 0;
@@ -13,8 +13,8 @@ export default class Item {
     private _id: number;
     protected clone: Clone;
 
-    constructor(clone: Clone) {
-        this.clone = clone;
+    constructor(template: Template) {
+        this.clone = new Clone(template);
 
         this._id = Item.genId.next().value;
         this.clone.id = this._id;

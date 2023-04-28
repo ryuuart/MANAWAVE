@@ -1,5 +1,5 @@
 import { TickerItem } from ".";
-import { Clone, Cloner, Template } from "../clones";
+import { Template } from "../clones";
 import Component from "../web/Component";
 import TickerItemFactory from "./TickerItemFactory";
 

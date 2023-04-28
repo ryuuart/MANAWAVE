@@ -29,12 +29,6 @@ export default class TickerStore {
         if (id) this._tickerItems.delete(id);
     }
 
-    clearTickerItems() {
-        for (const item of this.allTickerItems) {
-            this.remove(item);
-        }
-    }
-
     getId(element: Element): number {
         let id = -1;
 

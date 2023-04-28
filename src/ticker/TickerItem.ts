@@ -1,12 +1,11 @@
 import Item from "~src/lib/Item";
-import { Clone } from "../clones";
-import Ticker from "./Ticker";
+import { Template } from "../clones";
 import { TickerStore } from "~src/data";
 
 export default class TickerItem extends Item {
     private _storeRef: TickerStore | null | undefined;
-    constructor(clone: Clone) {
-        super(clone);
+    constructor(template: Template) {
+        super(template);
     }
 
     registerStore(store: TickerStore) {

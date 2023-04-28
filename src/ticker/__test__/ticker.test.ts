@@ -1,7 +1,6 @@
 import Basic from "~test/pages/basic/Basic";
 import { Ticker } from "..";
 import { TickerStore } from "~src/data";
-import { Cloner } from "~src/clones";
 import TickerItemFactory from "../TickerItemFactory";
 
 describe("ticker", () => {
@@ -14,9 +13,7 @@ describe("ticker", () => {
 
         const ticker = new Ticker(Basic.ticker);
         const registry = new TickerStore();
-        const cloner = new Cloner();
-        cloner.addTemplate(ticker.initialTemplate!);
-        const factory = new TickerItemFactory(registry, cloner, ticker);
+        const factory = new TickerItemFactory(registry, ticker);
 
         const item = factory.create(1)[0];
 

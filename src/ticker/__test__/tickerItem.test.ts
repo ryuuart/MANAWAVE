@@ -1,6 +1,6 @@
 import Square from "@test/pages/square/Square";
 import Basic from "@test/pages/basic/Basic";
-import { Clone, Cloner, Template } from "~src/clones";
+import { Clone, Template } from "~src/clones";
 import TickerItem from "../TickerItem";
 import TickerItemFactory from "../TickerItemFactory";
 import { TickerStore } from "~src/data";
@@ -12,14 +12,12 @@ describe("ticker item", () => {
         Basic.clearContent();
     });
 
-    it("can be created from a clone", async () => {
+    it("should be created given a template", async () => {
         Square.loadContent();
 
         const template = new Template(Square.square);
-        const clone = new Clone(template);
-        const tickerItem = new TickerItem(clone);
+        const tickerItem = new TickerItem(template);
 
-        expect(clone).toBeTruthy();
         expect(tickerItem).toBeTruthy();
     });
 
@@ -43,12 +41,7 @@ describe("ticker item", () => {
 
         const ticker = new Ticker(Basic.ticker);
         const registry = new TickerStore();
-        const cloner = new Cloner();
-        cloner.addTemplate(ticker.initialTemplate!);
-
-        // probably should adjust ticker to a container
-        // increase cohesion by removing tight coupling between units
-        const factory = new TickerItemFactory(registry, cloner, ticker);
+        const factory = new TickerItemFactory(registry, ticker);
 
         const tickerItems = factory.create(amount);
 
@@ -59,7 +52,7 @@ describe("ticker item", () => {
         Square.loadContent();
 
         const template = new Template(Square.square);
-        const tickerItem = new TickerItem(new Clone(template));
+        const tickerItem = new TickerItem(template);
 
         tickerItem.appendTo(document.body);
 

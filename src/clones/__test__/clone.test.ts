@@ -1,5 +1,5 @@
 import { isDOMList } from "~src/dom";
-import { Clone, Cloner, Template } from "../";
+import { Clone, Template } from "../";
 import Square from "~test/pages/square/Square";
 import Basic from "@test/pages/basic/Basic";
 import { Ticker } from "~src/ticker";
@@ -15,16 +15,15 @@ describe("Clones", () => {
         Square.loadContent();
 
         const template = new Template(Square.square);
-        const cloner = new Cloner();
-        cloner.addTemplate(template);
 
         const cloneAmount = 10;
-        const clones = cloner.clone(cloneAmount);
+        const clones: Clone[] = [];
 
-        // TODO
-        // This is a failing test because the first element should be removed from the
-        // page we're temporarily allowing it to pass right now
-        expect(clones.length).toBeGreaterThanOrEqual(cloneAmount);
+        for (let i = 0; i < cloneAmount; i++) {
+            clones.push(new Clone(template));
+        }
+
+        expect(clones.length).toBe(cloneAmount);
     });
 
     it("can be removed", async () => {
@@ -42,11 +41,11 @@ describe("Clones", () => {
         Square.loadContent();
 
         const template = new Template(Square.square);
-        const cloner = new Cloner();
-        cloner.addTemplate(template);
-        cloner.removeTemplate(template);
 
-        const clones = cloner.clone(100);
+        const clones: Clone[] = [];
+        for (let i = 0; i < 100; i++) {
+            clones.push(new Clone(template));
+        }
 
         expect(clones.length).toBe(0);
     });
@@ -56,9 +55,8 @@ describe("Clones", () => {
 
         const ticker = new Ticker(Basic.ticker);
         const template = ticker.initialTemplate!;
-        const cloner = new Cloner();
-        cloner.addTemplate(template);
 
+        // Ticker should be empty with the initial template
         if (isDOMList(template.original)) {
             for (const element of template.original) {
                 expect(Basic.ticker.contains(element)).toBeFalsy();
@@ -67,6 +65,7 @@ describe("Clones", () => {
 
         template.restore();
 
+        // Everything should be back
         if (isDOMList(template.original)) {
             for (const element of template.original) {
                 expect(Basic.ticker.contains(element)).toBeTruthy();
