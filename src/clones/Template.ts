@@ -1,27 +1,31 @@
 import { wrappedDiv, moveElements, isDOMList } from "../dom";
 export default class Template {
-    private originalParent: HTMLElement | null;
+    private _originalParent: HTMLElement | null;
+    private _original: Parameters<typeof wrappedDiv>[0];
 
-    original: Parameters<typeof wrappedDiv>[0];
-    element: HTMLElement;
+    private _element: HTMLElement;
 
     constructor(element: Parameters<typeof wrappedDiv>[0]) {
         // Track the original for restoration
-        this.original = element;
-        if (isDOMList(this.original))
-            this.originalParent = this.original[0].parentElement;
-        else this.originalParent = this.original.parentElement;
+        this._original = element;
+        if (isDOMList(this._original))
+            this._originalParent = this._original[0].parentElement;
+        else this._originalParent = this._original.parentElement;
 
         // Element represents the element to be repeated (the template if you will)
-        this.element = wrappedDiv(this.original);
-        this.element.classList.add("billboard-template");
+        this._element = wrappedDiv(this._original);
+        this._element.classList.add("billboard-template");
 
         // recover the original after modification, unique hack...
         // what's happening is that the original became the this.element
-        this.original = this.element.children;
+        this._original = this._element.children;
+    }
+
+    get element() {
+        return this._element;
     }
 
     restore() {
-        moveElements(this.original, this.originalParent!);
+        moveElements(this._original, this._originalParent!);
     }
 }
