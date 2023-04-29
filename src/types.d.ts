@@ -8,4 +8,10 @@ declare interface DimensionsCount {
     y: number;
 }
 
-type Position = [x: number, y: number];
+declare type Position = [x: number, y: number];
+
+declare namespace Billboard {
+    interface Options {
+        autoplay: true | false;
+    }
+}

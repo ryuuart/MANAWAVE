@@ -32,11 +32,11 @@ describe("billboard", () => {
         const billboard = new Billboard(Basic.ticker);
 
         billboard.deinit();
-        expect(billboard.ticker.ticker.isRendered).toBeFalsy();
+        expect(billboard.system._ticker.isRendered).toBeFalsy();
         expect(
             document.head.contains(BillboardManager.styleElement)
         ).toBeFalsy();
         expect(BillboardManager.hasBillboards).toBeFalsy();
-        expect(billboard.ticker.ticker.isRendered).toBeFalsy();
+        expect(billboard.system._ticker.isRendered).toBeFalsy();
     });
 });

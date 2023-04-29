@@ -26,8 +26,6 @@ export default class Ticker {
 
         this._height = this._wrapperElement.offsetHeight;
         this._element.style.minHeight = `${this._height}px`;
-
-        this.init();
     }
 
     get isRendered(): boolean {
@@ -59,12 +57,12 @@ export default class Ticker {
         this._element.style.minHeight = `${this._height}px`;
     }
 
-    init() {
+    load() {
         this._initialTemplate = new Template(this._wrapperElement.children);
         this._wrapperElement.append(this._element);
     }
 
-    deinit() {
+    unload() {
         if (this._initialTemplate != undefined) {
             this._initialTemplate.restore();
             this._initialTemplate = null;

@@ -4,30 +4,25 @@ import { TickerStore } from "../data";
 import TickerItemFactory from "./TickerItemFactory";
 
 export default class TickerSystem {
-    ticker: Ticker;
-    tickerItemStore: TickerStore;
-    tickerItemFactory: TickerItemFactory;
+    private _ticker: Ticker;
+    private _tickerItemStore: TickerStore;
+    private _tickerItemFactory: TickerItemFactory;
 
     constructor(element: HTMLElement) {
-        this.ticker = new Ticker(element);
-        this.tickerItemStore = new TickerStore();
+        this._ticker = new Ticker(element);
+        this._tickerItemStore = new TickerStore();
 
-        this.tickerItemFactory = new TickerItemFactory(
-            this.tickerItemStore,
-            this.ticker
+        this._tickerItemFactory = new TickerItemFactory(
+            this._tickerItemStore,
+            this._ticker
         );
-
-        window.addEventListener(
-            "resize",
-            debounce(this.resize.bind(this), 500)
-        );
-        this.init();
     }
 
     fill() {
         this.clear();
 
-        const initialSequence: TickerItem[] = this.tickerItemFactory.sequence();
+        const initialSequence: TickerItem[] =
+            this._tickerItemFactory.sequence();
         const sequenceDimensions = initialSequence.reduce(
             (accum: Dimensions, curr: TickerItem) => {
                 const currDimensions = curr.dimensions;
@@ -42,11 +37,11 @@ export default class TickerSystem {
         const repetition = {
             x:
                 Math.round(
-                    this.ticker.dimensions.width / sequenceDimensions.width
+                    this._ticker.dimensions.width / sequenceDimensions.width
                 ) + 2,
             y:
                 Math.round(
-                    this.ticker.dimensions.height / sequenceDimensions.height
+                    this._ticker.dimensions.height / sequenceDimensions.height
                 ) + 2,
         };
         const position: Position = [
@@ -55,7 +50,7 @@ export default class TickerSystem {
         ];
 
         const tickerItems = initialSequence.concat(
-            this.tickerItemFactory.create(repetition.x * repetition.y - 1)
+            this._tickerItemFactory.create(repetition.x * repetition.y - 1)
         );
 
         // iterate through clones and properly set the positions
@@ -78,26 +73,23 @@ export default class TickerSystem {
 
     // remove all clones
     clear() {
-        for (const item of this.tickerItemStore.allTickerItems) {
+        for (const item of this._tickerItemStore.allTickerItems) {
             item.remove();
         }
+
+        this._ticker.height = -1;
     }
 
-    init() {
-        if (this.tickerItemFactory.templateIsEmpty)
-            this.tickerItemFactory.addTemplate(this.ticker.initialTemplate!);
+    load() {
+        this._ticker.load();
+        if (this._tickerItemFactory.templateIsEmpty)
+            this._tickerItemFactory.addTemplate(this._ticker.initialTemplate!);
         this.fill();
     }
 
-    deinit() {
+    unload() {
         this.clear();
-        this.tickerItemFactory.clearTemplates();
-        this.ticker.deinit();
-    }
-
-    resize() {
-        this.clear();
-        this.ticker.height = -1;
-        this.init();
+        this._tickerItemFactory.clearTemplates();
+        this._ticker.unload();
     }
 }
