@@ -1,20 +1,19 @@
 import Square from "@test/pages/square/Square";
-import { Clone, Template } from "~src/clones";
+import { Template } from "~src/clones";
 import { TickerStore } from "..";
 import { TickerItem } from "~src/ticker";
 
-describe("ticker item registry", () => {
+describe("store", () => {
     afterEach(() => {
         Square.clearContent();
     });
 
-    it("should store given a clone", async () => {
+    it("should store given a TickerItem", async () => {
         Square.loadContent();
 
         const store = new TickerStore();
         const template = new Template(Square.square);
-        const clone = new Clone(template);
-        const item = new TickerItem(clone);
+        const item = new TickerItem(template);
 
         store.add(item);
 
@@ -31,7 +30,7 @@ describe("ticker item registry", () => {
 
         const id = store.getId(Square.square);
 
-        expect(id).toBe(expectedID);
+        expect(id).toStrictEqual(expectedID);
     });
 
     it("should retrieve a ticker item given an HTML element", async () => {
@@ -39,8 +38,7 @@ describe("ticker item registry", () => {
 
         const store = new TickerStore();
         const template = new Template(Square.square);
-        const clone = new Clone(template);
-        const item = new TickerItem(clone);
+        const item = new TickerItem(template);
 
         const expectedTickerItem = store.add(item);
 
@@ -54,8 +52,7 @@ describe("ticker item registry", () => {
 
         const store = new TickerStore();
         const template = new Template(Square.square);
-        const clone = new Clone(template);
-        const item = new TickerItem(clone);
+        const item = new TickerItem(template);
 
         const expectedTickerItem = store.add(item);
 
@@ -64,17 +61,47 @@ describe("ticker item registry", () => {
         expect(tickerItem).toBe(expectedTickerItem);
     });
 
-    it("should remove a ticker item in the store given a ticker item", () => {
+    it("should remove a ticker item in the store given a ticker item", async () => {
         Square.loadContent();
 
         const store = new TickerStore();
         const template = new Template(Square.square);
-        const clone = new Clone(template);
-        const item = new TickerItem(clone);
+        const item = new TickerItem(template);
 
         const tickerItem = store.add(item);
 
         store.remove(tickerItem);
+
+        expect(store.isEmpty).toBeTruthy();
+    });
+
+    it("should remove a ticker item in the store given an id number", async () => {
+        Square.loadContent();
+
+        const store = new TickerStore();
+        const template = new Template(Square.square);
+        const item = new TickerItem(template);
+
+        const tickerItem = store.add(item);
+
+        store.remove(tickerItem.id);
+
+        expect(store.isEmpty).toBeTruthy();
+    });
+
+    it("should remove a ticker item in the store given an element", async () => {
+        Square.loadContent();
+
+        const store = new TickerStore();
+        const template = new Template(Square.square);
+        const item = new TickerItem(template);
+
+        store.add(item);
+
+        item.appendTo(document.body);
+        const element = document.querySelector(".billboard-clone");
+
+        store.remove(element!);
 
         expect(store.isEmpty).toBeTruthy();
     });
