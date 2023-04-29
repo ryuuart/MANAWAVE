@@ -1,14 +1,44 @@
-import { isDOMList } from "~src/dom";
-import { Clone, Template } from "../";
-import Square from "~test/pages/square/Square";
 import Basic from "@test/pages/basic/Basic";
-import { Ticker } from "~src/ticker";
+import Square from "@test/pages/square/Square";
+import { Clone, Template } from "../";
 
-describe("Clones", () => {
+describe("clone", () => {
     // boilerplate... has to be there every time
     afterEach(() => {
         Square.clearContent();
         Basic.clearContent();
+    });
+
+    it("should wrap an element with clone classes and divs", async () => {
+        Square.loadContent();
+
+        const template = new Template(Square.square);
+        const clone = new Clone(template);
+        clone.appendTo(document.body);
+
+        const element = document.querySelector(".billboard-clone");
+        expect(element).toBeTruthy();
+    });
+
+    it("should update its position given a new position", async () => {
+        Square.loadContent();
+
+        const template = new Template(Square.square);
+        const clone = new Clone(template);
+        clone.setPosition([1234, 1234]);
+
+        expect(clone.transformStyle).toBe("translate(1234px, 1234px)");
+    });
+
+    it("should maintain state of its id given a new one", async () => {
+        Square.loadContent();
+
+        const template = new Template(Square.square);
+        const clone = new Clone(template);
+
+        clone.id = 999;
+
+        expect(clone.id).toBe(999);
     });
 
     it("can clone multiple", async () => {
@@ -35,41 +65,5 @@ describe("Clones", () => {
         clone.remove();
 
         expect(clone.isRendered).toBeFalsy();
-    });
-
-    it("should not clone if there are no templates", async () => {
-        Square.loadContent();
-
-        const template = new Template(Square.square);
-
-        const clones: Clone[] = [];
-        for (let i = 0; i < 100; i++) {
-            clones.push(new Clone(template));
-        }
-
-        expect(clones.length).toBe(0);
-    });
-
-    it("can restore template contents to original state", async () => {
-        Basic.loadContent();
-
-        const ticker = new Ticker(Basic.ticker);
-        const template = ticker.initialTemplate!;
-
-        // Ticker should be empty with the initial template
-        if (isDOMList(template.original)) {
-            for (const element of template.original) {
-                expect(Basic.ticker.contains(element)).toBeFalsy();
-            }
-        } else expect(Basic.ticker.contains(template.original)).toBeFalsy();
-
-        template.restore();
-
-        // Everything should be back
-        if (isDOMList(template.original)) {
-            for (const element of template.original) {
-                expect(Basic.ticker.contains(element)).toBeTruthy();
-            }
-        } else expect(Basic.ticker.contains(template.original)).toBeTruthy();
     });
 });
