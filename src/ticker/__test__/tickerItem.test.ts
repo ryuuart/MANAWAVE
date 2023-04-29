@@ -1,6 +1,6 @@
 import Square from "@test/pages/square/Square";
 import Basic from "@test/pages/basic/Basic";
-import { Clone, Template } from "~src/clones";
+import { Template } from "~src/clones";
 import TickerItem from "../TickerItem";
 import TickerItemFactory from "../TickerItemFactory";
 import { TickerStore } from "~src/data";
@@ -39,11 +39,12 @@ describe("ticker item", () => {
         Basic.loadContent();
         const amount = 10;
 
-        const ticker = new Ticker(Basic.ticker);
-        const registry = new TickerStore();
-        const factory = new TickerItemFactory(registry, ticker);
+        const template = new Template(Basic.ticker.children);
+        const tickerItems: TickerItem[] = [];
 
-        const tickerItems = factory.create(amount);
+        for (let i = 0; i < amount; i++) {
+            tickerItems.push(new TickerItem(template));
+        }
 
         expect(tickerItems.length).toBeGreaterThan(0);
     });
@@ -60,4 +61,29 @@ describe("ticker item", () => {
 
         expect(tickerItem.isRendered).toBeFalsy();
     });
+
+    it("can set itself to a new position", async () => {
+        Square.loadContent();
+
+        const template = new Template(Square.square);
+        const tickerItem = new TickerItem(template);
+
+        tickerItem.position = [1234, 1234];
+
+        expect(tickerItem.position).toStrictEqual([1234, 1234]);
+    });
+
+    // needs to be moved to TickerItemFactory
+    // it("should not clone if there are no templates", async () => {
+    //     Square.loadContent();
+
+    //     const template = new Template(Square.square);
+
+    //     const clones: Clone[] = [];
+    //     for (let i = 0; i < 100; i++) {
+    //         clones.push(new Clone(template));
+    //     }
+
+    //     expect(clones.length).toBe(0);
+    // });
 });
