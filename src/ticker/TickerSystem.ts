@@ -1,63 +1,95 @@
 import { debounce } from "~src/utils";
 import { Ticker, TickerItem } from ".";
-import { Cloner, Template } from "../clones";
-import { TickerItemRegistry } from "../data";
+import { TickerStore } from "../data";
 import TickerItemFactory from "./TickerItemFactory";
 
 export default class TickerSystem {
-    cloner: Cloner;
-    ticker: Ticker;
-    tickerItemRegistry: TickerItemRegistry;
-    tickerItemFactory: TickerItemFactory;
+    private _ticker: Ticker;
+    private _tickerItemStore: TickerStore;
+    private _tickerItemFactory: TickerItemFactory;
 
     constructor(element: HTMLElement) {
-        this.ticker = new Ticker(element);
+        this._ticker = new Ticker(element);
+        this._tickerItemStore = new TickerStore();
 
-        this.tickerItemRegistry = new TickerItemRegistry();
-
-        this.cloner = new Cloner();
-        this.cloner.addTemplate(this.ticker.initialTemplate);
-
-        // a bit apprehensive this is here
-        // I feel like it has such heavy connection to
-        // 3 classes yet is supposed to be used in
-        // any context without injection
-        this.tickerItemFactory = new TickerItemFactory(
-            this.tickerItemRegistry,
-            this.cloner,
-            this.ticker
+        this._tickerItemFactory = new TickerItemFactory(
+            this._tickerItemStore,
+            this._ticker
         );
-
-        window.addEventListener(
-            "resize",
-            debounce(this.resize.bind(this), 500)
-        );
-        this.ticker.initClones(this.tickerItemFactory);
     }
 
-    removeTickerItem(item: TickerItem) {
-        this.tickerItemRegistry.remove(item);
+    fill() {
+        this.clear();
+
+        const initialSequence: TickerItem[] =
+            this._tickerItemFactory.sequence();
+        const sequenceDimensions = initialSequence.reduce(
+            (accum: Dimensions, curr: TickerItem) => {
+                const currDimensions = curr.dimensions;
+
+                return {
+                    width: accum.width + currDimensions.width,
+                    height: Math.max(accum.height, currDimensions.height),
+                };
+            },
+            { width: 0, height: 0 }
+        );
+        const repetition = {
+            x:
+                Math.round(
+                    this._ticker.dimensions.width / sequenceDimensions.width
+                ) + 2,
+            y:
+                Math.round(
+                    this._ticker.dimensions.height / sequenceDimensions.height
+                ) + 2,
+        };
+        const position: Position = [
+            -sequenceDimensions.width,
+            -sequenceDimensions.height,
+        ];
+
+        const tickerItems = initialSequence.concat(
+            this._tickerItemFactory.create(repetition.x * repetition.y - 1)
+        );
+
+        // iterate through clones and properly set the positions
+        let clonesIndex = 0;
+        let currItem = tickerItems[clonesIndex];
+        for (let i = 0; i < repetition.y; i++) {
+            for (let j = 0; j < repetition.x; j++) {
+                currItem = tickerItems[clonesIndex];
+                const { width: itemWidth, height: itemHeight } =
+                    currItem.dimensions;
+
+                currItem.position = [
+                    position[0] + j * itemWidth,
+                    position[1] + i * itemHeight,
+                ];
+                clonesIndex++;
+            }
+        }
     }
 
-    // remove all clones and templates
+    // remove all clones
     clear() {
-        this.tickerItemRegistry.clearTickerItems();
-        this.cloner.clearTemplates();
+        for (const item of this._tickerItemStore.allTickerItems) {
+            item.remove();
+        }
+
+        this._ticker.height = -1;
     }
 
-    init() {
-        this.cloner.addTemplate(this.ticker.initialTemplate);
-        this.ticker.initClones(this.tickerItemFactory);
+    load() {
+        this._ticker.load();
+        if (this._tickerItemFactory.templateIsEmpty)
+            this._tickerItemFactory.addTemplate(this._ticker.initialTemplate!);
+        this.fill();
     }
 
-    deinit() {
+    unload() {
         this.clear();
-        this.ticker.deinit();
-    }
-
-    resize() {
-        this.clear();
-        this.ticker.updateHeight();
-        this.init();
+        this._tickerItemFactory.clearTemplates();
+        this._ticker.unload();
     }
 }

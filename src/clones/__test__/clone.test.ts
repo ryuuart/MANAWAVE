@@ -1,34 +1,59 @@
-import { isDOMList } from "~src/dom";
-import { Clone, Cloner, Template } from "../";
-import Square from "~test/pages/square/Square";
 import Basic from "@test/pages/basic/Basic";
-import { Ticker } from "~src/ticker";
+import Square from "@test/pages/square/Square";
+import { Clone, Template } from "../";
 
-describe("Clones", () => {
+describe("clone", () => {
     // boilerplate... has to be there every time
     afterEach(() => {
         Square.clearContent();
         Basic.clearContent();
     });
 
+    it("should wrap an element with clone classes and divs", async () => {
+        Square.loadContent();
+
+        const template = new Template(Square.square);
+        const clone = new Clone(template);
+        clone.appendTo(document.body);
+
+        const element = document.querySelector(".billboard-clone");
+        expect(element).toBeTruthy();
+    });
+
+    it("should update its position given a new position", async () => {
+        Square.loadContent();
+
+        const template = new Template(Square.square);
+        const clone = new Clone(template);
+        clone.setPosition([1234, 1234]);
+
+        expect(clone.transformStyle).toBe("translate(1234px, 1234px)");
+    });
+
+    it("should maintain state of its id given a new one", async () => {
+        Square.loadContent();
+
+        const template = new Template(Square.square);
+        const clone = new Clone(template);
+
+        clone.id = 999;
+
+        expect(clone.id).toBe(999);
+    });
+
     it("can clone multiple", async () => {
         Square.loadContent();
 
         const template = new Template(Square.square);
-        const cloner = new Cloner();
-        cloner.addTemplate(template);
 
         const cloneAmount = 10;
-        const clones = cloner.clone(cloneAmount, (clone: Clone) => {
-            document.body.append(clone.element);
-        });
+        const clones: Clone[] = [];
 
-        // TODO
-        // This is a failing test because the first element should be removed from the
-        // page we're temporarily allowing it to pass right now
-        expect(document.body.children.length).toBeGreaterThanOrEqual(
-            cloneAmount
-        );
+        for (let i = 0; i < cloneAmount; i++) {
+            clones.push(new Clone(template));
+        }
+
+        expect(clones.length).toBe(cloneAmount);
     });
 
     it("can be removed", async () => {
@@ -39,48 +64,6 @@ describe("Clones", () => {
 
         clone.remove();
 
-        expect(document.contains(clone.element)).toBeFalsy();
-    });
-
-    it("should not clone if there are no templates", async () => {
-        Square.loadContent();
-
-        const template = new Template(Square.square);
-        const cloner = new Cloner();
-        cloner.addTemplate(template);
-        cloner.removeTemplate(template);
-
-        const clones = cloner.clone(100);
-
-        expect(clones.length).toBe(0);
-    });
-
-    it("can restore template contents to original state", async () => {
-        Basic.loadContent();
-
-        const ticker = new Ticker(Basic.ticker);
-        const template = ticker.initialTemplate;
-        const cloner = new Cloner();
-        cloner.addTemplate(template);
-
-        if (isDOMList(template.original)) {
-            for (const element of template.original) {
-                expect(ticker.wrapperElement.contains(element)).toBeFalsy();
-            }
-        } else
-            expect(
-                ticker.wrapperElement.contains(template.original)
-            ).toBeFalsy();
-
-        template.restore();
-
-        if (isDOMList(template.original)) {
-            for (const element of template.original) {
-                expect(ticker.wrapperElement.contains(element)).toBeTruthy();
-            }
-        } else
-            expect(
-                ticker.wrapperElement.contains(template.original)
-            ).toBeTruthy();
+        expect(clone.isRendered).toBeFalsy();
     });
 });

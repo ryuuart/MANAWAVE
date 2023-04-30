@@ -1,24 +1,57 @@
-import { setTranslate } from "../dom";
+import { setTranslate, wrappedDiv } from "../dom";
 import Template from "./Template";
 
 export default class Clone {
-    element: HTMLElement;
+    private _element: HTMLElement;
 
     constructor(template: Template) {
         // Element-wrapper refers to a wrapper that allows for dimensional calculations
         // What you want to clone
-        this.element = template.element.cloneNode(true) as HTMLElement;
-        this.element.classList.add("ticker-element");
+        this._element = wrappedDiv(template.element.cloneNode(true));
+        this._element.classList.add("billboard-clone");
 
         // Just add it in some far off corner so it's not visible yet.
         this.setPosition([-9999, -9999]);
     }
 
     setPosition(position: [x: number, y: number]) {
-        setTranslate(this.element, position);
+        setTranslate(this._element, position);
+    }
+
+    appendTo(element: HTMLElement) {
+        element.append(this._element);
     }
 
     remove() {
-        this.element.remove();
+        this._element.remove();
+    }
+
+    get isRendered(): boolean {
+        return document.contains(this._element);
+    }
+
+    set id(id: number) {
+        this._element.dataset.id = id.toString();
+    }
+
+    get id(): number {
+        const id = this._element.dataset.id;
+        return parseInt(id ?? "-999");
+    }
+
+    get width(): number {
+        return this._element.offsetWidth;
+    }
+
+    get height(): number {
+        return this._element.offsetHeight;
+    }
+
+    set transformStyle(style: string) {
+        this._element.style.transform = style;
+    }
+
+    get transformStyle(): string {
+        return this._element.style.transform;
     }
 }

@@ -52,12 +52,12 @@ class BillboardManager {
                         }
                         `);
                 this.styleElement.sheet.insertRule(`
-                        .ticker-element-temp {
+                        .billboard-template {
                             display: inline-block;
                         }
                         `);
                 this.styleElement.sheet.insertRule(`
-                        .ticker-element {
+                        .billboard-clone {
                             position: absolute;
                             
                             will-change: transform;
