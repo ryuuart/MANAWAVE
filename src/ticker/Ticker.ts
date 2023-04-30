@@ -85,7 +85,7 @@ export default class Ticker {
         if (this._wrapperElement != undefined) {
             this._wrapperElement.classList.remove("billboard-ticker");
         }
-        this.height = -1;
+        this._height = -1;
     }
 
     // Add in a lil element but if it's a lil too big, then the ticker needs to resize
