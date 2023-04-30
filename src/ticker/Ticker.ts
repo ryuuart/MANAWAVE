@@ -13,16 +13,20 @@ export default class Ticker {
 
     private _initialTemplate: Template | undefined | null; // needed to restore the state of the ticker before start
 
+    private _wrapperComputedStyles: CSSStyleDeclaration;
+
     constructor(element: HTMLElement) {
         // The main element that contains anything relating to Billboard
         this._wrapperElement = element;
+        this._wrapperComputedStyles = window.getComputedStyle(
+            this._wrapperElement
+        );
 
         // Billboard-ticker refers to what represents the entire Billboard-ticker itself
         this._element = document.createElement("div");
         this._element.classList.add("billboard-ticker-container");
 
-        this._height = this._wrapperElement.offsetHeight;
-        this._element.style.minHeight = `${this._height}px`;
+        this._height = -1;
     }
 
     get isRendered(): boolean {
@@ -47,8 +51,13 @@ export default class Ticker {
     set height(height: number) {
         this._height = height;
 
-        if (this._wrapperElement.offsetHeight > this._height) {
-            this._height = this._wrapperElement.offsetHeight;
+        // Override any height if there's one already defined in the parent
+        if (
+            this._wrapperElement.style.height ||
+            this._wrapperElement.style.maxHeight ||
+            this._wrapperElement.style.minHeight
+        ) {
+            this._height = parseFloat(this._wrapperComputedStyles.height);
         }
 
         this._element.style.minHeight = `${this._height}px`;
@@ -61,6 +70,8 @@ export default class Ticker {
 
         this._initialTemplate = new Template(this._wrapperElement.children);
         this._wrapperElement.append(this._element);
+
+        this.height = parseFloat(this._wrapperComputedStyles.height);
     }
 
     unload() {
@@ -74,6 +85,7 @@ export default class Ticker {
         if (this._wrapperElement != undefined) {
             this._wrapperElement.classList.remove("billboard-ticker");
         }
+        this.height = -1;
     }
 
     // Add in a lil element but if it's a lil too big, then the ticker needs to resize
@@ -81,13 +93,12 @@ export default class Ticker {
     // might need to remove this part if someone already gave it a height that's less
     // than any other height :/
     append(item: TickerItem) {
-        const { height: itemHeight } = item.dimensions;
-
         item.appendTo(this._element);
 
+        const { height: itemHeight } = item.dimensions;
+
         if (itemHeight > this._height) {
-            this._height = itemHeight;
-            this._element.style.minHeight = `${this._height}px`;
+            this.height = itemHeight;
         }
     }
 }
