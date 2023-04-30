@@ -16,9 +16,6 @@ export default class Ticker {
     constructor(element: HTMLElement) {
         // The main element that contains anything relating to Billboard
         this._wrapperElement = element;
-        if (!(this._wrapperElement instanceof Component)) {
-            this._wrapperElement.classList.add("billboard-ticker");
-        }
 
         // Billboard-ticker refers to what represents the entire Billboard-ticker itself
         this._element = document.createElement("div");
@@ -58,6 +55,10 @@ export default class Ticker {
     }
 
     load() {
+        if (!(this._wrapperElement instanceof Component)) {
+            this._wrapperElement.classList.add("billboard-ticker");
+        }
+
         this._initialTemplate = new Template(this._wrapperElement.children);
         this._wrapperElement.append(this._element);
     }

@@ -48,11 +48,9 @@ export default class TickerStore {
             const tickerElement = this._tickerItems.get(id);
             if (tickerElement) return tickerElement;
             else {
-                console.error("Element not registered.");
                 return null;
             }
         } else {
-            console.error("ID Data is missing.");
             return null;
         }
     }

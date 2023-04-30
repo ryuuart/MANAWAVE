@@ -11,14 +11,12 @@ const defaultConfig: Billboard.Options = {
 export default class Billboard {
     private _system: TickerSystem;
     private _config: Billboard.Options = defaultConfig;
+    private _initialized: boolean;
 
     constructor(element: HTMLElement, options?: Billboard.Options) {
         Object.assign(this._config, options);
 
-        if (!BillboardManager.hasBillboards) {
-            BillboardManager.loadCSS();
-        }
-
+        this._initialized = false;
         this._system = new TickerSystem(element);
 
         BillboardManager.addBillboard(this);
@@ -32,7 +30,14 @@ export default class Billboard {
     }
 
     init() {
-        this._system.load();
+        if (!this._initialized) {
+            if (!BillboardManager.hasBillboards) {
+                BillboardManager.loadCSS();
+            }
+
+            this._system.load();
+            this._initialized = true;
+        }
     }
 
     deinit() {
@@ -46,10 +51,12 @@ export default class Billboard {
         if (!BillboardManager.hasBillboards) {
             BillboardManager.unloadCSS();
         }
+
+        this._initialized = false;
     }
 
     resize() {
-        this.init();
         this.deinit();
+        this.init();
     }
 }

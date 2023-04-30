@@ -10,6 +10,7 @@ export default class TickerItem extends Item {
 
     registerStore(store: TickerStore) {
         this._storeRef = store;
+        if (!this._storeRef.get(this.id)) this._storeRef.add(this);
     }
 
     remove() {
