@@ -11,11 +11,11 @@ export default class TickerItemFactory {
     constructor(registry: TickerStore, ticker: Ticker) {
         this._templates = [];
 
-        if (ticker.initialTemplate && this._templates.length === 0)
-            this._templates.push(ticker.initialTemplate);
-
         this._ticker = ticker;
         this._store = registry;
+
+        if (this._ticker.initialTemplate && this.templateIsEmpty)
+            this.addTemplate(this._ticker.initialTemplate);
     }
 
     get templateIsEmpty() {
