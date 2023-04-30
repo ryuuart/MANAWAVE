@@ -21,20 +21,6 @@ describe("ticker item", () => {
         expect(tickerItem).toBeTruthy();
     });
 
-    // Not ready for test yet, need to do a dynamic
-    // addition of a new TickerItem to the Ticker first
-    // it("can create a sequence of items", async () => {
-    //     Basic.loadContent();
-
-    //     const ticker = new Ticker(Basic.ticker);
-    //     const registry = new TickerItemRegistry();
-    //     const cloner = new Cloner();
-
-    //     const factory = new TickerItemFactory(registry, cloner, ticker);
-
-    //     const tickerItem = factory;
-    // });
-
     it("can create multiple items", async () => {
         Basic.loadContent();
         const amount = 10;
@@ -73,17 +59,28 @@ describe("ticker item", () => {
         expect(tickerItem.position).toStrictEqual([1234, 1234]);
     });
 
-    // needs to be moved to TickerItemFactory
-    // it("should not clone if there are no templates", async () => {
-    //     Square.loadContent();
+    it("should be in a store if given a store", async () => {
+        Square.loadContent();
 
-    //     const template = new Template(Square.square);
+        const template = new Template(Square.square);
+        const tickerItem = new TickerItem(template);
+        const store = new TickerStore();
 
-    //     const clones: Clone[] = [];
-    //     for (let i = 0; i < 100; i++) {
-    //         clones.push(new Clone(template));
-    //     }
+        tickerItem.registerStore(store);
 
-    //     expect(clones.length).toBe(0);
-    // });
+        expect(store.get(tickerItem.id)).toBeTruthy();
+    });
+
+    it("should remove itself from a store if removed", async () => {
+        Square.loadContent();
+
+        const template = new Template(Square.square);
+        const tickerItem = new TickerItem(template);
+        const store = new TickerStore();
+
+        tickerItem.registerStore(store);
+        tickerItem.remove();
+
+        expect(store.get(tickerItem.id)).toBeFalsy();
+    });
 });
