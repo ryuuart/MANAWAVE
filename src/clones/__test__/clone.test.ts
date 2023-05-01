@@ -1,5 +1,5 @@
-import Basic from "@test/pages/basic/Basic";
-import Square from "@test/pages/square/Square";
+import Basic from "test/pages/basic/Basic";
+import Square from "test/pages/square/Square";
 import { Clone, Template } from "../";
 
 describe("clone", () => {

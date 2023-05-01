@@ -1,6 +1,6 @@
-import Basic from "@test/pages/basic/Basic";
-import BillboardManager from "../BillboardManager";
-import Billboard from "~src/Billboard";
+import Basic from "test/pages/basic/Basic";
+import BillboardManager from "src/BillboardManager";
+import { Billboard } from "src";
 
 describe("billboard", () => {
     afterEach(() => {

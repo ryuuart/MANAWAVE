@@ -1,7 +1,6 @@
 import { TickerItem } from ".";
 import { Template } from "../clones";
 import Component from "../web/Component";
-import TickerItemFactory from "./TickerItemFactory";
 
 // Represents front-facing Ticker that is rendered
 // Logic for placing clones in front-facing ticker should go here

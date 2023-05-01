@@ -1,4 +1,4 @@
-import { wrappedDiv, moveElements, isDOMList } from "../dom";
+import { wrappedDiv, moveElements, isDOMList } from "src/dom";
 export default class Template {
     private _originalParent: HTMLElement | null;
     private _original: Parameters<typeof wrappedDiv>[0];

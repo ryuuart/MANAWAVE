@@ -1,4 +1,4 @@
-import Basic from "@test/pages/basic/Basic";
+import Basic from "test/pages/basic/Basic";
 import { Template } from "../";
 
 describe("template", () => {

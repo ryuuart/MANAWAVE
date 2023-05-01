@@ -1,4 +1,4 @@
-import { Billboard } from "../dist/billboard.module";
+import { Billboard } from "../src";
 
 const regularTicker = document.getElementById("regular");
 

@@ -1,5 +1,5 @@
-import { Template } from "~src/clones";
-import Basic from "~test/pages/basic/Basic";
+import { Template } from "src/clones";
+import Basic from "test/pages/basic/Basic";
 import Item from "../Item";
 
 describe("item", () => {

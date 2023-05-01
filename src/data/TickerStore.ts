@@ -1,4 +1,3 @@
-import { Clone } from "../clones";
 import { TickerItem } from "../ticker";
 
 export default class TickerStore {
