@@ -1,4 +1,4 @@
-import Base from "@test/pages/base/Base";
+import Base from "test/pages/base/Base";
 import squareHTML from "./index.html?raw";
 
 class Square extends Base {

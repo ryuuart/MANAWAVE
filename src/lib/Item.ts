@@ -1,4 +1,4 @@
-import { Clone, Template } from "~src/clones";
+import { Clone, Template } from "src/clones";
 
 function* genId(): Generator<number, any> {
     let id = 0;

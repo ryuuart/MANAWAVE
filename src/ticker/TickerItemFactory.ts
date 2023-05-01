@@ -1,5 +1,5 @@
 import { Ticker, TickerItem } from "../ticker";
-import { Clone, Template } from "../clones";
+import { Template } from "../clones";
 import { TickerStore } from "../data";
 
 export default class TickerItemFactory {

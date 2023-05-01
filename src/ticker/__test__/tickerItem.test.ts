@@ -1,10 +1,8 @@
-import Square from "@test/pages/square/Square";
-import Basic from "@test/pages/basic/Basic";
-import { Template } from "~src/clones";
+import Basic from "test/pages/basic/Basic";
+import Square from "test/pages/square/Square";
+import { Template } from "src/clones";
+import { TickerStore } from "src/data";
 import TickerItem from "../TickerItem";
-import TickerItemFactory from "../TickerItemFactory";
-import { TickerStore } from "~src/data";
-import Ticker from "../Ticker";
 
 describe("ticker item", () => {
     afterEach(() => {

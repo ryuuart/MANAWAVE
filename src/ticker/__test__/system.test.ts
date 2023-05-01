@@ -1,10 +1,10 @@
-import Basic from "@test/pages/basic/Basic";
-import { Clone, Template } from "~src/clones";
-import TickerItemFactory from "../TickerItemFactory";
-import { TickerStore } from "~src/data";
+import Basic from "test/pages/basic/Basic";
+import { Template } from "src/clones";
+import { TickerStore } from "src/data";
+import Square from "test/pages/square/Square";
 import Ticker from "../Ticker";
+import TickerItemFactory from "../TickerItemFactory";
 import TickerSystem from "../TickerSystem";
-import Square from "~test/pages/square/Square";
 
 describe("system", () => {
     afterEach(() => {

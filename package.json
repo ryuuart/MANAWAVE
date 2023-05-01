@@ -2,16 +2,22 @@
   "name": "billboard",
   "version": "1.0.0",
   "description": "It's not a marquee, it's more than that!",
-  "source": "src/index.ts",
-  "main": "dist/billboard.js",
-  "module": "dist/billboard.module.js",
   "type": "module",
+  "files": [
+    "dist"
+  ],
+  "main": "./dist/billboard.umd.cjs",
+  "module": "./dist/billboard.js",
+  "exports": {
+    ".": {
+      "import": "./dist/billboard.js",
+      "require": "./dist/billboard.umd.cjs"
+    }
+  },
   "scripts": {
-    "start": "parcel example/index.html --dist-dir output -p 8888",
-    "watch": "parcel watch",
-    "build": "parcel build",
-    "clean": "rimraf dist/* output/*",
-    "develop": "run-p start watch",
+    "dev": "vite",
+    "build": "tsc && vite build",
+    "preview": "vite preview",
     "test": "run-p test:*",
     "test:run": "wdio run wdio.conf.ts"
   },
@@ -34,6 +40,7 @@
     "ts-node": "^10.9.1",
     "tsconfig-paths": "^4.2.0",
     "typescript": "^5.0.4",
+    "vite": "^4.3.2",
     "vite-tsconfig-paths": "^4.2.0",
     "wdio-chromedriver-service": "^8.1.1",
     "wdio-edgedriver-service": "^2.1.2",

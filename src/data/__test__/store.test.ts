@@ -1,7 +1,7 @@
-import Square from "@test/pages/square/Square";
-import { Template } from "~src/clones";
+import Square from "test/pages/square/Square";
+import { Template } from "src/clones";
+import { TickerItem } from "src/ticker";
 import { TickerStore } from "..";
-import { TickerItem } from "~src/ticker";
 
 describe("store", () => {
     afterEach(() => {

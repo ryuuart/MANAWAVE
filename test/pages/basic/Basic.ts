@@ -1,4 +1,4 @@
-import Base from "@test/pages/base/Base";
+import Base from "test/pages/base/Base";
 import basicHTML from "./index.html?raw";
 import basicCSS from "./style.css?raw";
 

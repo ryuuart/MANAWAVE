@@ -1,7 +1,7 @@
-import Basic from "~test/pages/basic/Basic";
-import TickerItem from "../TickerItem";
+import Component from "src/web/Component";
+import Basic from "test/pages/basic/Basic";
 import Ticker from "../Ticker";
-import Component from "~src/web/Component";
+import TickerItem from "../TickerItem";
 
 describe("ticker", () => {
     afterEach(() => {

@@ -1,4 +1,4 @@
-import { setTranslate, wrappedDiv } from "../dom";
+import { setTranslate, wrappedDiv } from "src/dom";
 import Template from "./Template";
 
 export default class Clone {

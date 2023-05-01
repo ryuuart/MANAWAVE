@@ -1,4 +1,4 @@
-import sharedCSS from "@test/pages/shared/style.css?raw";
+import sharedCSS from "test/pages/shared/style.css?raw";
 
 export default class Base {
     constructor() {}

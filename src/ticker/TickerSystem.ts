@@ -1,4 +1,3 @@
-import { debounce } from "~src/utils";
 import { Ticker, TickerItem } from ".";
 import { TickerStore } from "../data";
 import TickerItemFactory from "./TickerItemFactory";
