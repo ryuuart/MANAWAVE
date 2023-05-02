@@ -7,25 +7,6 @@ describe("billboard", () => {
         Basic.clearContent();
     });
 
-    it("should be able to initialize css", async () => {
-        Basic.loadContent();
-
-        BillboardManager.loadCSS();
-        BillboardManager.unloadCSS();
-        BillboardManager.loadCSS();
-
-        expect(document.contains(BillboardManager.styleElement)).toBeTruthy();
-    });
-
-    it("should be able to remove initialized css", async () => {
-        Basic.loadContent();
-
-        BillboardManager.loadCSS();
-        BillboardManager.unloadCSS();
-
-        expect(document.contains(BillboardManager.styleElement)).toBeFalsy();
-    });
-
     // I essentiallly observe and compare transformations and states before then after
     // Other tests will validate if it properly tears down
     it("should return website to original state when deinitializing billboard", async () => {
@@ -48,9 +29,6 @@ describe("billboard", () => {
 
         expect(beforeClass).toStrictEqual(afterClass);
         expect(before).toEqual(after);
-        expect(
-            document.head.contains(BillboardManager.styleElement)
-        ).toBeFalsy();
         expect(BillboardManager.hasBillboards).toBeFalsy();
     });
 });

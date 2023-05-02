@@ -1,4 +1,6 @@
 import { wrappedDiv, moveElements, isDOMList } from "src/dom";
+import styles from "src/web/clone.module.css";
+
 export default class Template {
     private _originalParent: HTMLElement | null;
     private _original: Parameters<typeof wrappedDiv>[0];
@@ -14,7 +16,7 @@ export default class Template {
 
         // Element represents the element to be repeated (the template if you will)
         this._element = wrappedDiv(this._original);
-        this._element.classList.add("billboard-template");
+        this._element.classList.add(styles.template);
 
         // recover the original after modification, unique hack...
         // what's happening is that the original became the this.element

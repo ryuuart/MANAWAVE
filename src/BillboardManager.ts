@@ -1,10 +1,10 @@
+import "./web/style.css";
 import Billboard from "./Billboard";
 
 /**
  * The main class used to set up the Billboard all in one spot
  */
 class BillboardManager {
-    styleElement: HTMLStyleElement = document.createElement("style");
     billboards: Set<Billboard>;
 
     /**
@@ -13,8 +13,6 @@ class BillboardManager {
      * @param {string} options the options provided for the overall Billboard system
      */
     constructor() {
-        this.loadCSS();
-
         this.billboards = new Set();
     }
 
@@ -28,49 +26,6 @@ class BillboardManager {
 
     get hasBillboards() {
         return this.billboards.size > 0;
-    }
-
-    loadCSS() {
-        if (!document.head.contains(this.styleElement)) {
-            document.head.append(this.styleElement);
-            if (this.styleElement.sheet) {
-                this.styleElement.sheet.insertRule(`
-                        billboard-ticker, .billboard-ticker {
-                            white-space: nowrap;
-                            overflow: hidden;
-                            
-                            display: block;
-                            
-                            border: 1px solid red;
-                        }
-                        `);
-                this.styleElement.sheet.insertRule(`
-                        .billboard-ticker-container {
-                            position: relative;
-                            
-                            display: flow-root;
-                        }
-                        `);
-                this.styleElement.sheet.insertRule(`
-                        .billboard-template {
-                            display: inline-block;
-                        }
-                        `);
-                this.styleElement.sheet.insertRule(`
-                        .billboard-clone {
-                            position: absolute;
-                            
-                            will-change: transform;
-                            
-                            display: inline-block;
-                        }
-                        `);
-            }
-        }
-    }
-
-    unloadCSS() {
-        this.styleElement.remove();
     }
 }
 

@@ -1,5 +1,6 @@
 import { setTranslate, wrappedDiv } from "src/dom";
 import Template from "./Template";
+import styles from "src/web/clone.module.css";
 
 export default class Clone {
     private _element: HTMLElement;
@@ -8,7 +9,7 @@ export default class Clone {
         // Element-wrapper refers to a wrapper that allows for dimensional calculations
         // What you want to clone
         this._element = wrappedDiv(template.element.cloneNode(true));
-        this._element.classList.add("billboard-clone");
+        this._element.classList.add(styles.clone);
 
         // Just add it in some far off corner so it's not visible yet.
         this.setPosition([-9999, -9999]);
