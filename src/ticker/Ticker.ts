@@ -1,6 +1,7 @@
 import { TickerItem } from ".";
 import { Template } from "../clones";
 import Component from "../web/Component";
+import styles from "src/web/ticker.module.css";
 
 // Represents front-facing Ticker that is rendered
 // Logic for placing clones in front-facing ticker should go here
@@ -23,7 +24,7 @@ export default class Ticker {
 
         // Billboard-ticker refers to what represents the entire Billboard-ticker itself
         this._element = document.createElement("div");
-        this._element.classList.add("billboard-ticker-container");
+        this._element.classList.add(styles.tickerContainer);
 
         this._height = -1;
     }
@@ -64,7 +65,7 @@ export default class Ticker {
 
     load() {
         if (!(this._wrapperElement instanceof Component)) {
-            this._wrapperElement.classList.add("billboard-ticker");
+            this._wrapperElement.classList.add(styles.ticker);
         }
 
         this._initialTemplate = new Template(this._wrapperElement.children);
@@ -82,7 +83,7 @@ export default class Ticker {
             this._element.remove();
         }
         if (this._wrapperElement != undefined) {
-            this._wrapperElement.classList.remove("billboard-ticker");
+            this._wrapperElement.classList.remove(styles.ticker);
         }
         this._height = -1;
     }

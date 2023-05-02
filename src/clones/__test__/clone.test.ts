@@ -16,7 +16,7 @@ describe("clone", () => {
         const clone = new Clone(template);
         clone.appendTo(document.body);
 
-        const element = document.querySelector(".billboard-clone");
+        const element = await $(`.${template.element.classList[0]}`);
         expect(element).toBeTruthy();
     });
 

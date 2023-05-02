@@ -31,10 +31,6 @@ export default class Billboard {
 
     init() {
         if (!this._initialized) {
-            if (!BillboardManager.hasBillboards) {
-                BillboardManager.loadCSS();
-            }
-
             this._system.load();
             this._initialized = true;
         }
@@ -46,11 +42,6 @@ export default class Billboard {
 
         // no longer tracked
         BillboardManager.removeBillboard(this);
-
-        // if there aren't anymore billboards, get rid of the CSS too
-        if (!BillboardManager.hasBillboards) {
-            BillboardManager.unloadCSS();
-        }
 
         this._initialized = false;
     }

@@ -99,7 +99,9 @@ describe("store", () => {
         store.add(item);
 
         item.appendTo(document.body);
-        const element = document.querySelector(".billboard-clone");
+        const element = document.querySelector(
+            `.${template.element.classList[0]}`
+        )?.parentElement;
 
         store.remove(element!);
 
