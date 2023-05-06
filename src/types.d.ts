@@ -14,11 +14,4 @@ declare namespace Billboard {
     interface Options {
         autoplay: true | false;
     }
-
-    interface AnimationObject<T> {
-        ref: T;
-        position: Position;
-        update: (dt: DOMHighResTimeStamp, totTime: DOMHighResTimeStamp) => void;
-        draw: () => void;
-    }
 }
