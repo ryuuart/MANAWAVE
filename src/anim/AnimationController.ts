@@ -23,12 +23,31 @@ export default class AnimationController {
         this._targetDT = 1 / 60.0;
     }
 
+    get status() {
+        return {
+            started: this._hasStarted,
+            paused: this._isPaused,
+        };
+    }
+
     addAnimation<T>(object: AnimationObject<T>) {
         this._animObjects.set(object.id, object);
     }
 
-    removeAnimation<T>(object: AnimationObject<T>) {
-        this._animObjects.delete(object.id);
+    removeAnimation<T>(selection: number | AnimationObject<T>) {
+        const animationObject = this.getAnimationObject(selection);
+        if (animationObject) this._animObjects.delete(animationObject.id);
+    }
+
+    getAnimationObject<T>(
+        selection: number | AnimationObject<T>
+    ): AnimationObject<T> | null {
+        let id;
+        if (typeof selection === "number") id = selection;
+        else id = selection.id;
+
+        const animationObject = this._animObjects.get(id);
+        return animationObject ?? null;
     }
 
     start() {

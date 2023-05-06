@@ -2,6 +2,7 @@ import Square from "test/pages/square/Square";
 import AnimationController from "../AnimationController";
 import { setTranslate } from "@billboard/dom";
 import DOMAnimationObject from "../DOMAnimationObject";
+import AnimationObject from "../AnimationObject";
 
 function getPositionFromMatrix(matrix: string): Position {
     const parsed = matrix.match(/-?\d+/g)!;
@@ -16,6 +17,84 @@ describe("animation system", () => {
     });
     afterEach(() => {
         Square.clearContent();
+    });
+
+    it("should have proper control state throughout animation", async () => {
+        const animationController = new AnimationController();
+
+        expect(animationController.status).toEqual({
+            started: false,
+            paused: false,
+        });
+
+        animationController.pause();
+
+        expect(animationController.status).toEqual({
+            started: false,
+            paused: false,
+        });
+
+        animationController.start();
+
+        expect(animationController.status).toEqual({
+            started: true,
+            paused: false,
+        });
+
+        animationController.pause();
+
+        expect(animationController.status).toEqual({
+            started: true,
+            paused: true,
+        });
+
+        animationController.play();
+
+        expect(animationController.status).toEqual({
+            started: true,
+            paused: false,
+        });
+
+        animationController.stop();
+
+        expect(animationController.status).toEqual({
+            started: false,
+            paused: false,
+        });
+
+        animationController.pause();
+
+        expect(animationController.status).toEqual({
+            started: false,
+            paused: false,
+        });
+
+        animationController.start();
+
+        expect(animationController.status).toEqual({
+            started: true,
+            paused: false,
+        });
+
+        animationController.pause();
+        animationController.stop();
+
+        expect(animationController.status).toEqual({
+            started: false,
+            paused: false,
+        });
+    });
+
+    it("should remove a given animation object", async () => {
+        const animationController = new AnimationController();
+        const animObject = new AnimationObject(999, Square.square);
+
+        animationController.addAnimation(animObject);
+        animationController.removeAnimation(999);
+
+        const result = animationController.getAnimationObject(999);
+
+        expect(result).toBeFalsy();
     });
 
     it("should animate horizontally", async () => {
