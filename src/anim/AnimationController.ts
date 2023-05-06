@@ -1,12 +1,5 @@
-interface AnimationObject<T> {
-    ref: T;
-    position: Position;
-    update: (dt: DOMHighResTimeStamp, totTime: DOMHighResTimeStamp) => void;
-    draw: () => void;
-}
-
 export default class AnimationController {
-    private _animObjects: AnimationObject<any>[];
+    private _animObjects: Billboard.AnimationObject<any>[];
 
     private _isPaused: boolean;
     private _hasStarted: boolean;
@@ -28,7 +21,7 @@ export default class AnimationController {
         this._targetDT = 1 / 60.0;
     }
 
-    addAnimation<T>(object: AnimationObject<T>) {
+    addAnimation<T>(object: Billboard.AnimationObject<T>) {
         this._animObjects.push(object);
     }
 
