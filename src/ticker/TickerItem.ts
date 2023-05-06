@@ -34,12 +34,12 @@ export default class TickerItem extends Item {
 
     get position() {
         const transform = this.clone.transformStyle;
-        const values = transform.match(/\d+/g);
+        const values = transform.match(/-?\d+/g);
         const output: [x: number, y: number] = [-9999, -9999];
 
         if (values) {
-            output[0] = parseInt(values[0]);
-            output[1] = parseInt(values[1]);
+            output[0] = parseFloat(values[0]);
+            output[1] = parseFloat(values[1]);
         }
 
         return output;
