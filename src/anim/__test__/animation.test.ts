@@ -1,13 +1,9 @@
 import Square from "test/pages/square/Square";
 import AnimationController from "../AnimationController";
 import { setTranslate } from "@billboard/dom";
-
-function lerp(v0: number, v1: number, t: number) {
-    return v0 * (1 - t) + v1 * t;
-}
+import DOMAnimationObject from "../DOMAnimationObject";
 
 function getPositionFromMatrix(matrix: string): Position {
-    const position: Position = [-9999, -9999];
     const parsed = matrix.match(/-?\d+/g)!;
 
     return [parseFloat(parsed[4]), parseFloat(parsed[5])];
@@ -26,21 +22,11 @@ describe("animation system", () => {
         let DESTINATION = 100;
         const element = await $("#square");
 
-        let animationController = new AnimationController();
-        animationController.addAnimation({
-            ref: Square.square,
-            position: [0, 0],
-            update: function (dt) {
-                this.position[0] = lerp(
-                    this.position[0],
-                    DESTINATION,
-                    dt * 0.01
-                );
-            },
-            draw: function () {
-                setTranslate(this.ref, this.position);
-            },
-        });
+        const animationController = new AnimationController();
+        const animObject = new DOMAnimationObject(999, Square.square);
+        animObject.position = [0, 0];
+        animObject.destination = [DESTINATION, 0];
+        animationController.addAnimation(animObject);
 
         animationController.start();
 
@@ -50,24 +36,25 @@ describe("animation system", () => {
             const transform = await element.getCSSProperty("transform");
             const position = getPositionFromMatrix(transform.value!);
 
-            return position[0] >= DESTINATION;
+            if (position[0] >= DESTINATION) return position[0];
         });
 
-        expect(result).toBeTruthy();
+        expect(result).toBeCloseTo(DESTINATION);
 
         animationController.stop();
 
         DESTINATION = -100;
+        animObject.destination[0] = DESTINATION;
         animationController.start();
 
         result = await browser.waitUntil(async () => {
             const transform = await element.getCSSProperty("transform");
             const position = getPositionFromMatrix(transform.value!);
 
-            return position[0] <= DESTINATION;
+            if (position[0] <= DESTINATION) return position[0];
         });
 
-        expect(result).toBeTruthy();
+        expect(result).toBeCloseTo(DESTINATION);
     });
 
     it("should animate vertically", async () => {
@@ -75,20 +62,10 @@ describe("animation system", () => {
         const element = await $("#square");
 
         let animationController = new AnimationController();
-        animationController.addAnimation({
-            ref: Square.square,
-            position: [0, 0],
-            update: function (dt) {
-                this.position[1] = lerp(
-                    this.position[1],
-                    DESTINATION,
-                    dt * 0.01
-                );
-            },
-            draw: function () {
-                setTranslate(this.ref, this.position);
-            },
-        });
+        const animObject = new DOMAnimationObject(999, Square.square);
+        animObject.position = [0, 0];
+        animObject.destination = [0, DESTINATION];
+        animationController.addAnimation(animObject);
 
         animationController.start();
 
@@ -98,23 +75,24 @@ describe("animation system", () => {
             const transform = await element.getCSSProperty("transform");
             const position = getPositionFromMatrix(transform.value!);
 
-            return position[1] >= DESTINATION;
+            if (position[1] >= DESTINATION) return position[1];
         });
 
-        expect(result).toBeTruthy();
+        expect(result).toBeCloseTo(DESTINATION);
 
         animationController.stop();
 
         DESTINATION = -100;
+        animObject.destination[1] = DESTINATION;
         animationController.start();
 
         result = await browser.waitUntil(async () => {
             const transform = await element.getCSSProperty("transform");
             const position = getPositionFromMatrix(transform.value!);
 
-            return position[1] <= DESTINATION;
+            if (position[1] <= DESTINATION) return position[1];
         });
 
-        expect(result).toBeTruthy();
+        expect(result).toBeCloseTo(DESTINATION);
     });
 });

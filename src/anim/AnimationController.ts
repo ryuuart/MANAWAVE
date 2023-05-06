@@ -1,5 +1,7 @@
+import AnimationObject from "./AnimationObject";
+
 export default class AnimationController {
-    private _animObjects: Billboard.AnimationObject<any>[];
+    private _animObjects: Map<number, AnimationObject<any>>;
 
     private _isPaused: boolean;
     private _hasStarted: boolean;
@@ -11,7 +13,7 @@ export default class AnimationController {
     private _targetDT: number; // Target Delta Time
 
     constructor() {
-        this._animObjects = [];
+        this._animObjects = new Map();
 
         this._hasStarted = false;
         this._isPaused = false;
@@ -21,8 +23,12 @@ export default class AnimationController {
         this._targetDT = 1 / 60.0;
     }
 
-    addAnimation<T>(object: Billboard.AnimationObject<T>) {
-        this._animObjects.push(object);
+    addAnimation<T>(object: AnimationObject<T>) {
+        this._animObjects.set(object.id, object);
+    }
+
+    removeAnimation<T>(object: AnimationObject<T>) {
+        this._animObjects.delete(object.id);
     }
 
     start() {
@@ -71,12 +77,12 @@ export default class AnimationController {
             let dt = Math.min(frameTime, this._targetDT);
 
             // Update the overall system
-            for (const animObject of this._animObjects) {
+            for (const animObject of this._animObjects.values()) {
                 animObject.update(dt, this._totalTime);
             }
 
             // Render
-            for (const animObject of this._animObjects) {
+            for (const animObject of this._animObjects.values()) {
                 animObject.draw();
             }
 
