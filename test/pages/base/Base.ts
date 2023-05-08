@@ -1,10 +1,22 @@
 import sharedCSS from "test/pages/shared/style.css?raw";
 
 export default class Base {
-    constructor() {}
+    protected htmlRoot: HTMLElement;
+
+    constructor() {
+        const currentRoot = document.getElementById("test-root");
+        if (currentRoot) this.htmlRoot = currentRoot;
+        else {
+            this.htmlRoot = document.createElement("div");
+            this.htmlRoot.id = "test-root";
+            this.htmlRoot.style.overflow = "scroll";
+
+            document.body.append(this.htmlRoot);
+        }
+    }
 
     loadHTML(htmlText: string) {
-        document.body.insertAdjacentHTML("beforeend", htmlText);
+        this.htmlRoot.insertAdjacentHTML("beforeend", htmlText);
     }
 
     loadCSS(cssText: string) {
@@ -20,7 +32,7 @@ export default class Base {
     }
 
     clearContent() {
-        document.body.replaceChildren();
+        this.htmlRoot.replaceChildren();
 
         const styleElements = document.getElementsByTagName("style");
         for (const element of styleElements) {
