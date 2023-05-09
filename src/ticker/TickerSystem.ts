@@ -70,6 +70,22 @@ export default class TickerSystem {
         }
     }
 
+    addItem(position: Position) {
+        const tickerItem = this._tickerItemFactory.create(1)[0];
+
+        if (position) tickerItem.position = position;
+    }
+
+    addNItem(n: number, callback?: (i: number) => Position) {
+        const tickerItems = this._tickerItemFactory.create(n);
+
+        if (callback) {
+            tickerItems.forEach((item, i) => {
+                item.position = callback(i);
+            });
+        }
+    }
+
     // remove all clones
     clear() {
         for (const item of this._tickerItemStore.allTickerItems) {
