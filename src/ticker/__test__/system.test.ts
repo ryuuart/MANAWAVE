@@ -12,6 +12,47 @@ describe("system", () => {
         Square.clearContent();
     });
 
+    it("should retrieve an item given a condition", async () => {
+        Basic.loadContent();
+
+        const system = new TickerSystem(Basic.ticker);
+        system.load();
+
+        const items = system.getItemsByCondition((item) => {
+            return item.position[0] === item.dimensions.width;
+        });
+
+        await expect(items.length).toBeGreaterThan(0);
+    });
+    it("should retrieve an item given an id", async () => {
+        Basic.loadContent();
+
+        const system = new TickerSystem(Basic.ticker);
+        system.load();
+
+        const renderedItem = await $(Basic.ticker).$("*/*[1]");
+        const id = parseInt(await renderedItem.getAttribute("data-id"));
+        const item = system.getItemById(id);
+
+        await expect(item).toBeTruthy();
+    });
+    it("should retrieve an item given an element", async () => {
+        Basic.loadContent();
+
+        const system = new TickerSystem(Basic.ticker);
+        system.load();
+
+        // I'm not sure why this querySelector needs a third child
+        // the 2nd :first-child returns the same as the first :/
+        const element = Basic.ticker.querySelector(
+            ":first-child>:first-child>:first-child"
+        );
+
+        const item = system.getItemByElement(element!);
+
+        await expect(item).toBeTruthy();
+    });
+
     it("add a single item to the ticker retroactively", async () => {
         Basic.loadContent();
 
