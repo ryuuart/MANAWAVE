@@ -17,6 +17,24 @@ export default class TickerSystem {
         );
     }
 
+    get allItems(): IterableIterator<TickerItem> {
+        return this._tickerItemStore.allTickerItems;
+    }
+
+    getItemsByCondition(
+        predicate: (item: TickerItem) => boolean
+    ): TickerItem[] {
+        return Array.from(this.allItems).filter(predicate);
+    }
+
+    getItemById(id: number): TickerItem | null {
+        return this._tickerItemStore.get(id);
+    }
+
+    getItemByElement(element: Element): TickerItem | null {
+        return this._tickerItemStore.get(element);
+    }
+
     fill() {
         this.clear();
 
