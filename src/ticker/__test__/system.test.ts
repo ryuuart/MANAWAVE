@@ -24,6 +24,7 @@ describe("system", () => {
 
         await expect(items.length).toBeGreaterThan(0);
     });
+
     it("should retrieve an item given an id", async () => {
         Basic.loadContent();
 
@@ -36,6 +37,7 @@ describe("system", () => {
 
         await expect(item).toBeTruthy();
     });
+
     it("should retrieve an item given an element", async () => {
         Basic.loadContent();
 
@@ -52,6 +54,10 @@ describe("system", () => {
 
         await expect(item).toBeTruthy();
     });
+
+    it("should remove an item retroactively", async () => {});
+
+    it("should remove a list of items retroactively", async () => {});
 
     it("add a single item to the ticker retroactively", async () => {
         Basic.loadContent();
