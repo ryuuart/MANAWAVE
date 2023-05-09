@@ -55,9 +55,53 @@ describe("system", () => {
         await expect(item).toBeTruthy();
     });
 
-    it("should remove an item retroactively", async () => {});
+    it("should remove an item retroactively", async () => {
+        Basic.loadContent();
 
-    it("should remove a list of items retroactively", async () => {});
+        const system = new TickerSystem(Basic.ticker);
+        system.load();
+
+        const selectedItem = system.getItemByElement(
+            Basic.ticker.querySelector(
+                ":first-child>:first-child>:first-child"
+            )!
+        );
+        system.removeItem(selectedItem!);
+
+        for (const item of system.allItems) {
+            expect(item).not.toEqual(selectedItem);
+        }
+    });
+
+    it("should remove a list of items retroactively", async () => {
+        Basic.loadContent();
+
+        const system = new TickerSystem(Basic.ticker);
+        system.load();
+
+        // Find items to remove
+        const items = system.getItemsByCondition((item) => {
+            return item.dimensions.width <= 500;
+        });
+
+        // Are these items actually in the system
+        for (const item of items) {
+            expect(Array.from(system.allItems)).toContain(item);
+        }
+
+        // Remove them
+        system.removeSelection(items);
+
+        // Checking if it's really removed
+        for (const item of system.allItems) {
+            expect(items).not.toContain(item);
+        }
+
+        // Testing again, but with the condition for consistency
+        for (const item of system.allItems) {
+            expect(item.dimensions.width).toBeGreaterThan(500);
+        }
+    });
 
     it("add a single item to the ticker retroactively", async () => {
         Basic.loadContent();
