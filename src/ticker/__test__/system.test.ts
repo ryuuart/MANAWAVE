@@ -12,94 +12,146 @@ describe("system", () => {
         Square.clearContent();
     });
 
-    it("should retrieve an item given a condition", async () => {
-        Basic.loadContent();
+    describe("get, add, and remove items", () => {
+        it("should retrieve an item given a condition", async () => {
+            Basic.loadContent();
 
-        const system = new TickerSystem(Basic.ticker);
-        system.load();
+            const system = new TickerSystem(Basic.ticker);
+            system.load();
 
-        const items = system.getItemsByCondition((item) => {
-            return item.position[0] === item.dimensions.width;
-        });
-
-        await expect(items.length).toBeGreaterThan(0);
-    });
-    it("should retrieve an item given an id", async () => {
-        Basic.loadContent();
-
-        const system = new TickerSystem(Basic.ticker);
-        system.load();
-
-        const renderedItem = await $(Basic.ticker).$("*/*[1]");
-        const id = parseInt(await renderedItem.getAttribute("data-id"));
-        const item = system.getItemById(id);
-
-        await expect(item).toBeTruthy();
-    });
-    it("should retrieve an item given an element", async () => {
-        Basic.loadContent();
-
-        const system = new TickerSystem(Basic.ticker);
-        system.load();
-
-        // I'm not sure why this querySelector needs a third child
-        // the 2nd :first-child returns the same as the first :/
-        const element = Basic.ticker.querySelector(
-            ":first-child>:first-child>:first-child"
-        );
-
-        const item = system.getItemByElement(element!);
-
-        await expect(item).toBeTruthy();
-    });
-
-    it("add a single item to the ticker retroactively", async () => {
-        Basic.loadContent();
-
-        const system = new TickerSystem(Basic.ticker);
-        system.load();
-
-        const position: Position = [1234, 1235];
-        system.addItem(position);
-
-        const element = await $(Basic.ticker).$(
-            `div[style="transform: translate(${position[0]}px, ${position[1]}px);"]`
-        );
-
-        await expect(element).toHaveStyle({
-            transform: `matrix(1, 0, 0, 1, ${position[0]}, ${position[1]})`,
-        });
-    });
-
-    it("add a multiple items to the ticker retroactively", async () => {
-        Basic.loadContent();
-
-        const system = new TickerSystem(Basic.ticker);
-        system.load();
-
-        const position: Position = [1234, 1235];
-        const count = 10;
-        system.addNItem(count, (i) => {
-            return [position[0] + i, position[1] + i];
-        });
-
-        const elements: WebdriverIO.Element[] = [];
-        for (let i = 0; i < count; i++) {
-            const element = await $(Basic.ticker).$(
-                `div[style="transform: translate(${position[0] + i}px, ${
-                    position[1] + i
-                }px);"]`
-            );
-            elements.push(element);
-        }
-
-        for (const [i, e] of elements.entries()) {
-            await expect(e).toHaveStyle({
-                transform: `matrix(1, 0, 0, 1, ${position[0] + i}, ${
-                    position[1] + i
-                })`,
+            const items = system.getItemsByCondition((item) => {
+                return item.position[0] === item.dimensions.width;
             });
-        }
+
+            await expect(items.length).toBeGreaterThan(0);
+        });
+
+        it("should retrieve an item given an id", async () => {
+            Basic.loadContent();
+
+            const system = new TickerSystem(Basic.ticker);
+            system.load();
+
+            const renderedItem = await $(Basic.ticker).$("*/*[1]");
+            const id = parseInt(await renderedItem.getAttribute("data-id"));
+            const item = system.getItemById(id);
+
+            await expect(item).toBeTruthy();
+        });
+
+        it("should retrieve an item given an element", async () => {
+            Basic.loadContent();
+
+            const system = new TickerSystem(Basic.ticker);
+            system.load();
+
+            // I'm not sure why this querySelector needs a third child
+            // the 2nd :first-child returns the same as the first :/
+            const element = Basic.ticker.querySelector(
+                ":first-child>:first-child>:first-child"
+            );
+
+            const item = system.getItemByElement(element!);
+
+            await expect(item).toBeTruthy();
+        });
+
+        it("should remove an item retroactively", async () => {
+            Basic.loadContent();
+
+            const system = new TickerSystem(Basic.ticker);
+            system.load();
+
+            const selectedItem = system.getItemByElement(
+                Basic.ticker.querySelector(
+                    ":first-child>:first-child>:first-child"
+                )!
+            );
+            system.removeItem(selectedItem!);
+
+            for (const item of system.allItems) {
+                expect(item).not.toEqual(selectedItem);
+            }
+        });
+
+        it("should remove a list of items retroactively", async () => {
+            Basic.loadContent();
+
+            const system = new TickerSystem(Basic.ticker);
+            system.load();
+
+            // Find items to remove
+            const items = system.getItemsByCondition((item) => {
+                return item.dimensions.width <= 500;
+            });
+
+            // Are these items actually in the system
+            for (const item of items) {
+                expect(Array.from(system.allItems)).toContain(item);
+            }
+
+            // Remove them
+            system.removeSelection(items);
+
+            // Checking if it's really removed
+            for (const item of system.allItems) {
+                expect(items).not.toContain(item);
+            }
+
+            // Testing again, but with the condition for consistency
+            for (const item of system.allItems) {
+                expect(item.dimensions.width).toBeGreaterThan(500);
+            }
+        });
+
+        it("add a single item to the ticker retroactively", async () => {
+            Basic.loadContent();
+
+            const system = new TickerSystem(Basic.ticker);
+            system.load();
+
+            const position: Position = [1234, 1235];
+            system.addItem(position);
+
+            const element = await $(Basic.ticker).$(
+                `div[style="transform: translate(${position[0]}px, ${position[1]}px);"]`
+            );
+
+            await expect(element).toHaveStyle({
+                transform: `matrix(1, 0, 0, 1, ${position[0]}, ${position[1]})`,
+            });
+        });
+
+        it("add a multiple items to the ticker retroactively", async () => {
+            Basic.loadContent();
+
+            const system = new TickerSystem(Basic.ticker);
+            system.load();
+
+            const position: Position = [1234, 1235];
+            const count = 10;
+            system.addNItem(count, (i) => {
+                return [position[0] + i, position[1] + i];
+            });
+
+            const elements: WebdriverIO.Element[] = [];
+            for (let i = 0; i < count; i++) {
+                const element = await $(Basic.ticker).$(
+                    `div[style="transform: translate(${position[0] + i}px, ${
+                        position[1] + i
+                    }px);"]`
+                );
+                elements.push(element);
+            }
+
+            for (const [i, e] of elements.entries()) {
+                await expect(e).toHaveStyle({
+                    transform: `matrix(1, 0, 0, 1, ${position[0] + i}, ${
+                        position[1] + i
+                    })`,
+                });
+            }
+        });
     });
 
     // Does not guarantee it is laid out properly, only that it runs

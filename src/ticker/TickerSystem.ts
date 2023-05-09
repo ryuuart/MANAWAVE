@@ -88,7 +88,7 @@ export default class TickerSystem {
         }
     }
 
-    addItem(position: Position) {
+    addItem(position?: Position) {
         const tickerItem = this._tickerItemFactory.create(1)[0];
 
         if (position) tickerItem.position = position;
@@ -101,6 +101,16 @@ export default class TickerSystem {
             tickerItems.forEach((item, i) => {
                 item.position = callback(i);
             });
+        }
+    }
+
+    removeItem(item: TickerItem) {
+        item.remove();
+    }
+
+    removeSelection(items: TickerItem[]) {
+        for (const item of items) {
+            item.remove();
         }
     }
 
