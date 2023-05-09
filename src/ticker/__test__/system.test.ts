@@ -12,6 +12,55 @@ describe("system", () => {
         Square.clearContent();
     });
 
+    it("add a single item to the ticker retroactively", async () => {
+        Basic.loadContent();
+
+        const system = new TickerSystem(Basic.ticker);
+        system.load();
+
+        const position: Position = [1234, 1235];
+        system.addItem(position);
+
+        const element = await $(Basic.ticker).$(
+            `div[style="transform: translate(${position[0]}px, ${position[1]}px);"]`
+        );
+
+        await expect(element).toHaveStyle({
+            transform: `matrix(1, 0, 0, 1, ${position[0]}, ${position[1]})`,
+        });
+    });
+
+    it("add a multiple items to the ticker retroactively", async () => {
+        Basic.loadContent();
+
+        const system = new TickerSystem(Basic.ticker);
+        system.load();
+
+        const position: Position = [1234, 1235];
+        const count = 10;
+        system.addNItem(count, (i) => {
+            return [position[0] + i, position[1] + i];
+        });
+
+        const elements: WebdriverIO.Element[] = [];
+        for (let i = 0; i < count; i++) {
+            const element = await $(Basic.ticker).$(
+                `div[style="transform: translate(${position[0] + i}px, ${
+                    position[1] + i
+                }px);"]`
+            );
+            elements.push(element);
+        }
+
+        for (const [i, e] of elements.entries()) {
+            await expect(e).toHaveStyle({
+                transform: `matrix(1, 0, 0, 1, ${position[0] + i}, ${
+                    position[1] + i
+                })`,
+            });
+        }
+    });
+
     // Does not guarantee it is laid out properly, only that it runs
     it("can fill the ticker with some items", async () => {
         Basic.loadContent();
