@@ -1,13 +1,16 @@
+import { System } from "@billboard/lib";
 import { Ticker, TickerItem } from ".";
 import { TickerStore } from "../data";
 import TickerItemFactory from "./TickerItemFactory";
 
-export default class TickerSystem {
+export default class TickerSystem extends System {
     private _ticker: Ticker;
     private _tickerItemStore: TickerStore;
     private _tickerItemFactory: TickerItemFactory;
 
     constructor(element: HTMLElement) {
+        super();
+
         this._ticker = new Ticker(element);
         this._tickerItemStore = new TickerStore();
 
@@ -135,4 +138,8 @@ export default class TickerSystem {
         this._tickerItemFactory.clearTemplates();
         this._ticker.unload();
     }
+
+    update(dt: DOMHighResTimeStamp, t: DOMHighResTimeStamp) {}
+
+    draw() {}
 }
