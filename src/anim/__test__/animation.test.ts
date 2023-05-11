@@ -2,8 +2,8 @@ import Square from "test/pages/square/Square";
 import AnimationPlayer from "../AnimationPlayer";
 import { setTranslate } from "@billboard/dom";
 import AnimationController from "../AnimationController";
-import { System } from "@billboard/lib";
-import { lerp } from "../Util";
+import TestSystem from "./TestSystem";
+import Basic from "test/pages/basic/Basic";
 
 function getPositionFromMatrix(matrix: string): Position {
     const parsed = matrix.match(/-?\d+/g)!;
@@ -11,51 +11,47 @@ function getPositionFromMatrix(matrix: string): Position {
     return [parseFloat(parsed[4]), parseFloat(parsed[5])];
 }
 
-class TestAnimationSystem extends System {
-    destination: Position;
-    position: Position;
-    element: Element;
+async function getPositionUntil(
+    element: WebdriverIO.Element,
+    condition: (position: Position) => boolean
+): Promise<Position | undefined> {
+    const result = await browser.waitUntil(async () => {
+        const transform = await element.getCSSProperty("transform");
+        const position = getPositionFromMatrix(transform.value!);
 
-    constructor(element: Element) {
-        super();
+        if (condition(position)) return position;
+    });
 
-        this.position = [-999, -999];
-        this.destination = [0, 0];
-        this.element = element;
-    }
-
-    update(dt: DOMHighResTimeStamp, t: DOMHighResTimeStamp) {
-        this.position[0] = lerp(
-            this.position[0],
-            this.destination[0],
-            dt * 0.01
-        );
-        this.position[1] = lerp(
-            this.position[1],
-            this.destination[1],
-            dt * 0.01
-        );
-    }
-
-    draw() {
-        setTranslate(this.element, this.position);
-    }
+    return result;
 }
 
-let system: TestAnimationSystem;
+let squareSystem: TestSystem;
+let basicSystem: TestSystem;
 
 describe("animation system", () => {
     beforeEach(() => {
         Square.loadContent();
+        Basic.loadContent();
         setTranslate(Square.square, [0, 0]);
+        setTranslate(Basic.ticker, [0, 0]);
 
-        system = new TestAnimationSystem(Square.square);
-        system.position = [0, 0];
-        AnimationController.registerSystem(system);
+        squareSystem = new TestSystem(Square.square);
+        basicSystem = new TestSystem(Basic.ticker);
+
+        squareSystem.position = [0, 0];
+        basicSystem.position = [0, 0];
+
+        AnimationController.registerSystem(squareSystem);
+        AnimationController.registerSystem(basicSystem);
     });
     afterEach(() => {
+        AnimationController.stop();
+
         Square.clearContent();
-        AnimationController.deregisterSystem(system);
+        Basic.clearContent();
+
+        AnimationController.deregisterSystem(squareSystem);
+        AnimationController.deregisterSystem(basicSystem);
     });
 
     describe("player", () => {
@@ -126,71 +122,92 @@ describe("animation system", () => {
         });
     });
 
+    it("should animate independent of each system", async () => {
+        let SQUARE_DESTINATION: Position = [100, 100];
+        let BASIC_DESTINATION: Position = [300, 300];
+
+        squareSystem.destination = SQUARE_DESTINATION;
+        basicSystem.destination = BASIC_DESTINATION;
+
+        AnimationController.start();
+
+        const squareElement = await $("#square");
+        const squareResult = await getPositionUntil(
+            squareElement,
+            (position) => {
+                return (
+                    position[0] >= SQUARE_DESTINATION[0] &&
+                    position[1] >= SQUARE_DESTINATION[1]
+                );
+            }
+        );
+
+        const basicElement = await $("#ticker");
+        const basicResult = await getPositionUntil(basicElement, (position) => {
+            return (
+                position[0] >= BASIC_DESTINATION[0] &&
+                position[1] >= BASIC_DESTINATION[1]
+            );
+        });
+
+        AnimationController.stop();
+
+        expect(squareResult).not.toEqual(basicResult);
+    });
+
     it("should animate horizontally", async () => {
         let DESTINATION = 100;
         const element = await $("#square");
-
-        system.destination[0] = DESTINATION;
-        AnimationController.start();
-
         let result;
 
-        result = await browser.waitUntil(async () => {
-            const transform = await element.getCSSProperty("transform");
-            const position = getPositionFromMatrix(transform.value!);
+        squareSystem.destination[0] = DESTINATION;
+        AnimationController.start();
 
-            if (position[0] >= DESTINATION) return position[0];
+        result = await getPositionUntil(element, (position) => {
+            return position[0] >= DESTINATION;
         });
 
-        expect(result).toBeCloseTo(DESTINATION);
+        expect(result![0]).toBeCloseTo(DESTINATION);
 
         AnimationController.stop();
 
         DESTINATION = -100;
-        system.destination[0] = DESTINATION;
+        squareSystem.destination[0] = DESTINATION;
+
         AnimationController.start();
 
-        result = await browser.waitUntil(async () => {
-            const transform = await element.getCSSProperty("transform");
-            const position = getPositionFromMatrix(transform.value!);
-
-            if (position[0] <= DESTINATION) return position[0];
+        result = await getPositionUntil(element, (position) => {
+            return position[0] <= DESTINATION;
         });
 
-        expect(result).toBeCloseTo(DESTINATION);
+        expect(result![0]).toBeCloseTo(DESTINATION);
     });
 
     it("should animate vertically", async () => {
         let DESTINATION = 100;
         const element = await $("#square");
-
-        system.destination[1] = DESTINATION;
-        AnimationController.start();
-
         let result;
 
-        result = await browser.waitUntil(async () => {
-            const transform = await element.getCSSProperty("transform");
-            const position = getPositionFromMatrix(transform.value!);
+        squareSystem.destination[1] = DESTINATION;
+        AnimationController.start();
 
-            if (position[1] >= DESTINATION) return position[1];
+        result = await getPositionUntil(element, (position) => {
+            return position[1] >= DESTINATION;
         });
 
-        expect(result).toBeCloseTo(DESTINATION);
+        expect(result![1]).toBeCloseTo(DESTINATION);
 
         AnimationController.stop();
 
         DESTINATION = -100;
-        system.destination[1] = DESTINATION;
-        system.start();
+        squareSystem.destination[1] = DESTINATION;
 
-        result = await browser.waitUntil(async () => {
-            const transform = await element.getCSSProperty("transform");
-            const position = getPositionFromMatrix(transform.value!);
+        AnimationController.start();
 
-            if (position[1] <= DESTINATION) return position[1];
+        result = await getPositionUntil(element, (position) => {
+            return position[1] <= DESTINATION;
         });
 
-        expect(result).toBeCloseTo(DESTINATION);
+        expect(result![1]).toBeCloseTo(DESTINATION);
     });
 });
