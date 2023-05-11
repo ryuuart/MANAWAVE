@@ -1,108 +1,71 @@
-import AnimationObject from "./AnimationObject";
+import { System } from "@billboard/lib";
+import AnimationPlayer from "./AnimationPlayer";
 
 export default class AnimationController {
-    private _animObjects: Map<number, AnimationObject<any>>;
+    private static _systems: Set<System> = new Set();
 
-    private _isPaused: boolean;
-    private _hasStarted: boolean;
+    private static _renderID: number | undefined;
 
-    private _renderID: number | undefined;
+    private static _currentTime: DOMHighResTimeStamp = window.performance.now();
+    private static _totalTime: DOMHighResTimeStamp = 0;
+    private static _targetDT: number = 1 / 60.0; // Target Delta Time
 
-    private _currentTime: DOMHighResTimeStamp;
-    private _totalTime: DOMHighResTimeStamp;
-    private _targetDT: number; // Target Delta Time
+    private static _player: AnimationPlayer = new AnimationPlayer();
 
-    constructor() {
-        this._animObjects = new Map();
+    static start() {
+        AnimationController._player.start(() => {
+            AnimationController._totalTime = 0;
+            AnimationController._currentTime = window.performance.now();
 
-        this._hasStarted = false;
-        this._isPaused = false;
-
-        this._currentTime = window.performance.now();
-        this._totalTime = 0;
-        this._targetDT = 1 / 60.0;
-    }
-
-    get status() {
-        return {
-            started: this._hasStarted,
-            paused: this._isPaused,
-        };
-    }
-
-    addAnimation<T>(object: AnimationObject<T>) {
-        this._animObjects.set(object.id, object);
-    }
-
-    removeAnimation<T>(selection: number | AnimationObject<T>) {
-        const animationObject = this.getAnimationObject(selection);
-        if (animationObject) this._animObjects.delete(animationObject.id);
-    }
-
-    getAnimationObject<T>(
-        selection: number | AnimationObject<T>
-    ): AnimationObject<T> | null {
-        let id;
-        if (typeof selection === "number") id = selection;
-        else id = selection.id;
-
-        const animationObject = this._animObjects.get(id);
-        return animationObject ?? null;
-    }
-
-    start() {
-        if (!this._hasStarted) {
-            this._hasStarted = true;
-
-            this._totalTime = 0;
-            this._currentTime = window.performance.now();
-
-            this._renderID = window.requestAnimationFrame(
-                this.render.bind(this)
+            AnimationController._renderID = window.requestAnimationFrame(
+                AnimationController.render.bind(AnimationController)
             );
-        }
+        });
     }
 
-    stop() {
-        if (this._hasStarted && this._renderID) {
-            this._isPaused = false;
-            this._hasStarted = false;
-
-            window.cancelAnimationFrame(this._renderID);
-        }
+    static stop() {
+        AnimationController._player.stop(() => {
+            if (AnimationController._renderID) {
+                window.cancelAnimationFrame(AnimationController._renderID);
+            }
+        });
     }
 
-    play() {
-        if (this._hasStarted && this._isPaused) {
-            this._isPaused = false;
-        }
+    static play() {
+        AnimationController._player.play();
     }
 
-    pause() {
-        if (this._hasStarted && !this._isPaused) {
-            this._isPaused = true;
-        }
+    static pause() {
+        AnimationController._player.pause();
     }
 
-    render(timestamp: DOMHighResTimeStamp) {
+    static registerSystem(system: System) {
+        AnimationController._systems.add(system);
+    }
+
+    static deregisterSystem(system: System) {
+        AnimationController._systems.delete(system);
+    }
+
+    static render(timestamp: DOMHighResTimeStamp) {
         let newTime = timestamp;
-        let frameTime = newTime - this._currentTime;
-        this._currentTime = newTime;
+        let frameTime = newTime - AnimationController._currentTime;
+        AnimationController._currentTime = newTime;
 
         // if time has progressed
         while (frameTime > 0.0) {
             // if you're lagging, use the frame time
             // if you're running super fast, sync to the fixed time
-            let dt = Math.min(frameTime, this._targetDT);
+            let dt = Math.min(frameTime, AnimationController._targetDT);
 
             // Update the overall system
-            for (const animObject of this._animObjects.values()) {
-                animObject.update(dt, this._totalTime);
+            for (const system of AnimationController._systems) {
+                system.update(dt, AnimationController._totalTime);
             }
 
             // Render
-            for (const animObject of this._animObjects.values()) {
-                animObject.draw();
+            for (const system of AnimationController._systems) {
+                system.draw();
             }
 
             // step once

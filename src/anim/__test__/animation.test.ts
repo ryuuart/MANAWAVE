@@ -1,8 +1,9 @@
 import Square from "test/pages/square/Square";
-import AnimationController from "../AnimationController";
+import AnimationPlayer from "../AnimationPlayer";
 import { setTranslate } from "@billboard/dom";
-import DOMAnimationObject from "../DOMAnimationObject";
-import AnimationObject from "../AnimationObject";
+import AnimationController from "../AnimationController";
+import TestSystem from "./TestSystem";
+import Basic from "test/pages/basic/Basic";
 
 function getPositionFromMatrix(matrix: string): Position {
     const parsed = matrix.match(/-?\d+/g)!;
@@ -10,168 +11,203 @@ function getPositionFromMatrix(matrix: string): Position {
     return [parseFloat(parsed[4]), parseFloat(parsed[5])];
 }
 
+async function getPositionUntil(
+    element: WebdriverIO.Element,
+    condition: (position: Position) => boolean
+): Promise<Position | undefined> {
+    const result = await browser.waitUntil(async () => {
+        const transform = await element.getCSSProperty("transform");
+        const position = getPositionFromMatrix(transform.value!);
+
+        if (condition(position)) return position;
+    });
+
+    return result;
+}
+
+let squareSystem: TestSystem;
+let basicSystem: TestSystem;
+
 describe("animation system", () => {
     beforeEach(() => {
         Square.loadContent();
+        Basic.loadContent();
         setTranslate(Square.square, [0, 0]);
+        setTranslate(Basic.ticker, [0, 0]);
+
+        squareSystem = new TestSystem(Square.square);
+        basicSystem = new TestSystem(Basic.ticker);
+
+        squareSystem.position = [0, 0];
+        basicSystem.position = [0, 0];
+
+        AnimationController.registerSystem(squareSystem);
+        AnimationController.registerSystem(basicSystem);
     });
     afterEach(() => {
+        AnimationController.stop();
+
         Square.clearContent();
+        Basic.clearContent();
+
+        AnimationController.deregisterSystem(squareSystem);
+        AnimationController.deregisterSystem(basicSystem);
     });
 
-    it("should have proper control state throughout animation", async () => {
-        const animationController = new AnimationController();
+    describe("player", () => {
+        it("should have proper control state throughout animation", async () => {
+            const player = new AnimationPlayer();
 
-        expect(animationController.status).toEqual({
-            started: false,
-            paused: false,
-        });
+            expect(player.status).toEqual({
+                started: false,
+                paused: false,
+            });
 
-        animationController.pause();
+            player.pause();
 
-        expect(animationController.status).toEqual({
-            started: false,
-            paused: false,
-        });
+            expect(player.status).toEqual({
+                started: false,
+                paused: false,
+            });
 
-        animationController.start();
+            player.start();
 
-        expect(animationController.status).toEqual({
-            started: true,
-            paused: false,
-        });
+            expect(player.status).toEqual({
+                started: true,
+                paused: false,
+            });
 
-        animationController.pause();
+            player.pause();
 
-        expect(animationController.status).toEqual({
-            started: true,
-            paused: true,
-        });
+            expect(player.status).toEqual({
+                started: true,
+                paused: true,
+            });
 
-        animationController.play();
+            player.play();
 
-        expect(animationController.status).toEqual({
-            started: true,
-            paused: false,
-        });
+            expect(player.status).toEqual({
+                started: true,
+                paused: false,
+            });
 
-        animationController.stop();
+            player.stop();
 
-        expect(animationController.status).toEqual({
-            started: false,
-            paused: false,
-        });
+            expect(player.status).toEqual({
+                started: false,
+                paused: false,
+            });
 
-        animationController.pause();
+            player.pause();
 
-        expect(animationController.status).toEqual({
-            started: false,
-            paused: false,
-        });
+            expect(player.status).toEqual({
+                started: false,
+                paused: false,
+            });
 
-        animationController.start();
+            player.start();
 
-        expect(animationController.status).toEqual({
-            started: true,
-            paused: false,
-        });
+            expect(player.status).toEqual({
+                started: true,
+                paused: false,
+            });
 
-        animationController.pause();
-        animationController.stop();
+            player.pause();
+            player.stop();
 
-        expect(animationController.status).toEqual({
-            started: false,
-            paused: false,
+            expect(player.status).toEqual({
+                started: false,
+                paused: false,
+            });
         });
     });
 
-    it("should remove a given animation object", async () => {
-        const animationController = new AnimationController();
-        const animObject = new AnimationObject(999, Square.square);
+    it("should animate independent of each system", async () => {
+        let SQUARE_DESTINATION: Position = [100, 100];
+        let BASIC_DESTINATION: Position = [300, 300];
 
-        animationController.addAnimation(animObject);
-        animationController.removeAnimation(999);
+        squareSystem.destination = SQUARE_DESTINATION;
+        basicSystem.destination = BASIC_DESTINATION;
 
-        const result = animationController.getAnimationObject(999);
+        AnimationController.start();
 
-        expect(result).toBeFalsy();
+        const squareElement = await $("#square");
+        const squareResult = await getPositionUntil(
+            squareElement,
+            (position) => {
+                return (
+                    position[0] >= SQUARE_DESTINATION[0] &&
+                    position[1] >= SQUARE_DESTINATION[1]
+                );
+            }
+        );
+
+        const basicElement = await $("#ticker");
+        const basicResult = await getPositionUntil(basicElement, (position) => {
+            return (
+                position[0] >= BASIC_DESTINATION[0] &&
+                position[1] >= BASIC_DESTINATION[1]
+            );
+        });
+
+        AnimationController.stop();
+
+        expect(squareResult).not.toEqual(basicResult);
     });
 
     it("should animate horizontally", async () => {
         let DESTINATION = 100;
         const element = await $("#square");
-
-        const animationController = new AnimationController();
-        const animObject = new DOMAnimationObject(999, Square.square);
-        animObject.position = [0, 0];
-        animObject.destination = [DESTINATION, 0];
-        animationController.addAnimation(animObject);
-
-        animationController.start();
-
         let result;
 
-        result = await browser.waitUntil(async () => {
-            const transform = await element.getCSSProperty("transform");
-            const position = getPositionFromMatrix(transform.value!);
+        squareSystem.destination[0] = DESTINATION;
+        AnimationController.start();
 
-            if (position[0] >= DESTINATION) return position[0];
+        result = await getPositionUntil(element, (position) => {
+            return position[0] >= DESTINATION;
         });
 
-        expect(result).toBeCloseTo(DESTINATION);
+        expect(result![0]).toBeCloseTo(DESTINATION);
 
-        animationController.stop();
+        AnimationController.stop();
 
         DESTINATION = -100;
-        animObject.destination[0] = DESTINATION;
-        animationController.start();
+        squareSystem.destination[0] = DESTINATION;
 
-        result = await browser.waitUntil(async () => {
-            const transform = await element.getCSSProperty("transform");
-            const position = getPositionFromMatrix(transform.value!);
+        AnimationController.start();
 
-            if (position[0] <= DESTINATION) return position[0];
+        result = await getPositionUntil(element, (position) => {
+            return position[0] <= DESTINATION;
         });
 
-        expect(result).toBeCloseTo(DESTINATION);
+        expect(result![0]).toBeCloseTo(DESTINATION);
     });
 
     it("should animate vertically", async () => {
         let DESTINATION = 100;
         const element = await $("#square");
-
-        let animationController = new AnimationController();
-        const animObject = new DOMAnimationObject(999, Square.square);
-        animObject.position = [0, 0];
-        animObject.destination = [0, DESTINATION];
-        animationController.addAnimation(animObject);
-
-        animationController.start();
-
         let result;
 
-        result = await browser.waitUntil(async () => {
-            const transform = await element.getCSSProperty("transform");
-            const position = getPositionFromMatrix(transform.value!);
+        squareSystem.destination[1] = DESTINATION;
+        AnimationController.start();
 
-            if (position[1] >= DESTINATION) return position[1];
+        result = await getPositionUntil(element, (position) => {
+            return position[1] >= DESTINATION;
         });
 
-        expect(result).toBeCloseTo(DESTINATION);
+        expect(result![1]).toBeCloseTo(DESTINATION);
 
-        animationController.stop();
+        AnimationController.stop();
 
         DESTINATION = -100;
-        animObject.destination[1] = DESTINATION;
-        animationController.start();
+        squareSystem.destination[1] = DESTINATION;
 
-        result = await browser.waitUntil(async () => {
-            const transform = await element.getCSSProperty("transform");
-            const position = getPositionFromMatrix(transform.value!);
+        AnimationController.start();
 
-            if (position[1] <= DESTINATION) return position[1];
+        result = await getPositionUntil(element, (position) => {
+            return position[1] <= DESTINATION;
         });
 
-        expect(result).toBeCloseTo(DESTINATION);
+        expect(result![1]).toBeCloseTo(DESTINATION);
     });
 });

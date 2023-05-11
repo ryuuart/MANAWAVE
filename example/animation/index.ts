@@ -1,4 +1,4 @@
-import AnimationController from "@billboard/anim/AnimationController";
+import AnimationPlayer from "@billboard/anim/AnimationPlayer";
 import DOMAnimationObject from "@billboard/anim/DOMAnimationObject";
 import { lerp } from "@billboard/anim/Util";
 import { setTranslate } from "@billboard/dom";
@@ -13,7 +13,7 @@ window.addEventListener("mousemove", (ev: MouseEvent) => {
     mousePos.y = ev.y;
 });
 
-const animationController = new AnimationController();
+const animationController = new AnimationPlayer();
 
 const element = document.getElementById("square")!;
 
