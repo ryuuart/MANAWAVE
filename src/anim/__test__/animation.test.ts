@@ -1,5 +1,5 @@
 import Square from "test/pages/square/Square";
-import AnimationPlayer from "../AnimationPlayer";
+import PlaybackObject from "../PlaybackObject";
 import { setTranslate } from "@billboard/dom";
 import AnimationController from "../AnimationController";
 import TestSystem from "./TestSystem";
@@ -56,7 +56,9 @@ describe("animation system", () => {
 
     describe("player", () => {
         it("should have proper control state throughout animation", async () => {
-            const player = new AnimationPlayer();
+            class TestPlaybackObject extends PlaybackObject {}
+
+            const player = new TestPlaybackObject();
 
             expect(player.status).toEqual({
                 started: false,
