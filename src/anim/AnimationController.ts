@@ -1,70 +1,54 @@
 import { System } from "@billboard/lib";
-import AnimationPlayer from "./AnimationPlayer";
+import PlaybackObject from "./PlaybackObject";
 
-export default class AnimationController {
-    private static _systems: Set<System> = new Set();
+class AnimationController extends PlaybackObject {
+    private _systems: Set<System> = new Set();
 
-    private static _renderID: number | undefined;
+    private _renderID: number | undefined;
 
-    private static _currentTime: DOMHighResTimeStamp = window.performance.now();
-    private static _totalTime: DOMHighResTimeStamp = 0;
-    private static _targetDT: number = 1 / 60.0; // Target Delta Time
+    private _currentTime: DOMHighResTimeStamp = window.performance.now();
+    private _totalTime: DOMHighResTimeStamp = 0;
+    private _targetDT: number = 1 / 60.0; // Target Delta Time
 
-    private static _player: AnimationPlayer = new AnimationPlayer();
+    onStart(): void {
+        this._totalTime = 0;
+        this._currentTime = window.performance.now();
 
-    static start() {
-        AnimationController._player.start(() => {
-            AnimationController._totalTime = 0;
-            AnimationController._currentTime = window.performance.now();
-
-            AnimationController._renderID = window.requestAnimationFrame(
-                AnimationController.render.bind(AnimationController)
-            );
-        });
+        this._renderID = window.requestAnimationFrame(this.render.bind(this));
     }
 
-    static stop() {
-        AnimationController._player.stop(() => {
-            if (AnimationController._renderID) {
-                window.cancelAnimationFrame(AnimationController._renderID);
-            }
-        });
+    onStop() {
+        if (this._renderID) {
+            window.cancelAnimationFrame(this._renderID);
+        }
     }
 
-    static play() {
-        AnimationController._player.play();
+    registerSystem(system: System) {
+        this._systems.add(system);
     }
 
-    static pause() {
-        AnimationController._player.pause();
+    deregisterSystem(system: System) {
+        this._systems.delete(system);
     }
 
-    static registerSystem(system: System) {
-        AnimationController._systems.add(system);
-    }
-
-    static deregisterSystem(system: System) {
-        AnimationController._systems.delete(system);
-    }
-
-    static render(timestamp: DOMHighResTimeStamp) {
+    render(timestamp: DOMHighResTimeStamp) {
         let newTime = timestamp;
-        let frameTime = newTime - AnimationController._currentTime;
-        AnimationController._currentTime = newTime;
+        let frameTime = newTime - this._currentTime;
+        this._currentTime = newTime;
 
         // if time has progressed
         while (frameTime > 0.0) {
             // if you're lagging, use the frame time
             // if you're running super fast, sync to the fixed time
-            let dt = Math.min(frameTime, AnimationController._targetDT);
+            let dt = Math.min(frameTime, this._targetDT);
 
             // Update the overall system
-            for (const system of AnimationController._systems) {
-                system.update(dt, AnimationController._totalTime);
+            for (const system of this._systems) {
+                system.update(dt, this._totalTime);
             }
 
             // Render
-            for (const system of AnimationController._systems) {
+            for (const system of this._systems) {
                 system.draw();
             }
 
@@ -77,3 +61,5 @@ export default class AnimationController {
         window.requestAnimationFrame(this.render.bind(this));
     }
 }
+
+export default new AnimationController();

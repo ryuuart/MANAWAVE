@@ -1,5 +1,5 @@
 import Square from "test/pages/square/Square";
-import AnimationPlayer from "../AnimationPlayer";
+import PlaybackObject from "../PlaybackObject";
 import { setTranslate } from "@billboard/dom";
 import AnimationController from "../AnimationController";
 import TestSystem from "./TestSystem";
@@ -55,8 +55,50 @@ describe("animation system", () => {
     });
 
     describe("player", () => {
+        it("should call the playback hooks", async () => {
+            class TestPlaybackObject extends PlaybackObject {
+                testStatus: string = "";
+
+                onStart() {
+                    this.testStatus = "CUSTOM START LOGIC";
+                }
+
+                onPause(): void {
+                    this.testStatus = "CUSTOM PAUSE LOGIC";
+                }
+
+                onPlay(): void {
+                    this.testStatus = "CUSTOM PLAY LOGIC";
+                }
+
+                onStop(): void {
+                    this.testStatus = "CUSTOM STOP LOGIC";
+                }
+            }
+
+            const player = new TestPlaybackObject();
+
+            player.start();
+
+            expect(player.testStatus).toEqual("CUSTOM START LOGIC");
+
+            player.pause();
+
+            expect(player.testStatus).toEqual("CUSTOM PAUSE LOGIC");
+
+            player.play();
+
+            expect(player.testStatus).toEqual("CUSTOM PLAY LOGIC");
+
+            player.stop();
+
+            expect(player.testStatus).toEqual("CUSTOM STOP LOGIC");
+        });
+
         it("should have proper control state throughout animation", async () => {
-            const player = new AnimationPlayer();
+            class TestPlaybackObject extends PlaybackObject {}
+
+            const player = new TestPlaybackObject();
 
             expect(player.status).toEqual({
                 started: false,
