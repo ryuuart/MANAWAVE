@@ -14,7 +14,7 @@ class BlankSystem extends System {
         this.stringCanvas = "not rendered";
     }
 
-    onUpdate(dt: number, t: number): void {
+    onUpdate(dt: DOMHighResTimeStamp, t: DOMHighResTimeStamp): void {
         this.dt = dt;
         this.t = t;
     }
