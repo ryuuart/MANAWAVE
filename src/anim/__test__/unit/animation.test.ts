@@ -1,5 +1,4 @@
 import Square from "test/pages/square/Square";
-import PlaybackObject from "../../PlaybackObject";
 import { setTranslate } from "@billboard/dom";
 import AnimationController from "../../AnimationController";
 import TestSystem from "../TestSystem";
@@ -38,6 +37,9 @@ describe("animation system", () => {
         squareSystem = new TestSystem(Square.square);
         basicSystem = new TestSystem(Basic.ticker);
 
+        squareSystem.start();
+        basicSystem.start();
+
         squareSystem.position = [0, 0];
         basicSystem.position = [0, 0];
 
@@ -49,6 +51,9 @@ describe("animation system", () => {
 
         Square.clearContent();
         Basic.clearContent();
+
+        squareSystem.stop();
+        basicSystem.stop();
 
         AnimationController.deregisterSystem(squareSystem);
         AnimationController.deregisterSystem(basicSystem);
