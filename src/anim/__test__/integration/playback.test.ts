@@ -23,7 +23,7 @@ class TestContinuousSystem extends System {
         this.radius = radius;
     }
 
-    onUpdate(dt: number, t: number): void {
+    onUpdate(dt: DOMHighResTimeStamp, t: DOMHighResTimeStamp): void {
         this.position[0] = lerp(
             this.anchor[0],
             this.anchor[0] + this.radius,
