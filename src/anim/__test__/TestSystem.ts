@@ -15,7 +15,7 @@ export default class TestSystem extends System {
         this.element = element;
     }
 
-    update(dt: DOMHighResTimeStamp, t: DOMHighResTimeStamp) {
+    onUpdate(dt: DOMHighResTimeStamp, t: DOMHighResTimeStamp) {
         this.position[0] = lerp(
             this.position[0],
             this.destination[0],
@@ -28,7 +28,7 @@ export default class TestSystem extends System {
         );
     }
 
-    draw() {
+    onDraw() {
         setTranslate(this.element, this.position);
     }
 }
