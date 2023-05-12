@@ -42,14 +42,16 @@ class AnimationController extends PlaybackObject {
             // if you're running super fast, sync to the fixed time
             let dt = Math.min(frameTime, this._targetDT);
 
-            // Update the overall system
-            for (const system of this._systems) {
-                system.update(dt, this._totalTime);
-            }
+            if (this.status.started && !this.status.paused) {
+                // Update the overall system
+                for (const system of this._systems) {
+                    system.update(dt, this._totalTime);
+                }
 
-            // Render
-            for (const system of this._systems) {
-                system.draw();
+                // Render
+                for (const system of this._systems) {
+                    system.draw();
+                }
             }
 
             // step once

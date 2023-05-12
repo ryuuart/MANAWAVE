@@ -186,4 +186,152 @@ describe("playback with animations", () => {
         expect(squareSystem.position[1]).not.toBeCloseTo(reference[1]);
         squareSystem.stop();
     });
+
+    describe("controller", () => {
+        it("should start and stop all animations", async () => {
+            let squareRef: Position = [
+                squareSystem.position[0],
+                squareSystem.position[1],
+            ];
+            let basicRef: Position = [
+                basicSystem.position[0],
+                basicSystem.position[1],
+            ];
+
+            AnimationController.start();
+            squareSystem.start();
+            basicSystem.start();
+
+            await browser.pause(500);
+
+            // all animations animated
+            expect(squareSystem.position[0]).not.toBeCloseTo(squareRef[0]);
+            expect(squareSystem.position[1]).not.toBeCloseTo(squareRef[1]);
+            expect(basicSystem.position[0]).not.toBeCloseTo(basicRef[0]);
+            expect(basicSystem.position[1]).not.toBeCloseTo(basicRef[1]);
+
+            await browser.pause(500);
+
+            squareRef = [squareSystem.position[0], squareSystem.position[1]];
+            basicRef = [basicSystem.position[0], basicSystem.position[1]];
+            AnimationController.stop();
+
+            // all animation stopped
+            expect(squareSystem.position[0]).toBeCloseTo(squareRef[0]);
+            expect(squareSystem.position[1]).toBeCloseTo(squareRef[1]);
+            expect(basicSystem.position[0]).toBeCloseTo(basicRef[0]);
+            expect(basicSystem.position[1]).toBeCloseTo(basicRef[1]);
+
+            await browser.pause(500);
+
+            AnimationController.play();
+
+            // still stopped
+            expect(squareSystem.position[0]).toBeCloseTo(squareRef[0]);
+            expect(squareSystem.position[1]).toBeCloseTo(squareRef[1]);
+            expect(basicSystem.position[0]).toBeCloseTo(basicRef[0]);
+            expect(basicSystem.position[1]).toBeCloseTo(basicRef[1]);
+        });
+
+        it("should play and pause all animations", async () => {
+            let squareRef: Position = [
+                squareSystem.position[0],
+                squareSystem.position[1],
+            ];
+            let basicRef: Position = [
+                basicSystem.position[0],
+                basicSystem.position[1],
+            ];
+
+            AnimationController.start();
+            AnimationController.pause();
+            squareSystem.start();
+            basicSystem.start();
+
+            await browser.pause(500);
+
+            // all animations paused
+            expect(squareSystem.position[0]).toBeCloseTo(squareRef[0]);
+            expect(squareSystem.position[1]).toBeCloseTo(squareRef[1]);
+            expect(basicSystem.position[0]).toBeCloseTo(basicRef[0]);
+            expect(basicSystem.position[1]).toBeCloseTo(basicRef[1]);
+
+            AnimationController.play();
+
+            await browser.pause(500);
+
+            // all animations animated
+            expect(squareSystem.position[0]).not.toBeCloseTo(squareRef[0]);
+            expect(squareSystem.position[1]).not.toBeCloseTo(squareRef[1]);
+            expect(basicSystem.position[0]).not.toBeCloseTo(basicRef[0]);
+            expect(basicSystem.position[1]).not.toBeCloseTo(basicRef[1]);
+
+            await browser.pause(500);
+
+            squareRef = [squareSystem.position[0], squareSystem.position[1]];
+            basicRef = [basicSystem.position[0], basicSystem.position[1]];
+            AnimationController.pause();
+
+            // all animation stopped
+            expect(squareSystem.position[0]).toBeCloseTo(squareRef[0]);
+            expect(squareSystem.position[1]).toBeCloseTo(squareRef[1]);
+            expect(basicSystem.position[0]).toBeCloseTo(basicRef[0]);
+            expect(basicSystem.position[1]).toBeCloseTo(basicRef[1]);
+
+            await browser.pause(500);
+
+            // still stopped
+            expect(squareSystem.position[0]).toBeCloseTo(squareRef[0]);
+            expect(squareSystem.position[1]).toBeCloseTo(squareRef[1]);
+            expect(basicSystem.position[0]).toBeCloseTo(basicRef[0]);
+            expect(basicSystem.position[1]).toBeCloseTo(basicRef[1]);
+        });
+
+        it("should start an animation after stopping", async () => {
+            let squareRef: Position = [
+                squareSystem.position[0],
+                squareSystem.position[1],
+            ];
+            let basicRef: Position = [
+                basicSystem.position[0],
+                basicSystem.position[1],
+            ];
+
+            AnimationController.start();
+            squareSystem.start();
+            basicSystem.start();
+
+            await browser.pause(500);
+
+            // all animations animated
+            expect(squareSystem.position[0]).not.toBeCloseTo(squareRef[0]);
+            expect(squareSystem.position[1]).not.toBeCloseTo(squareRef[1]);
+            expect(basicSystem.position[0]).not.toBeCloseTo(basicRef[0]);
+            expect(basicSystem.position[1]).not.toBeCloseTo(basicRef[1]);
+
+            await browser.pause(500);
+
+            squareRef = [squareSystem.position[0], squareSystem.position[1]];
+            basicRef = [basicSystem.position[0], basicSystem.position[1]];
+            AnimationController.stop();
+
+            // all animation stopped
+            expect(squareSystem.position[0]).toBeCloseTo(squareRef[0]);
+            expect(squareSystem.position[1]).toBeCloseTo(squareRef[1]);
+            expect(basicSystem.position[0]).toBeCloseTo(basicRef[0]);
+            expect(basicSystem.position[1]).toBeCloseTo(basicRef[1]);
+
+            await browser.pause(500);
+
+            AnimationController.start();
+
+            await browser.pause(500);
+
+            // all animations animated
+            expect(squareSystem.position[0]).not.toBeCloseTo(squareRef[0]);
+            expect(squareSystem.position[1]).not.toBeCloseTo(squareRef[1]);
+            expect(basicSystem.position[0]).not.toBeCloseTo(basicRef[0]);
+            expect(basicSystem.position[1]).not.toBeCloseTo(basicRef[1]);
+        });
+    });
 });
