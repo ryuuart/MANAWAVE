@@ -1,7 +1,5 @@
 import { System } from "@billboard/lib";
 
-describe("animation controller", () => {});
-
 class BlankSystem extends System {
     dt: DOMHighResTimeStamp;
     t: DOMHighResTimeStamp;
@@ -50,3 +48,7 @@ describe("system", () => {
         system.stop();
     });
 });
+
+// No tests for controller since all logic is encapsulated
+// Testing the controller means testing other components which
+// is done in anim/__test__/integration
