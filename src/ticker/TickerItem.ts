@@ -1,11 +1,15 @@
 import Item from "src/lib/Item";
 import { Template } from "../clones";
 import { TickerStore } from "src/data";
+import TickerArtist from "@billboard/lib/TickerArtist";
 
 export default class TickerItem extends Item {
+    private _position: Position;
     private _storeRef: TickerStore | null | undefined;
+
     constructor(template: Template) {
         super(template);
+        this._position = this.domPosition;
     }
 
     registerStore(store: TickerStore) {
@@ -29,10 +33,14 @@ export default class TickerItem extends Item {
     }
 
     set position(position: [x: number, y: number]) {
-        this.clone.setPosition(position);
+        this._position = position;
     }
 
-    get position() {
+    get position(): Position {
+        return this._position;
+    }
+
+    get domPosition() {
         const transform = this.clone.transformStyle;
         const values = transform.match(/-?\d+/g);
         const output: [x: number, y: number] = [-9999, -9999];
@@ -43,5 +51,9 @@ export default class TickerItem extends Item {
         }
 
         return output;
+    }
+
+    prepareArtist(artist: TickerArtist) {
+        artist.clone = this.clone;
     }
 }
