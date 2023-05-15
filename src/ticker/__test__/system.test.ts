@@ -111,15 +111,19 @@ describe("system", () => {
             system.load();
 
             const position: Position = [1234, 1235];
-            system.addItem(position);
 
-            const element = await $(Basic.ticker).$(
-                `div[style="transform: translate(${position[0]}px, ${position[1]}px);"]`
-            );
+            // split tickerItem creations to simulate retroactivity
+            setTimeout(() => {
+                const timespan = window.performance.now();
+                system.addItem(position);
 
-            await expect(element).toHaveStyle({
-                transform: `matrix(1, 0, 0, 1, ${position[0]}, ${position[1]})`,
-            });
+                const item = system.getItemsByCondition((item) => {
+                    return item.timeCreated - timespan === 0;
+                })[0];
+
+                expect(item.position[0]).toEqual(position[0]);
+                expect(item.position[1]).toEqual(position[1]);
+            }, 1000);
         });
 
         it("add a multiple items to the ticker retroactively", async () => {
@@ -129,28 +133,25 @@ describe("system", () => {
             system.load();
 
             const position: Position = [1234, 1235];
-            const count = 10;
-            system.addNItem(count, (i) => {
-                return [position[0] + i, position[1] + i];
-            });
 
-            const elements: WebdriverIO.Element[] = [];
-            for (let i = 0; i < count; i++) {
-                const element = await $(Basic.ticker).$(
-                    `div[style="transform: translate(${position[0] + i}px, ${
-                        position[1] + i
-                    }px);"]`
-                );
-                elements.push(element);
-            }
+            // split tickerItem creations to simulate retroactivity
+            setTimeout(() => {
+                const timespan = window.performance.now();
 
-            for (const [i, e] of elements.entries()) {
-                await expect(e).toHaveStyle({
-                    transform: `matrix(1, 0, 0, 1, ${position[0] + i}, ${
-                        position[1] + i
-                    })`,
+                const count = 10;
+                system.addNItem(count, (i) => {
+                    return [position[0] + i, position[1] + i];
                 });
-            }
+
+                const items = system.getItemsByCondition((item) => {
+                    return item.timeCreated - timespan === 0;
+                });
+
+                for (let i = 0; i < count; i++) {
+                    expect(items[i].position[0]).toEqual(position[0]);
+                    expect(items[i].position[1]).toEqual(position[1]);
+                }
+            }, 1000);
         });
     });
 
