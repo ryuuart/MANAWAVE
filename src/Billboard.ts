@@ -1,4 +1,5 @@
 import BillboardManager from "./BillboardManager";
+import { AnimationController } from "./anim";
 import { TickerSystem } from "./ticker";
 import { debounce } from "./utils";
 
@@ -32,6 +33,11 @@ export default class Billboard {
     init() {
         if (!this._initialized) {
             this._system.load();
+            this._system.start();
+
+            // load animation to the system
+            AnimationController.registerSystem(this._system);
+
             this._initialized = true;
         }
     }
@@ -39,6 +45,10 @@ export default class Billboard {
     deinit() {
         // remove everything from the ticker
         this._system.unload();
+        this._system.stop();
+
+        // unload animation to the system
+        AnimationController.deregisterSystem(this._system);
 
         // no longer tracked
         BillboardManager.removeBillboard(this);

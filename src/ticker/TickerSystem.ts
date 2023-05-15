@@ -2,6 +2,7 @@ import { System } from "@billboard/lib";
 import { Ticker, TickerItem } from ".";
 import { TickerStore } from "../data";
 import TickerItemFactory from "./TickerItemFactory";
+import TickerArtist from "@billboard/lib/TickerArtist";
 
 export default class TickerSystem extends System {
     private _ticker: Ticker;
@@ -139,7 +140,13 @@ export default class TickerSystem extends System {
         this._ticker.unload();
     }
 
-    update(dt: DOMHighResTimeStamp, t: DOMHighResTimeStamp) {}
+    onUpdate(dt: DOMHighResTimeStamp, t: DOMHighResTimeStamp) {}
 
-    draw() {}
+    onDraw() {
+        for (const item of this._tickerItemStore.allTickerItems) {
+            const artist = new TickerArtist(item);
+
+            artist.drawToPosition(item.position);
+        }
+    }
 }
