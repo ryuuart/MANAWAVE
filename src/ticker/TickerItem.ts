@@ -4,12 +4,16 @@ import { TickerStore } from "src/data";
 import TickerArtist from "@billboard/lib/TickerArtist";
 
 export default class TickerItem extends Item {
+    timeCreated: DOMHighResTimeStamp;
+    lifetime: DOMHighResTimeStamp;
     private _position: Position;
     private _storeRef: TickerStore | null | undefined;
 
     constructor(template: Template) {
         super(template);
         this._position = this.domPosition;
+        this.timeCreated = window.performance.now();
+        this.lifetime = 0;
     }
 
     registerStore(store: TickerStore) {

@@ -140,7 +140,11 @@ export default class TickerSystem extends System {
         this._ticker.unload();
     }
 
-    onUpdate(dt: DOMHighResTimeStamp, t: DOMHighResTimeStamp) {}
+    onUpdate(dt: DOMHighResTimeStamp, t: DOMHighResTimeStamp) {
+        for (const item of this._tickerItemStore.allTickerItems) {
+            item.lifetime += dt;
+        }
+    }
 
     onDraw() {
         for (const item of this._tickerItemStore.allTickerItems) {
