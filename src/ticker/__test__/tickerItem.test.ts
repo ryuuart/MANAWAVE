@@ -1,3 +1,4 @@
+import TickerArtist from "@billboard/lib/TickerArtist";
 import Basic from "test/pages/basic/Basic";
 import Square from "test/pages/square/Square";
 import { Template } from "src/clones";
@@ -80,5 +81,29 @@ describe("ticker item", () => {
         tickerItem.remove();
 
         expect(store.get(tickerItem.id)).toBeFalsy();
+    });
+
+    describe("artist", () => {
+        it("should update position given a clone and position", async () => {
+            Square.loadContent();
+
+            const template = new Template(Square.square);
+            const item = new TickerItem(template);
+
+            // item has to exist on the page to do anything
+            item.appendTo(document.getElementById("test-root")!);
+
+            const artist = new TickerArtist(item);
+            item.prepareArtist(artist);
+
+            // do a render / draw operation
+            artist.drawToPosition([123, 123]);
+
+            // observe changes
+            const element = await $(Square.square);
+            expect(element).toHaveStyle({
+                transform: `matrix(1, 0, 0, 1, ${123}, ${123})`,
+            });
+        });
     });
 });
