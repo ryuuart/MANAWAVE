@@ -5,133 +5,120 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <style>
-        .square {
-            display: inline-block;
-
-            width: 100px;
-            height: 100px;
-            margin: 1rem;
-
-            flex-shrink: 0;
-
-            background: red;
-        }
-
-        .green {
-            background: green;
-        }
-
-        .square {
-            margin-right: 1rem;
-        }
-
-        .vertical {
-            display: block;
-            margin-bottom: 1rem;
-        }
-
-        .grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            grid-template-rows: 1fr 1fr;
-            gap: 1rem;
-
-            justify-items: center;
-        }
-
-        .inline-block {
-            display: inline-block;
-        }
-
-        section {
-            margin-bottom: 1rem;
-        }
-
-        #billboard-3 {
-            display: inline-block;
-
-            height: 100vh;
-        }
-
-        .green-ticker-1 {
-            width: 500px;
-        }
-
-        #regular {
-            width: 500px;
-        }
-
-        .square.green:first-child {
-            background-color: aquamarine;
-        }
-    </style>
+    <link rel="stylesheet" href="style.css">
     <title>Billboard Test Zone</title>
 </head>
 
 <body>
-    <h1>Hello</h1>
-    <p>This is a wonderful test area</p>
-
-    <div style="column-count: 3;">
-        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Repudiandae, dolor! Id quos ex enim in
-            impedit facilis, aliquid odit fugit exercitationem culpa veniam optio voluptates eius ut minima
-            magni debitis!</p>
-        <p>Earum, quo consequuntur? Nesciunt praesentium voluptatem omnis ratione reprehenderit placeat minima
-            vitae animi optio necessitatibus! Quis quidem a exercitationem, totam, iste voluptatem deserunt nemo
-            tenetur magni cupiditate ea doloremque cum?</p>
-        <p>Amet asperiores vel ipsa fugit neque nulla laborum fugiat sequi eaque, nisi rerum, accusamus
-            doloribus. Nulla commodi est eaque pariatur quasi exercitationem delectus, unde aliquid, porro
-            deleniti, beatae eligendi minus?</p>
-        <p>don't for a second consider Lorem ipsum dolor sit amet consectetur adipisicing
-            elit. Hic
-            fugit ipsum facilis, soluta possimus iste perspiciatis, natus eveniet itaque cupiditate autem. Dicta
-            recusandae numquam aspernatur modi rerum reprehenderit nisi et.</p>
-    </div>
-    <section>
-        <h2>Web Component</h2>
-        <billboard-ticker direction="45" speed="8" class="green-ticker-1">
-            <div class="square green">1</div>
-            <div class="square green">2</div>
-            <div class="square green">3</div>
-        </billboard-ticker>
-        <billboard-ticker direction="45" speed="8" class="green-ticker-1" style="width:100px;height:50px">
-            <div class="square green">1</div>
-            <div class="square green">2</div>
-            <div class="square green">3</div>
-        </billboard-ticker>
-        <div id="regular" data-testid="main" style="height:600px; width: 99vw;">
-            <div class="square green">1</div>
-            <div class="square green">2</div>
-            <div class="square green">3</div>
-        </div>
-        <!-- <billboard-ticker direction="up">
-            <h1>LONG IS SO FREAKING COOL</h1>
-        </billboard-ticker> -->
-        <!-- <billboard-ticker direction="135" speed="2">
-            <div>
-                <p>Lorem, ipsum dolor sit amet consectetur adipisicing elit. Officia voluptatibus animi error obcaecati
-                    facilis, voluptates omnis, repellendus consectetur ad, iure deleniti. Nobis voluptates repellendus
-                    corrupti veniam dignissimos autem quaerat sit?</p>
-                <p>Lorem, ipsum dolor sit amet consectetur adipisicing elit. Officia voluptatibus animi error obcaecati
-                    facilis, voluptates omnis, repellendus consectetur ad, iure deleniti. Nobis voluptates repellendus
-                    corrupti veniam dignissimos autem quaerat sit?</p>
-                <p>Lorem, ipsum dolor sit amet consectetur adipisicing elit. Officia voluptatibus animi error obcaecati
-                    facilis, voluptates omnis, repellendus consectetur ad, iure deleniti. Nobis voluptates repellendus
-                    corrupti veniam dignissimos autem quaerat sit?</p>
-                <p>Lorem, ipsum dolor sit amet consectetur adipisicing elit. Officia voluptatibus animi error obcaecati
-                    facilis, voluptates omnis, repellendus consectetur ad, iure deleniti. Nobis voluptates repellendus
-                    corrupti veniam dignissimos autem quaerat sit?</p>
+    <main>
+        <h1>Hello</h1>
+        <p>This is a wonderful test area</p>
+        <section>
+            <h2>Web Component</h2>
+            <h3>Normal</h3>
+            <billboard-ticker direction="45" speed="8">
+                <div class="square color-cornsilk">1</div>
+                <div class="square color-aqua">2</div>
+                <div class="square color-lavendarblush">3</div>
+            </billboard-ticker>
+            <h3>Inline-flex</h3>
+            <billboard-ticker>
+                <div class="square inline-flex color-cornsilk">1</div>
+                <div class="square inline-flex color-aqua">2</div>
+                <div class="square inline-flex color-lavendarblush">3</div>
+            </billboard-ticker>
+            <h3>Small</h3>
+            <billboard-ticker id="webc-small">
+                <div class="square color-cornsilk">1</div>
+                <div class="square color-aqua">2</div>
+                <div class="square color-lavendarblush">3</div>
+            </billboard-ticker>
+            <h3>Flex</h3>
+            <div id="webc-flex">
+                <billboard-ticker>
+                    <div class="square color-cornsilk">1</div>
+                    <div class="square color-aqua">2</div>
+                    <div class="square color-lavendarblush">3</div>
+                </billboard-ticker>
+                <billboard-ticker>
+                    <div class="square color-cornsilk">1</div>
+                    <div class="square color-aqua">2</div>
+                    <div class="square color-lavendarblush">3</div>
+                </billboard-ticker>
+                <billboard-ticker>
+                    <div class="square inline-flex color-cornsilk">1</div>
+                    <div class="square inline-flex color-aqua">2</div>
+                    <div class="square inline-flex color-lavendarblush">3</div>
+                </billboard-ticker>
             </div>
-        </billboard-ticker> -->
-        <!-- <billboard-ticker direction="right">
-            <ul>
-                <li>1</li>
-                <li>2</li>
-                <li>3</li>
-            </ul>
-        </billboard-ticker> -->
-    </section>
+            <h3>Flex Wrap</h3>
+            <div id="webc-flex-wrap">
+                <billboard-ticker>
+                    <div class="square color-cornsilk">1</div>
+                    <div class="square color-aqua">2</div>
+                    <div class="square color-lavendarblush">3</div>
+                </billboard-ticker>
+                <billboard-ticker>
+                    <div class="square color-cornsilk">1</div>
+                    <div class="square color-aqua">2</div>
+                    <div class="square color-lavendarblush">3</div>
+                </billboard-ticker>
+                <billboard-ticker>
+                    <div class="square inline-flex color-cornsilk">1</div>
+                    <div class="square inline-flex color-aqua">2</div>
+                    <div class="square inline-flex color-lavendarblush">3</div>
+                </billboard-ticker>
+            </div>
+            <h3>Grid</h3>
+            <div id="webc-grid">
+                <billboard-ticker>
+                    <div class="square color-cornsilk">1</div>
+                    <div class="square color-aqua">2</div>
+                    <div class="square color-lavendarblush">3</div>
+                </billboard-ticker>
+                <billboard-ticker>
+                    <div class="square color-cornsilk">1</div>
+                    <div class="square color-aqua">2</div>
+                    <div class="square color-lavendarblush">3</div>
+                </billboard-ticker>
+                <billboard-ticker>
+                    <div class="square inline-flex color-cornsilk">1</div>
+                    <div class="square inline-flex color-aqua">2</div>
+                    <div class="square inline-flex color-lavendarblush">3</div>
+                </billboard-ticker>
+                <billboard-ticker>
+                    <div class="square color-cornsilk">1</div>
+                    <div class="square color-aqua">2</div>
+                    <div class="square color-lavendarblush">3</div>
+                </billboard-ticker>
+                <billboard-ticker>
+                    <div class="square color-cornsilk">1</div>
+                    <div class="square color-aqua">2</div>
+                    <div class="square color-lavendarblush">3</div>
+                </billboard-ticker>
+                <billboard-ticker>
+                    <div class="square inline-flex color-cornsilk">1</div>
+                    <div class="square inline-flex color-aqua">2</div>
+                    <div class="square inline-flex color-lavendarblush">3</div>
+                </billboard-ticker>
+            </div>
+            <h3>Nested</h3>
+            <p>It doesn't work in our architecture right now</p>
+            <billboard-ticker>
+                <div class="square color-cornsilk">1</div>
+                <div class="square color-aqua">2</div>
+                <div class="square color-lavendarblush">3</div>
+            </billboard-ticker>
+            <hr />
+            <h2>DOM</h2>
+            <h3>Normal</h3>
+            <div id="regular">
+                <div class="square color-cornsilk">1</div>
+                <div class="square color-aqua">2</div>
+                <div class="square color-lavendarblush">3</div>
+            </div>
+        </section>
+    </main>
     <script type="module" src="index.ts"></script>
 </body>
 
