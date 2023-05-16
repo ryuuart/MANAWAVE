@@ -1,0 +1,71 @@
+.square {
+  width: 100px;
+  height: 100px;
+  margin: 1rem;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  color: magenta;
+  font-size: 4rem;
+}
+
+.color-cornsilk {
+  background: cornsilk;
+}
+
+.color-aqua {
+  background: aqua;
+}
+
+.color-lavendarblush {
+  background: lavenderblush;
+}
+
+.inline-flex {
+  display: inline-flex;
+}
+
+.w-200 {
+  width: 200px;
+}
+
+.h-200 {
+  height: 200px;
+}
+
+#webc-small {
+  max-width: 120px;
+  max-height: 75px;
+
+  overflow: hidden;
+}
+
+#webc-flex {
+  display: flex;
+}
+
+#webc-flex > * {
+  flex: 1;
+}
+
+#webc-flex > :first-child {
+  flex: 2;
+}
+
+#webc-flex-wrap {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+#webc-flex-wrap > * {
+  flex: 100%;
+}
+
+#webc-grid {
+  display: grid;
+
+  grid-template-columns: 1fr 1.75fr 0.5fr;
+  grid-template-rows: 1fr 1.75fr;
+}
