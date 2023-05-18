@@ -35,6 +35,14 @@
   height: 200px;
 }
 
+.w-10 {
+  width: 10px;
+}
+
+.h-10 {
+  height: 10px;
+}
+
 #webc-animated .square {
   animation: 8s infinite 0s linear transform;
 }
