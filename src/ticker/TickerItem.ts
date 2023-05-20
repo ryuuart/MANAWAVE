@@ -2,18 +2,25 @@ import Item from "src/lib/Item";
 import { Template } from "../clones";
 import { TickerStore } from "src/data";
 import TickerArtist from "@billboard/lib/TickerArtist";
+import Lifecycle from "@billboard/lib/Lifecycle";
 
 export default class TickerItem extends Item {
     timeCreated: DOMHighResTimeStamp;
     lifetime: DOMHighResTimeStamp;
     private _position: Position;
     private _storeRef: TickerStore | null | undefined;
+    private _lifecycle: Lifecycle;
 
-    constructor(template: Template) {
+    constructor(template: Template, lifecycle: Lifecycle = new Lifecycle()) {
         super(template);
         this._position = this.domPosition;
         this.timeCreated = window.performance.now();
         this.lifetime = 0;
+
+        this._lifecycle = lifecycle;
+
+        // has to happen last!
+        this.onCreated();
     }
 
     registerStore(store: TickerStore) {
@@ -26,6 +33,7 @@ export default class TickerItem extends Item {
             this._storeRef.remove(this.id);
             this._storeRef = null;
         }
+        this.onDestroyed();
         super.remove();
     }
 
@@ -59,5 +67,15 @@ export default class TickerItem extends Item {
 
     prepareArtist(artist: TickerArtist) {
         artist.clone = this.clone;
+    }
+
+    onCreated() {
+        this.clone.onCreated(this._lifecycle.onCreated);
+    }
+    onDestroyed() {
+        this.clone.onDestroyed(this._lifecycle.onDestroyed);
+    }
+    each() {
+        this.clone.each(this._lifecycle.each);
     }
 }

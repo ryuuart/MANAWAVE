@@ -55,4 +55,16 @@ export default class Clone {
     get transformStyle(): string {
         return this._element.style.transform;
     }
+
+    onCreated(callback: (element: HTMLElement) => void) {
+        callback(this._element);
+    }
+
+    onDestroyed(callback: (element: HTMLElement) => void) {
+        callback(this._element);
+    }
+
+    each(callback: (element: HTMLElement) => void) {
+        callback(this._element);
+    }
 }

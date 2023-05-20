@@ -30,6 +30,18 @@ export default class Billboard {
         if (this._config.autoplay) this.init();
     }
 
+    onItemCreated(callback: (element: HTMLElement) => void) {
+        this._system.setOnItemCreated(callback);
+    }
+
+    onItemDestroyed(callback: (element: HTMLElement) => void) {
+        this._system.setOnItemDestroyed(callback);
+    }
+
+    each(callback: (element: HTMLElement) => void) {
+        this._system.setEachItem(callback);
+    }
+
     init() {
         if (!this._initialized) {
             this._system.load();
