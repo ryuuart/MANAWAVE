@@ -2,6 +2,7 @@ import Item from "src/lib/Item";
 import { Template } from "../clones";
 import { TickerStore } from "src/data";
 import TickerArtist from "@billboard/lib/TickerArtist";
+import Lifecycle from "@billboard/lib/Lifecycle";
 
 export default class TickerItem extends Item {
     timeCreated: DOMHighResTimeStamp;
@@ -9,11 +10,14 @@ export default class TickerItem extends Item {
     private _position: Position;
     private _storeRef: TickerStore | null | undefined;
 
-    constructor(template: Template) {
-        super(template);
+    constructor(template: Template, lifecycle?: Lifecycle) {
+        super(template, lifecycle);
         this._position = this.domPosition;
         this.timeCreated = window.performance.now();
         this.lifetime = 0;
+
+        // has to happen last!
+        this.onCreated();
     }
 
     registerStore(store: TickerStore) {
@@ -26,6 +30,7 @@ export default class TickerItem extends Item {
             this._storeRef.remove(this.id);
             this._storeRef = null;
         }
+        this.onDestroyed();
         super.remove();
     }
 

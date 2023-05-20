@@ -4,6 +4,7 @@ import Square from "test/pages/square/Square";
 import { Template } from "src/clones";
 import { TickerStore } from "src/data";
 import TickerItem from "../TickerItem";
+import Lifecycle from "@billboard/lib/Lifecycle";
 
 describe("ticker item", () => {
     afterEach(() => {
@@ -104,6 +105,94 @@ describe("ticker item", () => {
             expect(element).toHaveStyle({
                 transform: `matrix(1, 0, 0, 1, ${123}, ${123})`,
             });
+        });
+    });
+
+    describe("lifecycle", () => {
+        it("should set and use all lifecycle functions", async () => {
+            Square.loadContent();
+            const lifecycle = new Lifecycle();
+
+            lifecycle.onCreated = (element: HTMLElement) => {
+                element.textContent = "TICKERITEM CREATED";
+            };
+            lifecycle.onDestroyed = (element: HTMLElement) => {
+                element.textContent = "TICKERITEM DESTROYED";
+            };
+            lifecycle.each = (element: HTMLElement) => {
+                element.textContent = "TICKERITEM ITERATED";
+            };
+
+            expect(await $(`#${Square.square.id}`).getHTML(false)).not.toEqual(
+                "TICKERITEM CREATED"
+            );
+
+            const template = new Template(Square.square);
+            const ti = new TickerItem(template, lifecycle);
+
+            ti.appendTo(document.getElementById("test-root")!);
+
+            expect(await $(`#${Square.square.id}`).getHTML(false)).toEqual(
+                "TICKERITEM CREATED"
+            );
+
+            ti.each();
+
+            ti.appendTo(document.getElementById("test-root")!);
+            expect(await $(`#${Square.square.id}`).getHTML(false)).toEqual(
+                "TICKERITEM ITERATED"
+            );
+
+            ti.remove();
+
+            ti.appendTo(document.getElementById("test-root")!);
+            expect(await $(`#${Square.square.id}`).getHTML(false)).toEqual(
+                "TICKERITEM DESTROYED"
+            );
+        });
+
+        it("should set and use all lifecycle on multiple elements", async () => {
+            Basic.loadContent();
+            const lifecycle = new Lifecycle();
+
+            lifecycle.onCreated = (element: HTMLElement) => {
+                element.textContent = "TICKERITEM CREATED";
+            };
+            lifecycle.onDestroyed = (element: HTMLElement) => {
+                element.textContent = "TICKERITEM DESTROYED";
+            };
+            lifecycle.each = (element: HTMLElement) => {
+                element.textContent = "TICKERITEM ITERATED";
+            };
+
+            const content = async () => await $(`#${Basic.ticker.id}`).$$("*");
+            for (const e of await content()) {
+                expect(await e.getHTML(false)).not.toEqual(
+                    "TICKERITEM CREATED"
+                );
+            }
+
+            const template = new Template(Basic.ticker);
+            const ti = new TickerItem(template, lifecycle);
+
+            ti.appendTo(document.getElementById("test-root")!);
+
+            for (const e of await content()) {
+                expect(await e.getHTML(false)).toEqual("TICKERITEM CREATED");
+            }
+
+            ti.each();
+
+            for (const e of await content()) {
+                expect(await e.getHTML(false)).toEqual("TICKERITEM ITERATED");
+            }
+
+            ti.remove();
+
+            ti.appendTo(document.getElementById("test-root")!);
+            for (const e of await content()) {
+                expect(await e.getHTML(false)).toEqual("TICKERITEM DESTROYED");
+            }
         });
     });
 });

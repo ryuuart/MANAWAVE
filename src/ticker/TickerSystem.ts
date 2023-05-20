@@ -3,22 +3,40 @@ import { Ticker, TickerItem } from ".";
 import { TickerStore } from "../data";
 import TickerItemFactory from "./TickerItemFactory";
 import TickerArtist from "@billboard/lib/TickerArtist";
+import Lifecycle from "@billboard/lib/Lifecycle";
 
 export default class TickerSystem extends System {
     private _ticker: Ticker;
     private _tickerItemStore: TickerStore;
     private _tickerItemFactory: TickerItemFactory;
+    private _lifecycle: Lifecycle;
 
     constructor(element: HTMLElement) {
         super();
 
         this._ticker = new Ticker(element);
         this._tickerItemStore = new TickerStore();
+        this._lifecycle = new Lifecycle();
 
         this._tickerItemFactory = new TickerItemFactory(
             this._tickerItemStore,
-            this._ticker
+            this._ticker,
+            this._lifecycle
         );
+    }
+
+    setOnItemCreated(callback: (element: HTMLElement) => void) {
+        this._lifecycle.onCreated = callback;
+    }
+    setOnItemDestroyed(callback: (element: HTMLElement) => void) {
+        this._lifecycle.onDestroyed = callback;
+    }
+    setEachItem(callback: (element: HTMLElement) => void) {
+        this._lifecycle.each = callback;
+
+        for (const ti of this.allItems) {
+            ti.each();
+        }
     }
 
     get allItems(): IterableIterator<TickerItem> {

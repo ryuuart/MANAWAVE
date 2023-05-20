@@ -1,18 +1,25 @@
 import { Ticker, TickerItem } from "../ticker";
 import { Template } from "../clones";
 import { TickerStore } from "../data";
+import Lifecycle from "@billboard/lib/Lifecycle";
 
 export default class TickerItemFactory {
     private _templates: Template[];
     private _templateIndex: number = -1;
     private _ticker: Ticker; // keep track of the ticker it should be adding clones to for loading purposes
     private _store: TickerStore;
+    private _lifecycle: Lifecycle;
 
-    constructor(registry: TickerStore, ticker: Ticker) {
+    constructor(
+        registry: TickerStore,
+        ticker: Ticker,
+        lifecycle: Lifecycle = new Lifecycle()
+    ) {
         this._templates = [];
 
         this._ticker = ticker;
         this._store = registry;
+        this._lifecycle = lifecycle;
 
         if (this._ticker.initialTemplate && this.templateIsEmpty)
             this.addTemplate(this._ticker.initialTemplate);
@@ -59,7 +66,10 @@ export default class TickerItemFactory {
 
         if (this._templates.length > 0) {
             for (let i = 0; i < n; i++) {
-                const item = new TickerItem(this.getNextTemplate());
+                const item = new TickerItem(
+                    this.getNextTemplate(),
+                    this._lifecycle
+                );
 
                 this._ticker.append(item);
                 item.registerStore(this._store);
