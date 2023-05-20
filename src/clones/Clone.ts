@@ -57,14 +57,20 @@ export default class Clone {
     }
 
     onCreated(callback: (element: HTMLElement) => void) {
-        callback(this._element);
+        for (const element of this._element.firstElementChild!.children) {
+            callback(element as HTMLElement);
+        }
     }
 
     onDestroyed(callback: (element: HTMLElement) => void) {
-        callback(this._element);
+        for (const element of this._element.firstElementChild!.children) {
+            callback(element as HTMLElement);
+        }
     }
 
     each(callback: (element: HTMLElement) => void) {
-        callback(this._element);
+        for (const element of this._element.firstElementChild!.children) {
+            callback(element as HTMLElement);
+        }
     }
 }
