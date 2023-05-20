@@ -33,6 +33,10 @@ export default class TickerSystem extends System {
     }
     setEachItem(callback: (element: HTMLElement) => void) {
         this._lifecycle.each = callback;
+
+        for (const ti of this.allItems) {
+            ti.each();
+        }
     }
 
     get allItems(): IterableIterator<TickerItem> {
