@@ -9,13 +9,13 @@ export default class Lifecycle {
         this._each = () => {};
     }
 
-    get onCreated() {
+    get onCreated(): typeof this._onCreated {
         return this._onCreated;
     }
-    get onDestroyed() {
+    get onDestroyed(): typeof this._onDestroyed {
         return this._onDestroyed;
     }
-    get each() {
+    get each(): typeof this._each {
         return this._each;
     }
 
