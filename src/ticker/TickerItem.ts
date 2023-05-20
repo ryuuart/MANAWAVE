@@ -9,15 +9,12 @@ export default class TickerItem extends Item {
     lifetime: DOMHighResTimeStamp;
     private _position: Position;
     private _storeRef: TickerStore | null | undefined;
-    private _lifecycle: Lifecycle;
 
-    constructor(template: Template, lifecycle: Lifecycle = new Lifecycle()) {
-        super(template);
+    constructor(template: Template, lifecycle?: Lifecycle) {
+        super(template, lifecycle);
         this._position = this.domPosition;
         this.timeCreated = window.performance.now();
         this.lifetime = 0;
-
-        this._lifecycle = lifecycle;
 
         // has to happen last!
         this.onCreated();
@@ -67,15 +64,5 @@ export default class TickerItem extends Item {
 
     prepareArtist(artist: TickerArtist) {
         artist.clone = this.clone;
-    }
-
-    onCreated() {
-        this.clone.onCreated(this._lifecycle.onCreated);
-    }
-    onDestroyed() {
-        this.clone.onDestroyed(this._lifecycle.onDestroyed);
-    }
-    each() {
-        this.clone.each(this._lifecycle.each);
     }
 }
