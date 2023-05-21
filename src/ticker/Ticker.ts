@@ -10,6 +10,7 @@ export default class Ticker {
     private _wrapperElement: HTMLElement;
     private _element: HTMLElement;
     private _height: number; // needed to make the absolute positioning work
+    private _width: number;
 
     private _initialTemplate: Template | undefined | null; // needed to restore the state of the ticker before start
 
@@ -26,7 +27,8 @@ export default class Ticker {
         this._element = document.createElement("div");
         this._element.classList.add(styles.tickerContainer);
 
-        this._height = -1;
+        this._width = parseFloat(this._wrapperComputedStyles.width);
+        this._height = parseFloat(this._wrapperComputedStyles.height);
     }
 
     get isRendered(): boolean {
@@ -39,8 +41,8 @@ export default class Ticker {
 
     get dimensions(): Dimensions {
         return {
-            width: this._element.offsetWidth,
-            height: this._element.offsetHeight,
+            width: this._width,
+            height: this._height,
         };
     }
 
@@ -63,26 +65,36 @@ export default class Ticker {
         this._element.style.minHeight = `${this._height}px`;
     }
 
+    reloadInitialTemplate() {
+        if (!this._initialTemplate) {
+            this._initialTemplate = new Template(this._wrapperElement.children);
+        }
+
+        // need to re-measure with a new initial template
+        this._height = parseFloat(this._wrapperComputedStyles.height);
+        this._width = parseFloat(this._wrapperComputedStyles.width);
+    }
+
     load() {
         if (!(this._wrapperElement instanceof Component)) {
             this._wrapperElement.classList.add(styles.ticker);
         }
 
-        this._initialTemplate = new Template(this._wrapperElement.children);
-        this._wrapperElement.append(this._element);
+        this.reloadInitialTemplate();
+        this.height = this._initialTemplate!.height;
 
-        this.height = parseFloat(this._wrapperComputedStyles.height);
+        this._wrapperElement.append(this._element);
     }
 
     unload() {
-        if (this._initialTemplate != undefined) {
+        if (this._initialTemplate) {
             this._initialTemplate.restore();
             this._initialTemplate = null;
         }
-        if (this._element != undefined) {
+        if (this._element) {
             this._element.remove();
         }
-        if (this._wrapperElement != undefined) {
+        if (this._wrapperElement) {
             this._wrapperElement.classList.remove(styles.ticker);
         }
         this._height = -1;
@@ -94,11 +106,5 @@ export default class Ticker {
     // than any other height :/
     append(item: TickerItem) {
         item.appendTo(this._element);
-
-        const { height: itemHeight } = item.dimensions;
-
-        if (itemHeight > this._height) {
-            this.height = itemHeight;
-        }
     }
 }
