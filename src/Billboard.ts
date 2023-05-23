@@ -25,7 +25,11 @@ export default class Billboard {
 
         this._onResize = debounce(this.resize.bind(this), 250);
 
-        if (this._config.autoplay) this.init();
+        if (this._config.autoplay) {
+            setTimeout(() => {
+                this.init();
+            }, 5);
+        }
     }
 
     onItemCreated(callback: (element: HTMLElement) => void) {
@@ -72,6 +76,8 @@ export default class Billboard {
 
     resize() {
         this.deinit();
-        this.init();
+        setTimeout(() => {
+            this.init();
+        }, 0);
     }
 }

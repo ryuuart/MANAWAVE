@@ -26,8 +26,6 @@ describe("item", () => {
         const template = new Template(Basic.ticker.children);
         const item = new Item(template);
 
-        expect(item.dimensions).toStrictEqual({ width: 0, height: 0 });
-
         item.appendTo(document.body);
 
         expect(item.dimensions.width).toBeGreaterThan(0);

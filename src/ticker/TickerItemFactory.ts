@@ -71,9 +71,11 @@ export default class TickerItemFactory {
                     this._lifecycle
                 );
 
-                this._ticker.append(item);
                 item.registerStore(this._store);
                 items.push(item);
+            }
+            for (const item of items) {
+                this._ticker.append(item);
             }
         }
 

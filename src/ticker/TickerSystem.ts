@@ -146,10 +146,12 @@ export default class TickerSystem extends System {
     }
 
     load() {
-        this._ticker.load();
-        if (this._tickerItemFactory.templateIsEmpty)
+        if (this._tickerItemFactory.templateIsEmpty) {
+            this._ticker.reloadInitialTemplate();
             this._tickerItemFactory.addTemplate(this._ticker.initialTemplate!);
+        }
         this.fill();
+        this._ticker.load();
     }
 
     unload() {

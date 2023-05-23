@@ -6,6 +6,8 @@ export default class Template {
     private _original: Parameters<typeof wrappedDiv>[0];
 
     private _element: HTMLElement;
+    private _width: number;
+    private _height: number;
 
     constructor(element: Parameters<typeof wrappedDiv>[0]) {
         // Track the original for restoration
@@ -18,6 +20,11 @@ export default class Template {
         this._element = wrappedDiv(this._original);
         this._element.classList.add(styles.template);
 
+        this._originalParent?.append(this._element);
+        this._width = this._element.offsetWidth;
+        this._height = this._element.offsetHeight;
+        this._element.remove();
+
         // recover the original after modification, unique hack...
         // what's happening is that the original became the this.element
         this._original = this._element.children;
@@ -25,6 +32,14 @@ export default class Template {
 
     get element() {
         return this._element;
+    }
+
+    get width(): typeof this._width {
+        return this._width;
+    }
+
+    get height(): typeof this._height {
+        return this._height;
     }
 
     restore() {
