@@ -65,14 +65,29 @@ export default class Ticker {
         this._element.style.minHeight = `${this._height}px`;
     }
 
+    set width(width: number) {
+        this._width = width;
+
+        // Override any width if there's one already defined in the parent
+        if (
+            this._wrapperElement.style.width ||
+            this._wrapperElement.style.maxWidth ||
+            this._wrapperElement.style.minWidth
+        ) {
+            this._width = parseFloat(this._wrapperComputedStyles.width);
+        }
+
+        this._element.style.minWidth = `${this._width}px`;
+    }
+
     reloadInitialTemplate() {
         if (!this._initialTemplate) {
             this._initialTemplate = new Template(this._wrapperElement.children);
-        }
 
-        // need to re-measure with a new initial template
-        this._height = parseFloat(this._wrapperComputedStyles.height);
-        this._width = parseFloat(this._wrapperComputedStyles.width);
+            // need to re-measure with a new initial template
+            this._height = parseFloat(this._wrapperComputedStyles.height);
+            this._width = parseFloat(this._wrapperComputedStyles.width);
+        }
     }
 
     load() {
@@ -82,6 +97,7 @@ export default class Ticker {
 
         this.reloadInitialTemplate();
         this.height = this._initialTemplate!.height;
+        this.width = this._initialTemplate!.width;
 
         this._wrapperElement.append(this._element);
     }
