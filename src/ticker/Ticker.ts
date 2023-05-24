@@ -46,12 +46,12 @@ export default class Ticker {
         };
     }
 
-    set height(height: number) {
+    private set height(height: number) {
         this._height = height;
         this._element.style.height = `${this._height}px`;
     }
 
-    set width(width: number) {
+    private set width(width: number) {
         this._width = width;
         this._element.style.width = `${this._width}px`;
     }
