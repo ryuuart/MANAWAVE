@@ -6,6 +6,7 @@ export default class Template {
     private _original: Parameters<typeof wrappedDiv>[0];
 
     private _element: HTMLElement;
+    private _elementComputedStyles: CSSStyleDeclaration;
     private _width: number;
     private _height: number;
 
@@ -19,15 +20,22 @@ export default class Template {
         // Element represents the element to be repeated (the template if you will)
         this._element = wrappedDiv(this._original);
         this._element.classList.add(styles.template);
+        this._elementComputedStyles = window.getComputedStyle(this._element);
 
-        this._originalParent?.append(this._element);
-        this._width = this._element.offsetWidth;
-        this._height = this._element.offsetHeight;
-        this._element.remove();
+        this._width = 0;
+        this._height = 0;
+        this.measure();
 
         // recover the original after modification, unique hack...
         // what's happening is that the original became the this.element
         this._original = this._element.children;
+    }
+
+    measure() {
+        this._originalParent?.append(this._element);
+        this._width = parseFloat(this._elementComputedStyles.width);
+        this._height = parseFloat(this._elementComputedStyles.height);
+        this._element.remove();
     }
 
     get element() {

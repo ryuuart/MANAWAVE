@@ -73,16 +73,18 @@ export default class TickerSystem extends System {
             },
             { width: 0, height: 0 }
         );
+
         const repetition = {
             x:
-                Math.round(
+                Math.ceil(
                     this._ticker.dimensions.width / sequenceDimensions.width
                 ) + 2,
             y:
-                Math.round(
+                Math.ceil(
                     this._ticker.dimensions.height / sequenceDimensions.height
                 ) + 2,
         };
+
         const position: Position = [
             -sequenceDimensions.width,
             -sequenceDimensions.height,
@@ -141,8 +143,6 @@ export default class TickerSystem extends System {
         for (const item of this._tickerItemStore.allTickerItems) {
             item.remove();
         }
-
-        this._ticker.height = -1;
     }
 
     load() {

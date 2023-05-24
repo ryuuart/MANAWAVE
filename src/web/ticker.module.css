@@ -1,5 +1,4 @@
 .ticker {
-  white-space: nowrap;
   overflow: hidden;
 
   display: block;
@@ -9,6 +8,5 @@
 
 .tickerContainer {
   position: relative;
-
   display: flow-root;
 }

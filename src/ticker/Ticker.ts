@@ -23,12 +23,18 @@ export default class Ticker {
             this._wrapperElement
         );
 
+        this._width = 0;
+        this._height = 0;
+
         // Billboard-ticker refers to what represents the entire Billboard-ticker itself
         this._element = document.createElement("div");
         this._element.classList.add(styles.tickerContainer);
 
-        this._width = parseFloat(this._wrapperComputedStyles.width);
-        this._height = parseFloat(this._wrapperComputedStyles.height);
+        if (!(this._wrapperElement instanceof Component)) {
+            this._wrapperElement.classList.add(styles.ticker);
+        }
+
+        this.measure();
     }
 
     get isRendered(): boolean {
@@ -62,7 +68,7 @@ export default class Ticker {
             this._height = parseFloat(this._wrapperComputedStyles.height);
         }
 
-        this._element.style.minHeight = `${this._height}px`;
+        this._element.style.height = `${this._height}px`;
     }
 
     set width(width: number) {
@@ -77,16 +83,17 @@ export default class Ticker {
             this._width = parseFloat(this._wrapperComputedStyles.width);
         }
 
-        this._element.style.minWidth = `${this._width}px`;
+        this._element.style.width = `${this._width}px`;
+    }
+
+    measure() {
+        this.width = parseFloat(this._wrapperComputedStyles.width);
+        this.height = parseFloat(this._wrapperComputedStyles.height);
     }
 
     reloadInitialTemplate() {
         if (!this._initialTemplate) {
             this._initialTemplate = new Template(this._wrapperElement.children);
-
-            // need to re-measure with a new initial template
-            this._height = parseFloat(this._wrapperComputedStyles.height);
-            this._width = parseFloat(this._wrapperComputedStyles.width);
         }
     }
 
@@ -96,8 +103,6 @@ export default class Ticker {
         }
 
         this.reloadInitialTemplate();
-        this.height = this._initialTemplate!.height;
-        this.width = this._initialTemplate!.width;
 
         this._wrapperElement.append(this._element);
     }
