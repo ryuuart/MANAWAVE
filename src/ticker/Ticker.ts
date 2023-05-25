@@ -23,12 +23,12 @@ export default class Ticker {
             this._wrapperElement
         );
 
+        this._width = 0;
+        this._height = 0;
+
         // Billboard-ticker refers to what represents the entire Billboard-ticker itself
         this._element = document.createElement("div");
         this._element.classList.add(styles.tickerContainer);
-
-        this._width = parseFloat(this._wrapperComputedStyles.width);
-        this._height = parseFloat(this._wrapperComputedStyles.height);
     }
 
     get isRendered(): boolean {
@@ -46,58 +46,40 @@ export default class Ticker {
         };
     }
 
-    get height() {
-        return this._height;
-    }
-
-    set height(height: number) {
+    private set height(height: number) {
         this._height = height;
-
-        // Override any height if there's one already defined in the parent
-        if (
-            this._wrapperElement.style.height ||
-            this._wrapperElement.style.maxHeight ||
-            this._wrapperElement.style.minHeight
-        ) {
-            this._height = parseFloat(this._wrapperComputedStyles.height);
-        }
-
-        this._element.style.minHeight = `${this._height}px`;
+        this._element.style.height = `${this._height}px`;
     }
 
-    set width(width: number) {
+    private set width(width: number) {
         this._width = width;
+        this._element.style.width = `${this._width}px`;
+    }
 
-        // Override any width if there's one already defined in the parent
-        if (
-            this._wrapperElement.style.width ||
-            this._wrapperElement.style.maxWidth ||
-            this._wrapperElement.style.minWidth
-        ) {
-            this._width = parseFloat(this._wrapperComputedStyles.width);
+    measure() {
+        if (!this.isRendered) {
+            this.width = parseFloat(this._wrapperComputedStyles.width);
+            this.height = parseFloat(this._wrapperComputedStyles.height);
+        } else {
+            throw "Measuring after Ticker rendered; You can only measure when the Ticker isn't rendered.";
         }
-
-        this._element.style.minWidth = `${this._width}px`;
     }
 
     reloadInitialTemplate() {
-        if (!this._initialTemplate) {
+        if (!this._initialTemplate && !this.isRendered) {
+            this.measure();
             this._initialTemplate = new Template(this._wrapperElement.children);
-
-            // need to re-measure with a new initial template
-            this._height = parseFloat(this._wrapperComputedStyles.height);
-            this._width = parseFloat(this._wrapperComputedStyles.width);
         }
     }
 
     load() {
+        // Stylize Containing Wrapper around the actual Ticker to
+        // ensure measurement and stuff doesn't leak out
         if (!(this._wrapperElement instanceof Component)) {
             this._wrapperElement.classList.add(styles.ticker);
         }
 
         this.reloadInitialTemplate();
-        this.height = this._initialTemplate!.height;
-        this.width = this._initialTemplate!.width;
 
         this._wrapperElement.append(this._element);
     }
@@ -113,13 +95,8 @@ export default class Ticker {
         if (this._wrapperElement) {
             this._wrapperElement.classList.remove(styles.ticker);
         }
-        this._height = -1;
     }
 
-    // Add in a lil element but if it's a lil too big, then the ticker needs to resize
-    // [TODO] figure out responsiveness part
-    // might need to remove this part if someone already gave it a height that's less
-    // than any other height :/
     append(item: TickerItem) {
         item.appendTo(this._element);
     }

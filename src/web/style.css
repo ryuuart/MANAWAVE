@@ -1,8 +1,5 @@
 billboard-ticker {
-  white-space: nowrap;
   overflow: hidden;
 
   display: block;
-
-  border: 1px solid red;
 }

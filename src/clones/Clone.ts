@@ -3,18 +3,15 @@ import Template from "./Template";
 import styles from "src/web/clone.module.css";
 
 export default class Clone {
+    private _template: Template;
     private _element: HTMLElement;
-    private _width: number;
-    private _height: number;
 
     constructor(template: Template) {
+        this._template = template;
         // Element-wrapper refers to a wrapper that allows for dimensional calculations
         // What you want to clone
         this._element = wrappedDiv(template.element.cloneNode(true));
         this._element.classList.add(styles.clone);
-
-        this._width = template.width;
-        this._height = template.height;
 
         // Just add it in some far off corner so it's not visible yet.
         this.setPosition([-9999, -9999]);
@@ -46,11 +43,11 @@ export default class Clone {
     }
 
     get width(): number {
-        return this._width;
+        return this._template.width;
     }
 
     get height(): number {
-        return this._height;
+        return this._template.height;
     }
 
     set transformStyle(style: string) {

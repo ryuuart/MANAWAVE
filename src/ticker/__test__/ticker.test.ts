@@ -11,6 +11,9 @@ describe("ticker", () => {
     it("should initialize the parent element when loaded", async () => {
         Basic.loadContent();
 
+        const initialHeight = await $(`#${Basic.ticker.id}`).getSize("height");
+        const initialWidth = await $(`#${Basic.ticker.id}`).getSize("width");
+
         const ticker = new Ticker(Basic.ticker);
         ticker.load();
 
@@ -23,12 +26,15 @@ describe("ticker", () => {
 
         const innerElement = await element.$("*");
         expect(innerElement).toHaveElementClass("billboard-ticker-container");
-
-        expect(ticker.height).not.toEqual(-1);
+        expect(await element.getSize("height")).toEqual(initialHeight);
+        expect(await element.getSize("width")).toEqual(initialWidth);
     });
 
     it("should return ticker to original when unloaded and remove state", async () => {
         Basic.loadContent();
+
+        const initialHeight = await $(`#${Basic.ticker.id}`).getSize("height");
+        const initialWidth = await $(`#${Basic.ticker.id}`).getSize("width");
 
         const ticker = new Ticker(Basic.ticker);
         ticker.load();
@@ -44,7 +50,8 @@ describe("ticker", () => {
         expect(
             await element.$(".billboard-ticker-container")
         ).not.toBeDisplayed();
-        expect(ticker.height).toEqual(-1);
+        expect(await element.getSize("height")).toEqual(initialHeight);
+        expect(await element.getSize("width")).toEqual(initialWidth);
     });
 
     it("can add a ticker item to the ticker", async () => {
@@ -94,14 +101,22 @@ describe("ticker", () => {
     it("should use parent element height if explicitly defined", async () => {
         Basic.loadContent();
 
+        async function getDimensions() {
+            const element = await $(Basic.ticker);
+
+            return {
+                width: await element.getSize("width"),
+                height: await element.getSize("height"),
+            };
+        }
+
         const ticker = new Ticker(Basic.ticker);
 
         Basic.ticker.style.height = "9px";
 
         ticker.load();
-        ticker.height = 1234;
 
-        expect(ticker.height).toEqual(9);
+        expect((await getDimensions()).height).toEqual(9);
 
         ticker.unload();
 
@@ -109,9 +124,8 @@ describe("ticker", () => {
         Basic.ticker.style.height = "200px";
 
         ticker.load();
-        ticker.height = 1234;
 
-        expect(ticker.height).toEqual(99);
+        expect((await getDimensions()).height).toEqual(99);
 
         ticker.unload();
 
@@ -119,8 +133,7 @@ describe("ticker", () => {
         Basic.ticker.style.height = "9px";
 
         ticker.load();
-        ticker.height = 1234;
 
-        expect(ticker.height).toEqual(999);
+        expect((await getDimensions()).height).toEqual(999);
     });
 });
