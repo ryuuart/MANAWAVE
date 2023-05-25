@@ -5,8 +5,6 @@ import styles from "src/web/clone.module.css";
 export default class Clone {
     private _template: Template;
     private _element: HTMLElement;
-    private _width: number;
-    private _height: number;
 
     constructor(template: Template) {
         this._template = template;
@@ -15,16 +13,8 @@ export default class Clone {
         this._element = wrappedDiv(template.element.cloneNode(true));
         this._element.classList.add(styles.clone);
 
-        this._width = template.width;
-        this._height = template.height;
-
         // Just add it in some far off corner so it's not visible yet.
         this.setPosition([-9999, -9999]);
-    }
-
-    measure() {
-        this._width = this._template.width;
-        this._height = this._template.height;
     }
 
     setPosition(position: [x: number, y: number]) {
@@ -53,11 +43,11 @@ export default class Clone {
     }
 
     get width(): number {
-        return this._width;
+        return this._template.width;
     }
 
     get height(): number {
-        return this._height;
+        return this._template.height;
     }
 
     set transformStyle(style: string) {

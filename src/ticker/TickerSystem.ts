@@ -88,48 +88,24 @@ export default class TickerSystem extends System {
             -sequenceDimensions.height,
         ];
 
-        const currSize = Array.from(this.allItems).length;
-        const deltaSize = repetition.x * repetition.y - 1 - currSize;
-        let tickerItems;
+        const tickerItems = initialSequence.concat(
+            this._tickerItemFactory.create(repetition.x * repetition.y - 1)
+        );
 
-        // if this is our first time laying stuff out
-        if (currSize === 1) {
-            tickerItems = initialSequence.concat(
-                this._tickerItemFactory.create(repetition.x * repetition.y - 1)
-            );
-        }
-        // otherwise, create more or less depending on the difference
-        else {
-            if (deltaSize > 0) {
-                tickerItems = this._tickerItemFactory.create(deltaSize);
-            } else if (deltaSize < 0) {
-                const allTickerItems = this.allItems;
-                let ti = allTickerItems.next();
-                for (let i = 0; i < Math.abs(deltaSize); i++) {
-                    if (!ti.done) {
-                        ti.value.remove();
-                        ti = allTickerItems.next();
-                    }
-                }
-            }
-        }
+        // iterate through clones and properly set the positions
+        let clonesIndex = 0;
+        let currItem = tickerItems[clonesIndex];
+        for (let i = 0; i < repetition.y; i++) {
+            for (let j = 0; j < repetition.x; j++) {
+                currItem = tickerItems[clonesIndex];
+                const { width: itemWidth, height: itemHeight } =
+                    currItem.dimensions;
 
-        if (tickerItems) {
-            // iterate through clones and properly set the positions
-            let clonesIndex = 0;
-            let currItem = tickerItems[clonesIndex];
-            for (let i = 0; i < repetition.y; i++) {
-                for (let j = 0; j < repetition.x; j++) {
-                    currItem = tickerItems[clonesIndex];
-                    const { width: itemWidth, height: itemHeight } =
-                        currItem.dimensions;
-
-                    currItem.position = [
-                        position[0] + j * itemWidth,
-                        position[1] + i * itemHeight,
-                    ];
-                    clonesIndex++;
-                }
+                currItem.position = [
+                    position[0] + j * itemWidth,
+                    position[1] + i * itemHeight,
+                ];
+                clonesIndex++;
             }
         }
     }
