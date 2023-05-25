@@ -57,9 +57,7 @@ export default class TickerSystem extends System {
         return this._tickerItemStore.get(element);
     }
 
-    fill() {
-        this.clear();
-
+    setLayout() {
         const initialSequence: TickerItem[] =
             this._tickerItemFactory.sequence();
         const sequenceDimensions = initialSequence.reduce(
@@ -90,24 +88,48 @@ export default class TickerSystem extends System {
             -sequenceDimensions.height,
         ];
 
-        const tickerItems = initialSequence.concat(
-            this._tickerItemFactory.create(repetition.x * repetition.y - 1)
-        );
+        const currSize = Array.from(this.allItems).length;
+        const deltaSize = repetition.x * repetition.y - 1 - currSize;
+        let tickerItems;
 
-        // iterate through clones and properly set the positions
-        let clonesIndex = 0;
-        let currItem = tickerItems[clonesIndex];
-        for (let i = 0; i < repetition.y; i++) {
-            for (let j = 0; j < repetition.x; j++) {
-                currItem = tickerItems[clonesIndex];
-                const { width: itemWidth, height: itemHeight } =
-                    currItem.dimensions;
+        // if this is our first time laying stuff out
+        if (currSize === 1) {
+            tickerItems = initialSequence.concat(
+                this._tickerItemFactory.create(repetition.x * repetition.y - 1)
+            );
+        }
+        // otherwise, create more or less depending on the difference
+        else {
+            if (deltaSize > 0) {
+                tickerItems = this._tickerItemFactory.create(deltaSize);
+            } else if (deltaSize < 0) {
+                const allTickerItems = this.allItems;
+                let ti = allTickerItems.next();
+                for (let i = 0; i < Math.abs(deltaSize); i++) {
+                    if (!ti.done) {
+                        ti.value.remove();
+                        ti = allTickerItems.next();
+                    }
+                }
+            }
+        }
 
-                currItem.position = [
-                    position[0] + j * itemWidth,
-                    position[1] + i * itemHeight,
-                ];
-                clonesIndex++;
+        if (tickerItems) {
+            // iterate through clones and properly set the positions
+            let clonesIndex = 0;
+            let currItem = tickerItems[clonesIndex];
+            for (let i = 0; i < repetition.y; i++) {
+                for (let j = 0; j < repetition.x; j++) {
+                    currItem = tickerItems[clonesIndex];
+                    const { width: itemWidth, height: itemHeight } =
+                        currItem.dimensions;
+
+                    currItem.position = [
+                        position[0] + j * itemWidth,
+                        position[1] + i * itemHeight,
+                    ];
+                    clonesIndex++;
+                }
             }
         }
     }
@@ -150,7 +172,7 @@ export default class TickerSystem extends System {
             this._ticker.reloadInitialTemplate();
             this._tickerItemFactory.addTemplate(this._ticker.initialTemplate!);
         }
-        this.fill();
+        this.setLayout();
         this._ticker.load();
     }
 
