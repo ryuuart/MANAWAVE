@@ -46,8 +46,8 @@ export default class Billboard {
 
     init() {
         if (!this._initialized) {
-            this._system.load();
             this._system.start();
+            this._system.load();
 
             window.addEventListener("resize", this._onResize);
 

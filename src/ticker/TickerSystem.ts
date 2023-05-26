@@ -5,6 +5,21 @@ import TickerItemFactory from "./TickerItemFactory";
 import TickerArtist from "@billboard/lib/TickerArtist";
 import Lifecycle from "@billboard/lib/Lifecycle";
 
+const mousePos = {
+    x: 0,
+    y: 0,
+};
+
+window.addEventListener("mousemove", (ev) => {
+    mousePos.x = ev.x;
+    mousePos.y = ev.y;
+});
+
+let repRef = {
+    x: 0,
+    y: 0,
+};
+
 export default class TickerSystem extends System {
     private _ticker: Ticker;
     private _tickerItemStore: TickerStore;
@@ -23,6 +38,8 @@ export default class TickerSystem extends System {
             this._ticker,
             this._lifecycle
         );
+
+        this.pause();
     }
 
     setOnItemCreated(callback: (element: HTMLElement) => void) {
@@ -82,6 +99,8 @@ export default class TickerSystem extends System {
                     this._ticker.dimensions.height / sequenceDimensions.height
                 ) + 2,
         };
+
+        repRef = repetition;
 
         const position: Position = [
             -sequenceDimensions.width,
@@ -161,6 +180,53 @@ export default class TickerSystem extends System {
     onUpdate(dt: DOMHighResTimeStamp, t: DOMHighResTimeStamp) {
         for (const item of this._tickerItemStore.allTickerItems) {
             item.lifetime += dt;
+
+            const direction = [
+                mousePos.x - window.innerWidth / 2,
+                mousePos.y - window.innerHeight / 2,
+            ];
+            const normalizedDirection = [
+                direction[0] / Math.sqrt(direction[0] ** 2 + direction[1] ** 2),
+                direction[1] / Math.sqrt(direction[0] ** 2 + direction[1] ** 2),
+            ];
+            const timeScale = 1;
+
+            // normalizedDirection[0] = -1;
+            // normalizedDirection[1] = 0.43;
+            item.position = [
+                item.position[0] + 1 * timeScale * normalizedDirection[0],
+                item.position[1] + 1 * timeScale * normalizedDirection[1],
+            ];
+
+            const xLim =
+                Math.ceil(
+                    this._ticker.dimensions.width / item.dimensions.width
+                ) * item.dimensions.width;
+            const yLim =
+                Math.ceil(
+                    this._ticker.dimensions.height / item.dimensions.height
+                ) * item.dimensions.height;
+
+            if (
+                normalizedDirection[0] > 0 &&
+                // item.position[0] >= (repRef.x - 1) * item.dimensions.width
+                item.position[0] >= xLim
+            ) {
+                item.position[0] = -item.dimensions.width;
+            } else if (
+                normalizedDirection[0] < 0 &&
+                item.position[0] <= -item.dimensions.width
+            ) {
+                item.position[0] = xLim;
+            }
+            if (normalizedDirection[1] > 0 && item.position[1] >= yLim) {
+                item.position[1] = -item.dimensions.height;
+            } else if (
+                normalizedDirection[1] < 0 &&
+                item.position[1] <= -item.dimensions.height
+            ) {
+                item.position[1] = yLim;
+            }
         }
     }
 
