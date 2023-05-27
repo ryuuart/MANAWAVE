@@ -5,6 +5,8 @@ import { debounce } from "./utils";
 
 const defaultConfig: Billboard.Options = {
     autoplay: true,
+    speed: 1,
+    direction: 0,
 };
 
 // Should be high-level Billboard component
@@ -15,8 +17,15 @@ export default class Billboard {
     private _initialized: boolean;
     private _onResize: () => void;
 
+    private _speed: number;
+    private _direction: number;
+
     constructor(element: HTMLElement, options?: Billboard.Options) {
-        Object.assign(this._config, options);
+        this._speed = defaultConfig.speed!;
+        this._direction = defaultConfig.direction! as number;
+
+        this._config = {};
+        Object.assign(this._config, defaultConfig, options);
 
         this._initialized = false;
         this._system = new TickerSystem(element);
@@ -25,10 +34,38 @@ export default class Billboard {
 
         this._onResize = debounce(this.resize.bind(this), 250);
 
-        if (this._config.autoplay) {
-            setTimeout(() => {
-                this.init();
-            }, 5);
+        if (this._config.speed !== undefined) this._speed = this._config.speed;
+        if (this._config.direction) this.direction = this._config.direction;
+
+        setTimeout(() => {
+            this.init();
+        }, 5);
+    }
+
+    set direction(directionAttr: Billboard.Options["direction"]) {
+        switch (directionAttr) {
+            case "up":
+                this._direction = 90;
+                break;
+            case "left":
+                this._direction = 180;
+                break;
+            case "right":
+                this._direction = 0;
+                break;
+            case "down":
+                this._direction = 270;
+                break;
+            case null:
+                break;
+            default:
+                if (typeof directionAttr === "string") {
+                    const angle = parseFloat(directionAttr);
+
+                    if (angle) {
+                        this._direction = angle;
+                    }
+                }
         }
     }
 
@@ -46,8 +83,12 @@ export default class Billboard {
 
     init() {
         if (!this._initialized) {
+            this._system.speed = this._speed;
+            this._system.direction = this._direction;
             this._system.start();
             this._system.load();
+
+            if (!this._config.autoplay) this._system.pause();
 
             window.addEventListener("resize", this._onResize);
 

@@ -26,6 +26,9 @@ export default class TickerSystem extends System {
     private _tickerItemFactory: TickerItemFactory;
     private _lifecycle: Lifecycle;
 
+    private _direction: [number, number];
+    private _speed: number;
+
     constructor(element: HTMLElement) {
         super();
 
@@ -39,7 +42,8 @@ export default class TickerSystem extends System {
             this._lifecycle
         );
 
-        this.pause();
+        this._direction = [0, 0];
+        this._speed = 0;
     }
 
     setOnItemCreated(callback: (element: HTMLElement) => void) {
@@ -54,6 +58,16 @@ export default class TickerSystem extends System {
         for (const ti of this.allItems) {
             ti.each();
         }
+    }
+
+    set speed(speed: number) {
+        this._speed = speed;
+    }
+
+    set direction(direction: number) {
+        const radians = (direction / 180) * Math.PI;
+
+        this._direction = [Math.cos(radians), -Math.sin(radians)];
     }
 
     get allItems(): IterableIterator<TickerItem> {
@@ -168,7 +182,13 @@ export default class TickerSystem extends System {
             this._tickerItemFactory.addTemplate(this._ticker.initialTemplate!);
         }
         this.setLayout();
+
         this._ticker.load();
+
+        // draw a single frame to initialize
+        this.pause();
+        this.onDraw();
+        this.play();
     }
 
     unload() {
@@ -181,21 +201,26 @@ export default class TickerSystem extends System {
         for (const item of this._tickerItemStore.allTickerItems) {
             item.lifetime += dt;
 
-            const direction = [
-                mousePos.x - window.innerWidth / 2,
-                mousePos.y - window.innerHeight / 2,
-            ];
+            // const direction = [
+            //     mousePos.x - window.innerWidth / 2,
+            //     mousePos.y - window.innerHeight / 2,
+            // ];
             const normalizedDirection = [
-                direction[0] / Math.sqrt(direction[0] ** 2 + direction[1] ** 2),
-                direction[1] / Math.sqrt(direction[0] ** 2 + direction[1] ** 2),
+                this._direction[0] /
+                    Math.sqrt(
+                        this._direction[0] ** 2 + this._direction[1] ** 2
+                    ),
+                this._direction[1] /
+                    Math.sqrt(
+                        this._direction[0] ** 2 + this._direction[1] ** 2
+                    ),
             ];
-            const timeScale = 1;
 
             // normalizedDirection[0] = -1;
             // normalizedDirection[1] = 0.43;
             item.position = [
-                item.position[0] + 1 * timeScale * normalizedDirection[0],
-                item.position[1] + 1 * timeScale * normalizedDirection[1],
+                item.position[0] + 1 * this._speed * normalizedDirection[0],
+                item.position[1] + 1 * this._speed * normalizedDirection[1],
             ];
 
             const xLim =
