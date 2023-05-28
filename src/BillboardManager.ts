@@ -16,6 +16,13 @@ class BillboardManager {
         this.billboards = new Set();
     }
 
+    getBillboard(element: HTMLElement): Billboard | null {
+        for (const bb of this.billboards) {
+            if (bb.isBillboard(element)) return bb;
+        }
+        return null;
+    }
+
     addBillboard(billboard: Billboard) {
         this.billboards.add(billboard);
     }

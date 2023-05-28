@@ -1,4 +1,5 @@
 import Billboard from "./Billboard";
+import BillboardManager from "./BillboardManager";
 import { AnimationController } from "./anim";
 import Component from "./web/Component";
 
@@ -23,5 +24,9 @@ window.addEventListener(
 );
 
 AnimationController.start();
+
+export function getBillboard(element: HTMLElement): Billboard | null {
+    return BillboardManager.getBillboard(element);
+}
 
 export { Billboard };

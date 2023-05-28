@@ -17,12 +17,15 @@ export default class Billboard {
     private _initialized: boolean;
     private _onResize: () => void;
 
+    private _element: HTMLElement;
+
     private _speed: number;
     private _direction: number;
 
     constructor(element: HTMLElement, options?: Billboard.Options) {
         this._speed = defaultConfig.speed!;
         this._direction = defaultConfig.direction! as number;
+        this._element = element;
 
         this._config = {};
         Object.assign(this._config, defaultConfig, options);
@@ -120,5 +123,17 @@ export default class Billboard {
         setTimeout(() => {
             this.init();
         }, 0);
+    }
+
+    play() {
+        this._system.play();
+    }
+
+    pause() {
+        this._system.pause();
+    }
+
+    isBillboard(element: HTMLElement) {
+        return element === this._element;
     }
 }
