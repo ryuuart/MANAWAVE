@@ -5,21 +5,6 @@ import TickerItemFactory from "./TickerItemFactory";
 import TickerArtist from "@billboard/lib/TickerArtist";
 import Lifecycle from "@billboard/lib/Lifecycle";
 
-const mousePos = {
-    x: 0,
-    y: 0,
-};
-
-window.addEventListener("mousemove", (ev) => {
-    mousePos.x = ev.x;
-    mousePos.y = ev.y;
-});
-
-let repRef = {
-    x: 0,
-    y: 0,
-};
-
 export default class TickerSystem extends System {
     private _ticker: Ticker;
     private _tickerItemStore: TickerStore;
@@ -28,6 +13,12 @@ export default class TickerSystem extends System {
 
     private _direction: [number, number];
     private _speed: number;
+
+    private _onItemUpdated:
+        | ((state: Billboard.ItemState) => {
+              [Property in keyof Billboard.ItemState]+?: Billboard.ItemState[Property];
+          })
+        | undefined;
 
     constructor(element: HTMLElement) {
         super();
@@ -58,6 +49,9 @@ export default class TickerSystem extends System {
         for (const ti of this.allItems) {
             ti.each();
         }
+    }
+    setOnItemUpdated(callback: typeof this._onItemUpdated) {
+        this._onItemUpdated = callback;
     }
 
     set speed(speed: number) {
@@ -113,8 +107,6 @@ export default class TickerSystem extends System {
                     this._ticker.dimensions.height / sequenceDimensions.height
                 ) + 2,
         };
-
-        repRef = repetition;
 
         const position: Position = [
             -sequenceDimensions.width,
@@ -201,27 +193,46 @@ export default class TickerSystem extends System {
         for (const item of this._tickerItemStore.allTickerItems) {
             item.lifetime += dt;
 
-            // const direction = [
-            //     mousePos.x - window.innerWidth / 2,
-            //     mousePos.y - window.innerHeight / 2,
-            // ];
+            let itemState = {
+                dt,
+                t,
+                direction: this._direction,
+                position: item.position,
+            };
+
+            const initalDirection = itemState.position;
+
+            if (this._onItemUpdated) {
+                Object.assign(itemState, this._onItemUpdated(itemState));
+            }
+
+            const actualDirection = [
+                itemState.position[0] - initalDirection[0],
+                itemState.position[1] - initalDirection[1],
+            ];
+
             const normalizedDirection = [
-                this._direction[0] /
+                itemState.direction[0] /
                     Math.sqrt(
-                        this._direction[0] ** 2 + this._direction[1] ** 2
+                        itemState.direction[0] ** 2 +
+                            itemState.direction[1] ** 2
                     ),
-                this._direction[1] /
+                itemState.direction[1] /
                     Math.sqrt(
-                        this._direction[0] ** 2 + this._direction[1] ** 2
+                        itemState.direction[0] ** 2 +
+                            itemState.direction[1] ** 2
                     ),
             ];
 
-            // normalizedDirection[0] = -1;
-            // normalizedDirection[1] = 0.43;
             item.position = [
-                item.position[0] + 1 * this._speed * normalizedDirection[0],
-                item.position[1] + 1 * this._speed * normalizedDirection[1],
+                itemState.position[0] +
+                    1 * this._speed * normalizedDirection[0],
+                itemState.position[1] +
+                    1 * this._speed * normalizedDirection[1],
             ];
+
+            actualDirection[0] = item.position[0] - actualDirection[0];
+            actualDirection[1] = item.position[1] - actualDirection[1];
 
             const xLim =
                 Math.ceil(
@@ -232,22 +243,18 @@ export default class TickerSystem extends System {
                     this._ticker.dimensions.height / item.dimensions.height
                 ) * item.dimensions.height;
 
-            if (
-                normalizedDirection[0] > 0 &&
-                // item.position[0] >= (repRef.x - 1) * item.dimensions.width
-                item.position[0] >= xLim
-            ) {
+            if (actualDirection[0] > 0 && item.position[0] >= xLim) {
                 item.position[0] = -item.dimensions.width;
             } else if (
-                normalizedDirection[0] < 0 &&
+                actualDirection[0] < 0 &&
                 item.position[0] <= -item.dimensions.width
             ) {
                 item.position[0] = xLim;
             }
-            if (normalizedDirection[1] > 0 && item.position[1] >= yLim) {
+            if (actualDirection[1] > 0 && item.position[1] >= yLim) {
                 item.position[1] = -item.dimensions.height;
             } else if (
-                normalizedDirection[1] < 0 &&
+                actualDirection[1] < 0 &&
                 item.position[1] <= -item.dimensions.height
             ) {
                 item.position[1] = yLim;

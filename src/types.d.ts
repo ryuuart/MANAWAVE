@@ -16,4 +16,11 @@ declare namespace Billboard {
         speed?: number;
         direction?: "up" | "right" | "down" | "left" | number | string;
     }
+
+    interface ItemState {
+        dt: DOMHighResTimeStamp;
+        t: DOMHighResTimeStamp;
+        direction: [number, number];
+        position: Position;
+    }
 }

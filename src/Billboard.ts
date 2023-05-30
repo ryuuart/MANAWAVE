@@ -80,6 +80,10 @@ export default class Billboard {
         this._system.setOnItemDestroyed(callback);
     }
 
+    onItemUpdated(callback: TickerSystem["_onItemUpdated"]) {
+        this._system.setOnItemUpdated(callback);
+    }
+
     each(callback: (element: HTMLElement) => void) {
         this._system.setEachItem(callback);
     }
