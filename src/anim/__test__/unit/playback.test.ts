@@ -1,4 +1,4 @@
-import PlaybackObject from "@billboard/anim/PlaybackObject";
+import PlaybackObject from "@ouroboros/anim/PlaybackObject";
 
 describe("player", () => {
     it("should call the playback hooks", async () => {

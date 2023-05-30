@@ -1,19 +1,11 @@
 {
-  "name": "billboard",
+  "name": "ouroboros",
   "version": "1.0.0",
   "description": "It's not a marquee, it's more than that!",
   "type": "module",
   "files": [
     "dist"
   ],
-  "main": "./dist/billboard.umd.cjs",
-  "module": "./dist/billboard.js",
-  "exports": {
-    ".": {
-      "import": "./dist/billboard.js",
-      "require": "./dist/billboard.umd.cjs"
-    }
-  },
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",
@@ -28,7 +20,7 @@
     "@wdio/appium-service": "^8.8.4",
     "@wdio/browser-runner": "^8.8.5",
     "@wdio/cli": "^8.8.4",
-    "@wdio/mocha-framework": "^8.8.4",
+    "@wdio/mocha-framework": "^8.10.4",
     "@wdio/spec-reporter": "^8.8.4",
     "appium": "^1.22.3",
     "chromedriver": "^112.0.0",
@@ -47,10 +39,5 @@
     "wdio-geckodriver-service": "^4.1.1",
     "wdio-safaridriver-service": "^2.1.0",
     "webdriverio": "^8.8.4"
-  },
-  "dependencies": {
-    "@types/animejs": "^3.1.7",
-    "animejs": "^3.2.1",
-    "motion": "^10.15.5"
   }
 }

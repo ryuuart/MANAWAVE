@@ -26,5 +26,8 @@ output
 *.sln
 *.sw?
 
+# NIX
+.direnv/
+
 # Per user
 .hintrc

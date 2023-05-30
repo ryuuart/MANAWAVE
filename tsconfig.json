@@ -25,7 +25,7 @@
     /* Path setup */
     "baseUrl": ".",
     "paths": {
-      "@billboard/*": ["src/*"]
+      "@ouroboros/*": ["src/*"]
     },
 
     /* Linting */
@@ -35,6 +35,6 @@
     "noUnusedParameters": true,
     "noFallthroughCasesInSwitch": true
   },
-  "include": ["src", "test", "example"],
+  "include": ["src", "test", "example", "anim"],
   "exclude": ["node_modules"]
 }

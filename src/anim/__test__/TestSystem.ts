@@ -1,6 +1,5 @@
-import { System } from "@billboard/lib";
-import { lerp } from "../Util";
-import { setTranslate } from "@billboard/dom";
+import { System } from "..";
+import { Position, lerp, setTranslate } from "./Util";
 
 export default class TestSystem extends System {
     destination: Position;
