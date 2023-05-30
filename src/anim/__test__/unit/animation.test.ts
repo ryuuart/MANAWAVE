@@ -1,5 +1,8 @@
-import { System } from "@billboard/lib";
+import { System } from "@ouroboros/anim";
 
+/**
+ * A blank system that simulates a real system by modifying a string
+ */
 class BlankSystem extends System {
     dt: DOMHighResTimeStamp;
     t: DOMHighResTimeStamp;

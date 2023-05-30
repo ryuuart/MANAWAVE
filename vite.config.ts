@@ -14,8 +14,8 @@ export default defineConfig({
     build: {
         lib: {
             entry: resolve(_dirname, "src/index.ts"),
-            name: "Billboard",
-            fileName: "billboard",
+            name: "Ouroboros",
+            fileName: "ouroboros",
         },
         rollupOptions: {
             input: {

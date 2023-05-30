@@ -1,9 +1,0 @@
-.template {
-  display: inline-block;
-}
-
-.clone {
-  position: absolute;
-
-  will-change: transform;
-}

@@ -1,10 +1,12 @@
-import AnimationController from "@billboard/anim/AnimationController";
-import { lerp } from "@billboard/anim/Util";
-import { setTranslate } from "@billboard/dom";
-import { System } from "@billboard/lib";
+import { System } from "@ouroboros/anim";
+import AnimationController from "@ouroboros/anim/AnimationController";
+import { Position, lerp, setTranslate } from "@ouroboros/anim/__test__/Util";
 import Basic from "test/pages/basic/Basic";
 import Square from "test/pages/square/Square";
 
+/**
+ * {@link System} that runs an animation continuously
+ */
 class TestContinuousSystem extends System {
     position: Position;
     anchor: Position;
@@ -23,6 +25,10 @@ class TestContinuousSystem extends System {
         this.radius = radius;
     }
 
+    /**
+     *
+     * @see {@link System.onUpdate}
+     */
     onUpdate(dt: DOMHighResTimeStamp, t: DOMHighResTimeStamp): void {
         this.position[0] = lerp(
             this.anchor[0],

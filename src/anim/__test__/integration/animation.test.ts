@@ -1,15 +1,27 @@
 import Square from "test/pages/square/Square";
-import { setTranslate } from "@billboard/dom";
 import AnimationController from "../../AnimationController";
 import TestSystem from "../TestSystem";
 import Basic from "test/pages/basic/Basic";
+import { Position, setTranslate } from "../Util";
 
+/**
+ *  Extract a {@link Position} from a matrix string
+ *
+ * @param matrix a CSS computed transform represented as a matrix
+ * @returns a resulting final {@link Position} from the matrix
+ */
 function getPositionFromMatrix(matrix: string): Position {
     const parsed = matrix.match(/-?\d+/g)!;
 
     return [parseFloat(parsed[4]), parseFloat(parsed[5])];
 }
 
+/**
+ *  Wait for an element to arrive to a position
+ * @param element the observed {@link WebdriverIO.Element}
+ * @param condition condition for element to arrive to
+ * @returns the arrived {@link Position} or none if it never arrived
+ */
 async function getPositionUntil(
     element: WebdriverIO.Element,
     condition: (position: Position) => boolean

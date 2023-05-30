@@ -1,19 +1,11 @@
 {
-  "name": "billboard",
+  "name": "ouroboros",
   "version": "1.0.0",
   "description": "It's not a marquee, it's more than that!",
   "type": "module",
   "files": [
     "dist"
   ],
-  "main": "./dist/billboard.umd.cjs",
-  "module": "./dist/billboard.js",
-  "exports": {
-    ".": {
-      "import": "./dist/billboard.js",
-      "require": "./dist/billboard.umd.cjs"
-    }
-  },
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",
