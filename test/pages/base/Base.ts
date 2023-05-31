@@ -2,6 +2,7 @@ import sharedCSS from "test/pages/shared/style.css?raw";
 
 export default class Base {
     protected htmlRoot: HTMLElement;
+    protected testContent: HTMLElement | undefined | null;
 
     constructor() {
         const currentRoot = document.getElementById("test-root");
@@ -9,14 +10,19 @@ export default class Base {
         else {
             this.htmlRoot = document.createElement("div");
             this.htmlRoot.id = "test-root";
-            this.htmlRoot.style.overflow = "scroll";
+            this.htmlRoot.style.position = "relative";
+            this.htmlRoot.style.zIndex = "-1";
 
             document.body.append(this.htmlRoot);
         }
     }
 
     loadHTML(htmlText: string) {
-        this.htmlRoot.insertAdjacentHTML("beforeend", htmlText);
+        const element = document.createElement("template");
+        element.innerHTML = htmlText;
+        this.testContent = element.content.firstElementChild as HTMLElement;
+
+        this.htmlRoot.insertAdjacentElement("beforeend", this.testContent);
     }
 
     loadCSS(cssText: string) {
@@ -32,7 +38,7 @@ export default class Base {
     }
 
     clearContent() {
-        this.htmlRoot.replaceChildren();
+        this.testContent?.remove();
 
         const styleElements = document.getElementsByTagName("style");
         for (const element of styleElements) {
