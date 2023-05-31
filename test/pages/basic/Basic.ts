@@ -4,10 +4,10 @@ import basicCSS from "./style.css?raw";
 
 class Basic extends Base {
     get ticker() {
-        return document.getElementById("ticker")!;
+        return this.testContent;
     }
 
-    loadContent(): void {
+    loadContent() {
         super.loadContent(basicHTML, basicCSS);
     }
 }

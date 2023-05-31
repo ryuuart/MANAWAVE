@@ -3,7 +3,7 @@ import squareHTML from "./index.html?raw";
 
 class Square extends Base {
     get square() {
-        return document.getElementById("square")!;
+        return this.testContent;
     }
 
     loadContent(): void {
