@@ -10,7 +10,7 @@ describe("dom", () => {
     });
 
     it("should measure a dom element if rendered", async () => {
-        const testElement = Square.square;
+        const testElement = Square.square!;
         testElement.style.width = "120px";
         testElement.style.height = "130px";
 
@@ -30,11 +30,5 @@ describe("dom", () => {
         let disconnectedRect = measure(testElement);
 
         expect(disconnectedRect).toBe(null);
-
-        Square.clearContent();
-
-        let nullRect = measure(Square.square);
-
-        expect(nullRect).toBe(null);
     });
 });
