@@ -8,7 +8,7 @@ describe("ticker", () => {
             Basic.clearContent();
         });
         it("should find and remove a given item condition", async () => {
-            const container = new Container<number>(0, 0);
+            const container = new Container<number>();
 
             // create 3 numbers and try to find them out-of-order
             const testNum1 = 123;
@@ -41,7 +41,7 @@ describe("ticker", () => {
             expect(0 in testNum1FindResult).toBeFalsy();
         });
         it("should delete objects only if they're in the container", async () => {
-            const testContainer = new Container<{ n: number }>(0, 0);
+            const testContainer = new Container<{ n: number }>();
 
             const testObject = { n: 123 };
             testContainer.add(testObject);
@@ -66,15 +66,9 @@ describe("ticker", () => {
         it("should layout a grid of items", async () => {
             const testItemSize = { width: 123, height: 123 };
             const testContainerSize = { width: 300, height: 300 };
-            const testContainer = new Container<Positionable>(
-                testContainerSize.width,
-                testContainerSize.height
-            );
+            const testContainer = new Container<Positionable>();
 
-            const resultContainer = new Container<Positionable>(
-                testContainerSize.width,
-                testContainerSize.height
-            );
+            const resultContainer = new Container<Positionable>();
             const RESULT = [
                 { x: 0, y: 0 },
                 {
@@ -123,7 +117,12 @@ describe("ticker", () => {
             }
 
             layoutGrid(testContainer, {
-                grid: { size: { width: 300, height: 300 } },
+                grid: {
+                    size: {
+                        width: testContainerSize.width,
+                        height: testContainerSize.height,
+                    },
+                },
                 item: {
                     size: {
                         width: testItemSize.width,

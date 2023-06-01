@@ -1,14 +1,8 @@
-export class Container<T> implements Rect {
+export class Container<T> {
     private _store: Set<T>;
 
-    width: number;
-    height: number;
-
-    constructor(width: number, height: number) {
+    constructor() {
         this._store = new Set();
-
-        this.width = width;
-        this.height = height;
     }
 
     /**
