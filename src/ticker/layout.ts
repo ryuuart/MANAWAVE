@@ -6,7 +6,7 @@ import { Container } from "./container";
  * @remark we assume that the {@link repetitions} account for uniformity.
  *
  * @param container container that contains items that need to be laid out
- * @param repetitions the count of items to create horizontally and vertically
+ * @param properties description for a grid of items
  */
 export function layoutGrid(
     container: Container<Positionable>,
