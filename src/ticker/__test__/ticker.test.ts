@@ -64,60 +64,48 @@ describe("ticker", () => {
         });
 
         it("should layout a grid of items", async () => {
-            const testContainer = new Container<Rect & Positionable>(300, 300);
             const testItemSize = { width: 123, height: 123 };
+            const testContainerSize = { width: 300, height: 300 };
+            const testContainer = new Container<Positionable>(
+                testContainerSize.width,
+                testContainerSize.height
+            );
 
-            const resultContainer = new Container<Rect & Positionable>(
-                300,
-                300
+            const resultContainer = new Container<Positionable>(
+                testContainerSize.width,
+                testContainerSize.height
             );
             const RESULT = [
-                { width: 123, height: 123, x: 0, y: 0 },
+                { x: 0, y: 0 },
                 {
-                    width: 123,
-                    height: 123,
                     x: 123,
                     y: 0,
                 },
                 {
-                    width: 123,
-                    height: 123,
                     x: 246,
                     y: 0,
                 },
                 {
-                    width: 123,
-                    height: 123,
                     x: 0,
                     y: 123,
                 },
                 {
-                    width: 123,
-                    height: 123,
                     x: 123,
                     y: 123,
                 },
                 {
-                    width: 123,
-                    height: 123,
                     x: 246,
                     y: 123,
                 },
                 {
-                    width: 123,
-                    height: 123,
                     x: 0,
                     y: 246,
                 },
                 {
-                    width: 123,
-                    height: 123,
                     x: 123,
                     y: 246,
                 },
                 {
-                    width: 123,
-                    height: 123,
                     x: 246,
                     y: 246,
                 },
@@ -129,25 +117,30 @@ describe("ticker", () => {
             // simulate creation of grid
             for (let i = 0; i < 9; i++) {
                 testContainer.add({
-                    width: testItemSize.width,
-                    height: testItemSize.height,
                     x: 0,
                     y: 0,
                 });
             }
 
-            layoutGrid(testContainer, { horizontal: 3, vertical: 3 });
+            layoutGrid(testContainer, {
+                grid: { size: { width: 300, height: 300 } },
+                item: {
+                    size: {
+                        width: testItemSize.width,
+                        height: testItemSize.height,
+                    },
+                },
+                repetitions: {
+                    horizontal: 3,
+                    vertical: 3,
+                },
+            });
 
             // go through our expected grid layout and see if our testContainer
             // did generate a match
             for (const resultRect of resultContainer.contents) {
                 const matchedRect = testContainer.find((rect) => {
-                    return (
-                        resultRect.height === rect.height &&
-                        resultRect.width === rect.width &&
-                        resultRect.x === rect.x &&
-                        resultRect.y === rect.y
-                    );
+                    return resultRect.x === rect.x && resultRect.y === rect.y;
                 });
 
                 expect(matchedRect[0]).toEqual(resultRect);

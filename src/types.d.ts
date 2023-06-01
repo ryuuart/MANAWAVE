@@ -12,3 +12,13 @@ interface RepetitionCount {
     horizontal: number;
     vertical: number;
 }
+
+interface GridProperties {
+    grid: {
+        size: Rect;
+    };
+    item: {
+        size: Rect;
+    };
+    repetitions: RepetitionCount;
+}
