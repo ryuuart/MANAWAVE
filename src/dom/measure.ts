@@ -15,3 +15,22 @@ export function measure(element: HTMLElement): Rect | null {
     }
     return null;
 }
+
+/**
+ * Takes objects with width and height and counts how many times an inner object can repeat in an outer.
+ *
+ * @remark Repetitions **includes** the repeatable object in its final count.
+ *
+ * @param container bounds for the repeating object to measure against
+ * @param repeatable the repeating object
+ * @returns a count for how many times a repeating object repeats against its container
+ */
+export function getRepetitions(
+    container: Rect,
+    repeatable: Rect
+): RepetitionCount {
+    return {
+        horizontal: Math.ceil(container.width / repeatable.width),
+        vertical: Math.ceil(container.height / repeatable.height),
+    };
+}
