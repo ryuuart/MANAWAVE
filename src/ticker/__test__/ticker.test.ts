@@ -1,5 +1,5 @@
 import Basic from "test/pages/basic/Basic";
-import { Container } from "../container";
+import { Container, clearContainer } from "../container";
 import { layoutGrid } from "../layout";
 
 describe("ticker", () => {
@@ -55,6 +55,24 @@ describe("ticker", () => {
             testContainer.delete(testObject);
             const case2 = testContainer.find((object) => object.n === 123);
             expect(0 in case2).toBeFalsy();
+        });
+        it("should clear all contents in a container", async () => {
+            const container = new Container<{ n: number }>();
+
+            // add some numbers, try to clear it all
+            container.add({ n: 1 });
+            container.add({ n: 2 });
+            container.add({ n: 3 });
+
+            clearContainer(container);
+
+            const testCase1 = container.find((obj) => obj.n === 1);
+            const testCase2 = container.find((obj) => obj.n === 1);
+            const testCase3 = container.find((obj) => obj.n === 1);
+
+            expect(0 in testCase1).toBeFalsy();
+            expect(0 in testCase2).toBeFalsy();
+            expect(0 in testCase3).toBeFalsy();
         });
     });
 

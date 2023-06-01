@@ -58,3 +58,14 @@ export class Container<T> {
         return objects;
     }
 }
+
+/**
+ * Clears all contents of a container
+ * @param container a container with any number of objects inside
+ */
+export function clearContainer<T>(container: Container<T>) {
+    const contents = container.contents;
+    for (const object of contents) {
+        container.delete(object);
+    }
+}
