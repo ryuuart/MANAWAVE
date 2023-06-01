@@ -35,7 +35,7 @@ describe("dom", () => {
         expect(disconnectedRect).toBe(null);
     });
 
-    it("should measure the correct number of repetitions in different contexts", async () => {
+    it("should calculate repetitions in different size contexts", async () => {
         const uniformRectLarge = { width: 1000, height: 1000 };
         const uniformRectSmall = { width: 100, height: 100 };
         const nonUniformRectSmall = { width: 123, height: 123 };
