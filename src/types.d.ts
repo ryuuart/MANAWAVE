@@ -8,17 +8,12 @@ interface Positionable {
     y: number;
 }
 
-interface RepetitionCount {
+type vec2 = {
+    x: number;
+    y: number;
+};
+
+type DirectionalCount = {
     horizontal: number;
     vertical: number;
-}
-
-interface GridProperties {
-    grid: {
-        size: Rect;
-    };
-    item: {
-        size: Rect;
-    };
-    repetitions: RepetitionCount;
-}
+};
