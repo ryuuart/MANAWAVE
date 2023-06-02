@@ -1,6 +1,8 @@
 import Basic from "test/pages/basic/Basic";
 import { Container, clearContainer } from "../container";
 import { layoutGrid } from "../layout";
+import TickerSystem from "../system";
+import TickerState from "../state";
 
 describe("ticker", () => {
     describe("container", () => {
@@ -162,6 +164,68 @@ describe("ticker", () => {
 
                 expect(matchedRect[0]).toEqual(resultRect);
             }
+        });
+    });
+
+    describe("system", () => {
+        it("should update a system deterministically over time", async () => {
+            const state = new TickerState();
+            // we create a repeating pattern over a small box
+            // the direction is at some random diagonal
+            state.update({
+                ticker: {
+                    size: {
+                        width: 10,
+                        height: 10,
+                    },
+                },
+                item: {
+                    size: {
+                        width: 10,
+                        height: 10,
+                    },
+                },
+                direction: 123,
+            });
+
+            const system = new TickerSystem(state);
+
+            system.start();
+
+            // after 50 simulated milliseconds
+            let t = 0;
+            for (let i = 0; i < 5; i++) {
+                const dt = i * 10;
+                t += dt;
+                system.update(dt, t);
+            }
+
+            // this is what it should be
+            const MAIN_CASE = [
+                { x: "-2.7", y: "-5.8" },
+                { x: "-2.7", y: "4.2" },
+                { x: "-2.7", y: "-6.6" },
+                { x: "7.3", y: "-5.8" },
+                { x: "7.3", y: "4.2" },
+                { x: "7.3", y: "-6.6" },
+                { x: "7.8", y: "-5.8" },
+                { x: "7.8", y: "4.2" },
+                { x: "7.8", y: "-6.6" },
+            ];
+
+            const testResult = [];
+            for (const item of system.container.contents) {
+                testResult.push({ x: item.x.toFixed(1), y: item.y.toFixed(1) });
+            }
+
+            // must be sorted for consistency
+            // it's sorted by x position
+            testResult.sort((a, b) => {
+                const xOrder = parseFloat(a.x) - parseFloat(b.x);
+                return xOrder;
+            });
+
+            expect(testResult).toEqual(MAIN_CASE);
         });
     });
 });
