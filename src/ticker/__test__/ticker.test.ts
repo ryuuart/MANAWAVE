@@ -227,5 +227,34 @@ describe("ticker", () => {
 
             expect(testResult).toEqual(MAIN_CASE);
         });
+
+        it("should respect the autoplay option", async () => {
+            const state = new TickerState();
+            let currentContents = [];
+            state.update({
+                ticker: { size: { width: 10, height: 10 } },
+                item: { size: { width: 10, height: 10 } },
+                autoplay: false,
+            });
+
+            let system = new TickerSystem(state);
+
+            currentContents = [];
+            for (const item of system.container.contents) {
+                currentContents.push(item);
+            }
+
+            expect(currentContents.length).toEqual(0);
+
+            state.update({ autoplay: true });
+            system = new TickerSystem(state);
+
+            currentContents = [];
+            for (const item of system.container.contents) {
+                currentContents.push(item);
+            }
+
+            expect(currentContents.length).toBeGreaterThan(0);
+        });
     });
 });

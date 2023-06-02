@@ -15,6 +15,12 @@ export default class TickerSystem extends System {
 
         this.container = new Container();
         this.state = state;
+
+        // decided TickerSystem should start the system
+        // because data-driven design reflects the data
+        if (this.state.current.autoplay) {
+            this.start();
+        }
     }
 
     onStart() {
