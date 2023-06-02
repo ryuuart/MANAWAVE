@@ -10,10 +10,16 @@ type TickerStateSchema = {
     autoplay: boolean;
 };
 
+/**
+ * Represents the active state of a ticker
+ */
 export default class TickerState {
     private _prevState: TickerStateSchema;
     private _state: TickerStateSchema;
 
+    /**
+     * Only sets the default state
+     */
     constructor() {
         const blank = {
             ticker: {
@@ -37,6 +43,14 @@ export default class TickerState {
         this._state = structuredClone(blank);
     }
 
+    /**
+     * Updates and overrides current state with new values
+     *
+     * @remark describing the entire state isn't need. You can describe
+     * a new state partially and it will only update what is required.
+     *
+     * @param newState any new changes to the state
+     */
     update(newState: Partial<TickerStateSchema>) {
         this._prevState = structuredClone(this._state);
         Object.assign(this._state, newState);

@@ -47,9 +47,11 @@ export default class TickerSystem extends System {
     }
 
     onUpdate(dt: DOMHighResTimeStamp, t: DOMHighResTimeStamp) {
+        // iterate through all items
         for (const item of this.container.contents) {
             item.lifetime += dt;
 
+            // precalculate and store modified state inside another state object
             let itemState = {
                 dt,
                 t,
@@ -65,15 +67,19 @@ export default class TickerSystem extends System {
 
             const initialPosition = itemState.position;
 
+            // TODO: add an override hook
             // if (this._onItemUpdated) {
             //     Object.assign(itemState, this._onItemUpdated(itemState));
             // }
 
+            // there's a direction we want, and one that is actually happening
+            // useful when there's custom logic that overrides the theoretical / intended direction
             const actualDirection = {
                 x: itemState.position.x - initialPosition.x,
                 y: itemState.position.y - initialPosition.y,
             };
 
+            // directions should not have any magnitude and should be normalized
             const normalizedDirection = {
                 x:
                     itemState.direction.x /
@@ -87,22 +93,24 @@ export default class TickerSystem extends System {
                     ),
             };
 
+            // extract state variables
             const tickerSize = this.state.current.ticker.size;
             const itemSize = this.state.current.item.size;
             const speed = this.state.current.speed;
 
+            // perform modification
             item.x = itemState.position.x + 1 * speed * normalizedDirection.x;
             item.y = itemState.position.y + 1 * speed * normalizedDirection.y;
 
             actualDirection.x = item.x - actualDirection.x;
             actualDirection.y = item.y - actualDirection.y;
 
-            const xLim =
-                Math.ceil(tickerSize.width / itemSize.width) * itemSize.width;
-            const yLim =
-                Math.ceil(tickerSize.height / itemSize.height) *
-                itemSize.height;
+            // the outer bounds need to be based on factors of an item's size rect
+            const limits = getRepetitions(tickerSize, itemSize);
+            const xLim = limits.horizontal * itemSize.width;
+            const yLim = limits.vertical * itemSize.height;
 
+            // test and set where items should loop once out of bounds
             if (actualDirection.x > 0 && item.x >= xLim) {
                 item.x = -itemSize.width;
             } else if (actualDirection.x < 0 && item.x <= -itemSize.width) {
