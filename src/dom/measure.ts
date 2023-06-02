@@ -28,7 +28,7 @@ export function measure(element: HTMLElement): Rect | null {
 export function getRepetitions(
     container: Rect,
     repeatable: Rect
-): RepetitionCount {
+): DirectionalCount {
     return {
         horizontal: Math.ceil(container.width / repeatable.width),
         vertical: Math.ceil(container.height / repeatable.height),
