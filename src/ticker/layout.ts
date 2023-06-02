@@ -45,3 +45,24 @@ export function layoutGrid(
         }
     }
 }
+
+/**
+ * Fill a {@link Container} grid with items.
+ *
+ * @remark for the {@link templateCallback }, make sure to return `new` object references if you do use objects
+ * @param container container that contains items that need to be laid out
+ * @param templateCallback callback that generates the item to be added
+ * @param properties options object that contains the repetitions desired
+ */
+export function fillGrid(
+    container: Container<Positionable>,
+    templateCallback: () => Positionable,
+    properties: { repetitions: GridProperties["repetitions"] }
+) {
+    const { repetitions } = properties;
+    const totalRepetitions = repetitions.horizontal * repetitions.vertical;
+
+    for (let i = 0; i < totalRepetitions; i++) {
+        container.add(templateCallback());
+    }
+}
