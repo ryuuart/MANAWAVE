@@ -4,7 +4,14 @@ import { Item } from "./item";
 import TickerState from "./state";
 import { getRepetitions } from "@ouroboros/dom/measure";
 import { fillGrid, layoutGrid } from "./layout";
-import { toRadians } from "./math";
+import { accumulateVec2, normalize, toRadians } from "./math";
+
+type ItemState = {
+    direction: vec2;
+    position: vec2;
+    speed: number;
+    time: { dt: DOMHighResTimeStamp; t: DOMHighResTimeStamp };
+};
 
 export default class TickerSystem extends System {
     state: TickerState;
@@ -51,20 +58,10 @@ export default class TickerSystem extends System {
             item.lifetime += dt;
 
             // precalculate and store modified state inside another state object
-            let itemState = {
-                dt,
-                t,
-                direction: {
-                    x: Math.cos(toRadians(this.state.current.direction)),
-                    y: Math.sin(toRadians(this.state.current.direction)),
-                },
-                position: {
-                    x: item.x,
-                    y: item.y,
-                },
-            };
+            let itemState = getItemState(item, this.state, { dt, t });
 
-            const initialPosition = itemState.position;
+            const accumulateDirection = makeDirectionAccumulator();
+            const initialPosition = structuredClone(itemState.position);
 
             // TODO: add an override hook
             // if (this._onItemUpdated) {
@@ -73,57 +70,81 @@ export default class TickerSystem extends System {
 
             // there's a direction we want, and one that is actually happening
             // useful when there's custom logic that overrides the theoretical / intended direction
-            const actualDirection = {
-                x: itemState.position.x - initialPosition.x,
-                y: itemState.position.y - initialPosition.y,
-            };
-
-            // directions should not have any magnitude and should be normalized
-            const normalizedDirection = {
-                x:
-                    itemState.direction.x /
-                    Math.sqrt(
-                        itemState.direction.x ** 2 + itemState.direction.y ** 2
-                    ),
-                y:
-                    itemState.direction.y /
-                    Math.sqrt(
-                        itemState.direction.x ** 2 + itemState.direction.y ** 2
-                    ),
-            };
-
-            // extract state variables
-            const tickerSize = this.state.current.ticker.size;
-            const itemSize = this.state.current.item.size;
-            const speed = this.state.current.speed;
+            const initialDirection = accumulateDirection(
+                initialPosition,
+                itemState.position
+            );
 
             // perform modification
-            item.x = itemState.position.x + 1 * speed * normalizedDirection.x;
-            item.y = itemState.position.y + 1 * speed * normalizedDirection.y;
+            solveItemMotion(item, itemState);
 
-            actualDirection.x = item.x - actualDirection.x;
-            actualDirection.y = item.y - actualDirection.y;
-
-            // the outer bounds need to be based on factors of an item's size rect
-            const limits = getRepetitions(tickerSize, itemSize);
-            const xLim = limits.horizontal * itemSize.width;
-            const yLim = limits.vertical * itemSize.height;
+            const finalDirection = accumulateDirection(initialDirection, {
+                x: item.x,
+                y: item.y,
+            });
 
             // test and set where items should loop once out of bounds
-            if (actualDirection.x > 0 && item.x >= xLim) {
-                item.x = -itemSize.width;
-            } else if (actualDirection.x < 0 && item.x <= -itemSize.width) {
-                item.x = xLim;
-            }
-            if (actualDirection.y > 0 && item.y >= yLim) {
-                item.y = -itemSize.height;
-            } else if (actualDirection.y < 0 && item.y <= -itemSize.height) {
-                item.y = yLim;
-            }
+            loopItem(item, finalDirection, this.state);
         }
     }
 
     onDraw() {}
+}
+
+function getTickerLimits(state: TickerState): DirectionalCount {
+    const tickerSize = state.current.ticker.size;
+    const itemSize = state.current.item.size;
+
+    const limits = getRepetitions(tickerSize, itemSize);
+    limits.horizontal *= itemSize.width;
+    limits.vertical *= itemSize.height;
+
+    return limits;
+}
+
+function getItemState(
+    item: Item,
+    state: TickerState,
+    time: { t: DOMHighResTimeStamp; dt: DOMHighResTimeStamp }
+): ItemState {
+    return {
+        direction: {
+            x: Math.cos(toRadians(state.current.direction)),
+            y: Math.sin(toRadians(state.current.direction)),
+        },
+        position: {
+            x: item.x,
+            y: item.y,
+        },
+        speed: state.current.speed,
+        time,
+    };
+}
+
+function loopItem(item: Item, finalDirection: vec2, state: TickerState) {
+    const tickerSize = state.current.ticker.size;
+    const itemSize = state.current.item.size;
+    const limits = getTickerLimits(state);
+
+    if (finalDirection.x > 0 && item.x >= limits.horizontal) {
+        item.x = -itemSize.width;
+    } else if (finalDirection.x < 0 && item.x <= -itemSize.width) {
+        item.x = limits.horizontal;
+    }
+    if (finalDirection.y > 0 && item.y >= limits.vertical) {
+        item.y = -itemSize.height;
+    } else if (finalDirection.y < 0 && item.y <= -itemSize.height) {
+        item.y = limits.vertical;
+    }
+}
+
+function makeDirectionAccumulator() {
+    const accumulate = accumulateVec2({ x: 0, y: 0 });
+
+    return function (prevPos: vec2, currPos: vec2): vec2 {
+        const delta = { x: currPos.x - prevPos.x, y: currPos.y - prevPos.y };
+        return accumulate(delta);
+    };
 }
 
 function getTickerRepetitions(
@@ -135,4 +156,12 @@ function getTickerRepetitions(
     repetitions.vertical += 2;
 
     return repetitions;
+}
+
+function solveItemMotion(item: Item, state: ItemState) {
+    // directions should not have any magnitude and should be normalized
+    const normalizedDirection = normalize(state.direction);
+
+    item.x = state.position.x + 1 * state.speed * normalizedDirection.x;
+    item.y = state.position.y + 1 * state.speed * normalizedDirection.y;
 }
