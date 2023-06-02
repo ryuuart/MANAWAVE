@@ -20,7 +20,7 @@ export default class TickerState {
     /**
      * Only sets the default state
      */
-    constructor() {
+    constructor(initialState?: Partial<TickerStateSchema>) {
         const blank = {
             ticker: {
                 size: {
@@ -41,6 +41,8 @@ export default class TickerState {
 
         this._prevState = structuredClone(blank);
         this._state = structuredClone(blank);
+
+        if (initialState) this.update(initialState);
     }
 
     /**

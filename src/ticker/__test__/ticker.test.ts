@@ -169,10 +169,7 @@ describe("ticker", () => {
 
     describe("system", () => {
         it("should update a system deterministically over time", async () => {
-            const state = new TickerState();
-            // we create a repeating pattern over a small box
-            // the direction is at some random diagonal
-            state.update({
+            const state = new TickerState({
                 ticker: {
                     size: {
                         width: 10,
@@ -187,6 +184,8 @@ describe("ticker", () => {
                 },
                 direction: 123,
             });
+            // we create a repeating pattern over a small box
+            // the direction is at some random diagonal
 
             const system = new TickerSystem(state);
 
@@ -229,14 +228,14 @@ describe("ticker", () => {
         });
 
         it("should respect the autoplay option", async () => {
-            const state = new TickerState();
-            let currentContents = [];
-            state.update({
+            const state = new TickerState({
                 ticker: { size: { width: 10, height: 10 } },
                 item: { size: { width: 10, height: 10 } },
                 autoplay: false,
             });
+            let currentContents = [];
 
+            // it didn't start if there's nothing in it
             let system = new TickerSystem(state);
 
             currentContents = [];
@@ -246,6 +245,7 @@ describe("ticker", () => {
 
             expect(currentContents.length).toEqual(0);
 
+            // so say it starts, it should have stuff in it
             state.update({ autoplay: true });
             system = new TickerSystem(state);
 
