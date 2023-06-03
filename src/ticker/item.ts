@@ -9,3 +9,7 @@ export class Item implements Positionable {
         this.y = 0;
     }
 }
+
+export function extractPosition(item: Item): vec2 {
+    return { x: item.x, y: item.y };
+}

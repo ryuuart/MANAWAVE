@@ -1,4 +1,4 @@
-type TickerStateSchema = {
+export type TickerStateData = {
     ticker: {
         size: Rect;
     };
@@ -13,14 +13,14 @@ type TickerStateSchema = {
 /**
  * Represents the active state of a ticker
  */
-export default class TickerState {
-    private _prevState: TickerStateSchema;
-    private _state: TickerStateSchema;
+export class TickerState {
+    private _prevState: TickerStateData;
+    private _state: TickerStateData;
 
     /**
      * Only sets the default state
      */
-    constructor(initialState?: Partial<TickerStateSchema>) {
+    constructor(initialState?: Partial<TickerStateData>) {
         const blank = {
             ticker: {
                 size: {
@@ -53,16 +53,16 @@ export default class TickerState {
      *
      * @param newState any new changes to the state
      */
-    update(newState: Partial<TickerStateSchema>) {
+    update(newState: Partial<TickerStateData>) {
         this._prevState = structuredClone(this._state);
         Object.assign(this._state, newState);
     }
 
-    get current(): TickerStateSchema {
+    get current(): TickerStateData {
         return this._state;
     }
 
-    get previous(): TickerStateSchema {
+    get previous(): TickerStateData {
         return this._prevState;
     }
 }

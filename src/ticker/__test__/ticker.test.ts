@@ -2,7 +2,7 @@ import Basic from "test/pages/basic/Basic";
 import { Container, clearContainer } from "../container";
 import { layoutGrid } from "../layout";
 import TickerSystem from "../system";
-import TickerState from "../state";
+import { TickerState } from "../state";
 
 describe("ticker", () => {
     describe("container", () => {
