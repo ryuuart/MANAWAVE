@@ -49,7 +49,7 @@ export default class TickerSystem extends System {
     onUpdate(dt: DOMHighResTimeStamp, t: DOMHighResTimeStamp) {
         // iterate through all items
         for (const item of this.container.contents) {
-            simulateItem(item, this.state.current, dt, t);
+            simulateItem(item, { tState: this.state.current, dt, t });
         }
     }
 

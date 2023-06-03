@@ -12,6 +12,19 @@ type TSimulationContext = {
     speed: number;
 };
 
+type TSimulationSample = {
+    ticker: TSimulationContext["ticker"];
+    item: TSimulationContext["item"];
+    direction: TSimulationContext["intendedDirection"];
+    speed: TSimulationContext["speed"];
+};
+
+type TSimulationData = {
+    tState: TickerStateData;
+    dt: DOMHighResTimeStamp;
+    t: DOMHighResTimeStamp;
+};
+
 function getTLimits(ticker: Rect, item: Rect): DirectionalCount {
     const limits = getRepetitions(ticker, item);
     limits.horizontal *= ticker.width;
@@ -58,10 +71,10 @@ function loopItem(item: Item, context: TSimulationContext) {
 
 export function simulateItem(
     item: Item,
-    state: TickerStateData,
-    dt: DOMHighResTimeStamp,
-    t: DOMHighResTimeStamp
+    data: TSimulationData,
+    override?: (sample: TSimulationSample) => void
 ) {
+    const state = data.tState;
     const sTicker = state.ticker;
     const sItem = state.item;
 
@@ -96,5 +109,5 @@ export function simulateItem(
 
     loopItem(item, tContext);
 
-    item.lifetime += dt;
+    item.lifetime += data.dt;
 }
