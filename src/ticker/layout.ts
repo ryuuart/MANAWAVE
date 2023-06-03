@@ -1,4 +1,6 @@
+import { getRepetitions } from "@ouroboros/dom/measure";
 import { Container } from "./container";
+import { TickerStateData } from "./state";
 
 type GridProperties = {
     grid: {
@@ -65,4 +67,43 @@ export function fillGrid(
     for (let i = 0; i < totalRepetitions; i++) {
         container.add(templateCallback());
     }
+}
+
+/**
+ * Calculates the total repetitions required vertically and horizontally for a ticker. The repetitions are
+ * padded by 2 to account for ticker items that need to loop offscreen.
+ *
+ * @see {@link getRepetitions } in DOM/measure
+ * @see {@link loopItem } in simulation
+ * @param container size of a container of repeatable items
+ * @param repeatable repeatable item size
+ * @returns the count of repeatable items with 2 extra items added in both directions
+ */
+function getTRepetitions(container: Rect, repeatable: Rect): DirectionalCount {
+    const repetitions = getRepetitions(container, repeatable);
+    repetitions.horizontal += 2;
+    repetitions.vertical += 2;
+
+    return repetitions;
+}
+
+/**
+ * Calculates a ticker's grid properties for use in filling and layout.
+ *
+ * @see {@link fillGrid }
+ * @see {@link layoutGrid }
+ *
+ * @param state the data representation of a ticker's state
+ * @returns calculated grid properties for a ticker
+ */
+export function calculateTGridOptions(state: TickerStateData): GridProperties {
+    return {
+        grid: state.ticker,
+        item: state.item,
+        repetitions: getTRepetitions(state.ticker.size, state.item.size),
+        offset: {
+            x: -state.item.size.width,
+            y: -state.item.size.height,
+        },
+    };
 }
