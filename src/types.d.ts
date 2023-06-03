@@ -4,8 +4,7 @@ interface Rect {
 }
 
 interface Positionable {
-    x: number;
-    y: number;
+    position: vec2;
 }
 
 type vec2 = {

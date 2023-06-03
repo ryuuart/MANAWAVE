@@ -40,8 +40,8 @@ export function layoutGrid(
         for (let x = 0; x < repetitions.horizontal; x++) {
             const currObject = objects[objectIndex];
 
-            currObject.x = startPos.x + x * item.size.width;
-            currObject.y = startPos.y + y * item.size.height;
+            currObject.position.x = startPos.x + x * item.size.width;
+            currObject.position.y = startPos.y + y * item.size.height;
 
             objectIndex++;
         }

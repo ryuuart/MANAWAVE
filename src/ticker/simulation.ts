@@ -1,7 +1,7 @@
 import { getRepetitions } from "@ouroboros/dom/measure";
 import { TickerStateData } from "./state";
 import { accumulateVec2, normalize, toRadians } from "./math";
-import { Item, extractPosition } from "./item";
+import { Item } from "./item";
 
 type TSimulationContext = {
     ticker: { size: Rect };
@@ -76,8 +76,8 @@ function moveItem(
     // directions should not have any magnitude and should be normalized
     const normalizedDirection = normalize(intendedDirection);
 
-    item.x += 1 * speed * normalizedDirection.x;
-    item.y += 1 * speed * normalizedDirection.y;
+    item.position.x += 1 * speed * normalizedDirection.x;
+    item.position.y += 1 * speed * normalizedDirection.y;
 }
 
 /**
@@ -91,15 +91,15 @@ function loopItem(item: Item, context: TSimulationContext) {
     const itemSize = context.item.size;
 
     const { actualDirection, limits } = context;
-    if (actualDirection.x > 0 && item.x >= limits.horizontal) {
-        item.x = -itemSize.width;
-    } else if (actualDirection.x < 0 && item.x <= -itemSize.width) {
-        item.x = limits.horizontal;
+    if (actualDirection.x > 0 && item.position.x >= limits.horizontal) {
+        item.position.x = -itemSize.width;
+    } else if (actualDirection.x < 0 && item.position.x <= -itemSize.width) {
+        item.position.x = limits.horizontal;
     }
-    if (actualDirection.y > 0 && item.y >= limits.vertical) {
-        item.y = -itemSize.height;
-    } else if (actualDirection.y < 0 && item.y <= -itemSize.height) {
-        item.y = limits.vertical;
+    if (actualDirection.y > 0 && item.position.y >= limits.vertical) {
+        item.position.y = -itemSize.height;
+    } else if (actualDirection.y < 0 && item.position.y <= -itemSize.height) {
+        item.position.y = limits.vertical;
     }
 }
 
@@ -135,7 +135,7 @@ export function simulateItem(
 
     // start measuring changes in actual direction
     const accumulateDirection = makeDirectionAccumulator();
-    const initialPosition = extractPosition(item);
+    const initialPosition = item.position;
 
     // TODO: override hook here
 
@@ -143,7 +143,7 @@ export function simulateItem(
     // change in direction
     tContext.actualDirection = accumulateDirection(
         initialPosition,
-        extractPosition(item)
+        item.position
     );
 
     // actually move the item
@@ -152,7 +152,7 @@ export function simulateItem(
     // measure a directional change from the recent movement
     tContext.actualDirection = accumulateDirection(
         tContext.actualDirection,
-        extractPosition(item)
+        item.position
     );
 
     // if the movement caused the item to go out-of-bounds, loop it
