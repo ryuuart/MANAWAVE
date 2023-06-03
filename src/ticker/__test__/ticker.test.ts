@@ -90,49 +90,67 @@ describe("ticker", () => {
 
             const resultContainer = new Container<Positionable>();
             const RESULT = [
-                { x: 0, y: 0 },
+                { position: { x: 0, y: 0 } },
                 {
-                    x: 123,
-                    y: 0,
+                    position: {
+                        x: 123,
+                        y: 0,
+                    },
                 },
                 {
-                    x: 246,
-                    y: 0,
+                    position: {
+                        x: 246,
+                        y: 0,
+                    },
                 },
                 {
-                    x: 0,
-                    y: 123,
+                    position: {
+                        x: 0,
+                        y: 123,
+                    },
                 },
                 {
-                    x: 123,
-                    y: 123,
+                    position: {
+                        x: 123,
+                        y: 123,
+                    },
                 },
                 {
-                    x: 246,
-                    y: 123,
+                    position: {
+                        x: 246,
+                        y: 123,
+                    },
                 },
                 {
-                    x: 0,
-                    y: 246,
+                    position: {
+                        x: 0,
+                        y: 246,
+                    },
                 },
                 {
-                    x: 123,
-                    y: 246,
+                    position: {
+                        x: 123,
+                        y: 246,
+                    },
                 },
                 {
-                    x: 246,
-                    y: 246,
+                    position: {
+                        x: 246,
+                        y: 246,
+                    },
                 },
             ];
-            for (const resultRect of RESULT) {
-                resultContainer.add(resultRect);
+            for (const resultPosObj of RESULT) {
+                resultContainer.add(resultPosObj);
             }
 
             // simulate creation of grid
             for (let i = 0; i < 9; i++) {
                 testContainer.add({
-                    x: 0,
-                    y: 0,
+                    position: {
+                        x: 0,
+                        y: 0,
+                    },
                 });
             }
 
@@ -157,12 +175,15 @@ describe("ticker", () => {
 
             // go through our expected grid layout and see if our testContainer
             // did generate a match
-            for (const resultRect of resultContainer.contents) {
-                const matchedRect = testContainer.find((rect) => {
-                    return resultRect.x === rect.x && resultRect.y === rect.y;
+            for (const resultPosObj of resultContainer.contents) {
+                const matchedPosObj = testContainer.find((rect) => {
+                    return (
+                        resultPosObj.position.x === rect.position.x &&
+                        resultPosObj.position.y === rect.position.y
+                    );
                 });
 
-                expect(matchedRect[0]).toEqual(resultRect);
+                expect(matchedPosObj[0]).toEqual(resultPosObj);
             }
         });
     });
@@ -214,7 +235,10 @@ describe("ticker", () => {
 
             const testResult = [];
             for (const item of system.container.contents) {
-                testResult.push({ x: item.x.toFixed(1), y: item.y.toFixed(1) });
+                testResult.push({
+                    x: item.position.x.toFixed(1),
+                    y: item.position.y.toFixed(1),
+                });
             }
 
             // must be sorted for consistency
