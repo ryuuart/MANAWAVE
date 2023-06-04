@@ -8,27 +8,35 @@ type Frame = {
 };
 
 type SnapshotData = {
-    [key: string]: { frames: Frame[] };
+    setup: {
+        numMotions: number;
+        dt: DOMHighResTimeStamp;
+        tickerSize: { width: number; height: number };
+        itemSize: { width: number; height: number };
+    };
+    data: {
+        [key: string]: {
+            frames: Frame[];
+        };
+    };
+};
+
+const snapshot: SnapshotData = {
+    setup: {
+        numMotions: 10,
+        dt: 10,
+        tickerSize: { width: 10, height: 10 },
+        itemSize: { width: 10, height: 10 },
+    },
+    data: {},
 };
 
 const state = new TickerState({
-    ticker: {
-        size: {
-            width: 10,
-            height: 10,
-        },
-    },
-    item: {
-        size: {
-            width: 10,
-            height: 10,
-        },
-    },
-    direction: 0,
+    ticker: { size: snapshot.setup.tickerSize },
+    item: { size: snapshot.setup.itemSize },
 });
 
 const system = new TickerSystem(state);
-const snapshot: SnapshotData = {};
 
 for (let theta = 0; theta <= 360; theta++) {
     state.update({ direction: theta });
@@ -38,8 +46,8 @@ for (let theta = 0; theta <= 360; theta++) {
     const motionFrames = [];
 
     let t = 0;
-    for (let i = 0; i < 10; i++) {
-        const dt = i * 10;
+    for (let i = 0; i < snapshot.setup.numMotions; i++) {
+        const dt = i * snapshot.setup.dt;
         t += dt;
         system.update(dt, t);
     }
@@ -58,7 +66,7 @@ for (let theta = 0; theta <= 360; theta++) {
 
     system.stop();
 
-    snapshot[theta.toString()] = { frames: motionFrames };
+    snapshot.data[theta.toString()] = { frames: motionFrames };
 }
 
 const snapshotBinary = jsonToBinary(snapshot);

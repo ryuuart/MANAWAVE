@@ -4,6 +4,8 @@ import { layoutGrid } from "../layout";
 import TickerSystem from "../system";
 import { TickerState } from "../state";
 
+import allDirectionsSnapshot from "./data/all_direction.json";
+
 describe("ticker", () => {
     describe("container", () => {
         afterEach(() => {
@@ -190,65 +192,59 @@ describe("ticker", () => {
 
     describe("system", () => {
         it("should update a system deterministically over time", async () => {
+            // we create a repeating pattern over a small box
             const state = new TickerState({
                 ticker: {
-                    size: {
-                        width: 10,
-                        height: 10,
-                    },
+                    size: allDirectionsSnapshot.setup.tickerSize,
                 },
-                item: {
-                    size: {
-                        width: 10,
-                        height: 10,
-                    },
-                },
-                direction: 123,
+                item: { size: allDirectionsSnapshot.setup.itemSize },
             });
-            // we create a repeating pattern over a small box
-            // the direction is at some random diagonal
 
             const system = new TickerSystem(state);
 
-            system.start();
+            // restart the system over 360 degrees
+            for (let theta = 0; theta <= 360; theta++) {
+                state.update({ direction: theta });
 
-            // after 50 simulated milliseconds
-            let t = 0;
-            for (let i = 0; i < 5; i++) {
-                const dt = i * 10;
-                t += dt;
-                system.update(dt, t);
-            }
+                system.start();
 
-            // this is what it should be
-            const MAIN_CASE = [
-                { x: "-2.7", y: "-5.8" },
-                { x: "-2.7", y: "4.2" },
-                { x: "-2.7", y: "-6.6" },
-                { x: "7.3", y: "-5.8" },
-                { x: "7.3", y: "4.2" },
-                { x: "7.3", y: "-6.6" },
-                { x: "7.8", y: "-5.8" },
-                { x: "7.8", y: "4.2" },
-                { x: "7.8", y: "-6.6" },
-            ];
+                // keep track of each step of the animation updates
+                const testMotionFrames = [];
 
-            const testResult = [];
-            for (const item of system.container.contents) {
-                testResult.push({
-                    x: item.position.x.toFixed(1),
-                    y: item.position.y.toFixed(1),
+                let t = 0;
+                for (
+                    let i = 0;
+                    i < allDirectionsSnapshot.setup.numMotions;
+                    i++
+                ) {
+                    const dt = i * allDirectionsSnapshot.setup.dt;
+                    t += dt;
+                    system.update(dt, t);
+                }
+
+                for (const item of system.container.contents) {
+                    testMotionFrames.push({
+                        x: item.position.x.toFixed(2),
+                        y: item.position.y.toFixed(2),
+                    });
+                }
+
+                // keep things in a consistent order
+                testMotionFrames.sort((a, b) => {
+                    const xOrder = parseFloat(a.x) - parseFloat(b.x);
+                    return xOrder;
                 });
+
+                system.stop();
+
+                // have to fix type errors
+                const testData: {
+                    [key: string]: { frames: { x: string; y: string }[] };
+                } = allDirectionsSnapshot.data;
+                expect(testMotionFrames).toEqual(
+                    testData[theta.toString()].frames
+                );
             }
-
-            // must be sorted for consistency
-            // it's sorted by x position
-            testResult.sort((a, b) => {
-                const xOrder = parseFloat(a.x) - parseFloat(b.x);
-                return xOrder;
-            });
-
-            expect(testResult).toEqual(MAIN_CASE);
         });
 
         it("should respect the autoplay option", async () => {
