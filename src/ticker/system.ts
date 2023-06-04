@@ -33,6 +33,20 @@ export default class TickerSystem extends System {
     }
 
     onUpdate(dt: DOMHighResTimeStamp, t: DOMHighResTimeStamp) {
+        // see if the system should update
+        const prevGridOptions = calculateTGridOptions(this.state.previous);
+        const currGridOptions = calculateTGridOptions(this.state.current);
+
+        if (
+            prevGridOptions.repetitions.horizontal !==
+                currGridOptions.repetitions.horizontal &&
+            prevGridOptions.repetitions.vertical !==
+                currGridOptions.repetitions.vertical
+        ) {
+            fillGrid(this.container, () => new Item(), currGridOptions);
+            layoutGrid(this.container, currGridOptions);
+        }
+
         // iterate through all items
         for (const item of this.container.contents) {
             simulateItem(item, { tState: this.state.current, dt, t });

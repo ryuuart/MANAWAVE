@@ -39,10 +39,10 @@ export class TickerState {
             autoplay: false,
         };
 
-        this._prevState = structuredClone(blank);
-        this._state = structuredClone(blank);
+        this._state = blank;
+        if (initialState) Object.assign(this._state, initialState);
 
-        if (initialState) this.update(initialState);
+        this._prevState = this._state;
     }
 
     /**

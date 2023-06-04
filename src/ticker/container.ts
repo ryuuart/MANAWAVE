@@ -12,6 +12,10 @@ export class Container<T> {
         return this._store.values();
     }
 
+    get size(): number {
+        return this._store.size;
+    }
+
     /**
      * Adds a given object into the container
      * @param object object to add into the container
