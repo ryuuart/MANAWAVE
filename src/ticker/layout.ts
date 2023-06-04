@@ -62,10 +62,17 @@ export function fillGrid(
     properties: { repetitions: GridProperties["repetitions"] }
 ) {
     const { repetitions } = properties;
-    const totalRepetitions = repetitions.horizontal * repetitions.vertical;
+    const nTemplatesToGenerate =
+        repetitions.horizontal * repetitions.vertical - container.size;
 
-    for (let i = 0; i < totalRepetitions; i++) {
-        container.add(templateCallback());
+    if (nTemplatesToGenerate > 0)
+        for (let i = 0; i < nTemplatesToGenerate; i++) {
+            container.add(templateCallback());
+        }
+    else if (nTemplatesToGenerate < 0) {
+        for (let i = 0; i < Math.abs(nTemplatesToGenerate); i++) {
+            container.delete(container.find(() => true)[0]);
+        }
     }
 }
 

@@ -278,6 +278,29 @@ describe("ticker", () => {
 
             expect(currentContents.length).toBeGreaterThan(0);
         });
+
+        it("should react to changes in state", async () => {
+            const state = new TickerState({
+                ticker: { size: { width: 10, height: 10 } },
+                item: { size: { width: 10, height: 10 } },
+            });
+
+            const system = new TickerSystem(state);
+
+            system.start();
+
+            system.update(0, 0);
+            expect(system.container.size).toEqual(9);
+
+            state.update({ ticker: { size: { width: 20, height: 20 } } });
+            system.update(0, 0);
+            expect(system.container.size).toEqual(16);
+
+            state.update({ ticker: { size: { width: 10, height: 10 } } });
+            system.update(0, 0);
+
+            expect(system.container.size).toEqual(9);
+        });
     });
 
     describe("simulation", () => {
