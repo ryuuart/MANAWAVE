@@ -1,0 +1,13 @@
+.snapshot-container {
+  margin: 2rem auto;
+  padding: 1rem 4rem;
+
+  max-height: 60vh;
+
+  overflow: scroll;
+
+  font-size: 1rem;
+
+  border: 1px solid black;
+  border-radius: 1rem;
+}
