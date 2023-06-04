@@ -5,6 +5,8 @@ import TickerSystem from "../system";
 import { TickerState } from "../state";
 
 import allDirectionsSnapshot from "./data/all_direction.json";
+import { simulateItem } from "../simulation";
+import { Item } from "../item";
 
 describe("ticker", () => {
     describe("container", () => {
@@ -275,6 +277,57 @@ describe("ticker", () => {
             }
 
             expect(currentContents.length).toBeGreaterThan(0);
+        });
+    });
+
+    describe("simulation", () => {
+        it("can override intended simulation motion in a callback", async () => {
+            const item = new Item();
+            const tState = new TickerState({
+                ticker: { size: { width: 10, height: 10 } },
+                item: { size: { width: 1, height: 1 } },
+                direction: 0,
+            });
+            const simulationData = {
+                t: 0,
+                dt: 0,
+                tState: tState.current,
+            };
+
+            simulateItem(item, simulationData);
+
+            expect(item.position).toEqual({ x: 1, y: 0 });
+
+            // test using all values to override the start position, x direction, and speed
+            const overrideCallback: Parameters<typeof simulateItem>["2"] = ({
+                sizes,
+                item,
+                direction,
+                speed,
+            }) => {
+                item.position.x += Math.ceil(
+                    (sizes.ticker.width + sizes.item.width) / 2
+                );
+                item.position.y += Math.ceil(
+                    (sizes.ticker.height + sizes.item.height) / 2
+                );
+                direction.x = Math.cos(Math.PI);
+                direction.y = Math.sin(Math.PI);
+                speed.value = 2;
+            };
+
+            simulateItem(item, simulationData, overrideCallback);
+
+            expect(item.position).toEqual({ x: 5, y: 6 });
+
+            // simulate alterations in the y-direction
+            simulateItem(item, simulationData, ({ direction, item }) => {
+                item.position.y += 2;
+                direction.x = Math.cos((3 * Math.PI) / 2);
+                direction.y = Math.sin((3 * Math.PI) / 2);
+            });
+
+            expect(item.position).toEqual({ x: 5, y: 7 });
         });
     });
 });
