@@ -13,10 +13,13 @@ type TSimulationContext = {
 };
 
 type TSimulationSample = {
-    ticker: TSimulationContext["ticker"];
-    item: TSimulationContext["item"];
+    sizes: {
+        ticker: TSimulationContext["ticker"]["size"];
+        item: TSimulationContext["item"]["size"];
+    };
+    item: Item;
     direction: TSimulationContext["intendedDirection"];
-    speed: TSimulationContext["speed"];
+    speed: { value: TSimulationContext["speed"] };
 };
 
 type TSimulationData = {
@@ -34,7 +37,7 @@ type TSimulationData = {
  */
 function getTLimits(ticker: Rect, item: Rect): DirectionalCount {
     const limits = getRepetitions(ticker, item);
-    limits.horizontal *= ticker.width;
+    limits.horizontal *= item.width;
     limits.vertical *= item.height;
 
     return limits;
@@ -137,7 +140,21 @@ export function simulateItem(
     const accumulateDirection = makeDirectionAccumulator();
     const initialPosition = item.position;
 
-    // TODO: override hook here
+    if (override) {
+        const sample = {
+            item: item,
+            sizes: {
+                ticker: sTicker.size,
+                item: sItem.size,
+            },
+            speed: { value: tContext.speed },
+            direction: tContext.intendedDirection,
+        };
+        override(sample);
+
+        // need to update value from reference to reference
+        tContext.speed = sample.speed.value;
+    }
 
     // measure a directional change if the override induced a
     // change in direction
