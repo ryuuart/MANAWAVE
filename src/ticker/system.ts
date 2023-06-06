@@ -1,15 +1,15 @@
 import { System } from "@ouroboros/anim";
 import { Container, clearContainer } from "./container";
 import { Item } from "./item";
-import { TickerState } from "./state";
+import { TickerStateData } from "./state";
 import { calculateTGridOptions, fillGrid, layoutGrid } from "./layout";
 import { simulateItem } from "./simulation";
 
-export default class TickerSystem extends System {
-    state: TickerState;
+export default class TickerSystem extends System implements Listener {
+    state: TickerStateData;
     container: Container<Item>;
 
-    constructor(state: TickerState) {
+    constructor(state: TickerStateData) {
         super();
 
         this.container = new Container();
@@ -17,13 +17,13 @@ export default class TickerSystem extends System {
 
         // decided TickerSystem should start the system
         // because data-driven design reflects the data
-        if (this.state.current.autoplay) {
+        if (this.state.autoplay) {
             this.start();
         }
     }
 
     onStart() {
-        const gridOptions = calculateTGridOptions(this.state.current);
+        const gridOptions = calculateTGridOptions(this.state);
         fillGrid(this.container, () => new Item(), gridOptions);
         layoutGrid(this.container, gridOptions);
     }
@@ -32,10 +32,16 @@ export default class TickerSystem extends System {
         clearContainer(this.container);
     }
 
-    onUpdate(dt: DOMHighResTimeStamp, t: DOMHighResTimeStamp) {
+    onMessage(message: string, payload: any) {
+        if (message === "update") {
+            this.onStateUpdate(payload.curr, payload.prev);
+        }
+    }
+
+    onStateUpdate(curr: TickerStateData, prev: TickerStateData) {
         // see if the system should update
-        const prevGridOptions = calculateTGridOptions(this.state.previous);
-        const currGridOptions = calculateTGridOptions(this.state.current);
+        const prevGridOptions = calculateTGridOptions(prev);
+        const currGridOptions = calculateTGridOptions(curr);
 
         if (
             prevGridOptions.repetitions.horizontal !==
@@ -47,9 +53,13 @@ export default class TickerSystem extends System {
             layoutGrid(this.container, currGridOptions);
         }
 
+        this.state = curr;
+    }
+
+    onUpdate(dt: DOMHighResTimeStamp, t: DOMHighResTimeStamp) {
         // iterate through all items
         for (const item of this.container.contents) {
-            simulateItem(item, { tState: this.state.current, dt, t });
+            simulateItem(item, { tState: this.state, dt, t });
         }
     }
 

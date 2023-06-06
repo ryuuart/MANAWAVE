@@ -10,6 +10,8 @@ export type TickerStateData = {
     autoplay: boolean;
 };
 
+export type StateMessageList = "update";
+
 /**
  * Represents the active state of a ticker
  */
@@ -59,10 +61,20 @@ export class TickerState {
     }
 
     get current(): TickerStateData {
-        return this._state;
+        return structuredClone(this._state);
     }
 
     get previous(): TickerStateData {
-        return this._prevState;
+        return structuredClone(this._prevState);
+    }
+
+    notify(message: StateMessageList, listeners: Listener[]) {
+        for (const listener of listeners) {
+            if (message === "update")
+                listener.onMessage(message, {
+                    curr: this.current,
+                    prev: this.previous,
+                });
+        }
     }
 }
