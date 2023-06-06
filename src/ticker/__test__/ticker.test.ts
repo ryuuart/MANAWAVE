@@ -200,6 +200,7 @@ describe("ticker", () => {
                     size: allDirectionsSnapshot.setup.tickerSize,
                 },
                 item: { size: allDirectionsSnapshot.setup.itemSize },
+                autoplay: true,
             });
 
             const system = new TickerSystem(state.current);
@@ -208,8 +209,7 @@ describe("ticker", () => {
             for (let theta = 0; theta <= 360; theta++) {
                 state.update({ direction: theta });
                 state.notify("update", [system]);
-
-                system.start();
+                system.start(); // start won't start if not stopped. have to start to stop...
 
                 // keep track of each step of the animation updates
                 const testMotionFrames = [];
@@ -238,7 +238,7 @@ describe("ticker", () => {
                     return xOrder;
                 });
 
-                system.stop();
+                system.stop(); // resets position
 
                 // have to fix type errors
                 const testData: {
@@ -256,28 +256,38 @@ describe("ticker", () => {
                 item: { size: { width: 10, height: 10 } },
                 autoplay: false,
             });
-            let currentContents = [];
 
-            // it didn't start if there's nothing in it
+            // it didn't autoplay if nothing moved
             let system = new TickerSystem(state.current);
 
-            currentContents = [];
+            const initialSnapshot = [];
             for (const item of system.container.contents) {
-                currentContents.push(item);
+                initialSnapshot.push(structuredClone(item.position));
             }
 
-            expect(currentContents.length).toEqual(0);
+            system.update(0, 0);
 
-            // so say it starts, it should have stuff in it
+            const falseAutoplaySnapshot = [];
+            for (const item of system.container.contents) {
+                falseAutoplaySnapshot.push(structuredClone(item.position));
+            }
+
+            expect(falseAutoplaySnapshot).toEqual(initialSnapshot);
+
+            // so say it autoplays, then stuff should have moved
             state.update({ autoplay: true });
             system = new TickerSystem(state.current);
 
-            currentContents = [];
+            system.update(0, 0);
+            system.update(0, 0);
+            system.update(0, 0);
+
+            const trueAutoplaySnapshot = [];
             for (const item of system.container.contents) {
-                currentContents.push(item);
+                trueAutoplaySnapshot.push(structuredClone(item.position));
             }
 
-            expect(currentContents.length).toBeGreaterThan(0);
+            expect(trueAutoplaySnapshot).not.toEqual(initialSnapshot);
         });
 
         it("should react to changes in state", async () => {

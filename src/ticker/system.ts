@@ -15,10 +15,10 @@ export default class TickerSystem extends System implements Listener {
         this.container = new Container();
         this.state = state;
 
-        // decided TickerSystem should start the system
-        // because data-driven design reflects the data
+        this.start();
+        this.pause();
         if (this.state.autoplay) {
-            this.start();
+            this.play();
         }
     }
 
@@ -29,7 +29,8 @@ export default class TickerSystem extends System implements Listener {
     }
 
     onStop() {
-        clearContainer(this.container);
+        const gridOptions = calculateTGridOptions(this.state);
+        layoutGrid(this.container, gridOptions);
     }
 
     onMessage(message: string, payload: any) {
