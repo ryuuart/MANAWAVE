@@ -202,11 +202,12 @@ describe("ticker", () => {
                 item: { size: allDirectionsSnapshot.setup.itemSize },
             });
 
-            const system = new TickerSystem(state);
+            const system = new TickerSystem(state.current);
 
             // restart the system over 360 degrees
             for (let theta = 0; theta <= 360; theta++) {
                 state.update({ direction: theta });
+                state.notify("update", [system]);
 
                 system.start();
 
@@ -258,7 +259,7 @@ describe("ticker", () => {
             let currentContents = [];
 
             // it didn't start if there's nothing in it
-            let system = new TickerSystem(state);
+            let system = new TickerSystem(state.current);
 
             currentContents = [];
             for (const item of system.container.contents) {
@@ -269,7 +270,7 @@ describe("ticker", () => {
 
             // so say it starts, it should have stuff in it
             state.update({ autoplay: true });
-            system = new TickerSystem(state);
+            system = new TickerSystem(state.current);
 
             currentContents = [];
             for (const item of system.container.contents) {
@@ -285,20 +286,19 @@ describe("ticker", () => {
                 item: { size: { width: 10, height: 10 } },
             });
 
-            const system = new TickerSystem(state);
+            const system = new TickerSystem(state.current);
 
+            // need to fix this with autoplay
             system.start();
-
-            system.update(0, 0);
             expect(system.container.size).toEqual(9);
 
             state.update({ ticker: { size: { width: 20, height: 20 } } });
-            system.update(0, 0);
+            state.notify("update", [system]);
             expect(system.container.size).toEqual(16);
 
+            system.stop();
             state.update({ ticker: { size: { width: 10, height: 10 } } });
-            system.update(0, 0);
-
+            state.notify("update", [system]);
             expect(system.container.size).toEqual(9);
         });
     });
