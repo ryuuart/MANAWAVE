@@ -68,6 +68,11 @@ export class TickerState {
         return structuredClone(this._prevState);
     }
 
+    /**
+     * Send messages out to listening objects to push data flow
+     * @param message message to notify to listeners
+     * @param listeners an object that can receive a message
+     */
     notify(message: StateMessageList, listeners: Listener[]) {
         for (const listener of listeners) {
             if (message === "update")
