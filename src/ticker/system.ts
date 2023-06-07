@@ -4,6 +4,7 @@ import { Item } from "./item";
 import { TickerStateData } from "./state";
 import { calculateTGridOptions, fillGrid, layoutGrid } from "./layout";
 import { simulateItem } from "./simulation";
+import { uid } from "@ouroboros/utils/uid";
 
 export default class TickerSystem extends System implements Listener {
     id: string;
