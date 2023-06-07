@@ -36,10 +36,11 @@ const state = new TickerState({
     item: { size: snapshot.setup.itemSize },
 });
 
-const system = new TickerSystem(state);
+const system = new TickerSystem(state.current);
 
 for (let theta = 0; theta <= 360; theta++) {
     state.update({ direction: theta });
+    state.notify("update", [system]);
 
     system.start();
 
