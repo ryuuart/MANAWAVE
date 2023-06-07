@@ -6,11 +6,14 @@ import { calculateTGridOptions, fillGrid, layoutGrid } from "./layout";
 import { simulateItem } from "./simulation";
 
 export default class TickerSystem extends System implements Listener {
+    id: string;
     state: TickerStateData;
     container: Container<Item>;
 
     constructor(state: TickerStateData) {
         super();
+
+        this.id = uid();
 
         this.container = new Container();
         this.state = state;

@@ -1,6 +1,7 @@
 export type ItemStatus = "STARTED" | "LOOPED" | "NONE";
 
 export class Item implements Positionable {
+    id: string;
     lifetime: DOMHighResTimeStamp;
     position: vec2;
     status: ItemStatus;
@@ -12,5 +13,6 @@ export class Item implements Positionable {
             y: 0,
         };
         this.status = "STARTED";
+        this.id = uid();
     }
 }
