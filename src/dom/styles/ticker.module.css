@@ -1,4 +1,5 @@
 .container {
   display: flow-root;
+  position: relative;
   overflow: hidden;
 }
