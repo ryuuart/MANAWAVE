@@ -1,0 +1,9 @@
+.item {
+  position: absolute;
+
+  will-change: transform;
+}
+
+.template {
+  display: inline-block;
+}
