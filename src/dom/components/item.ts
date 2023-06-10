@@ -1,12 +1,13 @@
-import styles from "../styles/item.module.css";
+import { Component } from "../component";
 import { TemplateHTML } from "./template";
+import styles from "../styles/item.module.css";
 
-export class ItemHTML {
-    private _html: HTMLElement;
-
+export class ItemHTML extends Component {
     constructor(template: TemplateHTML) {
-        this._html = document.createElement("div");
-        this._html.append(...template.clone());
-        this._html.classList.add(styles.item);
+        const element = document.createElement("div");
+        element.append(...template.clone());
+        element.classList.add(styles.item);
+
+        super(element);
     }
 }
