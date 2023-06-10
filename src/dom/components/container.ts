@@ -1,10 +1,11 @@
+import { Component } from "../component";
 import styles from "../styles/ticker.module.css";
 
-export class ContainerHTML {
-    private _html: HTMLElement;
-
+export class ContainerHTML extends Component {
     constructor() {
-        this._html = document.createElement("div");
-        this._html.classList.toggle(styles.container);
+        const element = document.createElement("div");
+        element.classList.toggle(styles.container);
+
+        super(element);
     }
 }
