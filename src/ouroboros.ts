@@ -1,17 +1,16 @@
 import { System } from "./anim";
-import { fromTAttributes, generateTOptions } from "./dom/attributes";
+import { convertDirection, mergeOOptions } from "./dom/attributes";
 import TickerSystem from "./ticker/system";
 
 export class Ouroboros extends System {
-    // private tState: TickerState;
     private simulation!: TickerSystem;
 
     private _selector: keyof HTMLElementTagNameMap;
-    private _options?: Ouroboros.Options;
+    private _options?: Partial<Ouroboros.Options>;
 
     constructor(
         selector: keyof HTMLElementTagNameMap,
-        options?: Ouroboros.Options
+        options?: Partial<Ouroboros.Options>
     ) {
         super();
 
@@ -24,13 +23,13 @@ export class Ouroboros extends System {
     onStart() {
         const element = document.querySelector(this._selector);
         if (element) {
-            const currOptions = generateTOptions(element, this._options);
+            const currOptions = mergeOOptions(element, this._options);
 
             // TODO: in the future, there will be logic that guarantees
             // measurement without worrying about order
             const tProps = {
                 speed: currOptions.speed,
-                direction: currOptions.direction,
+                direction: convertDirection(currOptions.direction),
             };
 
             const tSizes = {
@@ -39,9 +38,14 @@ export class Ouroboros extends System {
             };
 
             this.simulation = new TickerSystem(tSizes, tProps);
+            this.simulation.start();
         } else {
             throw new Error("Element not found for Ouroboros.");
         }
+    }
+
+    onStop() {
+        this.simulation.stop();
     }
 
     onUpdate(dt: number, t: number): void {}

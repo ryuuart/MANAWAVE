@@ -3,13 +3,16 @@
  * values into a formatted object.
  *
  * @param element element with Ticker attributes
- * @returns ticker parameters converted to primitive values
+ * @returns Ticker parameters extracted and formatted into an object
  */
-export function fromTAttributes(element: HTMLElement) {
-    const result: Partial<Ticker.Properties> & { autoplay?: boolean } = {};
+export function extractOAttributes(
+    element: HTMLElement
+): Partial<Ouroboros.Options> {
+    const result: Partial<Ouroboros.Options> = {};
 
-    // check autoplay
-    result.autoplay = element.hasAttribute("autoplay");
+    const autoplay = element.getAttribute("autoplay");
+    if (autoplay) result.autoplay = autoplay.toLowerCase() === "true";
+    else result.autoplay = element.hasAttribute("autoplay");
 
     // check speed
     const speed = element.getAttribute("speed");
@@ -18,7 +21,7 @@ export function fromTAttributes(element: HTMLElement) {
     // check direction
     const direction = element.getAttribute("direction");
     if (direction) {
-        result.direction = convertDirection(direction);
+        result.direction = direction;
     }
 
     return result;
@@ -29,7 +32,11 @@ export function fromTAttributes(element: HTMLElement) {
  * @param direction the direction in string format
  * @returns the direction in angle degrees
  */
-export function convertDirection(direction: string): number {
+export function convertDirection(
+    direction: Ouroboros.Options["direction"]
+): number {
+    if (typeof direction === "number") return direction;
+
     let result = 0;
 
     const lowerCaseDirection = direction.toLocaleLowerCase();
@@ -55,26 +62,26 @@ export function convertDirection(direction: string): number {
 }
 
 /**
- * Generates formattted ticker options with override.
+ * Takes options from HTML and JS sources to merge them together. JS sources take precedence.
  * @param element element with possible ticker attributes
  * @param options options that would override parameters defined by the attributes
  * @returns formatted ticker options
  */
-export function generateTOptions(
+export function mergeOOptions(
     element: HTMLElement,
-    options?: Partial<Ticker.Properties>
-): Ticker.Properties & { autoplay: boolean } {
-    const currOptions = {
+    options?: Partial<Ouroboros.Options>
+): Ouroboros.Options {
+    const currProps: Ouroboros.Options = {
         autoplay: false,
         speed: 1,
         direction: 0,
     };
 
     // assign from attributes
-    Object.assign(currOptions, fromTAttributes(element));
+    Object.assign(currProps, extractOAttributes(element));
 
     // js takes highest priority in terms of resolution
-    if (options) Object.assign(currOptions, options);
+    if (options) Object.assign(currProps, options);
 
-    return currOptions;
+    return currProps;
 }

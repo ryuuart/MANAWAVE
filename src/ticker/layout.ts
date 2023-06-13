@@ -95,7 +95,7 @@ function getTRepetitions(container: Rect, repeatable: Rect): DirectionalCount {
  * @see {@link fillGrid }
  * @see {@link layoutGrid }
  *
- * @param state the data representation of a ticker's state
+ * @param sizes the sizes of a ticker grid and its items
  * @returns calculated grid properties for a ticker
  */
 export function calculateTGridOptions(sizes: Ticker.Sizes): GridProperties {
