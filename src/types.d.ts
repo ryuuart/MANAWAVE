@@ -20,3 +20,23 @@ type DirectionalCount = {
     horizontal: number;
     vertical: number;
 };
+
+namespace Ouroboros {
+    type Options = {
+        autoplay?: string;
+        direction?: "up" | "right" | "down" | "left" | string;
+        speed?: string;
+    };
+}
+
+namespace Ticker {
+    type Sizes = {
+        ticker: Rect;
+        item: Rect;
+    };
+
+    type Properties = {
+        speed: number;
+        direction: number;
+    };
+}

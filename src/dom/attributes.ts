@@ -1,4 +1,3 @@
-import { OptionalOuroborosOptions } from "@ouroboros/ouroboros";
 import { TickerStateData } from "@ouroboros/ticker/state";
 
 /**
@@ -69,8 +68,8 @@ export function convertDirection(direction: string): number {
  */
 export function generateTOptions(
     element: HTMLElement,
-    options?: OptionalOuroborosOptions
-) {
+    options?: Ouroboros.Options
+): Ticker.Properties & { autoplay: boolean } {
     const currOptions = {
         autoplay: false,
         speed: 1,
