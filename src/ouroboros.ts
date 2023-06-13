@@ -3,27 +3,17 @@ import { TickerState } from "./ticker/state";
 import { fromTAttributes, generateTOptions } from "./dom/attributes";
 import TickerSystem from "./ticker/system";
 
-export type OuroborosOptions = {
-    autoplay: boolean;
-    direction: "up" | "right" | "down" | "left" | string;
-    speed: number;
-};
-
-export type OptionalOuroborosOptions = {
-    [Property in keyof OuroborosOptions]+?: OuroborosOptions[Property];
-};
-
 export class Ouroboros extends System {
     private tParams!: TickerState;
     // private tState: TickerState;
     private simulation!: TickerSystem;
 
     private _selector: keyof HTMLElementTagNameMap;
-    private _options?: OptionalOuroborosOptions;
+    private _options?: Ouroboros.Options;
 
     constructor(
         selector: keyof HTMLElementTagNameMap,
-        options?: OptionalOuroborosOptions
+        options?: Ouroboros.Options
     ) {
         super();
 
