@@ -134,7 +134,7 @@ export const config: Options.Testrunner = {
         "geckodriver",
         "edgedriver",
         "safaridriver",
-        "appium",
+        // "appium",
     ],
 
     // Framework you want to run your specs with.
