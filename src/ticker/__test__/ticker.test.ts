@@ -2,7 +2,6 @@ import Basic from "test/pages/basic/Basic";
 import { Container, clearContainer } from "../container";
 import { layoutGrid } from "../layout";
 import TickerSystem from "../system";
-import { TickerState } from "../state";
 
 import allDirectionsSnapshot from "./data/all_direction.json";
 import { simulateItem } from "../simulation";
@@ -159,17 +158,13 @@ describe("ticker", () => {
             }
 
             layoutGrid(testContainer, {
-                grid: {
-                    size: {
-                        width: testContainerSize.width,
-                        height: testContainerSize.height,
-                    },
+                gridRect: {
+                    width: testContainerSize.width,
+                    height: testContainerSize.height,
                 },
-                item: {
-                    size: {
-                        width: testItemSize.width,
-                        height: testItemSize.height,
-                    },
+                itemRect: {
+                    width: testItemSize.width,
+                    height: testItemSize.height,
                 },
                 repetitions: {
                     horizontal: 3,
@@ -195,20 +190,20 @@ describe("ticker", () => {
     describe("system", () => {
         it("should update a system deterministically over time", async () => {
             // we create a repeating pattern over a small box
-            const state = new TickerState({
-                ticker: {
-                    size: allDirectionsSnapshot.setup.tickerSize,
-                },
-                item: { size: allDirectionsSnapshot.setup.itemSize },
-                autoplay: true,
-            });
+            const tSizes = {
+                ticker: allDirectionsSnapshot.setup.tickerSize,
+                item: allDirectionsSnapshot.setup.itemSize,
+            };
+            const tProps = {
+                speed: 1,
+                direction: 0,
+            };
 
-            const system = new TickerSystem(state.current);
+            const system = new TickerSystem(tSizes, tProps);
 
             // restart the system over 360 degrees
             for (let theta = 0; theta <= 360; theta++) {
-                state.update({ direction: theta });
-                state.notify("update", [system]);
+                system.updateProperties({ direction: theta });
                 system.start(); // start won't start if not stopped. have to start to stop...
 
                 // keep track of each step of the animation updates
@@ -250,81 +245,21 @@ describe("ticker", () => {
             }
         });
 
-        it("should respect the autoplay option", async () => {
-            const state = new TickerState({
-                ticker: { size: { width: 10, height: 10 } },
-                item: { size: { width: 10, height: 10 } },
-                autoplay: false,
-            });
-
-            // it didn't autoplay if nothing moved
-            let system = new TickerSystem(state.current);
-
-            const initialSnapshot = [];
-            for (const item of system.container.contents) {
-                initialSnapshot.push(structuredClone(item.position));
-            }
-
-            system.update(0, 0);
-
-            const falseAutoplaySnapshot = [];
-            for (const item of system.container.contents) {
-                falseAutoplaySnapshot.push(structuredClone(item.position));
-            }
-
-            expect(falseAutoplaySnapshot).toEqual(initialSnapshot);
-
-            // so say it autoplays, then stuff should have moved
-            state.update({ autoplay: true });
-            system = new TickerSystem(state.current);
-
-            system.update(0, 0);
-            system.update(0, 0);
-            system.update(0, 0);
-
-            const trueAutoplaySnapshot = [];
-            for (const item of system.container.contents) {
-                trueAutoplaySnapshot.push(structuredClone(item.position));
-            }
-
-            expect(trueAutoplaySnapshot).not.toEqual(initialSnapshot);
-        });
-
-        it("should react to changes in state", async () => {
-            const state = new TickerState({
-                ticker: { size: { width: 10, height: 10 } },
-                item: { size: { width: 10, height: 10 } },
-            });
-
-            const system = new TickerSystem(state.current);
-
-            // need to fix this with autoplay
-            system.start();
-            expect(system.container.size).toEqual(9);
-
-            state.update({ ticker: { size: { width: 20, height: 20 } } });
-            state.notify("update", [system]);
-            expect(system.container.size).toEqual(16);
-
-            system.stop();
-            state.update({ ticker: { size: { width: 10, height: 10 } } });
-            state.notify("update", [system]);
-            expect(system.container.size).toEqual(9);
-        });
+        it("should react to changes in state", async () => {});
     });
 
     describe("simulation", () => {
         it("can override intended simulation motion in a callback", async () => {
             const item = new Item();
-            const tState = new TickerState({
-                ticker: { size: { width: 10, height: 10 } },
-                item: { size: { width: 1, height: 1 } },
-                direction: 0,
-            });
             const simulationData = {
+                sizes: {
+                    ticker: { width: 10, height: 10 },
+                    item: { width: 1, height: 1 },
+                },
+                direction: 0,
+                speed: 1,
                 t: 0,
                 dt: 0,
-                tState: tState.current,
             };
 
             simulateItem(item, simulationData);

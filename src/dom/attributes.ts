@@ -1,5 +1,3 @@
-import { TickerStateData } from "@ouroboros/ticker/state";
-
 /**
  * Takes an element with Ticker attributes and extracts its
  * values into a formatted object.
@@ -8,11 +6,7 @@ import { TickerStateData } from "@ouroboros/ticker/state";
  * @returns ticker parameters converted to primitive values
  */
 export function fromTAttributes(element: HTMLElement) {
-    const result: {
-        autoplay?: TickerStateData["autoplay"];
-        speed?: TickerStateData["speed"];
-        direction?: TickerStateData["direction"];
-    } = {};
+    const result: Partial<Ticker.Properties> & { autoplay?: boolean } = {};
 
     // check autoplay
     result.autoplay = element.hasAttribute("autoplay");
@@ -68,7 +62,7 @@ export function convertDirection(direction: string): number {
  */
 export function generateTOptions(
     element: HTMLElement,
-    options?: Ouroboros.Options
+    options?: Partial<Ticker.Properties>
 ): Ticker.Properties & { autoplay: boolean } {
     const currOptions = {
         autoplay: false,

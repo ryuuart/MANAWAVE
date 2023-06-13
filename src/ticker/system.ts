@@ -1,52 +1,49 @@
 import { System } from "@ouroboros/anim";
-import { Container, clearContainer } from "./container";
+import { Container } from "./container";
 import { Item } from "./item";
-import { TickerStateData } from "./state";
 import { calculateTGridOptions, fillGrid, layoutGrid } from "./layout";
 import { simulateItem } from "./simulation";
 import { uid } from "@ouroboros/utils/uid";
 
-export default class TickerSystem extends System implements Listener {
+export default class TickerSystem extends System {
     id: string;
-    state: TickerStateData;
-    container: Container<Item>;
 
-    constructor(state: TickerStateData) {
+    // TODO: will have a way to output state of system
+    container: Container<Item>;
+    private _sizes: Ticker.Sizes;
+    private _properties: Ticker.Properties;
+
+    constructor(sizes: Ticker.Sizes, properties: Ticker.Properties) {
         super();
 
         this.id = uid();
 
         this.container = new Container();
-        this.state = state;
-
-        this.start();
-        this.pause();
-        if (this.state.autoplay) {
-            this.play();
-        }
+        this._sizes = structuredClone(sizes);
+        this._properties = structuredClone(properties);
     }
 
     onStart() {
-        const gridOptions = calculateTGridOptions(this.state);
+        const gridOptions = calculateTGridOptions(this._sizes);
         fillGrid(this.container, () => new Item(), gridOptions);
         layoutGrid(this.container, gridOptions);
     }
 
     onStop() {
-        const gridOptions = calculateTGridOptions(this.state);
+        const gridOptions = calculateTGridOptions(this._sizes);
         layoutGrid(this.container, gridOptions);
     }
 
-    onMessage(message: string, payload: any) {
-        if (message === "update") {
-            this.onStateUpdate(payload.curr, payload.prev);
-        }
+    updateProperties(properties: Partial<Ticker.Properties>) {
+        Object.assign(this._properties, properties);
     }
 
-    onStateUpdate(curr: TickerStateData, prev: TickerStateData) {
-        // see if the system should update
-        const prevGridOptions = calculateTGridOptions(prev);
-        const currGridOptions = calculateTGridOptions(curr);
+    updateSize(size: Partial<Ticker.Sizes>) {
+        const prevGridOptions = calculateTGridOptions(this._sizes);
+
+        Object.assign(this._sizes, size);
+
+        const currGridOptions = calculateTGridOptions(this._sizes);
 
         if (
             prevGridOptions.repetitions.horizontal !==
@@ -57,14 +54,18 @@ export default class TickerSystem extends System implements Listener {
             fillGrid(this.container, () => new Item(), currGridOptions);
             layoutGrid(this.container, currGridOptions);
         }
-
-        this.state = curr;
     }
 
     onUpdate(dt: DOMHighResTimeStamp, t: DOMHighResTimeStamp) {
         // iterate through all items
         for (const item of this.container.contents) {
-            simulateItem(item, { tState: this.state, dt, t });
+            simulateItem(item, {
+                sizes: this._sizes,
+                speed: this._properties.speed,
+                direction: this._properties.direction,
+                dt,
+                t,
+            });
         }
     }
 

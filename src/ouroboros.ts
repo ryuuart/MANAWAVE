@@ -1,10 +1,8 @@
 import { System } from "./anim";
-import { TickerState } from "./ticker/state";
 import { fromTAttributes, generateTOptions } from "./dom/attributes";
 import TickerSystem from "./ticker/system";
 
 export class Ouroboros extends System {
-    private tParams!: TickerState;
     // private tState: TickerState;
     private simulation!: TickerSystem;
 
@@ -30,15 +28,17 @@ export class Ouroboros extends System {
 
             // TODO: in the future, there will be logic that guarantees
             // measurement without worrying about order
-            this.tParams = new TickerState({
-                ticker: { size: { width: 10, height: 10 } },
-                item: { size: { width: 10, height: 10 } },
+            const tProps = {
                 speed: currOptions.speed,
                 direction: currOptions.direction,
-                autoplay: currOptions.autoplay,
-            });
+            };
 
-            this.simulation = new TickerSystem(this.tParams.current);
+            const tSizes = {
+                ticker: { width: 10, height: 10 },
+                item: { width: 10, height: 10 },
+            };
+
+            this.simulation = new TickerSystem(tSizes, tProps);
         } else {
             throw new Error("Element not found for Ouroboros.");
         }

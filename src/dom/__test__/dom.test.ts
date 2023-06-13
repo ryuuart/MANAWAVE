@@ -100,25 +100,15 @@ describe("dom", () => {
             const element = Square.square;
             element?.setAttribute("speed", "123");
             element?.setAttribute("direction", "down");
-            element?.setAttribute("autoplay", "");
 
             expect(generateTOptions(element!, { speed: 500 })).toEqual({
                 speed: 500,
                 direction: 270,
-                autoplay: true,
             });
 
-            // TODO: Fix with correct option typing
-            // expect(generateTOptions(element!, { direction: 123 })).toEqual({
-            //     speed: 123,
-            //     direction: 123,
-            //     autoplay: true,
-            // });
-
-            expect(generateTOptions(element!, { autoplay: false })).toEqual({
+            expect(generateTOptions(element!, { direction: 123 })).toEqual({
                 speed: 123,
-                direction: 270,
-                autoplay: false,
+                direction: 123,
             });
         });
     });
