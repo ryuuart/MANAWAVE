@@ -1,5 +1,10 @@
 import Square from "test/pages/square/Square";
 import { getRepetitions, measure } from "../measure";
+import {
+    convertDirection,
+    fromTAttributes,
+    generateTOptions,
+} from "../attributes";
 
 describe("dom", () => {
     beforeEach(() => {
@@ -55,5 +60,66 @@ describe("dom", () => {
         // an uneven, smaller repeatable should round up to fill the space
         const case4 = getRepetitions(uniformRectLarge, nonUniformRectSmall);
         expect(case4).toEqual({ horizontal: 9, vertical: 9 });
+    });
+
+    describe("attribute", () => {
+        it("convert strings to angle degrees", async () => {
+            const direction1 = "up";
+            expect(convertDirection(direction1)).toEqual(90);
+
+            const direction2 = "right";
+            expect(convertDirection(direction2)).toEqual(0);
+
+            const direction3 = "down";
+            expect(convertDirection(direction3)).toEqual(270);
+
+            const direction4 = "left";
+            expect(convertDirection(direction4)).toEqual(180);
+
+            const direction5 = "123456";
+            expect(convertDirection(direction5)).toEqual(123456);
+
+            const direction6 = "potato";
+            expect(convertDirection(direction6)).toEqual(0);
+        });
+
+        it("should extract ticker options from html element atttributes", async () => {
+            const element = Square.square;
+            element?.setAttribute("speed", "123");
+            element?.setAttribute("direction", "up");
+            element?.setAttribute("autoplay", "");
+
+            expect(fromTAttributes(element!)).toEqual({
+                speed: 123,
+                direction: 90,
+                autoplay: true,
+            });
+        });
+
+        it("should generate Ticker parameters for the system given elements and overriding options", async () => {
+            const element = Square.square;
+            element?.setAttribute("speed", "123");
+            element?.setAttribute("direction", "down");
+            element?.setAttribute("autoplay", "");
+
+            expect(generateTOptions(element!, { speed: 500 })).toEqual({
+                speed: 500,
+                direction: 270,
+                autoplay: true,
+            });
+
+            // TODO: Fix with correct option typing
+            // expect(generateTOptions(element!, { direction: 123 })).toEqual({
+            //     speed: 123,
+            //     direction: 123,
+            //     autoplay: true,
+            // });
+
+            expect(generateTOptions(element!, { autoplay: false })).toEqual({
+                speed: 123,
+                direction: 270,
+                autoplay: false,
+            });
+        });
     });
 });
