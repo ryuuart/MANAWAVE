@@ -245,7 +245,49 @@ describe("ticker", () => {
             }
         });
 
-        it("should react to changes in state", async () => {});
+        it("should react to changes in size", async () => {
+            const tSizes = {
+                ticker: { width: 10, height: 10 },
+                item: { width: 10, height: 10 },
+            };
+
+            const tProps = {
+                direction: 0,
+                speed: 1,
+            };
+
+            const system = new TickerSystem(tSizes, tProps);
+
+            system.start();
+            // initial test
+            expect(system.container.size).toEqual(9);
+
+            // update ticker
+            tSizes.ticker = { width: 20, height: 20 };
+            system.updateSize(tSizes);
+            expect(system.container.size).toEqual(16);
+
+            // return back
+            tSizes.ticker = { width: 10, height: 10 };
+            system.updateSize(tSizes);
+            expect(system.container.size).toEqual(9);
+
+            // update item
+            tSizes.item = { width: 5, height: 5 };
+            system.updateSize(tSizes);
+            expect(system.container.size).toEqual(16);
+
+            // update ticker on top of item
+            tSizes.ticker = { width: 20, height: 20 };
+            system.updateSize(tSizes);
+            expect(system.container.size).toEqual(36);
+
+            // return back to normal
+            tSizes.ticker = { width: 10, height: 10 };
+            tSizes.item = { width: 10, height: 10 };
+            system.updateSize(tSizes);
+            expect(system.container.size).toEqual(9);
+        });
     });
 
     describe("simulation", () => {
