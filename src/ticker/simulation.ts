@@ -1,11 +1,9 @@
 import { getRepetitions } from "@ouroboros/dom/measure";
-import { TickerStateData } from "./state";
 import { accumulateVec2, normalize, toRadians } from "./math";
 import { Item } from "./item";
 
 type TSimulationContext = {
-    ticker: { size: Rect };
-    item: { size: Rect };
+    sizes: Ticker.Sizes;
     limits: DirectionalCount;
     intendedDirection: vec2;
     actualDirection: vec2;
@@ -13,20 +11,17 @@ type TSimulationContext = {
 };
 
 type TSimulationSample = {
-    sizes: {
-        ticker: TSimulationContext["ticker"]["size"];
-        item: TSimulationContext["item"]["size"];
-    };
+    sizes: Ticker.Sizes;
     item: Item;
     direction: TSimulationContext["intendedDirection"];
     speed: { value: TSimulationContext["speed"] };
 };
 
 type TSimulationData = {
-    tState: TickerStateData;
     dt: DOMHighResTimeStamp;
     t: DOMHighResTimeStamp;
-};
+    sizes: Ticker.Sizes;
+} & Ticker.Properties;
 
 /**
  * Get the limits of a ticker aligned to the size of individual items.
@@ -91,7 +86,7 @@ function moveItem(
  * @param context simulation context with values calculated for this iteration
  */
 function loopItem(item: Item, context: TSimulationContext) {
-    const itemSize = context.item.size;
+    const itemSize = context.sizes.item;
 
     const { actualDirection, limits } = context;
     if (actualDirection.x > 0 && item.position.x >= limits.horizontal) {
@@ -118,21 +113,15 @@ export function simulateItem(
     data: TSimulationData,
     override?: (sample: TSimulationSample) => void
 ) {
-    // extract data and simplify names
-    const state = data.tState;
-    const sTicker = state.ticker;
-    const sItem = state.item;
-
     // reconcile and calculate relevant data
     const tContext: TSimulationContext = {
-        ticker: sTicker,
-        item: sItem,
-        limits: getTLimits(sTicker.size, sItem.size),
+        sizes: data.sizes,
+        limits: getTLimits(data.sizes.ticker, data.sizes.item),
         intendedDirection: {
-            x: Math.cos(toRadians(state.direction)),
-            y: Math.sin(toRadians(state.direction)),
+            x: Math.cos(toRadians(data.direction)),
+            y: Math.sin(toRadians(data.direction)),
         },
-        speed: state.speed,
+        speed: data.speed,
         actualDirection: { x: 0, y: 0 },
     };
 
@@ -143,10 +132,7 @@ export function simulateItem(
     if (override) {
         const sample = {
             item: item,
-            sizes: {
-                ticker: sTicker.size,
-                item: sItem.size,
-            },
+            sizes: data.sizes,
             speed: { value: tContext.speed },
             direction: tContext.intendedDirection,
         };

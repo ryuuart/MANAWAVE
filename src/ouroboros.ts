@@ -1,19 +1,16 @@
 import { System } from "./anim";
-import { TickerState } from "./ticker/state";
-import { fromTAttributes, generateTOptions } from "./dom/attributes";
+import { convertDirection, mergeOOptions } from "./dom/attributes";
 import TickerSystem from "./ticker/system";
 
 export class Ouroboros extends System {
-    private tParams!: TickerState;
-    // private tState: TickerState;
     private simulation!: TickerSystem;
 
     private _selector: keyof HTMLElementTagNameMap;
-    private _options?: Ouroboros.Options;
+    private _options?: Partial<Ouroboros.Options>;
 
     constructor(
         selector: keyof HTMLElementTagNameMap,
-        options?: Ouroboros.Options
+        options?: Partial<Ouroboros.Options>
     ) {
         super();
 
@@ -26,22 +23,31 @@ export class Ouroboros extends System {
     onStart() {
         const element = document.querySelector(this._selector);
         if (element) {
-            const currOptions = generateTOptions(element, this._options);
+            const currOptions = mergeOOptions(element, this._options);
 
             // TODO: in the future, there will be logic that guarantees
             // measurement without worrying about order
-            this.tParams = new TickerState({
-                ticker: { size: { width: 10, height: 10 } },
-                item: { size: { width: 10, height: 10 } },
+            const tProps = {
                 speed: currOptions.speed,
-                direction: currOptions.direction,
-                autoplay: currOptions.autoplay,
-            });
+                direction: convertDirection(currOptions.direction),
+            };
 
-            this.simulation = new TickerSystem(this.tParams.current);
+            const tSizes = {
+                ticker: { width: 10, height: 10 },
+                item: { width: 10, height: 10 },
+            };
+
+            this.simulation = new TickerSystem(tSizes, tProps);
+            this.simulation.start();
+
+            if (!currOptions.autoplay) this.pause();
         } else {
             throw new Error("Element not found for Ouroboros.");
         }
+    }
+
+    onStop() {
+        this.simulation.stop();
     }
 
     onUpdate(dt: number, t: number): void {}

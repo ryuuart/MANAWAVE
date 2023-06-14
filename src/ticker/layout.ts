@@ -1,14 +1,9 @@
 import { getRepetitions } from "@ouroboros/dom/measure";
 import { Container } from "./container";
-import { TickerStateData } from "./state";
 
 type GridProperties = {
-    grid: {
-        size: Rect;
-    };
-    item: {
-        size: Rect;
-    };
+    gridRect: Rect;
+    itemRect: Rect;
     offset?: vec2;
     repetitions: DirectionalCount;
 };
@@ -33,15 +28,15 @@ export function layoutGrid(
     }
 
     // iterate through clones and properly set the positions
-    const { repetitions, item } = properties;
+    const { repetitions, itemRect } = properties;
     const objects = Array.from(container.contents);
     let objectIndex = 0;
     for (let y = 0; y < repetitions.vertical; y++) {
         for (let x = 0; x < repetitions.horizontal; x++) {
             const currObject = objects[objectIndex];
 
-            currObject.position.x = startPos.x + x * item.size.width;
-            currObject.position.y = startPos.y + y * item.size.height;
+            currObject.position.x = startPos.x + x * itemRect.width;
+            currObject.position.y = startPos.y + y * itemRect.height;
 
             objectIndex++;
         }
@@ -100,17 +95,17 @@ function getTRepetitions(container: Rect, repeatable: Rect): DirectionalCount {
  * @see {@link fillGrid }
  * @see {@link layoutGrid }
  *
- * @param state the data representation of a ticker's state
+ * @param sizes the sizes of a ticker grid and its items
  * @returns calculated grid properties for a ticker
  */
-export function calculateTGridOptions(state: TickerStateData): GridProperties {
+export function calculateTGridOptions(sizes: Ticker.Sizes): GridProperties {
     return {
-        grid: state.ticker,
-        item: state.item,
-        repetitions: getTRepetitions(state.ticker.size, state.item.size),
+        gridRect: sizes.ticker,
+        itemRect: sizes.item,
+        repetitions: getTRepetitions(sizes.ticker, sizes.item),
         offset: {
-            x: -state.item.size.width,
-            y: -state.item.size.height,
+            x: -sizes.item.width,
+            y: -sizes.item.height,
         },
     };
 }

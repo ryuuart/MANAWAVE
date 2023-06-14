@@ -23,9 +23,9 @@ type DirectionalCount = {
 
 namespace Ouroboros {
     type Options = {
-        autoplay?: string;
-        direction?: "up" | "right" | "down" | "left" | string;
-        speed?: string;
+        autoplay: boolean;
+        direction: "up" | "right" | "down" | "left" | string | number;
+        speed: number;
     };
 }
 

@@ -2,8 +2,8 @@ import Square from "test/pages/square/Square";
 import { getRepetitions, measure } from "../measure";
 import {
     convertDirection,
-    fromTAttributes,
-    generateTOptions,
+    extractOAttributes,
+    mergeOOptions,
 } from "../attributes";
 
 describe("dom", () => {
@@ -89,36 +89,41 @@ describe("dom", () => {
             element?.setAttribute("direction", "up");
             element?.setAttribute("autoplay", "");
 
-            expect(fromTAttributes(element!)).toEqual({
-                speed: 123,
-                direction: 90,
+            expect(extractOAttributes(element!)).toEqual({
                 autoplay: true,
+                speed: 123,
+                direction: "up",
             });
         });
 
-        it("should generate Ticker parameters for the system given elements and overriding options", async () => {
+        it("should merge options provided by html attributes or javascript", async () => {
             const element = Square.square;
             element?.setAttribute("speed", "123");
             element?.setAttribute("direction", "down");
-            element?.setAttribute("autoplay", "");
+            element?.setAttribute("autoplay", "false");
 
-            expect(generateTOptions(element!, { speed: 500 })).toEqual({
-                speed: 500,
-                direction: 270,
-                autoplay: true,
+            expect(mergeOOptions(element!)).toEqual({
+                autoplay: false,
+                speed: 123,
+                direction: "down",
             });
 
-            // TODO: Fix with correct option typing
-            // expect(generateTOptions(element!, { direction: 123 })).toEqual({
-            //     speed: 123,
-            //     direction: 123,
-            //     autoplay: true,
-            // });
-
-            expect(generateTOptions(element!, { autoplay: false })).toEqual({
+            expect(mergeOOptions(element!, { autoplay: true })).toEqual({
+                autoplay: true,
                 speed: 123,
-                direction: 270,
+                direction: "down",
+            });
+
+            expect(mergeOOptions(element!, { speed: 500 })).toEqual({
                 autoplay: false,
+                speed: 500,
+                direction: "down",
+            });
+
+            expect(mergeOOptions(element!, { direction: 123 })).toEqual({
+                autoplay: false,
+                speed: 123,
+                direction: 123,
             });
         });
     });
