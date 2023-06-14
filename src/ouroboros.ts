@@ -39,6 +39,8 @@ export class Ouroboros extends System {
 
             this.simulation = new TickerSystem(tSizes, tProps);
             this.simulation.start();
+
+            if (!currOptions.autoplay) this.pause();
         } else {
             throw new Error("Element not found for Ouroboros.");
         }
