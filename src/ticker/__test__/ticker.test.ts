@@ -288,6 +288,36 @@ describe("ticker", () => {
             system.updateSize(tSizes);
             expect(system.container.size).toEqual(9);
         });
+
+        it("should generate accurate frame data over time", async () => {
+            const system = new TickerSystem(
+                {
+                    ticker: { width: 10, height: 10 },
+                    item: { width: 10, height: 10 },
+                },
+                { direction: 0, speed: 1 }
+            );
+
+            // perform one update
+            system.start();
+
+            // track start location
+            const baseCase = system.currentFrameData.items;
+
+            system.update(0, 0);
+            system.draw();
+
+            // track end location
+            const updatedCase = system.currentFrameData.items;
+
+            // check if the FRAME said items moved right 1 px and looped if needed
+            for (const item in updatedCase) {
+                if (baseCase[item].x >= 10) {
+                    expect(updatedCase[item].x).toEqual(-10);
+                } else
+                    expect(updatedCase[item].x).toEqual(baseCase[item].x + 1);
+            }
+        });
     });
 
     describe("simulation", () => {
