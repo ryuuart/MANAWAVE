@@ -12,6 +12,7 @@ export default class TickerSystem extends System {
     container: Container<Item>;
     private _sizes: Ticker.Sizes;
     private _properties: Ticker.Properties;
+    private _frameData: Ticker.FrameData;
 
     constructor(sizes: Ticker.Sizes, properties: Ticker.Properties) {
         super();
@@ -21,12 +22,21 @@ export default class TickerSystem extends System {
         this.container = new Container();
         this._sizes = structuredClone(sizes);
         this._properties = structuredClone(properties);
+        this._frameData = { items: {} };
+    }
+
+    get currentFrameData(): Ticker.FrameData {
+        return structuredClone(this._frameData);
     }
 
     onStart() {
         const gridOptions = calculateTGridOptions(this._sizes);
+        this._frameData.items = {};
         fillGrid(this.container, () => new Item(), gridOptions);
         layoutGrid(this.container, gridOptions);
+
+        // should perform one draw
+        this.onDraw();
     }
 
     onStop() {
@@ -51,8 +61,7 @@ export default class TickerSystem extends System {
             prevGridOptions.repetitions.vertical !==
                 currGridOptions.repetitions.vertical
         ) {
-            fillGrid(this.container, () => new Item(), currGridOptions);
-            layoutGrid(this.container, currGridOptions);
+            this.onStart();
         }
     }
 
@@ -69,5 +78,9 @@ export default class TickerSystem extends System {
         }
     }
 
-    onDraw() {}
+    onDraw() {
+        for (const item of this.container.contents) {
+            this._frameData.items[item.id] = item.position;
+        }
+    }
 }

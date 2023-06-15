@@ -7,10 +7,6 @@ interface Positionable {
     position: vec2;
 }
 
-interface Listener {
-    onMessage: (message: string, payload: any) => void;
-}
-
 type vec2 = {
     x: number;
     y: number;
@@ -38,5 +34,9 @@ namespace Ticker {
     type Properties = {
         speed: number;
         direction: number;
+    };
+
+    type FrameData = {
+        items: { [id: string]: vec2 };
     };
 }
