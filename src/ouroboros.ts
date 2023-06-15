@@ -1,8 +1,8 @@
-import { System } from "./anim";
+import PlaybackObject from "./anim/PlaybackObject";
 import { convertDirection, mergeOOptions } from "./dom/attributes";
 import TickerSystem from "./ticker/system";
 
-export class Ouroboros extends System {
+export class Ouroboros extends PlaybackObject {
     private simulation!: TickerSystem;
 
     private _selector: keyof HTMLElementTagNameMap;
@@ -49,8 +49,4 @@ export class Ouroboros extends System {
     onStop() {
         this.simulation.stop();
     }
-
-    onUpdate(dt: number, t: number): void {}
-
-    onDraw(): void {}
 }
