@@ -7,9 +7,9 @@ export default class TemplateComponent extends Component<HTMLTemplateElement> {
         element.classList.add(styles.template);
         // we don't want to hide these
         if (baseHTML instanceof HTMLElement) {
-            element.content.append(baseHTML);
+            element.content.append(baseHTML.cloneNode(true));
         } else {
-            element.content.append(...baseHTML);
+            element.content.append(...Array.from(baseHTML).slice());
         }
 
         super(element);

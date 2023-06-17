@@ -199,7 +199,7 @@ describe("ticker", () => {
                 direction: 0,
             };
 
-            const system = new TickerSystem(document.body, {
+            const system = new TickerSystem(document.createElement("div"), {
                 sizes: tSizes,
                 attributes: tProps,
             });
@@ -259,7 +259,7 @@ describe("ticker", () => {
                 speed: 1,
             };
 
-            const system = new TickerSystem(document.body, {
+            const system = new TickerSystem(document.createElement("div"), {
                 sizes: tSizes,
                 attributes: tProps,
             });
