@@ -8,11 +8,11 @@ import { AnimationController } from "./anim";
 export class Ouroboros extends PlaybackObject {
     private simulation!: TickerSystem;
 
-    private _selector: Parameters<Document["querySelector"]>[0];
+    private _selector: Parameters<Document["querySelector"]>[0] | HTMLElement;
     private _options?: Partial<Ouroboros.Options>;
 
     constructor(
-        selector: Parameters<Document["querySelector"]>[0],
+        selector: Parameters<Document["querySelector"]>[0] | HTMLElement,
         options?: Partial<Ouroboros.Options>
     ) {
         super();
@@ -24,7 +24,10 @@ export class Ouroboros extends PlaybackObject {
     }
 
     onStart() {
-        const element = document.querySelector(this._selector) as HTMLElement;
+        let element: HTMLElement;
+        if (this._selector instanceof HTMLElement) element = this._selector;
+        else element = document.querySelector(this._selector) as HTMLElement;
+
         if (element) {
             element.classList.add(styles.ouroboros);
             const currOptions = mergeOOptions(element, this._options);

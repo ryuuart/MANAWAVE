@@ -26,7 +26,7 @@ export abstract class Component<T extends HTMLElement = HTMLElement> {
     }
 
     appendToDOM(html: HTMLElement) {
-        html.append(this.html);
+        if (!this.html.isConnected) html.append(this.html);
     }
 
     removeChild(component: Component) {
