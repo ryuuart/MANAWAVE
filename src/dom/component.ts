@@ -1,13 +1,13 @@
 import { uid } from "@ouroboros/utils/uid";
 
-export abstract class Component {
+export abstract class Component<T extends HTMLElement = HTMLElement> {
     id: string;
 
-    protected html: HTMLElement;
+    protected html: T;
     protected _parent: Component | undefined;
     protected _children: Set<Component>;
 
-    constructor(html: HTMLElement, id?: string) {
+    constructor(html: T, id?: string) {
         this._children = new Set();
 
         this.html = html;
@@ -31,5 +31,9 @@ export abstract class Component {
 
     removeChild(component: Component) {
         this._children.delete(component);
+    }
+
+    onRemove() {
+        this.html.remove();
     }
 }

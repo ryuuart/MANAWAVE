@@ -9,6 +9,7 @@ import ContainerComponent from "../components/container";
 import ItemComponent from "../components/item";
 import tickerStyles from "../styles/ticker.module.css";
 import itemStyles from "../styles/item.module.css";
+import TemplateComponent from "../components/template";
 
 describe("dom", () => {
     beforeEach(() => {
@@ -133,41 +134,59 @@ describe("dom", () => {
     });
 
     describe("component", () => {
-        it("should create a nested ticker with item components", async () => {
-            // create a ticker with 3 elements
-            const ticker = new ContainerComponent("0");
+        it("should create a container element from a component", async () => {
+            const container = new ContainerComponent("0");
 
-            const item1 = new ItemComponent("1", {
-                id: "1",
-                position: { x: 0, y: 0 },
+            container.appendToDOM(document.getElementById("test-root")!);
+
+            expect(
+                await $(`.${tickerStyles.container}`)
+            ).toHaveElementClassContaining(`${tickerStyles.container}`);
+        });
+
+        it("should create an item element from a component", async () => {
+            const item = new ItemComponent("0", {
+                id: "0",
                 lifetime: 0,
                 status: "STARTED",
-            });
-            const item2 = new ItemComponent("1", {
-                id: "1",
                 position: { x: 0, y: 0 },
+            });
+
+            item.appendToDOM(document.getElementById("test-root")!);
+
+            expect(await $(`.${itemStyles.item}`)).toHaveElementClassContaining(
+                `${itemStyles.item}`
+            );
+        });
+
+        it("should remove child inside a nested component", async () => {
+            const container = new ContainerComponent("0");
+            const item = new ItemComponent("0", {
+                id: "0",
                 lifetime: 0,
                 status: "STARTED",
-            });
-            const item3 = new ItemComponent("1", {
-                id: "1",
                 position: { x: 0, y: 0 },
-                lifetime: 0,
-                status: "STARTED",
             });
 
-            ticker.append(item1);
-            ticker.append(item2);
-            ticker.append(item3);
+            container.append(item);
+            container.appendToDOM(document.getElementById("test-root")!);
 
-            ticker.appendToDOM(document.getElementById("test-root")!);
+            expect(`.${tickerStyles.container}`).toHaveChildren(1);
 
-            // it should have the right class structure
-            const tc1 = await $(`#test-root > .${tickerStyles.container}`);
-            const tc2 = await tc1.$$(`.${itemStyles.item}`);
+            container.removeChild(item);
 
-            expect(tc1).toHaveElementClass(tickerStyles.container);
-            expect(tc2.length).toEqual(3);
+            expect(`.${tickerStyles.container}`).not.toHaveChildren();
+        });
+
+        it("should clone from a template", async () => {
+            const template = new TemplateComponent(Square.square!);
+
+            const clone1 = template.cloneDOM();
+            const clone2 = template.cloneDOM();
+
+            document.getElementById("test-root")?.append(...clone1, ...clone2);
+
+            expect(await $$(`.square`).length).toEqual(3);
         });
     });
 });
