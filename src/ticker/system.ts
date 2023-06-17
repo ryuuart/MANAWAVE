@@ -4,15 +4,18 @@ import { Item } from "./item";
 import { calculateTGridOptions, fillGrid, layoutGrid } from "./layout";
 import { simulateItem } from "./simulation";
 import { uid } from "@ouroboros/utils/uid";
+import Scene from "@ouroboros/dom/scene";
+import ContainerComponent from "@ouroboros/dom/components/container";
+import ItemComponent from "@ouroboros/dom/components/item";
 
 export default class TickerSystem extends System {
     id: string;
 
-    // TODO: will have a way to output state of system
     container: Container<Item>;
     private _sizes: Ticker.Sizes;
     private _properties: Ticker.Properties;
-    private _frameData: Ticker.FrameData;
+
+    private _scene: Scene;
 
     constructor(sizes: Ticker.Sizes, properties: Ticker.Properties) {
         super();
@@ -20,18 +23,14 @@ export default class TickerSystem extends System {
         this.id = uid();
 
         this.container = new Container();
+        this._scene = new Scene();
+
         this._sizes = structuredClone(sizes);
         this._properties = structuredClone(properties);
-        this._frameData = { items: {} };
-    }
-
-    get currentFrameData(): Ticker.FrameData {
-        return structuredClone(this._frameData);
     }
 
     onStart() {
         const gridOptions = calculateTGridOptions(this._sizes);
-        this._frameData.items = {};
         fillGrid(this.container, () => new Item(), gridOptions);
         layoutGrid(this.container, gridOptions);
 
@@ -79,8 +78,34 @@ export default class TickerSystem extends System {
     }
 
     onDraw() {
+        // draw the ticker
+        let ticker = this._scene.get(this.id);
+
+        // if it doesn't exist, make it
+        if (!ticker) {
+            ticker = new ContainerComponent(this.id);
+            this._scene.set(ticker);
+        }
+
+        // remove pass
+        for (const component of this._scene.contents) {
+            // did we find something?
+            const item = this.container.find((i) => i.id === component.id);
+
+            // if we didnt find anything, then
+            // the scene has something that shouldnt exist
+            if (!item[0]) this._scene.remove(component);
+        }
+
+        // go through all container
         for (const item of this.container.contents) {
-            this._frameData.items[item.id] = item.position;
+            let component = this._scene.get(item.id);
+
+            // it hasnt been created yet
+            if (!component) {
+                component = new ItemComponent(item.id, item);
+                ticker.append(component);
+            }
         }
     }
 }

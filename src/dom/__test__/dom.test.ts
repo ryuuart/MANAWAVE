@@ -5,6 +5,10 @@ import {
     extractOAttributes,
     mergeOOptions,
 } from "../attributes";
+import ContainerComponent from "../components/container";
+import ItemComponent from "../components/item";
+import tickerStyles from "../styles/ticker.module.css";
+import itemStyles from "../styles/item.module.css";
 
 describe("dom", () => {
     beforeEach(() => {
@@ -125,6 +129,45 @@ describe("dom", () => {
                 speed: 123,
                 direction: 123,
             });
+        });
+    });
+
+    describe("component", () => {
+        it("should create a nested ticker with item components", async () => {
+            // create a ticker with 3 elements
+            const ticker = new ContainerComponent("0");
+
+            const item1 = new ItemComponent("1", {
+                id: "1",
+                position: { x: 0, y: 0 },
+                lifetime: 0,
+                status: "STARTED",
+            });
+            const item2 = new ItemComponent("1", {
+                id: "1",
+                position: { x: 0, y: 0 },
+                lifetime: 0,
+                status: "STARTED",
+            });
+            const item3 = new ItemComponent("1", {
+                id: "1",
+                position: { x: 0, y: 0 },
+                lifetime: 0,
+                status: "STARTED",
+            });
+
+            ticker.append(item1);
+            ticker.append(item2);
+            ticker.append(item3);
+
+            ticker.appendToDOM(document.getElementById("test-root")!);
+
+            // it should have the right class structure
+            const tc1 = await $(`#test-root > .${tickerStyles.container}`);
+            const tc2 = await tc1.$$(`.${itemStyles.item}`);
+
+            expect(tc1).toHaveElementClass(tickerStyles.container);
+            expect(tc2.length).toEqual(3);
         });
     });
 });

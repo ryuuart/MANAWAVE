@@ -35,8 +35,4 @@ namespace Ticker {
         speed: number;
         direction: number;
     };
-
-    type FrameData = {
-        items: { [id: string]: vec2 };
-    };
 }

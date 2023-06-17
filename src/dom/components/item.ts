@@ -1,13 +1,15 @@
+import { Item } from "@ouroboros/ticker/item";
 import { Component } from "../component";
-import { TemplateHTML } from "./template";
 import styles from "../styles/item.module.css";
 
-export class ItemHTML extends Component {
-    constructor(template: TemplateHTML) {
+export default class ItemComponent extends Component {
+    position: vec2;
+    constructor(id: string, item: Item) {
         const element = document.createElement("div");
-        element.append(...template.clone());
         element.classList.add(styles.item);
 
-        super(element);
+        super(element, id);
+
+        this.position = item.position;
     }
 }
