@@ -36,4 +36,9 @@ export abstract class Component<T extends HTMLElement = HTMLElement> {
     onRemove() {
         this.html.remove();
     }
+
+    setSize(rect: Rect) {
+        this.html.style.width = `${rect.width}px`;
+        this.html.style.height = `${rect.height}px`;
+    }
 }

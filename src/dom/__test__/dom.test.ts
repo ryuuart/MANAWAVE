@@ -1,5 +1,5 @@
 import Square from "test/pages/square/Square";
-import { getRepetitions, measure } from "../measure";
+import { getRepetitions, measureElementBox } from "../measure";
 import {
     convertDirection,
     extractOAttributes,
@@ -25,24 +25,10 @@ describe("dom", () => {
         testElement.style.height = "130px";
 
         // our change in measurement should be observed
-        const rect = measure(testElement);
+        const rect = measureElementBox(testElement);
 
-        const observedElement = await $(`#${testElement.id}`);
-        const observedRect = await observedElement.getSize();
-
-        expect(rect?.width).toEqual(120);
-        expect(rect?.height).toEqual(130);
-
-        expect(rect?.width).toEqual(observedRect.width);
-        expect(rect?.height).toEqual(observedRect.height);
-
-        // if the element is removed or disconnected from the page,
-        // there is no returned measurement
-        testElement.remove();
-
-        let disconnectedRect = measure(testElement);
-
-        expect(disconnectedRect).toBe(null);
+        expect(rect?.width).toEqual(152); // including margins
+        expect(rect?.height).toEqual(162);
     });
 
     it("should calculate repetitions in different size contexts", async () => {

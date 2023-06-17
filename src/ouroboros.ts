@@ -1,15 +1,18 @@
 import PlaybackObject from "./anim/PlaybackObject";
 import { convertDirection, mergeOOptions } from "./dom/attributes";
+import { measure, measureElementBox } from "./dom/measure";
 import TickerSystem from "./ticker/system";
+import styles from "./dom/styles/ouroboros.module.css";
+import { AnimationController } from "./anim";
 
 export class Ouroboros extends PlaybackObject {
     private simulation!: TickerSystem;
 
-    private _selector: keyof HTMLElementTagNameMap;
+    private _selector: Parameters<Document["querySelector"]>[0];
     private _options?: Partial<Ouroboros.Options>;
 
     constructor(
-        selector: keyof HTMLElementTagNameMap,
+        selector: Parameters<Document["querySelector"]>[0],
         options?: Partial<Ouroboros.Options>
     ) {
         super();
@@ -21,8 +24,9 @@ export class Ouroboros extends PlaybackObject {
     }
 
     onStart() {
-        const element = document.querySelector(this._selector);
+        const element = document.querySelector(this._selector) as HTMLElement;
         if (element) {
+            element.classList.add(styles.ouroboros);
             const currOptions = mergeOOptions(element, this._options);
 
             // TODO: in the future, there will be logic that guarantees
@@ -33,14 +37,18 @@ export class Ouroboros extends PlaybackObject {
             };
 
             const tSizes = {
-                ticker: { width: 10, height: 10 },
-                item: { width: 10, height: 10 },
+                ticker: measure(element)!,
+                item: measureElementBox(element.children),
             };
 
-            this.simulation = new TickerSystem(tSizes, tProps);
-            this.simulation.start();
+            this.simulation = new TickerSystem(element, {
+                attributes: tProps,
+                sizes: tSizes,
+            });
 
-            if (!currOptions.autoplay) this.pause();
+            AnimationController.registerSystem(this.simulation);
+            this.simulation.start();
+            if (!currOptions.autoplay) this.simulation.pause();
         } else {
             throw new Error("Element not found for Ouroboros.");
         }
@@ -48,5 +56,6 @@ export class Ouroboros extends PlaybackObject {
 
     onStop() {
         this.simulation.stop();
+        AnimationController.deregisterSystem(this.simulation);
     }
 }

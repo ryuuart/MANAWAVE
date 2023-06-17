@@ -4,6 +4,43 @@
  * @param element HTML element to observe
  * @returns a {@link Rect } with a width and height or `null` if the element isn't loaded on the page
  */
+export function measureElementBox(
+    element: HTMLElement | NodeList | HTMLCollection
+): Rect {
+    const measureBox = document.createElement("div");
+    measureBox.style.display = "inline-block";
+    measureBox.style.visibility = "none";
+
+    if (element instanceof HTMLElement) {
+        measureBox.append(element.cloneNode(true));
+        if (element.parentElement) element.parentElement.append(measureBox);
+        else document.body.append(measureBox);
+    } else {
+        if (element[0].parentElement) {
+            measureBox.append(
+                ...element[0].parentElement?.cloneNode(true).childNodes
+            );
+            element[0].parentElement.append(measureBox);
+        } else document.body.append(measureBox);
+    }
+
+    const computedStyles = window.getComputedStyle(measureBox);
+    const sizes = {
+        width: parseFloat(computedStyles["width"]),
+        height: parseFloat(computedStyles["height"]),
+    };
+
+    measureBox.remove();
+
+    return sizes;
+}
+
+/**
+ * Measures an HTML Element on the page if it's loaded
+ *
+ * @param element HTML element to observe
+ * @returns a {@link Rect } with a width and height or `null` if the element isn't loaded on the page
+ */
 export function measure(element: HTMLElement): Rect | null {
     if (element && element.isConnected) {
         const computedStyles = window.getComputedStyle(element);

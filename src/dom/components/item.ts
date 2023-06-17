@@ -14,4 +14,8 @@ export default class ItemComponent extends Component {
 
         this.position = item.position;
     }
+
+    setPosition(pos: vec2) {
+        this.html.style.transform = `translate(${pos.x}px, ${pos.y}px)`;
+    }
 }

@@ -31,8 +31,13 @@ namespace Ticker {
         item: Rect;
     };
 
-    type Properties = {
+    type Attributes = {
         speed: number;
         direction: number;
+    };
+
+    type Properties = {
+        attributes: Ticker.Attributes;
+        sizes: Ticker.Sizes;
     };
 }
