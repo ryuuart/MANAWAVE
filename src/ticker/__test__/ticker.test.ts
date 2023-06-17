@@ -199,7 +199,10 @@ describe("ticker", () => {
                 direction: 0,
             };
 
-            const system = new TickerSystem(tSizes, tProps);
+            const system = new TickerSystem(document.body, {
+                sizes: tSizes,
+                attributes: tProps,
+            });
 
             // restart the system over 360 degrees
             for (let theta = 0; theta <= 360; theta++) {
@@ -256,7 +259,10 @@ describe("ticker", () => {
                 speed: 1,
             };
 
-            const system = new TickerSystem(tSizes, tProps);
+            const system = new TickerSystem(document.body, {
+                sizes: tSizes,
+                attributes: tProps,
+            });
 
             system.start();
             // initial test

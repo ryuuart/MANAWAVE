@@ -4,10 +4,7 @@ import { Item } from "./item";
 import { calculateTGridOptions, fillGrid, layoutGrid } from "./layout";
 import { simulateItem } from "./simulation";
 import { uid } from "@ouroboros/utils/uid";
-import Scene from "@ouroboros/dom/scene";
-import ContainerComponent from "@ouroboros/dom/components/container";
-import ItemComponent from "@ouroboros/dom/components/item";
-import TemplateComponent from "@ouroboros/dom/components/template";
+import TickerWorld from "@ouroboros/dom/world";
 
 export default class TickerSystem extends System {
     id: string;
@@ -16,9 +13,7 @@ export default class TickerSystem extends System {
     private _sizes: Ticker.Sizes;
     private _attributes: Ticker.Attributes;
 
-    private _parentElement: HTMLElement;
-    private _template: TemplateComponent;
-    private _scene: Scene;
+    private _world: TickerWorld;
 
     constructor(parentElement: HTMLElement, props: Ticker.Properties) {
         super();
@@ -26,9 +21,7 @@ export default class TickerSystem extends System {
         this.id = uid();
 
         this.container = new Container();
-        this._parentElement = parentElement;
-        this._scene = new Scene();
-        this._template = new TemplateComponent(parentElement.children);
+        this._world = new TickerWorld(parentElement);
 
         this._sizes = structuredClone(props.sizes);
         this._attributes = structuredClone(props.attributes);
@@ -84,43 +77,19 @@ export default class TickerSystem extends System {
 
     onDraw() {
         // draw the ticker
-        let ticker = this._scene.get(this.id);
-
-        // if it doesn't exist, make it
-        if (!ticker) {
-            ticker = new ContainerComponent(this.id);
-            this._scene.set(ticker);
-        }
-
+        const ticker = this._world.attachTicker(this.id);
         ticker.setSize(this._sizes.ticker);
 
         // remove pass
-        for (const component of this._scene.contents) {
-            // did we find something?
-            const item = this.container.find((i) => i.id === component.id);
-
-            // if we didnt find anything, then
-            // the scene has something that shouldnt exist
-            if (!item[0] && component instanceof ItemComponent)
-                this._scene.remove(component);
-        }
+        this._world.removeOldItems(this.container);
 
         // go through all container
         for (const item of this.container.contents) {
-            let component = this._scene.get(item.id);
-
-            // it hasnt been created yet
-            if (!component) {
-                component = new ItemComponent(item.id, item, this._template);
-
-                ticker.append(component);
-                this._scene.set(component);
-            }
-
+            const component = this._world.attachItem(ticker, item);
             component.setSize(this._sizes.item);
-            (component as ItemComponent).setPosition(item.position);
+            component.setPosition(item.position);
         }
 
-        ticker.appendToDOM(this._parentElement);
+        this._world.attachToRootHTML(ticker);
     }
 }
