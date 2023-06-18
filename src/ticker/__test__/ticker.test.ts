@@ -206,7 +206,7 @@ describe("ticker", () => {
 
             // restart the system over 360 degrees
             for (let theta = 0; theta <= 360; theta++) {
-                system.updateProperties({ direction: theta });
+                system.updateAttributes({ direction: theta });
                 system.start(); // start won't start if not stopped. have to start to stop...
 
                 // keep track of each step of the animation updates

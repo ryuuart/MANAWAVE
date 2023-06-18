@@ -36,7 +36,7 @@ const system = new TickerSystem(document.createElement("div"), {
 });
 
 for (let theta = 0; theta <= 360; theta++) {
-    system.updateProperties({ direction: theta });
+    system.updateAttributes({ direction: theta });
     system.start();
 
     const motionFrames = [];

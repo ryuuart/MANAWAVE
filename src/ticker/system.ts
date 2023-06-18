@@ -41,10 +41,19 @@ export default class TickerSystem extends System {
         layoutGrid(this.container, gridOptions);
     }
 
-    updateProperties(properties: Partial<Ticker.Attributes>) {
+    /**
+     * Updates the attributes of the system
+     * @param properties new attributes for the system
+     */
+    updateAttributes(properties: Partial<Ticker.Attributes>) {
         Object.assign(this._attributes, properties);
     }
 
+    /**
+     * Updates the size of the ticker and items for future update.
+     * @remark This will also add and remove items as needed
+     * @param size new size of the Ticker and its Items
+     */
     updateSize(size: Partial<Ticker.Sizes>) {
         const prevGridOptions = calculateTGridOptions(this._sizes);
 
