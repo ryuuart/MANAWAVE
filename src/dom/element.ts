@@ -17,6 +17,7 @@ export default class WebComponent extends HTMLElement {
     }
 
     disconnectedCallback() {
+        this.ouroboros?.stop();
         this.ouroboros = null;
     }
 }
