@@ -16,7 +16,7 @@ describe("dom", () => {
         Square.loadContent();
     });
     afterEach(() => {
-        Square.clearContent();
+        document.getElementById("test-root")?.replaceChildren();
     });
 
     it("should measure a dom element if rendered", async () => {
@@ -174,5 +174,33 @@ describe("dom", () => {
 
             expect(await $$(`.square`).length).toEqual(3);
         });
+
+        it("should update its size given new data", async () => {
+            const ticker = new ContainerComponent("0");
+
+            ticker.setSize({ width: 999, height: 999 });
+
+            ticker.appendToDOM(document.getElementById("test-root")!);
+
+            expect(
+                await $(`.${tickerStyles.container}`).getSize("width")
+            ).toEqual(999);
+            expect(
+                await $(`.${tickerStyles.container}`).getSize("height")
+            ).toEqual(999);
+
+            ticker.setSize({ width: 100, height: 100 });
+
+            expect(
+                await $(`.${tickerStyles.container}`).getSize("width")
+            ).toEqual(100);
+            expect(
+                await $(`.${tickerStyles.container}`).getSize("height")
+            ).toEqual(100);
+        });
     });
+
+    // describe("scene", () => {
+
+    // })
 });
