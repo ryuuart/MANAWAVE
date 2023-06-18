@@ -1,4 +1,5 @@
 import { uid } from "@ouroboros/utils/uid";
+import { setSize } from "./utils";
 
 /**
  * A unit of UI. It's really a wrapper for HTMLElement.
@@ -11,10 +12,12 @@ export abstract class Component<T extends HTMLElement = HTMLElement> {
     protected html: T;
     protected _parent: Component | undefined;
     protected _children: Set<Component>;
+    protected _size: Rect;
 
     constructor(html: T, id?: string) {
         this._children = new Set();
 
+        this._size = { width: 0, height: 0 };
         this.html = html;
 
         if (id) this.id = id;
@@ -26,6 +29,13 @@ export abstract class Component<T extends HTMLElement = HTMLElement> {
      */
     get children(): IterableIterator<Component> {
         return this._children.values();
+    }
+
+    /**
+     * Returns the current size of the component
+     */
+    get size(): Rect {
+        return this._size;
     }
 
     /**
@@ -72,7 +82,7 @@ export abstract class Component<T extends HTMLElement = HTMLElement> {
      * @param rect new width and height to set
      */
     setSize(rect: Rect) {
-        this.html.style.width = `${rect.width}px`;
-        this.html.style.height = `${rect.height}px`;
+        this._size = rect;
+        setSize(this.html, rect);
     }
 }

@@ -5,6 +5,7 @@ import { calculateTGridOptions, fillGrid, layoutGrid } from "./layout";
 import { simulateItem } from "./simulation";
 import { uid } from "@ouroboros/utils/uid";
 import TickerWorld from "@ouroboros/dom/world";
+import { isRectEqual } from "@ouroboros/utils/rect";
 
 export default class TickerSystem extends System {
     id: string;
@@ -87,7 +88,11 @@ export default class TickerSystem extends System {
     onDraw() {
         // draw the ticker
         const ticker = this._world.attachTicker(this.id);
-        ticker.setSize(this._sizes.ticker);
+
+        // only resize ticker if needed
+        if (!isRectEqual(ticker.size, this._sizes.ticker)) {
+            ticker.setSize(this._sizes.ticker);
+        }
 
         // remove pass
         this._world.removeOldItems(this.container);
@@ -95,7 +100,9 @@ export default class TickerSystem extends System {
         // go through all container
         for (const item of this.container.contents) {
             const component = this._world.attachItem(ticker, item);
-            component.setSize(this._sizes.item);
+
+            if (!isRectEqual(component.size, this._sizes.item))
+                component.setSize(this._sizes.item);
             component.setPosition(item.position);
         }
 
