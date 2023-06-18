@@ -1,7 +1,7 @@
 import { Ouroboros } from "..";
 
 /**
- * HTML ShadowDOM element (with no shadowroot) that contains the repeated elements
+ * HTML custom element (with no shadowroot) that contains the repeated elements
  */
 export default class WebComponent extends HTMLElement {
     private ouroboros: Ouroboros | undefined | null;
