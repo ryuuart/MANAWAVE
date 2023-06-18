@@ -10,6 +10,9 @@ export default class Scene {
         this._components = new Map();
     }
 
+    /**
+     * Return all components in the Scene
+     */
     get contents(): IterableIterator<Component> {
         return this._components.values();
     }
