@@ -46,7 +46,9 @@ export abstract class Component<T extends HTMLElement = HTMLElement> {
     append(component: Component) {
         component._parent = this;
         this._children.add(component);
-        this.html.append(component.html);
+        setTimeout(() => {
+            this.html.append(component.html);
+        }, 0);
     }
 
     /**
@@ -54,7 +56,10 @@ export abstract class Component<T extends HTMLElement = HTMLElement> {
      * @param html HTMLElement to render this Component to
      */
     appendToDOM(html: HTMLElement) {
-        if (!this.html.isConnected) html.append(this.html);
+        if (!this.html.isConnected)
+            setTimeout(() => {
+                html.append(this.html);
+            }, 0);
     }
 
     /**
