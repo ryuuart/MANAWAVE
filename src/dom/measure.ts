@@ -19,10 +19,8 @@ export function measureElementBox(
         else document.body.append(measureBox);
     } else {
         // otherwise, clone the children and add its clone to the box
+        measureBox.append(...Array.from(element).map((e) => e.cloneNode(true)));
         if (element[0].parentElement) {
-            measureBox.append(
-                ...element[0].parentElement?.cloneNode(true).childNodes
-            );
             element[0].parentElement.append(measureBox);
         } else document.body.append(measureBox);
     }

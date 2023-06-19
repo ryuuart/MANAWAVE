@@ -1,5 +1,5 @@
 import Square from "test/pages/square/Square";
-import { getRepetitions, measureElementBox } from "../measure";
+import { getRepetitions, measure, measureElementBox } from "../measure";
 import {
     convertDirection,
     extractOAttributes,
@@ -10,6 +10,7 @@ import ItemComponent from "../components/item";
 import tickerStyles from "../styles/ticker.module.css";
 import itemStyles from "../styles/item.module.css";
 import TemplateComponent from "../components/template";
+import Basic from "test/pages/basic/Basic";
 
 describe("dom", () => {
     beforeEach(() => {
@@ -25,10 +26,28 @@ describe("dom", () => {
         testElement.style.height = "130px";
 
         // our change in measurement should be observed
-        const rect = measureElementBox(testElement);
+        const rect = measure(testElement);
 
-        expect(rect?.width).toEqual(152); // including margins
-        expect(rect?.height).toEqual(162);
+        expect(rect?.width).toEqual(120); // including margins
+        expect(rect?.height).toEqual(130);
+    });
+
+    it("should measure a dom element with margins", async () => {
+        expect(measureElementBox(Square.square!)).toEqual({
+            width: 132,
+            height: 132,
+        });
+    });
+
+    it("should measure a collection of dom elements", async () => {
+        Basic.loadContent();
+
+        expect(measureElementBox(Basic.ticker!.children)).toEqual({
+            width: 396,
+            height: 132,
+        });
+
+        Basic.clearContent();
     });
 
     it("should calculate repetitions in different size contexts", async () => {
