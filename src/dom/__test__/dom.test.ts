@@ -11,6 +11,9 @@ import tickerStyles from "../styles/ticker.module.css";
 import itemStyles from "../styles/item.module.css";
 import TemplateComponent from "../components/template";
 import Basic from "test/pages/basic/Basic";
+import TickerWorld from "../world";
+import { Item } from "@ouroboros/ticker/item";
+import { Container } from "@ouroboros/ticker/container";
 
 describe("dom", () => {
     beforeEach(() => {
@@ -219,7 +222,52 @@ describe("dom", () => {
         });
     });
 
-    // describe("scene", () => {
+    describe("world", () => {
+        it("should attach a ticker to the page", async () => {
+            const world = new TickerWorld(
+                document.getElementById("test-root")!
+            );
 
-    // })
+            const ticker = world.attachTicker("123");
+
+            world.attachToRootHTML(ticker);
+
+            await expect(await $(`.${tickerStyles.container}`)).toExist();
+        });
+
+        it("should attach an item to the page", async () => {
+            const world = new TickerWorld(
+                document.getElementById("test-root")!
+            );
+
+            const item = world.attachItem(
+                new ContainerComponent("0"),
+                new Item()
+            );
+
+            world.attachToRootHTML(item);
+
+            await expect(await $(`.${itemStyles.item}`)).toExist();
+        });
+
+        it("should remove old ticker items from the page given new data", async () => {
+            const container = new Container<Item>();
+            const item1 = new Item();
+            container.add(item1);
+
+            // construct the world
+            const world = new TickerWorld(
+                document.getElementById("test-root")!
+            );
+            const ticker = new ContainerComponent("0");
+            const component = world.attachItem(ticker, item1);
+            world.attachToRootHTML(component);
+            await expect(await $(`.${itemStyles.item}`)).toExist();
+
+            // remove the item and check if it actually got removed
+            container.delete(item1);
+            world.removeOldItems(container);
+            await expect(await $(`.${itemStyles.item}`)).not.toExist();
+        });
+    });
 });

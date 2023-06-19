@@ -51,8 +51,12 @@ export default class Scene {
      * @param selection a component ID or {@link Component}
      */
     remove(selection: string | Component) {
-        if (selection instanceof Component)
+        if (selection instanceof Component) {
+            selection.onRemove();
             this._components.delete(selection.id);
-        else this._components.delete(selection);
+        } else {
+            this._components.get(selection)?.onRemove();
+            this._components.delete(selection);
+        }
     }
 }
