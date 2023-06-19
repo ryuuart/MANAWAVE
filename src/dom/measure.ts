@@ -1,4 +1,43 @@
 /**
+ * Measures something from the DOM including margins
+ *
+ * @param element HTML element to observe
+ * @returns a {@link Rect } with a width and height
+ */
+export function measureElementBox(
+    element: HTMLElement | NodeList | HTMLCollection
+): Rect {
+    // create a measurement box to contain the margins
+    const measureBox = document.createElement("div");
+    measureBox.style.display = "inline-block"; // creates a new BFC
+    measureBox.style.visibility = "none";
+
+    // if the element is an element, then just add its clone to the box
+    if (element instanceof HTMLElement) {
+        measureBox.append(element.cloneNode(true));
+        if (element.parentElement) element.parentElement.append(measureBox);
+        else document.body.append(measureBox);
+    } else {
+        // otherwise, clone the children and add its clone to the box
+        measureBox.append(...Array.from(element).map((e) => e.cloneNode(true)));
+        if (element[0].parentElement) {
+            element[0].parentElement.append(measureBox);
+        } else document.body.append(measureBox);
+    }
+
+    // calculate the sizes
+    const computedStyles = window.getComputedStyle(measureBox);
+    const sizes = {
+        width: parseFloat(computedStyles["width"]),
+        height: parseFloat(computedStyles["height"]),
+    };
+
+    measureBox.remove();
+
+    return sizes;
+}
+
+/**
  * Measures an HTML Element on the page if it's loaded
  *
  * @param element HTML element to observe

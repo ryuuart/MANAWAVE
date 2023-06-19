@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+    <title>Ouroboros Test Zone</title>
+</head>
+
+<body>
+    <main>
+        <h1>Hello</h1>
+        <p>This is a wonderful test area</p>
+        <section>
+            <h2>Web Component</h2>
+            <h3>Normal</h3>
+            <ouroboros-ticker id="webc-normal" autoplay direction="200" speed="3">
+                <div class="square color-cornsilk">1</div>
+                <div class="square color-aqua">2</div>
+                <div class="square color-lavendarblush">3</div>
+            </ouroboros-ticker>
+            <h3>Inline-flex</h3>
+            <ouroboros-ticker autoplay direction="up" speed="2">
+                <div class="square inline-flex color-cornsilk">1</div>
+                <div class="square inline-flex color-aqua">2</div>
+                <div class="square inline-flex color-lavendarblush">3</div>
+                <div class="square inline-flex color-cornsilk">1</div>
+                <div class="square inline-flex color-aqua">2</div>
+                <div class="square inline-flex color-lavendarblush">3</div>
+                <div class="square inline-flex color-cornsilk">1</div>
+                <div class="square inline-flex color-aqua">2</div>
+                <div class="square inline-flex color-lavendarblush">3</div>
+            </ouroboros-ticker>
+            <h3>Inline-flex Fill</h3>
+            <ouroboros-ticker>
+                <div class="inline-flex">
+                    <div class="square inline-flex color-cornsilk">1</div>
+                    <div class="square inline-flex color-aqua">2</div>
+                    <div class="square inline-flex color-lavendarblush">3</div>
+                </div>
+            </ouroboros-ticker>
+            <h3>Small</h3>
+            <ouroboros-ticker id="webc-small">
+                <div class="square color-cornsilk">1</div>
+                <div class="square color-aqua">2</div>
+                <div class="square color-lavendarblush">3</div>
+            </ouroboros-ticker>
+            <h3>Flex</h3>
+            <div id="webc-flex">
+                <ouroboros-ticker>
+                    <div class="square color-cornsilk">1</div>
+                    <div class="square color-aqua">2</div>
+                    <div class="square color-lavendarblush">3</div>
+                </ouroboros-ticker>
+                <ouroboros-ticker>
+                    <div class="square color-cornsilk">1</div>
+                    <div class="square color-aqua">2</div>
+                    <div class="square color-lavendarblush">3</div>
+                </ouroboros-ticker>
+                <ouroboros-ticker>
+                    <div class="square inline-flex color-cornsilk">1</div>
+                    <div class="square inline-flex color-aqua">2</div>
+                    <div class="square inline-flex color-lavendarblush">3</div>
+                </ouroboros-ticker>
+            </div>
+            <h3>Flex Wrap</h3>
+            <div id="webc-flex-wrap">
+                <ouroboros-ticker>
+                    <div class="square color-cornsilk">1</div>
+                    <div class="square color-aqua">2</div>
+                    <div class="square color-lavendarblush">3</div>
+                </ouroboros-ticker>
+                <ouroboros-ticker>
+                    <div class="square color-cornsilk">1</div>
+                    <div class="square color-aqua">2</div>
+                    <div class="square color-lavendarblush">3</div>
+                </ouroboros-ticker>
+                <ouroboros-ticker>
+                    <div class="square inline-flex color-cornsilk">1</div>
+                    <div class="square inline-flex color-aqua">2</div>
+                    <div class="square inline-flex color-lavendarblush">3</div>
+                </ouroboros-ticker>
+            </div>
+            <h3>Grid</h3>
+            <div id="webc-grid">
+                <ouroboros-ticker autoplay direction="up">
+                    <div class="square color-cornsilk">1</div>
+                    <div class="square color-aqua">2</div>
+                    <div class="square color-lavendarblush">3</div>
+                </ouroboros-ticker>
+                <ouroboros-ticker autoplay direction="right" speed="3">
+                    <div class="square color-cornsilk">1</div>
+                    <div class="square color-aqua">2</div>
+                    <div class="square color-lavendarblush">3</div>
+                </ouroboros-ticker>
+                <ouroboros-ticker autoplay direction="288" speed="1.2">
+                    <div class="square inline-flex color-cornsilk">1</div>
+                    <div class="square inline-flex color-aqua">2</div>
+                    <div class="square inline-flex color-lavendarblush">3</div>
+                </ouroboros-ticker>
+                <ouroboros-ticker>
+                    <div class="square color-cornsilk">1</div>
+                    <div class="square color-aqua">2</div>
+                    <div class="square color-lavendarblush">3</div>
+                </ouroboros-ticker>
+                <ouroboros-ticker autoplay direction="110" speed="0.56">
+                    <div class="square color-cornsilk">1</div>
+                    <div class="square color-aqua">2</div>
+                    <div class="square color-lavendarblush">3</div>
+                </ouroboros-ticker>
+                <ouroboros-ticker>
+                    <div class="square inline-flex color-cornsilk">1</div>
+                    <div class="square inline-flex color-aqua">2</div>
+                    <div class="square inline-flex color-lavendarblush">3</div>
+                </ouroboros-ticker>
+            </div>
+            <hr />
+            <h2>DOM</h2>
+            <h3>Normal</h3>
+            <div id="dom-base">
+                <div class="square color-cornsilk">1</div>
+                <div class="square color-aqua">2</div>
+                <div class="square color-lavendarblush">3</div>
+            </div>
+            <h2>DOM - BillboardTicker attribute</h2>
+            <h3>Normal</h3>
+            <div ouroboros-ticker>
+                <div class="square color-cornsilk">1</div>
+                <div class="square color-aqua">2</div>
+                <div class="square color-lavendarblush">3</div>
+            </div>
+        </section>
+    </main>
+    <script type="module" src="index.ts"></script>
+</body>
+
+</html>

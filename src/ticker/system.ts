@@ -4,34 +4,32 @@ import { Item } from "./item";
 import { calculateTGridOptions, fillGrid, layoutGrid } from "./layout";
 import { simulateItem } from "./simulation";
 import { uid } from "@ouroboros/utils/uid";
+import TickerWorld from "@ouroboros/dom/world";
+import { isRectEqual } from "@ouroboros/utils/rect";
 
 export default class TickerSystem extends System {
     id: string;
 
-    // TODO: will have a way to output state of system
     container: Container<Item>;
     private _sizes: Ticker.Sizes;
-    private _properties: Ticker.Properties;
-    private _frameData: Ticker.FrameData;
+    private _attributes: Ticker.Attributes;
 
-    constructor(sizes: Ticker.Sizes, properties: Ticker.Properties) {
+    private _world: TickerWorld;
+
+    constructor(parentElement: HTMLElement, props: Ticker.Properties) {
         super();
 
         this.id = uid();
 
         this.container = new Container();
-        this._sizes = structuredClone(sizes);
-        this._properties = structuredClone(properties);
-        this._frameData = { items: {} };
-    }
+        this._world = new TickerWorld(parentElement);
 
-    get currentFrameData(): Ticker.FrameData {
-        return structuredClone(this._frameData);
+        this._sizes = structuredClone(props.sizes);
+        this._attributes = structuredClone(props.attributes);
     }
 
     onStart() {
         const gridOptions = calculateTGridOptions(this._sizes);
-        this._frameData.items = {};
         fillGrid(this.container, () => new Item(), gridOptions);
         layoutGrid(this.container, gridOptions);
 
@@ -44,10 +42,19 @@ export default class TickerSystem extends System {
         layoutGrid(this.container, gridOptions);
     }
 
-    updateProperties(properties: Partial<Ticker.Properties>) {
-        Object.assign(this._properties, properties);
+    /**
+     * Updates the attributes of the system
+     * @param properties new attributes for the system
+     */
+    updateAttributes(properties: Partial<Ticker.Attributes>) {
+        Object.assign(this._attributes, properties);
     }
 
+    /**
+     * Updates the size of the ticker and items for future update.
+     * @remark This will also add and remove items as needed
+     * @param size new size of the Ticker and its Items
+     */
     updateSize(size: Partial<Ticker.Sizes>) {
         const prevGridOptions = calculateTGridOptions(this._sizes);
 
@@ -70,8 +77,8 @@ export default class TickerSystem extends System {
         for (const item of this.container.contents) {
             simulateItem(item, {
                 sizes: this._sizes,
-                speed: this._properties.speed,
-                direction: this._properties.direction,
+                speed: this._attributes.speed,
+                direction: this._attributes.direction,
                 dt,
                 t,
             });
@@ -79,8 +86,26 @@ export default class TickerSystem extends System {
     }
 
     onDraw() {
-        for (const item of this.container.contents) {
-            this._frameData.items[item.id] = item.position;
+        // draw the ticker
+        const ticker = this._world.attachTicker(this.id);
+
+        // only resize ticker if needed
+        if (!isRectEqual(ticker.size, this._sizes.ticker)) {
+            ticker.setSize(this._sizes.ticker);
         }
+
+        // remove pass
+        this._world.removeOldItems(this.container);
+
+        // go through all container
+        for (const item of this.container.contents) {
+            const component = this._world.attachItem(ticker, item);
+
+            if (!isRectEqual(component.size, this._sizes.item))
+                component.setSize(this._sizes.item);
+            component.setPosition(item.position);
+        }
+
+        this._world.attachToRootHTML(ticker);
     }
 }

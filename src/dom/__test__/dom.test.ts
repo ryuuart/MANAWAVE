@@ -1,17 +1,26 @@
 import Square from "test/pages/square/Square";
-import { getRepetitions, measure } from "../measure";
+import { getRepetitions, measure, measureElementBox } from "../measure";
 import {
     convertDirection,
     extractOAttributes,
     mergeOOptions,
 } from "../attributes";
+import ContainerComponent from "../components/container";
+import ItemComponent from "../components/item";
+import tickerStyles from "../styles/ticker.module.css";
+import itemStyles from "../styles/item.module.css";
+import TemplateComponent from "../components/template";
+import Basic from "test/pages/basic/Basic";
+import TickerWorld from "../world";
+import { Item } from "@ouroboros/ticker/item";
+import { Container } from "@ouroboros/ticker/container";
 
 describe("dom", () => {
     beforeEach(() => {
         Square.loadContent();
     });
     afterEach(() => {
-        Square.clearContent();
+        document.getElementById("test-root")?.replaceChildren();
     });
 
     it("should measure a dom element if rendered", async () => {
@@ -22,22 +31,26 @@ describe("dom", () => {
         // our change in measurement should be observed
         const rect = measure(testElement);
 
-        const observedElement = await $(`#${testElement.id}`);
-        const observedRect = await observedElement.getSize();
-
-        expect(rect?.width).toEqual(120);
+        expect(rect?.width).toEqual(120); // including margins
         expect(rect?.height).toEqual(130);
+    });
 
-        expect(rect?.width).toEqual(observedRect.width);
-        expect(rect?.height).toEqual(observedRect.height);
+    it("should measure a dom element with margins", async () => {
+        expect(measureElementBox(Square.square!)).toEqual({
+            width: 132,
+            height: 132,
+        });
+    });
 
-        // if the element is removed or disconnected from the page,
-        // there is no returned measurement
-        testElement.remove();
+    it("should measure a collection of dom elements", async () => {
+        Basic.loadContent();
 
-        let disconnectedRect = measure(testElement);
+        expect(measureElementBox(Basic.ticker!.children)).toEqual({
+            width: 396,
+            height: 132,
+        });
 
-        expect(disconnectedRect).toBe(null);
+        Basic.clearContent();
     });
 
     it("should calculate repetitions in different size contexts", async () => {
@@ -125,6 +138,136 @@ describe("dom", () => {
                 speed: 123,
                 direction: 123,
             });
+        });
+    });
+
+    describe("component", () => {
+        it("should create a container element from a component", async () => {
+            const container = new ContainerComponent("0");
+
+            container.appendToDOM(document.getElementById("test-root")!);
+
+            expect(
+                await $(`.${tickerStyles.container}`)
+            ).toHaveElementClassContaining(`${tickerStyles.container}`);
+        });
+
+        it("should create an item element from a component", async () => {
+            const item = new ItemComponent("0", {
+                id: "0",
+                lifetime: 0,
+                status: "STARTED",
+                position: { x: 0, y: 0 },
+            });
+
+            item.appendToDOM(document.getElementById("test-root")!);
+
+            expect(await $(`.${itemStyles.item}`)).toHaveElementClassContaining(
+                `${itemStyles.item}`
+            );
+        });
+
+        it("should remove child inside a nested component", async () => {
+            const container = new ContainerComponent("0");
+            const item = new ItemComponent("0", {
+                id: "0",
+                lifetime: 0,
+                status: "STARTED",
+                position: { x: 0, y: 0 },
+            });
+
+            container.append(item);
+            container.appendToDOM(document.getElementById("test-root")!);
+
+            expect(`.${tickerStyles.container}`).toHaveChildren(1);
+
+            container.removeChild(item);
+
+            expect(`.${tickerStyles.container}`).not.toHaveChildren();
+        });
+
+        it("should clone from a template", async () => {
+            const template = new TemplateComponent(Square.square!);
+
+            const clone1 = template.cloneDOM();
+            const clone2 = template.cloneDOM();
+
+            document.getElementById("test-root")?.append(...clone1, ...clone2);
+
+            expect(await $$(`.square`).length).toEqual(3);
+        });
+
+        it("should update its size given new data", async () => {
+            const ticker = new ContainerComponent("0");
+
+            ticker.setSize({ width: 999, height: 999 });
+
+            ticker.appendToDOM(document.getElementById("test-root")!);
+
+            expect(
+                await $(`.${tickerStyles.container}`).getSize("width")
+            ).toEqual(999);
+            expect(
+                await $(`.${tickerStyles.container}`).getSize("height")
+            ).toEqual(999);
+
+            ticker.setSize({ width: 100, height: 100 });
+
+            expect(
+                await $(`.${tickerStyles.container}`).getSize("width")
+            ).toEqual(100);
+            expect(
+                await $(`.${tickerStyles.container}`).getSize("height")
+            ).toEqual(100);
+        });
+    });
+
+    describe("world", () => {
+        it("should attach a ticker to the page", async () => {
+            const world = new TickerWorld(
+                document.getElementById("test-root")!
+            );
+
+            const ticker = world.attachTicker("123");
+
+            world.attachToRootHTML(ticker);
+
+            await expect(await $(`.${tickerStyles.container}`)).toExist();
+        });
+
+        it("should attach an item to the page", async () => {
+            const world = new TickerWorld(
+                document.getElementById("test-root")!
+            );
+
+            const item = world.attachItem(
+                new ContainerComponent("0"),
+                new Item()
+            );
+
+            world.attachToRootHTML(item);
+
+            await expect(await $(`.${itemStyles.item}`)).toExist();
+        });
+
+        it("should remove old ticker items from the page given new data", async () => {
+            const container = new Container<Item>();
+            const item1 = new Item();
+            container.add(item1);
+
+            // construct the world
+            const world = new TickerWorld(
+                document.getElementById("test-root")!
+            );
+            const ticker = new ContainerComponent("0");
+            const component = world.attachItem(ticker, item1);
+            world.attachToRootHTML(component);
+            await expect(await $(`.${itemStyles.item}`)).toExist();
+
+            // remove the item and check if it actually got removed
+            container.delete(item1);
+            world.removeOldItems(container);
+            await expect(await $(`.${itemStyles.item}`)).not.toExist();
         });
     });
 });

@@ -21,7 +21,7 @@ type TSimulationData = {
     dt: DOMHighResTimeStamp;
     t: DOMHighResTimeStamp;
     sizes: Ticker.Sizes;
-} & Ticker.Properties;
+} & Ticker.Attributes;
 
 /**
  * Get the limits of a ticker aligned to the size of individual items.
@@ -119,7 +119,7 @@ export function simulateItem(
         limits: getTLimits(data.sizes.ticker, data.sizes.item),
         intendedDirection: {
             x: Math.cos(toRadians(data.direction)),
-            y: Math.sin(toRadians(data.direction)),
+            y: -Math.sin(toRadians(data.direction)),
         },
         speed: data.speed,
         actualDirection: { x: 0, y: 0 },

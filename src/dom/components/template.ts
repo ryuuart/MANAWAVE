@@ -1,16 +1,21 @@
 import { Component } from "../component";
 import styles from "../styles/item.module.css";
 
-export class TemplateHTML extends Component<HTMLTemplateElement> {
-    constructor(original: HTMLElement) {
+export default class TemplateComponent extends Component<HTMLTemplateElement> {
+    constructor(baseHTML: HTMLElement | NodeList | HTMLCollection) {
         const element = document.createElement("template");
-        element.append(original.cloneNode(true));
         element.classList.add(styles.template);
+        // we don't want to hide these
+        if (baseHTML instanceof HTMLElement) {
+            element.content.append(baseHTML.cloneNode(true));
+        } else {
+            element.content.append(...Array.from(baseHTML).slice());
+        }
 
         super(element);
     }
 
-    clone(): Node[] {
-        return Array.from(this.html.content.cloneNode(true).childNodes);
+    cloneDOM(): NodeListOf<ChildNode> {
+        return this.html.content.cloneNode(true).childNodes;
     }
 }

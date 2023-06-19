@@ -1,11 +1,11 @@
 import { Component } from "../component";
 import styles from "../styles/ticker.module.css";
 
-export class ContainerHTML extends Component {
-    constructor() {
+export default class TickerComponent extends Component {
+    constructor(id: string) {
         const element = document.createElement("div");
-        element.classList.toggle(styles.container);
+        element.classList.add(styles.container);
 
-        super(element);
+        super(element, id);
     }
 }

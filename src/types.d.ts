@@ -31,12 +31,13 @@ namespace Ticker {
         item: Rect;
     };
 
-    type Properties = {
+    type Attributes = {
         speed: number;
         direction: number;
     };
 
-    type FrameData = {
-        items: { [id: string]: vec2 };
+    type Properties = {
+        attributes: Ticker.Attributes;
+        sizes: Ticker.Sizes;
     };
 }

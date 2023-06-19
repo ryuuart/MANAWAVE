@@ -1,4 +1,3 @@
-import { TickerState } from "@ouroboros/ticker/state";
 import TickerSystem from "@ouroboros/ticker/system";
 import { download, jsonToBinary } from "../download";
 
@@ -31,17 +30,13 @@ const snapshot: SnapshotData = {
     data: {},
 };
 
-const state = new TickerState({
-    ticker: { size: snapshot.setup.tickerSize },
-    item: { size: snapshot.setup.itemSize },
+const system = new TickerSystem(document.createElement("div"), {
+    sizes: { ticker: snapshot.setup.tickerSize, item: snapshot.setup.itemSize },
+    attributes: { direction: 0, speed: 1 },
 });
 
-const system = new TickerSystem(state.current);
-
 for (let theta = 0; theta <= 360; theta++) {
-    state.update({ direction: theta });
-    state.notify("update", [system]);
-
+    system.updateAttributes({ direction: theta });
     system.start();
 
     const motionFrames = [];
