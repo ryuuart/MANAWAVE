@@ -1,40 +1,38 @@
-/**
- * Measures something from the DOM including margins
- *
- * @param element HTML element to observe
- * @returns a {@link Rect } with a width and height
- */
-export function measureElementBox(
-    element: HTMLElement | NodeList | HTMLCollection
-): Rect {
-    // create a measurement box to contain the margins
-    const measureBox = document.createElement("div");
-    measureBox.style.display = "inline-block"; // creates a new BFC
-    measureBox.style.visibility = "none";
+export class MeasurementBox {
+    private box: HTMLElement;
 
-    // if the element is an element, then just add its clone to the box
-    if (element instanceof HTMLElement) {
-        measureBox.append(element.cloneNode(true));
-        if (element.parentElement) element.parentElement.append(measureBox);
-        else document.body.append(measureBox);
-    } else {
-        // otherwise, clone the children and add its clone to the box
-        measureBox.append(...Array.from(element).map((e) => e.cloneNode(true)));
-        if (element[0].parentElement) {
-            element[0].parentElement.append(measureBox);
-        } else document.body.append(measureBox);
+    constructor(...elements: Element[]) {
+        this.box = document.createElement("div");
+        this.box.style.display = "inline-block"; // creates a BFC (to measure margins)
+        this.box.style.visibility = "hidden";
+
+        this.box.append(...elements.map((e) => e.cloneNode(true)));
     }
 
-    // calculate the sizes
-    const computedStyles = window.getComputedStyle(measureBox);
-    const sizes = {
-        width: parseFloat(computedStyles["width"]),
-        height: parseFloat(computedStyles["height"]),
-    };
+    /**
+     * Returns the current measurement of the Box.
+     * @remark returns a 0 Rect if it's not on the page or not measuring
+     * @returns a Rect representing the current size of the box
+     */
+    get measurement(): Rect {
+        const measurement = measure(this.box);
+        return measurement;
+    }
 
-    measureBox.remove();
+    /**
+     * Places the box and allows it to be measured
+     * @param parent where the box should be
+     */
+    startMeasuringFrom(parent: HTMLElement) {
+        parent.append(this.box);
+    }
 
-    return sizes;
+    /**
+     * Removes the box from the DOM, stopping measurement.
+     */
+    stopMeasuring() {
+        this.box.remove();
+    }
 }
 
 /**
@@ -43,16 +41,14 @@ export function measureElementBox(
  * @param element HTML element to observe
  * @returns a {@link Rect } with a width and height or `null` if the element isn't loaded on the page
  */
-export function measure(element: HTMLElement): Rect | null {
+export function measure(element: HTMLElement): Rect {
+    const measurement = { width: 0, height: 0 };
     if (element && element.isConnected) {
-        const computedStyles = window.getComputedStyle(element);
-
-        return {
-            width: parseFloat(computedStyles["width"]),
-            height: parseFloat(computedStyles["height"]),
-        };
+        measurement.width = element.clientWidth;
+        measurement.height = element.clientHeight;
     }
-    return null;
+
+    return measurement;
 }
 
 /**
