@@ -1,5 +1,5 @@
 import Square from "test/pages/square/Square";
-import { getRepetitions, measure, measureElementBox } from "../measure";
+import { MeasurementBox, getRepetitions, measure } from "../measure";
 import {
     convertDirection,
     extractOAttributes,
@@ -18,61 +18,76 @@ import { Container } from "@ouroboros/ticker/container";
 describe("dom", () => {
     beforeEach(() => {
         Square.loadContent();
+        Basic.loadContent();
     });
     afterEach(() => {
         document.getElementById("test-root")?.replaceChildren();
     });
 
-    it("should measure a dom element if rendered", async () => {
-        const testElement = Square.square!;
-        testElement.style.width = "120px";
-        testElement.style.height = "130px";
+    describe("measurement", async () => {
+        it("should measure a dom element if rendered", async () => {
+            const testElement = Square.square!;
+            testElement.style.width = "120px";
+            testElement.style.height = "130px";
 
-        // our change in measurement should be observed
-        const rect = measure(testElement);
+            // our change in measurement should be observed
+            const visibleRect = measure(testElement);
 
-        expect(rect?.width).toEqual(120); // including margins
-        expect(rect?.height).toEqual(130);
-    });
+            expect(visibleRect).toEqual({ width: 120, height: 130 });
 
-    it("should measure a dom element with margins", async () => {
-        expect(measureElementBox(Square.square!)).toEqual({
-            width: 132,
-            height: 132,
-        });
-    });
+            testElement.remove();
 
-    it("should measure a collection of dom elements", async () => {
-        Basic.loadContent();
+            const hiddenRect = measure(testElement);
 
-        expect(measureElementBox(Basic.ticker!.children)).toEqual({
-            width: 396,
-            height: 132,
+            expect(hiddenRect).toEqual({
+                width: 0,
+                height: 0,
+            });
         });
 
-        Basic.clearContent();
-    });
+        it("should measure a dom element with margins", async () => {
+            const box = new MeasurementBox(Square.square!);
 
-    it("should calculate repetitions in different size contexts", async () => {
-        const uniformRectLarge = { width: 1000, height: 1000 };
-        const uniformRectSmall = { width: 100, height: 100 };
-        const nonUniformRectSmall = { width: 123, height: 123 };
+            box.startMeasuringFrom(document.body);
+            expect(box.measurement).toEqual({
+                width: 132,
+                height: 132,
+            });
+            box.stopMeasuring();
+        });
 
-        // base uniform case where things fit in perfectly
-        const case1 = getRepetitions(uniformRectLarge, uniformRectSmall);
-        expect(case1).toEqual({ horizontal: 10, vertical: 10 });
+        it("should measure a collection of dom elements", async () => {
+            const box = new MeasurementBox(...Basic.ticker!.children);
 
-        // a repeatable larger than its container should "repeat" 1 time
-        const case2 = getRepetitions(uniformRectSmall, uniformRectLarge);
-        expect(case2).toEqual({ horizontal: 1, vertical: 1 });
+            box.startMeasuringFrom(document.body);
+            expect(box.measurement).toEqual({
+                width: 396,
+                height: 132,
+            });
+            box.stopMeasuring();
+        });
 
-        // if they're the same length, it should "repeat" once
-        const case3 = getRepetitions(uniformRectSmall, uniformRectSmall);
-        expect(case3).toEqual({ horizontal: 1, vertical: 1 });
+        it("should calculate repetitions in different size contexts", async () => {
+            const uniformRectLarge = { width: 1000, height: 1000 };
+            const uniformRectSmall = { width: 100, height: 100 };
+            const nonUniformRectSmall = { width: 123, height: 123 };
 
-        // an uneven, smaller repeatable should round up to fill the space
-        const case4 = getRepetitions(uniformRectLarge, nonUniformRectSmall);
-        expect(case4).toEqual({ horizontal: 9, vertical: 9 });
+            // base uniform case where things fit in perfectly
+            const case1 = getRepetitions(uniformRectLarge, uniformRectSmall);
+            expect(case1).toEqual({ horizontal: 10, vertical: 10 });
+
+            // a repeatable larger than its container should "repeat" 1 time
+            const case2 = getRepetitions(uniformRectSmall, uniformRectLarge);
+            expect(case2).toEqual({ horizontal: 1, vertical: 1 });
+
+            // if they're the same length, it should "repeat" once
+            const case3 = getRepetitions(uniformRectSmall, uniformRectSmall);
+            expect(case3).toEqual({ horizontal: 1, vertical: 1 });
+
+            // an uneven, smaller repeatable should round up to fill the space
+            const case4 = getRepetitions(uniformRectLarge, nonUniformRectSmall);
+            expect(case4).toEqual({ horizontal: 9, vertical: 9 });
+        });
     });
 
     describe("attribute", () => {
@@ -147,7 +162,7 @@ describe("dom", () => {
 
             container.appendToDOM(document.getElementById("test-root")!);
 
-            expect(
+            await expect(
                 await $(`.${tickerStyles.container}`)
             ).toHaveElementClassContaining(`${tickerStyles.container}`);
         });
@@ -162,9 +177,9 @@ describe("dom", () => {
 
             item.appendToDOM(document.getElementById("test-root")!);
 
-            expect(await $(`.${itemStyles.item}`)).toHaveElementClassContaining(
-                `${itemStyles.item}`
-            );
+            await expect(
+                await $(`.${itemStyles.item}`)
+            ).toHaveElementClassContaining(`${itemStyles.item}`);
         });
 
         it("should remove child inside a nested component", async () => {
@@ -179,22 +194,28 @@ describe("dom", () => {
             container.append(item);
             container.appendToDOM(document.getElementById("test-root")!);
 
-            expect(`.${tickerStyles.container}`).toHaveChildren(1);
+            await expect(await $(`.${tickerStyles.container}`)).toHaveChildren(
+                1
+            );
 
             container.removeChild(item);
 
-            expect(`.${tickerStyles.container}`).not.toHaveChildren();
+            await expect(
+                await $(`.${tickerStyles.container}`)
+            ).not.toHaveChildren();
         });
 
         it("should clone from a template", async () => {
             const template = new TemplateComponent(Square.square!);
+
+            const initialLength = await $$(`.square`).length;
 
             const clone1 = template.cloneDOM();
             const clone2 = template.cloneDOM();
 
             document.getElementById("test-root")?.append(...clone1, ...clone2);
 
-            expect(await $$(`.square`).length).toEqual(3);
+            expect(await $$(`.square`).length).toEqual(initialLength + 2);
         });
 
         it("should update its size given new data", async () => {
@@ -270,4 +291,7 @@ describe("dom", () => {
             await expect(await $(`.${itemStyles.item}`)).not.toExist();
         });
     });
+
+    // describe("ticker", () => {
+    // });
 });
