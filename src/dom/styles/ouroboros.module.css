@@ -1,3 +1,4 @@
 .ouroboros {
-  display: flow-root;
+  display: block;
+  position: relative;
 }
