@@ -1,5 +1,10 @@
 import Square from "test/pages/square/Square";
-import { MeasurementBox, getRepetitions, measure } from "../measure";
+import {
+    Dimensions,
+    MeasurementBox,
+    getRepetitions,
+    measure,
+} from "../measure";
 import {
     convertDirection,
     extractOAttributes,
@@ -87,6 +92,68 @@ describe("dom", () => {
             // an uneven, smaller repeatable should round up to fill the space
             const case4 = getRepetitions(uniformRectLarge, nonUniformRectSmall);
             expect(case4).toEqual({ horizontal: 9, vertical: 9 });
+        });
+
+        it("should provide accurate dimensions for multiple types", async () => {
+            const dimensions = new Dimensions();
+
+            dimensions.setEntry("square", Square.square!);
+            expect(dimensions.get("square")).toEqual({
+                width: 100,
+                height: 100,
+            });
+
+            dimensions.setEntry("ticker", Basic.ticker!);
+            expect(dimensions.get("ticker")).toEqual({
+                width: 1188,
+                height: 600,
+            });
+        });
+
+        it("should provide accurate dimensions for a measurement box", async () => {
+            const dimensions = new Dimensions();
+            const box = new MeasurementBox(Square.square!);
+            box.startMeasuringFrom(document.getElementById("test-root")!);
+
+            dimensions.setEntry("square", box);
+            expect(dimensions.get("square")).toEqual({
+                width: 132,
+                height: 132,
+            });
+
+            box.stopMeasuring();
+        });
+
+        it("should provide accurate dimensions when a resize occurs", async () => {
+            const dimensions = new Dimensions();
+
+            const squareLog: Rect[] = [];
+
+            dimensions.setEntry("square", Square.square!, (rect) => {
+                squareLog.push(rect);
+            });
+            dimensions.setEntry("ticker", Basic.ticker!);
+
+            // square's size should remain the same even though ticker's size changed
+            Basic.ticker!.style.width = "100px";
+            await $(Basic.ticker!).waitUntil(async function () {
+                // @ts-ignore
+                return (await this.getSize("width")) === 100;
+            });
+            expect(squareLog[0].width).toBe(100);
+
+            // square's size should be different when square's size changed
+            Square.square!.style.width = "300px";
+            Square.square!.style.height = "500px";
+            (await $(Square.square!)).waitUntil(async function () {
+                return (
+                    // @ts-ignore
+                    (await this.getSize("width")) === 300 &&
+                    // @ts-ignore
+                    (await this.getSize("height")) === 500
+                );
+            });
+            expect(squareLog[1]).toEqual({ width: 300, height: 500 });
         });
     });
 
