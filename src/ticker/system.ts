@@ -71,6 +71,8 @@ export default class TickerSystem extends System {
         ) {
             this.onStart();
         }
+
+        this.onDraw();
     }
 
     onUpdate(dt: DOMHighResTimeStamp, t: DOMHighResTimeStamp) {
