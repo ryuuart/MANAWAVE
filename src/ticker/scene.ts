@@ -1,11 +1,11 @@
 export class Scene<T> {
     private _store: Set<T>;
-    sizes: Ticker.Sizes;
+    private _sizes: Ticker.Sizes;
 
     constructor(sizes: Ticker.Sizes) {
         this._store = new Set();
 
-        this.sizes = sizes;
+        this._sizes = sizes;
     }
 
     /**
@@ -17,6 +17,14 @@ export class Scene<T> {
 
     get length(): number {
         return this._store.size;
+    }
+
+    get sizes(): Ticker.Sizes {
+        return structuredClone(this._sizes);
+    }
+
+    set sizes(sizes: Partial<Ticker.Sizes>) {
+        Object.assign(this._sizes, structuredClone(sizes));
     }
 
     /**

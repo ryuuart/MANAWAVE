@@ -30,7 +30,7 @@ export class Renderer {
         this.template = context.dom.template;
 
         this.root = new TickerComponent();
-        this.root.setSize(structuredClone(context.sizes.ticker));
+        this.root.setSize(context.sizes.ticker);
         this.root.appendToDOM(context.dom.root);
     }
 

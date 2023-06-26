@@ -12,7 +12,6 @@ export default class TickerSystem extends System {
     scene: Scene<Item>;
     private _renderer: Renderer;
 
-    private _sizes: Ticker.Sizes;
     private _attributes: Ticker.Attributes;
 
     constructor(context: Ticker.Context) {
@@ -23,13 +22,12 @@ export default class TickerSystem extends System {
         this.scene = new Scene(context.sizes);
         this._renderer = new Renderer(context);
 
-        this._sizes = structuredClone(context.sizes);
-        this._attributes = structuredClone(context.attributes);
-        this.scene.sizes = structuredClone(this._sizes);
+        this.scene.sizes = context.sizes;
+        this._attributes = context.attributes;
     }
 
     onStart() {
-        const gridOptions = calculateTGridOptions(this._sizes);
+        const gridOptions = calculateTGridOptions(this.scene.sizes);
         fillGrid(this.scene, () => new Item(), gridOptions);
         layoutGrid(this.scene, gridOptions);
 
@@ -38,7 +36,7 @@ export default class TickerSystem extends System {
     }
 
     onStop() {
-        const gridOptions = calculateTGridOptions(this._sizes);
+        const gridOptions = calculateTGridOptions(this.scene.sizes);
         layoutGrid(this.scene, gridOptions);
     }
 
@@ -56,12 +54,11 @@ export default class TickerSystem extends System {
      * @param size new size of the Ticker and its Items
      */
     updateSize(size: Partial<Ticker.Sizes>) {
-        const prevGridOptions = calculateTGridOptions(this._sizes);
+        const prevGridOptions = calculateTGridOptions(this.scene.sizes);
 
-        Object.assign(this._sizes, size);
+        this.scene.sizes = size;
 
-        const currGridOptions = calculateTGridOptions(this._sizes);
-        this.scene.sizes = structuredClone(this._sizes);
+        const currGridOptions = calculateTGridOptions(this.scene.sizes);
 
         if (
             prevGridOptions.repetitions.horizontal !==
@@ -79,7 +76,7 @@ export default class TickerSystem extends System {
         // iterate through all items
         for (const item of this.scene.contents) {
             simulateItem(item, {
-                sizes: this._sizes,
+                sizes: this.scene.sizes,
                 speed: this._attributes.speed,
                 direction: this._attributes.direction,
                 dt,

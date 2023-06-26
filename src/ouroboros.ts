@@ -65,19 +65,21 @@ export class Ouroboros extends PlaybackObject {
             element.classList.add(styles.ouroboros);
             const currOptions = mergeOOptions(element, this._options);
 
-            const tProps = {
+            const tAttributes = {
                 speed: currOptions.speed,
                 direction: convertDirection(currOptions.direction),
             };
 
-            this.simulation = new TickerSystem({
+            const tContext = {
                 dom: {
                     root: element,
                     template,
                 },
                 sizes: tSizes,
-                attributes: tProps,
-            });
+                attributes: tAttributes,
+            };
+
+            this.simulation = new TickerSystem(tContext);
 
             AnimationController.registerSystem(this.simulation);
             this.simulation.start();
