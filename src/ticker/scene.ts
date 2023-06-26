@@ -1,8 +1,11 @@
-export class Container<T> {
+export class Scene<T> {
     private _store: Set<T>;
+    sizes: Ticker.Sizes;
 
-    constructor() {
+    constructor(sizes: Ticker.Sizes) {
         this._store = new Set();
+
+        this.sizes = sizes;
     }
 
     /**
@@ -12,7 +15,7 @@ export class Container<T> {
         return this._store.values();
     }
 
-    get size(): number {
+    get length(): number {
         return this._store.size;
     }
 
@@ -67,7 +70,7 @@ export class Container<T> {
  * Clears all contents of a container
  * @param container a container with any number of objects inside
  */
-export function clearContainer<T>(container: Container<T>) {
+export function clearContainer<T>(container: Scene<T>) {
     const contents = container.contents;
     for (const object of contents) {
         container.delete(object);

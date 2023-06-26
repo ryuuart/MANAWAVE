@@ -48,7 +48,7 @@ for (let theta = 0; theta <= 360; theta++) {
         system.update(dt, t);
     }
 
-    for (const item of system.container.contents) {
+    for (const item of system.scene.contents) {
         motionFrames.push({
             x: item.position.x.toFixed(2),
             y: item.position.y.toFixed(2),

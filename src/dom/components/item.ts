@@ -1,18 +1,15 @@
 import { Item } from "@ouroboros/ticker/item";
 import { Component } from "../component";
 import styles from "../styles/item.module.css";
-import TemplateComponent from "./template";
-
 export default class ItemComponent extends Component {
-    position: vec2;
-    constructor(id: string, item: Item, template?: TemplateComponent) {
+    constructor(item: Item, template?: DocumentFragment) {
         const element = document.createElement("div");
         element.classList.add(styles.item);
-        if (template) element.append(...template.cloneDOM());
+        if (template) element.append(template.cloneNode(true));
 
-        super(element, id);
+        super(element, item.id);
 
-        this.position = item.position;
+        this.setPosition(structuredClone(item.position));
     }
 
     setPosition(pos: vec2) {

@@ -31,17 +31,20 @@ export class Ouroboros extends PlaybackObject {
         else element = document.querySelector(this._selector) as HTMLElement;
 
         if (element) {
-            this.dimensions.setEntry("root", element, (rect) => {
-                console.log(rect);
-                // this.simulation.updateSize({ ticker: rect });
-            });
-
             const mBox = new MeasurementBox(...element.children);
+
+            const template = document.createDocumentFragment();
+            template.append(...element.children);
+
             mBox.startMeasuringFrom(element);
 
+            this.dimensions.setEntry("root", element, (rect) => {
+                if (this.simulation)
+                    this.simulation.updateSize({ ticker: rect });
+            });
+
             this.dimensions.setEntry("item", mBox, (rect) => {
-                console.log(rect);
-                // this.simulation.updateSize({ item: rect });
+                if (this.simulation) this.simulation.updateSize({ item: rect });
             });
 
             const tSizes = {
@@ -56,6 +59,19 @@ export class Ouroboros extends PlaybackObject {
                 speed: currOptions.speed,
                 direction: convertDirection(currOptions.direction),
             };
+
+            this.simulation = new TickerSystem({
+                dom: {
+                    root: element,
+                    template,
+                },
+                sizes: tSizes,
+                attributes: tProps,
+            });
+
+            AnimationController.registerSystem(this.simulation);
+            this.simulation.start();
+            if (!currOptions.autoplay) this.simulation.pause();
         } else {
             throw new Error("Element not found for Ouroboros.");
         }

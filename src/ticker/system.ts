@@ -1,37 +1,37 @@
 import { System } from "@ouroboros/anim";
-import { Container } from "./container";
+import { Scene } from "./scene";
 import { Item } from "./item";
 import { calculateTGridOptions, fillGrid, layoutGrid } from "./layout";
 import { simulateItem } from "./simulation";
 import { uid } from "@ouroboros/utils/uid";
-import TickerWorld from "@ouroboros/dom/world";
-import { isRectEqual } from "@ouroboros/utils/rect";
+import { Renderer } from "@ouroboros/dom/renderer";
 
 export default class TickerSystem extends System {
     id: string;
 
-    container: Container<Item>;
+    scene: Scene<Item>;
+    private _renderer: Renderer;
+
     private _sizes: Ticker.Sizes;
     private _attributes: Ticker.Attributes;
 
-    private _world: TickerWorld;
-
-    constructor(parentElement: HTMLElement, props: Ticker.Properties) {
+    constructor(context: Ticker.Context) {
         super();
 
         this.id = uid();
 
-        this.container = new Container();
-        this._world = new TickerWorld(parentElement);
+        this.scene = new Scene(context.sizes);
+        this._renderer = new Renderer(context);
 
-        this._sizes = structuredClone(props.sizes);
-        this._attributes = structuredClone(props.attributes);
+        this._sizes = structuredClone(context.sizes);
+        this._attributes = structuredClone(context.attributes);
+        this.scene.sizes = structuredClone(this._sizes);
     }
 
     onStart() {
         const gridOptions = calculateTGridOptions(this._sizes);
-        fillGrid(this.container, () => new Item(), gridOptions);
-        layoutGrid(this.container, gridOptions);
+        fillGrid(this.scene, () => new Item(), gridOptions);
+        layoutGrid(this.scene, gridOptions);
 
         // should perform one draw
         this.onDraw();
@@ -39,7 +39,7 @@ export default class TickerSystem extends System {
 
     onStop() {
         const gridOptions = calculateTGridOptions(this._sizes);
-        layoutGrid(this.container, gridOptions);
+        layoutGrid(this.scene, gridOptions);
     }
 
     /**
@@ -61,10 +61,11 @@ export default class TickerSystem extends System {
         Object.assign(this._sizes, size);
 
         const currGridOptions = calculateTGridOptions(this._sizes);
+        this.scene.sizes = structuredClone(this._sizes);
 
         if (
             prevGridOptions.repetitions.horizontal !==
-                currGridOptions.repetitions.horizontal &&
+                currGridOptions.repetitions.horizontal ||
             prevGridOptions.repetitions.vertical !==
                 currGridOptions.repetitions.vertical
         ) {
@@ -74,7 +75,7 @@ export default class TickerSystem extends System {
 
     onUpdate(dt: DOMHighResTimeStamp, t: DOMHighResTimeStamp) {
         // iterate through all items
-        for (const item of this.container.contents) {
+        for (const item of this.scene.contents) {
             simulateItem(item, {
                 sizes: this._sizes,
                 speed: this._attributes.speed,
@@ -86,26 +87,6 @@ export default class TickerSystem extends System {
     }
 
     onDraw() {
-        // draw the ticker
-        const ticker = this._world.attachTicker(this.id);
-
-        // only resize ticker if needed
-        if (!isRectEqual(ticker.size, this._sizes.ticker)) {
-            ticker.setSize(this._sizes.ticker);
-        }
-
-        // remove pass
-        this._world.removeOldItems(this.container);
-
-        // go through all container
-        for (const item of this.container.contents) {
-            const component = this._world.attachItem(ticker, item);
-
-            if (!isRectEqual(component.size, this._sizes.item))
-                component.setSize(this._sizes.item);
-            component.setPosition(item.position);
-        }
-
-        this._world.attachToRootHTML(ticker);
+        this._renderer.render(this.scene);
     }
 }
