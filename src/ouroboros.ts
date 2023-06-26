@@ -4,6 +4,7 @@ import { Dimensions, MeasurementBox } from "./dom/measure";
 import TickerSystem from "./ticker/system";
 import styles from "./dom/styles/ouroboros.module.css";
 import { AnimationController } from "./anim";
+import { debounce } from "./utils/debounce";
 
 export class Ouroboros extends PlaybackObject {
     private simulation!: TickerSystem;
@@ -38,14 +39,23 @@ export class Ouroboros extends PlaybackObject {
 
             mBox.startMeasuringFrom(element);
 
-            this.dimensions.setEntry("root", element, (rect) => {
-                if (this.simulation)
-                    this.simulation.updateSize({ ticker: rect });
-            });
+            this.dimensions.setEntry(
+                "root",
+                element,
+                debounce((rect: Rect) => {
+                    if (this.simulation)
+                        this.simulation.updateSize({ ticker: rect });
+                }, 150)
+            );
 
-            this.dimensions.setEntry("item", mBox, (rect) => {
-                if (this.simulation) this.simulation.updateSize({ item: rect });
-            });
+            this.dimensions.setEntry(
+                "item",
+                mBox,
+                debounce((rect: Rect) => {
+                    if (this.simulation)
+                        this.simulation.updateSize({ item: rect });
+                }, 150)
+            );
 
             const tSizes = {
                 ticker: this.dimensions.get("root")!,
