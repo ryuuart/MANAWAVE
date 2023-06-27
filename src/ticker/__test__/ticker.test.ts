@@ -1,5 +1,5 @@
 import Basic from "test/pages/basic/Basic";
-import { Scene, clearContainer } from "../scene";
+import { Scene, clearScene } from "../scene";
 import { layoutGrid } from "../layout";
 import TickerSystem from "../system";
 
@@ -69,7 +69,7 @@ describe("ticker", () => {
             container.add({ n: 2 });
             container.add({ n: 3 });
 
-            clearContainer(container);
+            clearScene(container);
 
             const testCase1 = container.find((obj) => obj.n === 1);
             const testCase2 = container.find((obj) => obj.n === 1);

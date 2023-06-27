@@ -93,7 +93,7 @@ export class Scene<T> {
  * Clears all contents of a container
  * @param container a container with any number of objects inside
  */
-export function clearContainer<T>(container: Scene<T>) {
+export function clearScene<T>(container: Scene<T>) {
     const contents = container.contents;
     for (const object of contents) {
         container.delete(object);
