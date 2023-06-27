@@ -5,6 +5,7 @@ export class Scene<T> {
     constructor(sizes?: Ticker.Sizes) {
         this._store = new Set();
 
+        // hard-coded sizes because these are the only global sizes we'll have
         this._sizes = {
             ticker: { width: 0, height: 0 },
             item: { width: 0, height: 0 },
@@ -20,14 +21,23 @@ export class Scene<T> {
         return this._store.values();
     }
 
+    /**
+     * Get total objects in this scene
+     */
     get length(): number {
         return this._store.size;
     }
 
+    /**
+     * Get the current shared size of all scene objects
+     */
     get sizes(): Ticker.Sizes {
         return structuredClone(this._sizes);
     }
 
+    /**
+     * Updates the current shared size of all scene objects
+     */
     set sizes(sizes: Partial<Ticker.Sizes>) {
         Object.assign(this._sizes, structuredClone(sizes));
     }
