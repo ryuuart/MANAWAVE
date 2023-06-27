@@ -57,6 +57,6 @@ export abstract class Component<T extends HTMLElement = HTMLElement> {
      */
     setSize(rect: Rect) {
         this._size = rect;
-        setSize(this.html, rect);
+        setSize(this.html, this._size);
     }
 }
