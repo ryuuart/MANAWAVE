@@ -270,9 +270,6 @@ describe("dom", () => {
                 await expect(await $(`.${tickerStyles.container}`)).toExist();
             });
         });
-
-        // describe("world", () => {
-        // });
     });
 
     describe("integration", () => {
@@ -342,6 +339,37 @@ describe("dom", () => {
                         )
                     ).value
                 ).toEqual("matrix(1, 0, 0, 1, 100, 100)");
+            });
+
+            it("should render new items on a TickerComponent", async () => {
+                // setup
+                Square.loadContent();
+
+                const component = new TickerComponent();
+                component.appendToDOM(document.getElementById("test-root")!);
+
+                // it shouldn't have anything initially
+                await expect(
+                    await $(`.${tickerStyles.container}`)
+                ).not.toHaveChildren();
+
+                // create the "payload"
+                const template = Square.square!;
+                template.remove();
+                const fragment = new DocumentFragment();
+                fragment.append(template.cloneNode(true));
+                fragment.append(template.cloneNode(true));
+                fragment.append(template.cloneNode(true));
+                fragment.append(template.cloneNode(true));
+                fragment.append(template.cloneNode(true));
+
+                // add new items
+                component.appendChildDOM(fragment);
+
+                // did the new items render?
+                await expect(
+                    await $(`.${tickerStyles.container}`)
+                ).toHaveChildren();
             });
         });
     });

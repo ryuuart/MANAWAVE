@@ -62,7 +62,7 @@ export class Renderer {
                 this.activeBuffer.set(component.id, component);
             }
         }
-        this.root.append(this.createBuffer);
+        this.root.appendChildDOM(this.createBuffer);
     }
 
     render(scene: Scene<Item>) {

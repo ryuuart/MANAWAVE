@@ -12,6 +12,11 @@ export default class ItemComponent extends Component {
         this.setPosition(structuredClone(item.position));
     }
 
+    /**
+     *  Updates current position to a new one
+     *
+     * @param pos new position to set
+     */
     setPosition(pos: vec2) {
         this.html.style.transform = `translate(${pos.x}px, ${pos.y}px)`;
     }

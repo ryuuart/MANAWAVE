@@ -9,7 +9,18 @@ export default class TickerComponent extends Component {
         super(element);
     }
 
-    append(items: DocumentFragment) {
+    /**
+     * Takes a list of DOM Nodes stored in a {@link DocumentFragment} and appends
+     * them to to this component's DOM.
+     *
+     * While technically {@link ItemComponent} should be used, it would reduce the
+     * performance to a slightly noticeable amount. The cost of packing and unpacking
+     * {@link ItemComponent} causes the performance dip. That's why a {@link DocumentFragment}
+     * is required.
+     *
+     * @param items a {@link DocumentFragment} containing nodes to add
+     */
+    appendChildDOM(items: DocumentFragment) {
         this.html.append(items);
     }
 }
