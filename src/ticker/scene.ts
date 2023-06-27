@@ -2,10 +2,15 @@ export class Scene<T> {
     private _store: Set<T>;
     private _sizes: Ticker.Sizes;
 
-    constructor(sizes: Ticker.Sizes) {
+    constructor(sizes?: Ticker.Sizes) {
         this._store = new Set();
 
-        this._sizes = sizes;
+        this._sizes = {
+            ticker: { width: 0, height: 0 },
+            item: { width: 0, height: 0 },
+        };
+
+        if (sizes) this._sizes = structuredClone(sizes);
     }
 
     /**

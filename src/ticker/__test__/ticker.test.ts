@@ -194,14 +194,18 @@ describe("ticker", () => {
                 ticker: allDirectionsSnapshot.setup.tickerSize,
                 item: allDirectionsSnapshot.setup.itemSize,
             };
-            const tProps = {
+            const tAttr = {
                 speed: 1,
                 direction: 0,
             };
 
-            const system = new TickerSystem(document.createElement("div"), {
+            const system = new TickerSystem({
                 sizes: tSizes,
-                attributes: tProps,
+                attributes: tAttr,
+                dom: {
+                    root: document.createElement("div"),
+                    template: document.createDocumentFragment(),
+                },
             });
 
             // restart the system over 360 degrees
@@ -259,9 +263,13 @@ describe("ticker", () => {
                 speed: 1,
             };
 
-            const system = new TickerSystem(document.createElement("div"), {
+            const system = new TickerSystem({
                 sizes: tSizes,
                 attributes: tProps,
+                dom: {
+                    root: document.createElement("div"),
+                    template: new DocumentFragment(),
+                },
             });
 
             system.start();
