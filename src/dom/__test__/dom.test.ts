@@ -245,7 +245,31 @@ describe("dom", () => {
                 });
             });
         });
-        describe("component", () => {});
+        describe("component", () => {
+            it("can be rendered on the DOM", async () => {
+                // create an example element and fragment
+                const element1 = document.createElement("div");
+                element1.id = "element";
+
+                const fragment = new DocumentFragment();
+
+                const component = new TickerComponent();
+
+                // can it append to an element and render it?
+                component.appendToDOM(element1);
+                document.getElementById("test-root")!.append(element1);
+
+                await expect(
+                    await $(`#${element1.id}`).$(`.${tickerStyles.container}`)
+                ).toExist();
+
+                // can it append to a fragment and render it?
+                component.appendToDOM(fragment);
+                document.getElementById("test-root")!.append(fragment);
+
+                await expect(await $(`.${tickerStyles.container}`)).toExist();
+            });
+        });
 
         // describe("world", () => {
         // });
