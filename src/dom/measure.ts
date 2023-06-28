@@ -118,8 +118,7 @@ export class Dimensions {
                         height: entry.borderBoxSize[0].blockSize,
                     };
 
-                    dEntry.rect.width = newSize.width;
-                    dEntry.rect.height = newSize.height;
+                    dEntry.rect = newSize;
 
                     if (dEntry.onChange) dEntry.onChange(newSize);
                 }

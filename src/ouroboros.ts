@@ -4,6 +4,7 @@ import { Dimensions, MeasurementBox } from "./dom/measure";
 import TickerSystem from "./ticker/system";
 import styles from "./dom/styles/ouroboros.module.css";
 import { AnimationController } from "./anim";
+import { debounce } from "./utils/debounce";
 
 export class Ouroboros extends PlaybackObject {
     private simulation!: TickerSystem;
@@ -31,18 +32,30 @@ export class Ouroboros extends PlaybackObject {
         else element = document.querySelector(this._selector) as HTMLElement;
 
         if (element) {
-            this.dimensions.setEntry("root", element, (rect) => {
-                console.log(rect);
-                // this.simulation.updateSize({ ticker: rect });
-            });
-
             const mBox = new MeasurementBox(...element.children);
+
+            const template = document.createDocumentFragment();
+            template.append(...element.children);
+
             mBox.startMeasuringFrom(element);
 
-            this.dimensions.setEntry("item", mBox, (rect) => {
-                console.log(rect);
-                // this.simulation.updateSize({ item: rect });
-            });
+            this.dimensions.setEntry(
+                "root",
+                element,
+                debounce((rect: Rect) => {
+                    if (this.simulation)
+                        this.simulation.updateSize({ ticker: rect });
+                }, 150)
+            );
+
+            this.dimensions.setEntry(
+                "item",
+                mBox,
+                debounce((rect: Rect) => {
+                    if (this.simulation)
+                        this.simulation.updateSize({ item: rect });
+                }, 150)
+            );
 
             const tSizes = {
                 ticker: this.dimensions.get("root")!,
@@ -52,10 +65,25 @@ export class Ouroboros extends PlaybackObject {
             element.classList.add(styles.ouroboros);
             const currOptions = mergeOOptions(element, this._options);
 
-            const tProps = {
+            const tAttributes = {
                 speed: currOptions.speed,
                 direction: convertDirection(currOptions.direction),
             };
+
+            const tContext = {
+                dom: {
+                    root: element,
+                    template,
+                },
+                sizes: tSizes,
+                attributes: tAttributes,
+            };
+
+            this.simulation = new TickerSystem(tContext);
+
+            AnimationController.registerSystem(this.simulation);
+            this.simulation.start();
+            if (!currOptions.autoplay) this.simulation.pause();
         } else {
             throw new Error("Element not found for Ouroboros.");
         }

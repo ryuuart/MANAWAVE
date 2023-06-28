@@ -36,7 +36,11 @@ namespace Ticker {
         direction: number;
     };
 
-    type Properties = {
+    type Context = {
+        dom: {
+            root: HTMLElement;
+            template: DocumentFragment;
+        };
         attributes: Ticker.Attributes;
         sizes: Ticker.Sizes;
     };

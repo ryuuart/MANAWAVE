@@ -1,8 +1,17 @@
-export class Container<T> {
+export class Scene<T> {
     private _store: Set<T>;
+    private _sizes: Ticker.Sizes;
 
-    constructor() {
+    constructor(sizes?: Ticker.Sizes) {
         this._store = new Set();
+
+        // hard-coded sizes because these are the only global sizes we'll have
+        this._sizes = {
+            ticker: { width: 0, height: 0 },
+            item: { width: 0, height: 0 },
+        };
+
+        if (sizes) this._sizes = structuredClone(sizes);
     }
 
     /**
@@ -12,8 +21,25 @@ export class Container<T> {
         return this._store.values();
     }
 
-    get size(): number {
+    /**
+     * Get total objects in this scene
+     */
+    get length(): number {
         return this._store.size;
+    }
+
+    /**
+     * Get the current shared size of all scene objects
+     */
+    get sizes(): Ticker.Sizes {
+        return structuredClone(this._sizes);
+    }
+
+    /**
+     * Updates the current shared size of all scene objects
+     */
+    set sizes(sizes: Partial<Ticker.Sizes>) {
+        this._sizes = { ...this._sizes, ...sizes };
     }
 
     /**
@@ -67,7 +93,7 @@ export class Container<T> {
  * Clears all contents of a container
  * @param container a container with any number of objects inside
  */
-export function clearContainer<T>(container: Container<T>) {
+export function clearScene<T>(container: Scene<T>) {
     const contents = container.contents;
     for (const object of contents) {
         container.delete(object);

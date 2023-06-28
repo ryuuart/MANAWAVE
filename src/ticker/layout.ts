@@ -1,5 +1,5 @@
 import { getRepetitions } from "@ouroboros/dom/measure";
-import { Container } from "./container";
+import { Scene } from "./scene";
 
 type GridProperties = {
     gridRect: Rect;
@@ -17,7 +17,7 @@ type GridProperties = {
  * @param properties description for a grid of items
  */
 export function layoutGrid(
-    container: Container<Positionable>,
+    container: Scene<Positionable>,
     properties: GridProperties
 ) {
     const startPos = { x: 0, y: 0 };
@@ -44,7 +44,7 @@ export function layoutGrid(
 }
 
 /**
- * Fill a {@link Container} grid with items.
+ * Fill a {@link Scene} grid with items.
  *
  * @remark for the {@link templateCallback }, make sure to return `new` object references if you do use objects
  * @param container container that contains items that need to be laid out
@@ -52,13 +52,13 @@ export function layoutGrid(
  * @param properties options object that contains the repetitions desired
  */
 export function fillGrid(
-    container: Container<Positionable>,
+    container: Scene<Positionable>,
     templateCallback: () => Positionable,
     properties: { repetitions: GridProperties["repetitions"] }
 ) {
     const { repetitions } = properties;
     const nTemplatesToGenerate =
-        repetitions.horizontal * repetitions.vertical - container.size;
+        repetitions.horizontal * repetitions.vertical - container.length;
 
     if (nTemplatesToGenerate > 0)
         for (let i = 0; i < nTemplatesToGenerate; i++) {

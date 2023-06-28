@@ -1,4 +1,5 @@
 ouroboros-ticker {
   display: block;
   position: relative;
+  overflow: hidden;
 }

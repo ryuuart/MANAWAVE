@@ -11,24 +11,14 @@ export abstract class Component<T extends HTMLElement = HTMLElement> {
 
     protected html: T;
     protected _parent: Component | undefined;
-    protected _children: Set<Component>;
     protected _size: Rect;
 
     constructor(html: T, id?: string) {
-        this._children = new Set();
-
         this._size = { width: 0, height: 0 };
         this.html = html;
 
         if (id) this.id = id;
         else this.id = uid();
-    }
-
-    /**
-     * Returns all children of this component
-     */
-    get children(): IterableIterator<Component> {
-        return this._children.values();
     }
 
     /**
@@ -39,39 +29,11 @@ export abstract class Component<T extends HTMLElement = HTMLElement> {
     }
 
     /**
-     * Makes the specified component a subchild of this component
-     *
-     * @param component specified child component
-     */
-    append(component: Component) {
-        component._parent = this;
-        this._children.add(component);
-        setTimeout(() => {
-            this.html.append(component.html);
-        }, 0);
-    }
-
-    /**
      * Takes the component's HTML representation to add to some external HTMLElement
      * @param html HTMLElement to render this Component to
      */
-    appendToDOM(html: HTMLElement) {
-        if (!this.html.isConnected)
-            setTimeout(() => {
-                html.append(this.html);
-            }, 0);
-    }
-
-    /**
-     * Removes selected child component if it's a child to this component.
-     * @param component child component to remove
-     */
-    removeChild(component: Component) {
-        if (this._children.has(component)) {
-            component._parent = undefined;
-            this._children.delete(component);
-            component.html.remove();
-        }
+    appendToDOM(html: HTMLElement | DocumentFragment) {
+        html.append(this.html);
     }
 
     /**
@@ -88,6 +50,6 @@ export abstract class Component<T extends HTMLElement = HTMLElement> {
      */
     setSize(rect: Rect) {
         this._size = rect;
-        setSize(this.html, rect);
+        setSize(this.html, this._size);
     }
 }

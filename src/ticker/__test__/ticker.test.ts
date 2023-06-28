@@ -1,5 +1,5 @@
 import Basic from "test/pages/basic/Basic";
-import { Container, clearContainer } from "../container";
+import { Scene, clearScene } from "../scene";
 import { layoutGrid } from "../layout";
 import TickerSystem from "../system";
 
@@ -13,7 +13,7 @@ describe("ticker", () => {
             Basic.clearContent();
         });
         it("should find and remove a given item condition", async () => {
-            const container = new Container<number>();
+            const container = new Scene<number>();
 
             // create 3 numbers and try to find them out-of-order
             const testNum1 = 123;
@@ -46,7 +46,7 @@ describe("ticker", () => {
             expect(0 in testNum1FindResult).toBeFalsy();
         });
         it("should delete objects only if they're in the container", async () => {
-            const testContainer = new Container<{ n: number }>();
+            const testContainer = new Scene<{ n: number }>();
 
             const testObject = { n: 123 };
             testContainer.add(testObject);
@@ -62,14 +62,14 @@ describe("ticker", () => {
             expect(0 in case2).toBeFalsy();
         });
         it("should clear all contents in a container", async () => {
-            const container = new Container<{ n: number }>();
+            const container = new Scene<{ n: number }>();
 
             // add some numbers, try to clear it all
             container.add({ n: 1 });
             container.add({ n: 2 });
             container.add({ n: 3 });
 
-            clearContainer(container);
+            clearScene(container);
 
             const testCase1 = container.find((obj) => obj.n === 1);
             const testCase2 = container.find((obj) => obj.n === 1);
@@ -89,9 +89,9 @@ describe("ticker", () => {
         it("should layout a grid of items", async () => {
             const testItemSize = { width: 123, height: 123 };
             const testContainerSize = { width: 300, height: 300 };
-            const testContainer = new Container<Positionable>();
+            const testContainer = new Scene<Positionable>();
 
-            const resultContainer = new Container<Positionable>();
+            const resultContainer = new Scene<Positionable>();
             const RESULT = [
                 { position: { x: 0, y: 0 } },
                 {
@@ -194,14 +194,18 @@ describe("ticker", () => {
                 ticker: allDirectionsSnapshot.setup.tickerSize,
                 item: allDirectionsSnapshot.setup.itemSize,
             };
-            const tProps = {
+            const tAttr = {
                 speed: 1,
                 direction: 0,
             };
 
-            const system = new TickerSystem(document.createElement("div"), {
+            const system = new TickerSystem({
                 sizes: tSizes,
-                attributes: tProps,
+                attributes: tAttr,
+                dom: {
+                    root: document.createElement("div"),
+                    template: document.createDocumentFragment(),
+                },
             });
 
             // restart the system over 360 degrees
@@ -223,7 +227,7 @@ describe("ticker", () => {
                     system.update(dt, t);
                 }
 
-                for (const item of system.container.contents) {
+                for (const item of system.scene.contents) {
                     testMotionFrames.push({
                         x: item.position.x.toFixed(2),
                         y: item.position.y.toFixed(2),
@@ -259,40 +263,44 @@ describe("ticker", () => {
                 speed: 1,
             };
 
-            const system = new TickerSystem(document.createElement("div"), {
+            const system = new TickerSystem({
                 sizes: tSizes,
                 attributes: tProps,
+                dom: {
+                    root: document.createElement("div"),
+                    template: new DocumentFragment(),
+                },
             });
 
             system.start();
             // initial test
-            expect(system.container.size).toEqual(9);
+            expect(system.scene.length).toEqual(9);
 
             // update ticker
             tSizes.ticker = { width: 20, height: 20 };
             system.updateSize(tSizes);
-            expect(system.container.size).toEqual(16);
+            expect(system.scene.length).toEqual(16);
 
             // return back
             tSizes.ticker = { width: 10, height: 10 };
             system.updateSize(tSizes);
-            expect(system.container.size).toEqual(9);
+            expect(system.scene.length).toEqual(9);
 
             // update item
             tSizes.item = { width: 5, height: 5 };
             system.updateSize(tSizes);
-            expect(system.container.size).toEqual(16);
+            expect(system.scene.length).toEqual(16);
 
             // update ticker on top of item
             tSizes.ticker = { width: 20, height: 20 };
             system.updateSize(tSizes);
-            expect(system.container.size).toEqual(36);
+            expect(system.scene.length).toEqual(36);
 
             // return back to normal
             tSizes.ticker = { width: 10, height: 10 };
             tSizes.item = { width: 10, height: 10 };
             system.updateSize(tSizes);
-            expect(system.container.size).toEqual(9);
+            expect(system.scene.length).toEqual(9);
         });
     });
 
