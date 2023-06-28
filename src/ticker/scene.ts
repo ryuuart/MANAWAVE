@@ -39,7 +39,7 @@ export class Scene<T> {
      * Updates the current shared size of all scene objects
      */
     set sizes(sizes: Partial<Ticker.Sizes>) {
-        Object.assign(this._sizes, structuredClone(sizes));
+        this._sizes = { ...this._sizes, ...sizes };
     }
 
     /**
