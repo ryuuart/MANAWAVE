@@ -16,6 +16,8 @@ import tickerStyles from "../styles/ticker.module.css";
 import itemStyles from "../styles/item.module.css";
 import Basic from "test/pages/basic/Basic";
 import { Item } from "@ouroboros/ticker/item";
+import { Canvas } from "../canvas";
+import { Scene } from "@ouroboros/ticker/scene";
 
 describe("dom", () => {
     afterEach(() => {
@@ -245,6 +247,7 @@ describe("dom", () => {
                 });
             });
         });
+
         describe("component", () => {
             it("can be rendered on the DOM", async () => {
                 // create an example element and fragment
@@ -268,6 +271,56 @@ describe("dom", () => {
                 document.getElementById("test-root")!.append(fragment);
 
                 await expect(await $(`.${tickerStyles.container}`)).toExist();
+            });
+        });
+
+        describe("canvas", () => {
+            it("should create new item components", async () => {
+                const testParent = document.createElement("div");
+                const root = new TickerComponent();
+                root.appendToDOM(testParent);
+                const template = new DocumentFragment();
+                const canvas = new Canvas(root, template);
+
+                canvas.createItemComponents([
+                    new Item(),
+                    new Item(),
+                    new Item(),
+                ]);
+
+                // we append root to testParent for firstElementChild
+                // we see if the root does have 3 children we just made
+                expect(testParent.firstElementChild!.children.length).toEqual(
+                    3
+                );
+            });
+
+            it("should update root component size", async () => {
+                const root = new TickerComponent();
+                const template = new DocumentFragment();
+                const canvas = new Canvas(root, template);
+
+                canvas.updateRootComponent({ width: 999, height: 999 });
+
+                expect(root.size).toEqual({ width: 999, height: 999 });
+            });
+
+            it("should update a given ItemComponent with new data", async () => {
+                const root = new TickerComponent();
+                const template = new DocumentFragment();
+                const canvas = new Canvas(root, template);
+
+                const item = new Item();
+                const itemComponent = new ItemComponent(item);
+
+                item.position = { x: 999, y: 999 };
+                canvas.setItemComponent(itemComponent, item, {
+                    width: 999,
+                    height: 999,
+                });
+
+                expect(itemComponent.size).toEqual({ width: 999, height: 999 });
+                expect(itemComponent.position).toEqual({ x: 999, y: 999 });
             });
         });
     });
@@ -370,6 +423,133 @@ describe("dom", () => {
                 await expect(
                     await $(`.${tickerStyles.container}`)
                 ).toHaveChildren();
+            });
+        });
+
+        describe("canvas", () => {
+            it("should clean buffers when swapping", async () => {
+                const testParent = document.createElement("div");
+                const root = new TickerComponent();
+                root.appendToDOM(testParent);
+                const template = new DocumentFragment();
+                const canvas = new Canvas(root, template);
+
+                canvas.createItemComponents([
+                    new Item(),
+                    new Item(),
+                    new Item(),
+                ]);
+
+                // clears 1 buffer
+                canvas.swapBuffer();
+                // clears the other
+                canvas.swapBuffer();
+
+                expect(testParent.firstElementChild!.children.length).toEqual(
+                    0
+                );
+            });
+
+            it("should remove dead components", async () => {
+                const testParent = document.createElement("div");
+                const root = new TickerComponent();
+                root.appendToDOM(testParent);
+                const template = new DocumentFragment();
+                const canvas = new Canvas(root, template);
+
+                canvas.createItemComponents([
+                    new Item(),
+                    new Item(),
+                    new Item(),
+                ]);
+
+                // sets the newly created items to be inactive
+                canvas.swapBuffer();
+                // none of the created items are drawn to the active buffer
+                // so they should be removed
+                canvas.clearDeadComponents();
+
+                expect(testParent.firstElementChild!.children.length).toEqual(
+                    0
+                );
+            });
+
+            it("should draw a scene and update it", async () => {
+                Basic.loadContent();
+
+                const domRoot = Basic.ticker!;
+                const template = new DocumentFragment();
+                template.append(...domRoot.children);
+
+                const root = new TickerComponent();
+                root.appendToDOM(domRoot);
+
+                const canvas = new Canvas(root, template);
+                const scene = new Scene<Item>();
+                scene.add(new Item());
+
+                canvas.draw(scene);
+
+                // did it draw our item
+                let itemPosition = async () =>
+                    (
+                        await $(
+                            domRoot.firstElementChild!
+                                .children[0] as HTMLElement
+                        ).getCSSProperty("transform")
+                    ).value;
+
+                await expect(
+                    await $(domRoot.firstElementChild! as HTMLElement)
+                ).toHaveChildren();
+                await expect(await itemPosition()).toEqual(
+                    "matrix(1, 0, 0, 1, 0, 0)"
+                );
+
+                // lets draw an update on our scene, does it update
+                for (const items of scene.contents) {
+                    items.position = { x: 999, y: 999 };
+                }
+                scene.sizes = {
+                    ticker: { width: 999, height: 999 },
+                    item: { width: 99, height: 99 },
+                };
+                canvas.draw(scene);
+
+                await expect(await itemPosition()).toEqual(
+                    "matrix(1, 0, 0, 1, 999, 999)"
+                );
+                await expect(
+                    await (
+                        await $(domRoot.firstElementChild! as HTMLElement)
+                    ).getSize()
+                ).toEqual({ width: 999, height: 999 });
+                await expect(
+                    await (
+                        await $(
+                            domRoot.firstElementChild!
+                                .children[0]! as HTMLElement
+                        )
+                    ).getSize()
+                ).toEqual({ width: 99, height: 99 });
+
+                // lets add a new item, does it have the right amount?
+                scene.add(new Item());
+                canvas.draw(scene);
+
+                await expect(
+                    await $(domRoot.firstElementChild! as HTMLElement)
+                ).toHaveChildren(2);
+
+                // lets remove everything, does it have the right amount?
+                for (const item of scene.contents) {
+                    scene.delete(item);
+                }
+                canvas.draw(scene);
+
+                await expect(
+                    await $(domRoot.firstElementChild! as HTMLElement)
+                ).not.toHaveChildren();
             });
         });
     });

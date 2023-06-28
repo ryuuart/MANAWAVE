@@ -4,6 +4,11 @@ import TickerComponent from "./components/ticker";
 import { Item } from "@ouroboros/ticker/item";
 import { Scene } from "@ouroboros/ticker/scene";
 
+/**
+ * Contains all logic for displaying visual data for a Ticker
+ * {@link Scene}. Anything specifically relating to the DOM is managed
+ * and stored here.
+ */
 export class Canvas {
     private bufferA: Map<string, ItemComponent>;
     private bufferB: Map<string, ItemComponent>;
@@ -28,7 +33,10 @@ export class Canvas {
         this.root = canvas;
     }
 
-    swapBuffers() {
+    /**
+     * Switches to a clean buffer
+     */
+    swapBuffer() {
         // make sure the inactive buffer is completely clean!
         this.clearDeadComponents();
 
@@ -41,6 +49,9 @@ export class Canvas {
         }
     }
 
+    /**
+     * Removes dead components designated in the inactive buffer
+     */
     clearDeadComponents() {
         // now lets remove dead items
         for (const [k, v] of this.inactiveBuffer) {
@@ -49,18 +60,25 @@ export class Canvas {
         }
     }
 
-    createComponents(queue: Item[]) {
+    /**
+     * Creates new {@link ItemComponent} on the canvas.
+     * @param queue list of {@link Item} to render
+     */
+    createItemComponents(queue: Item[]) {
         // now lets create new items
         for (const item of queue) {
-            if (item) {
-                const component = new ItemComponent(item, this.template);
-                component.appendToDOM(this.createBuffer);
-                this.activeBuffer.set(component.id, component);
-            }
+            const component = new ItemComponent(item, this.template);
+            component.appendToDOM(this.createBuffer);
+            this.activeBuffer.set(component.id, component);
         }
         this.root.appendChildDOM(this.createBuffer);
     }
 
+    /**
+     * Updates the root component or Ticker with new data.
+     * For now, this is only the size.
+     * @param size new size of the root (Ticker)
+     */
     updateRootComponent(size: Rect) {
         // update ticker size if we need to
         if (!isRectEqual(size, this.root.size)) {
@@ -68,7 +86,17 @@ export class Canvas {
         }
     }
 
-    updateItemComponent(component: ItemComponent, item: Item, size: Rect) {
+    /**
+     * Takes any {@link ItemComponent} and sets it on the canvas.
+     *
+     * @remark I use the word "set" to mean that if the {@link ItemComponent}
+     * isn't on the {@link Canvas}, then it'll be included. Otherwise,
+     * it'll just update the data.
+     * @param component specific {@link ItemComponent} to set
+     * @param item new data for {@link ItemComponent}
+     * @param size new size for {@link ItemComponent}
+     */
+    setItemComponent(component: ItemComponent, item: Item, size: Rect) {
         if (!isRectEqual(size, component.size)) component.setSize(size);
         component.setPosition(item.position);
 
@@ -76,6 +104,10 @@ export class Canvas {
         this.inactiveBuffer.delete(component.id);
     }
 
+    /**
+     * Takes a {@link Scene} and translates it to the DOM
+     * @param scene description of what to draw
+     */
     draw(scene: Scene<Item>) {
         this.updateRootComponent(scene.sizes.ticker);
 
@@ -86,12 +118,11 @@ export class Canvas {
             if (!component) {
                 itemQueue.push(item);
             } else {
-                this.updateItemComponent(component, item, scene.sizes.item);
+                this.setItemComponent(component, item, scene.sizes.item);
             }
         }
 
-        this.createComponents(itemQueue);
-
-        this.swapBuffers();
+        this.createItemComponents(itemQueue);
+        this.swapBuffer();
     }
 }
