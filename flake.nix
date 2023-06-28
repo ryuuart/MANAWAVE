@@ -2,7 +2,7 @@
     description = "This is a template to make amazing projects or other templates.";
 
     inputs = {
-        nixpkgs.url = "github:nixos/nixpkgs";
+        nixpkgs.url = "github:NixOs/nixpkgs";
         flake-utils.url = "github:numtide/flake-utils";
     };
   
