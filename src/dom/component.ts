@@ -33,14 +33,7 @@ export abstract class Component<T extends HTMLElement = HTMLElement> {
      * @param html HTMLElement to render this Component to
      */
     appendToDOM(html: HTMLElement | DocumentFragment) {
-        if (html instanceof HTMLElement) {
-            if (!this.html.isConnected)
-                setTimeout(() => {
-                    html.append(this.html);
-                }, 0);
-        } else {
-            html.append(this.html);
-        }
+        html.append(this.html);
     }
 
     /**
