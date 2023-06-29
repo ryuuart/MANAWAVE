@@ -1,0 +1,62 @@
+.square {
+  width: 100px;
+  height: 100px;
+  margin: 1rem;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  color: magenta;
+  font-size: 4rem;
+}
+
+.color-cornsilk {
+  background: cornsilk;
+}
+
+.color-aqua {
+  background: aqua;
+}
+
+.color-lavendarblush {
+  background: lavenderblush;
+}
+
+.inline-flex {
+  display: inline-flex;
+}
+
+.w-200 {
+  width: 200px;
+}
+
+.h-200 {
+  height: 200px;
+}
+
+.w-10 {
+  width: 10px;
+}
+
+.h-10 {
+  height: 10px;
+}
+
+#webc-animated .square {
+  animation: 8s infinite 0s linear transform;
+}
+
+@keyframes transform {
+  from {
+    transform: rotate3d(0) translate(0);
+  }
+
+  50% {
+    transform: rotate3d(0.25, 1, 0.5, 0.5turn);
+  }
+
+  to {
+    transform: rotate3d(0.25, 1, 0.5, 1turn) translate(0);
+  }
+}

@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+    <title>Billboard Test Zone</title>
+</head>
+
+<body>
+    <main>
+        <h1>Hello</h1>
+        <p>This is a wonderful test area</p>
+        <section>
+            <h2>Web Component</h2>
+            <h3>CSS Transform</h3>
+            <ouroboros-ticker id="webc-animated" autoplay direction="127">
+                <div class="square color-cornsilk">1</div>
+                <div class="square color-aqua">2</div>
+                <div class="square color-lavendarblush">3</div>
+            </ouroboros-ticker>
+            <h3>Nested</h3>
+            <ouroboros-ticker direction="222" autoplay>
+                <ouroboros-ticker direction="up" autoplay>
+                    <div class="square w-10 h-10 color-cornsilk"></div>
+                    <div class="square w-10 h-10 color-aqua"></div>
+                    <div class="square w-10 h-10 color-lavendarblush"></div>
+                </ouroboros-ticker>
+                <div class="square color-cornsilk">1</div>
+                <div class="square color-aqua">2</div>
+                <div class="square color-lavendarblush">3</div>
+            </ouroboros-ticker>
+        </section>
+    </main>
+    <script type="module" src="index.ts"></script>
+</body>
+
+</html>
