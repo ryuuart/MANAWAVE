@@ -83,6 +83,13 @@ export class Canvas {
         // update ticker size if we need to
         if (!isRectEqual(size, this.root.size)) {
             this.root.setSize(size);
+
+            // very unique hack
+            // by flushing the buffers and recreating all components
+            // it ends up being faster than triggering a reflow on all
+            // components to resync their states
+            this.swapBuffer();
+            this.swapBuffer();
         }
     }
 
