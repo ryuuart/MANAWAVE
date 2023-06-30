@@ -18,6 +18,7 @@ import Basic from "test/pages/basic/Basic";
 import { Item } from "@ouroboros/ticker/item";
 import { Canvas } from "../canvas";
 import { Scene } from "@ouroboros/ticker/scene";
+import Context from "@ouroboros/ticker/context";
 
 describe("dom", () => {
     afterEach(() => {
@@ -25,6 +26,20 @@ describe("dom", () => {
     });
 
     describe("unit", () => {
+        describe("context", () => {
+            it("should initialize a ticker for setup and modification", async () => {
+                Basic.loadContent();
+
+                const ctx = Context.setup(Basic.ticker!);
+
+                expect(ctx.root.children).toContain(ctx.itemMBox.element);
+
+                ctx.root.append(ctx.template);
+
+                await expect(await $(ctx.root)).toHaveChildren(4);
+            });
+        });
+
         describe("measurement", () => {
             it("should measure a dom element if rendered", async () => {
                 Square.loadContent();
@@ -167,7 +182,7 @@ describe("dom", () => {
                 // square's size should be different when square's size changed
                 Square.square!.style.width = "300px";
                 Square.square!.style.height = "500px";
-                (await $(Square.square!)).waitUntil(async function () {
+                await $(Square.square!).waitUntil(async function () {
                     return (
                         // @ts-ignore
                         (await this.getSize("width")) === 300 &&
@@ -178,6 +193,7 @@ describe("dom", () => {
                 expect(squareLog[1]).toEqual({ width: 300, height: 500 });
             });
         });
+
         describe("attribute", () => {
             it("convert strings to angle degrees", async () => {
                 const direction1 = "up";
@@ -342,10 +358,10 @@ describe("dom", () => {
                     }
                 );
 
-                expect(
+                await expect(
                     await $(`.${tickerStyles.container}`).getSize("width")
                 ).toEqual(999);
-                expect(
+                await expect(
                     await $(`.${tickerStyles.container}`).getSize("height")
                 ).toEqual(999);
 
@@ -360,10 +376,10 @@ describe("dom", () => {
                     }
                 );
 
-                expect(
+                await expect(
                     await $(`.${tickerStyles.container}`).getSize("width")
                 ).toEqual(100);
-                expect(
+                await expect(
                     await $(`.${tickerStyles.container}`).getSize("height")
                 ).toEqual(100);
             });
