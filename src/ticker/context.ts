@@ -1,4 +1,8 @@
-import { convertDirection, mergeOOptions } from "@ouroboros/dom/attributes";
+import {
+    Attributes,
+    convertDirection,
+    mergeOOptions,
+} from "@ouroboros/dom/attributes";
 import { Dimensions, MeasurementBox } from "@ouroboros/dom/measure";
 
 /**
@@ -10,9 +14,10 @@ export default class Context {
     private _mBox: MeasurementBox;
     private _template: DocumentFragment;
 
-    private _attributes: Ticker.Attributes;
     private _dimensions: Dimensions;
+    private _attributeObserver: Attributes;
     private _sizes: LiveSize;
+    private _attributes: LiveAttributes;
 
     /**
      * Sets up {@link Context} by modifying the selected {@link HTMLElement}
@@ -61,9 +66,10 @@ export default class Context {
         });
         this._sizes = new LiveSize(this._dimensions);
 
-        this._attributes = {
-            speed: options.speed,
-            direction: convertDirection(options.direction),
+        this._attributeObserver = new Attributes(this.root, options);
+        this._attributes = new LiveAttributes(this._attributeObserver);
+        this._attributeObserver.onUpdate = (vals) => {
+            this._attributes.update(this._attributeObserver);
         };
     }
 
@@ -79,24 +85,12 @@ export default class Context {
         return this._sizes;
     }
 
+    get attributes(): LiveAttributes {
+        return this._attributes;
+    }
+
     get itemMBox(): MeasurementBox {
         return this._mBox;
-    }
-
-    get speed(): number {
-        return this._attributes.speed;
-    }
-
-    set speed(n: number) {
-        this._attributes.speed = n;
-    }
-
-    get direction(): number {
-        return this._attributes.direction;
-    }
-
-    set direction(n: number) {
-        this._attributes.direction = n;
     }
 }
 
@@ -107,5 +101,23 @@ class LiveSize {
     constructor(dimensions: Dimensions) {
         this.root = structuredClone(dimensions.get("root"))!;
         this.item = structuredClone(dimensions.get("item"))!;
+    }
+}
+
+class LiveAttributes {
+    private _autoplay: boolean;
+    private _speed: number;
+    private _direction: number;
+
+    constructor(attributes: Attributes) {
+        this._autoplay = attributes.autoplay;
+        this._speed = attributes.speed;
+        this._direction = attributes.direction;
+    }
+
+    update(attributes: Attributes) {
+        this._autoplay = attributes.autoplay;
+        this._speed = attributes.speed;
+        this._direction = attributes.direction;
     }
 }

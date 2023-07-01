@@ -98,12 +98,20 @@ export class Attributes {
     private _speed: number;
     private _direction: string | number;
 
+    onUpdate: (values: {
+        autoplay: boolean;
+        speed: number;
+        direction: number;
+    }) => void;
+
     constructor(target: HTMLElement, options: Partial<Ouroboros.Options> = {}) {
         this.target = target;
         this.options = options;
         this._autoplay = false;
         this._speed = 1;
         this._direction = 0;
+
+        this.onUpdate = (vals) => {};
 
         this.update();
 
@@ -127,6 +135,12 @@ export class Attributes {
         this._autoplay = values.autoplay;
         this._speed = values.speed;
         this._direction = values.direction;
+
+        this.onUpdate({
+            autoplay: this.autoplay,
+            speed: this.speed,
+            direction: this.direction,
+        });
     }
 
     get speed(): number {
