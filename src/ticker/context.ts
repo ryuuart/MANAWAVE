@@ -1,8 +1,4 @@
-import {
-    Attributes,
-    convertDirection,
-    mergeOOptions,
-} from "@ouroboros/dom/attributes";
+import { Attributes } from "@ouroboros/dom/attributes";
 import { Dimensions, MeasurementBox } from "@ouroboros/dom/measure";
 
 /**
@@ -30,7 +26,7 @@ export default class Context {
      */
     static setup(
         selector: Parameters<Document["querySelector"]>[0] | HTMLElement,
-        options?: Partial<Ouroboros.Options>
+        options: Partial<Ouroboros.Options> = {}
     ): Context {
         let selected;
         if (selector instanceof HTMLElement) selected = selector;
@@ -38,12 +34,11 @@ export default class Context {
 
         if (selected) {
             const mBox = new MeasurementBox(...selected.children);
-            const currOptions = mergeOOptions(selected, options);
             const template = new DocumentFragment();
             template.append(...selected.children);
             mBox.startMeasuringFrom(selected);
 
-            return new Context(selected, mBox, template, currOptions);
+            return new Context(selected, mBox, template, options);
         } else throw new Error("Selected manawave Element not found.");
     }
 
@@ -51,7 +46,7 @@ export default class Context {
         root: HTMLElement,
         mBox: MeasurementBox,
         template: DocumentFragment,
-        options: Ouroboros.Options
+        options: Partial<Ouroboros.Options>
     ) {
         this._root = root;
         this._mBox = mBox;
@@ -68,7 +63,7 @@ export default class Context {
 
         this._attributeObserver = new Attributes(this.root, options);
         this._attributes = new LiveAttributes(this._attributeObserver);
-        this._attributeObserver.onUpdate = (vals) => {
+        this._attributeObserver.onUpdate = () => {
             this._attributes.update(this._attributeObserver);
         };
     }
@@ -104,6 +99,10 @@ class LiveSize {
     }
 }
 
+/**
+ * Data reference / container that should always
+ * contain the latest attribute values
+ */
 class LiveAttributes {
     private _autoplay: boolean;
     private _speed: number;
@@ -115,9 +114,25 @@ class LiveAttributes {
         this._direction = attributes.direction;
     }
 
+    /**
+     * Updates the attributes to the most recent attributes
+     * @param attributes observer that contains the raw, updated attributes
+     */
     update(attributes: Attributes) {
         this._autoplay = attributes.autoplay;
         this._speed = attributes.speed;
         this._direction = attributes.direction;
+    }
+
+    get autoplay(): boolean {
+        return this._autoplay;
+    }
+
+    get speed(): number {
+        return this._speed;
+    }
+
+    get direction(): number {
+        return this._direction;
     }
 }

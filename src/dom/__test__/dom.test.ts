@@ -328,6 +328,23 @@ describe("dom", () => {
                 });
                 expect(attr.direction).toEqual(90);
             });
+
+            it("should notify a change", async () => {
+                Square.loadContent();
+
+                let testDirection = 0;
+                const attr = new Attributes(Square.square!);
+                attr.onUpdate = ({ direction }) => {
+                    testDirection = direction;
+                };
+
+                Square.square!.setAttribute("direction", "left");
+                await $(Square.square!).waitUntil(async function () {
+                    //@ts-ignore
+                    return (await this.getAttribute("direction")) === "left";
+                });
+                expect(testDirection).toEqual(180);
+            });
         });
 
         describe("component", () => {
@@ -427,6 +444,22 @@ describe("dom", () => {
 
                 // changed size is right
                 expect(sizes.root).toEqual({ height: 600, width: 600 });
+            });
+
+            it("should update its attributes", async () => {
+                Basic.loadContent();
+
+                const ctx = Context.setup(Basic.ticker!);
+                const attr = ctx.attributes;
+
+                expect(attr.direction).toEqual(0);
+
+                Basic.ticker!.setAttribute("direction", "left");
+                await $(Basic.ticker!).waitUntil(async function () {
+                    //@ts-ignore
+                    return (await this.getAttribute("direction")) === "left";
+                });
+                expect(attr.direction).toEqual(180);
             });
         });
 
