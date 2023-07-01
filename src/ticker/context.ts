@@ -53,11 +53,11 @@ export default class Context {
         this._template = template;
 
         this._dimensions = new Dimensions();
-        this._dimensions.setEntry("root", this._root, (rect: Rect) => {
-            this._sizes.root = rect;
+        this._dimensions.setEntry("root", this._root, () => {
+            this._sizes.update(this._dimensions);
         });
-        this._dimensions.setEntry("item", this._mBox, (rect: Rect) => {
-            this._sizes.item = rect;
+        this._dimensions.setEntry("item", this._mBox, () => {
+            this._sizes.update(this._dimensions);
         });
         this._sizes = new LiveSize(this._dimensions);
 
@@ -89,13 +89,34 @@ export default class Context {
     }
 }
 
+/**
+ * Data container / reference that should always
+ * contain the latest dimension / size values.
+ */
 class LiveSize {
-    root: Rect;
-    item: Rect;
+    private _root: Rect;
+    private _item: Rect;
 
     constructor(dimensions: Dimensions) {
-        this.root = structuredClone(dimensions.get("root"))!;
-        this.item = structuredClone(dimensions.get("item"))!;
+        this._root = structuredClone(dimensions.get("root"))!;
+        this._item = structuredClone(dimensions.get("item"))!;
+    }
+
+    /**
+     * Updates the dimensions / size values to the latest
+     * @param dimensions observer that contains the newest raw dimension values
+     */
+    update(dimensions: Dimensions) {
+        this._root = structuredClone(dimensions.get("root"))!;
+        this._item = structuredClone(dimensions.get("item"))!;
+    }
+
+    get root(): Rect {
+        return this._root;
+    }
+
+    get item(): Rect {
+        return this._item;
     }
 }
 
