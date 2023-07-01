@@ -1,5 +1,5 @@
 import { convertDirection, mergeOOptions } from "@ouroboros/dom/attributes";
-import { MeasurementBox } from "@ouroboros/dom/measure";
+import { Dimensions, MeasurementBox } from "@ouroboros/dom/measure";
 
 /**
  * Represents the current external, browser-facing state
@@ -10,8 +10,9 @@ export default class Context {
     private _mBox: MeasurementBox;
     private _template: DocumentFragment;
 
-    private _sizes: Ticker.Sizes;
     private _attributes: Ticker.Attributes;
+    private _dimensions: Dimensions;
+    private _sizes: LiveSize;
 
     /**
      * Sets up {@link Context} by modifying the selected {@link HTMLElement}
@@ -51,10 +52,15 @@ export default class Context {
         this._mBox = mBox;
         this._template = template;
 
-        this._sizes = {
-            ticker: { width: 0, height: 0 },
-            item: { width: 0, height: 0 },
-        };
+        this._dimensions = new Dimensions();
+        this._dimensions.setEntry("root", this._root, (rect: Rect) => {
+            this._sizes.root = rect;
+        });
+        this._dimensions.setEntry("item", this._mBox, (rect: Rect) => {
+            this._sizes.item = rect;
+        });
+        this._sizes = new LiveSize(this._dimensions);
+
         this._attributes = {
             speed: options.speed,
             direction: convertDirection(options.direction),
@@ -69,20 +75,8 @@ export default class Context {
         return this._template.cloneNode(true);
     }
 
-    get tickerSize(): Rect {
-        return structuredClone(this._sizes.ticker);
-    }
-
-    set tickerSize(rect: Rect) {
-        this._sizes.ticker = rect;
-    }
-
-    get itemSize(): Rect {
-        return structuredClone(this._sizes.item);
-    }
-
-    set itemSize(rect: Rect) {
-        this._sizes.ticker = rect;
+    get sizes(): LiveSize {
+        return this._sizes;
     }
 
     get itemMBox(): MeasurementBox {
@@ -103,5 +97,15 @@ export default class Context {
 
     set direction(n: number) {
         this._attributes.direction = n;
+    }
+}
+
+class LiveSize {
+    root: Rect;
+    item: Rect;
+
+    constructor(dimensions: Dimensions) {
+        this.root = structuredClone(dimensions.get("root"))!;
+        this.item = structuredClone(dimensions.get("item"))!;
     }
 }

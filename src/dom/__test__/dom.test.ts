@@ -342,6 +342,28 @@ describe("dom", () => {
     });
 
     describe("integration", () => {
+        describe("context", () => {
+            it("should update its root size", async () => {
+                Basic.loadContent();
+
+                const ctx = Context.setup(Basic.ticker!);
+                const sizes = ctx.sizes;
+
+                // initial size is right
+                expect(sizes.root).toEqual({ height: 600, width: 1188 });
+
+                // trigger a change
+                Basic.ticker!.style.width = "600px";
+                (await $(Basic.ticker!)).waitUntil(async function () {
+                    //@ts-ignore
+                    return this.getSize("width") === 600;
+                });
+
+                // changed size is right
+                expect(sizes.root).toEqual({ height: 600, width: 600 });
+            });
+        });
+
         describe("component", () => {
             it("should update its size on the page given new data", async () => {
                 const ticker = new TickerComponent();
