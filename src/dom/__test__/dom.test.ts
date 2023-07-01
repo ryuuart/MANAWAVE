@@ -6,6 +6,7 @@ import {
     measure,
 } from "../measure";
 import {
+    Attributes,
     convertDirection,
     extractOAttributes,
     mergeOOptions,
@@ -262,6 +263,71 @@ describe("dom", () => {
                     direction: 123,
                 });
             });
+
+            it("should always return the most up-to-date attribute", async () => {
+                Square.loadContent();
+
+                const attr = new Attributes(Square.square!);
+
+                expect(attr.autoplay).toEqual(false);
+                expect(attr.speed).toEqual(1);
+                expect(attr.direction).toEqual(0);
+
+                // does changing attributes work?
+                Square.square!.setAttribute("autoplay", "true");
+                await $(Square.square!).waitUntil(async function () {
+                    //@ts-ignore
+                    return (await this.getAttribute("autoplay")) === "true";
+                });
+                expect(attr.autoplay).toEqual(true);
+
+                Square.square!.setAttribute("speed", "999");
+                await $(Square.square!).waitUntil(async function () {
+                    //@ts-ignore
+                    return (await this.getAttribute("speed")) === "999";
+                });
+                expect(attr.speed).toEqual(999);
+
+                Square.square!.setAttribute("direction", "999");
+                await $(Square.square!).waitUntil(async function () {
+                    //@ts-ignore
+                    return (await this.getAttribute("direction")) === "999";
+                });
+                expect(attr.direction).toEqual(999);
+            });
+
+            it("should react to changes in option override", async () => {
+                Square.loadContent();
+
+                const attr = new Attributes(Square.square!, {
+                    speed: 123,
+                    direction: 123,
+                });
+
+                // does override work?
+                Square.square!.setAttribute("speed", "999");
+                await $(Square.square!).waitUntil(async function () {
+                    //@ts-ignore
+                    return (await this.getAttribute("speed")) === "999";
+                });
+                expect(attr.speed).toEqual(123);
+
+                Square.square!.setAttribute("direction", "999");
+                await $(Square.square!).waitUntil(async function () {
+                    //@ts-ignore
+                    return (await this.getAttribute("direction")) === "999";
+                });
+                expect(attr.direction).toEqual(123);
+
+                // updated options should override element attributes
+                attr.update({ direction: "up" });
+                Square.square!.setAttribute("direction", "360");
+                await $(Square.square!).waitUntil(async function () {
+                    //@ts-ignore
+                    return (await this.getAttribute("direction")) === "360";
+                });
+                expect(attr.direction).toEqual(90);
+            });
         });
 
         describe("component", () => {
@@ -354,9 +420,9 @@ describe("dom", () => {
 
                 // trigger a change
                 Basic.ticker!.style.width = "600px";
-                (await $(Basic.ticker!)).waitUntil(async function () {
+                await $(Basic.ticker!).waitUntil(async function () {
                     //@ts-ignore
-                    return this.getSize("width") === 600;
+                    return (await this.getSize("width")) === 600;
                 });
 
                 // changed size is right
