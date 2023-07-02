@@ -10,10 +10,12 @@ export default class Context {
     private _mBox: MeasurementBox;
     private _template: DocumentFragment;
 
-    private _dimensions: Dimensions;
-    private _attributeObserver: Attributes;
+    private _sizeObserver: Dimensions;
     private _sizes: LiveSize;
+    onSizeUpdate: (size: LiveSize) => void;
+    private _attributeObserver: Attributes;
     private _attributes: LiveAttributes;
+    onAttrUpdate: (size: LiveAttributes) => void;
 
     /**
      * Sets up {@link Context} by modifying the selected {@link HTMLElement}
@@ -51,20 +53,25 @@ export default class Context {
         this._root = root;
         this._mBox = mBox;
         this._template = template;
+        this.onSizeUpdate = () => {};
+        this.onAttrUpdate = () => {};
 
-        this._dimensions = new Dimensions();
-        this._dimensions.setEntry("root", this._root, () => {
-            this._sizes.update(this._dimensions);
+        this._sizeObserver = new Dimensions();
+        this._sizes = new LiveSize(this._sizeObserver);
+        this._sizeObserver.setEntry("root", this._root, () => {
+            this._sizes.update(this._sizeObserver);
+            this.onSizeUpdate(this._sizes);
         });
-        this._dimensions.setEntry("item", this._mBox, () => {
-            this._sizes.update(this._dimensions);
+        this._sizeObserver.setEntry("item", this._mBox, () => {
+            this._sizes.update(this._sizeObserver);
+            this.onSizeUpdate(this._sizes);
         });
-        this._sizes = new LiveSize(this._dimensions);
 
         this._attributeObserver = new Attributes(this.root, options);
         this._attributes = new LiveAttributes(this._attributeObserver);
         this._attributeObserver.onUpdate = () => {
             this._attributes.update(this._attributeObserver);
+            this.onAttrUpdate(this._attributes);
         };
     }
 
