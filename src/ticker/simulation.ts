@@ -1,6 +1,9 @@
 import { getRepetitions } from "@ouroboros/dom/measure";
 import { accumulateVec2, normalize, toRadians } from "./math";
 import { Item } from "./item";
+import Context, { LiveAttributes, LiveSize } from "./context";
+import { getTRepetitions } from "./layout";
+import { Scene } from "./scene";
 
 type TSimulationContext = {
     sizes: Ticker.Sizes;
@@ -163,4 +166,62 @@ export function simulateItem(
 
     // age the item
     item.lifetime += data.dt;
+}
+
+export class Simulation {
+    private _sizes: LiveSize;
+    private _attributes: LiveAttributes;
+    private _repetitions: DirectionalCount;
+
+    private _scene: Scene<Item>;
+
+    constructor(sizes: LiveSize, attr: LiveAttributes, scene: Scene<Item>) {
+        this._scene = scene;
+        this._attributes = attr;
+        this._sizes = sizes;
+        this._repetitions = getTRepetitions(this._sizes.root, this._sizes.item);
+    }
+
+    setup() {
+        this.fill();
+        this.layout();
+    }
+
+    fill() {
+        const nTemplatesToGenerate =
+            this._repetitions.horizontal * this._repetitions.vertical -
+            this._scene.length;
+
+        if (nTemplatesToGenerate > 0)
+            for (let i = 0; i < nTemplatesToGenerate; i++) {
+                this._scene.add(new Item());
+            }
+        else if (nTemplatesToGenerate < 0) {
+            for (let i = 0; i < Math.abs(nTemplatesToGenerate); i++) {
+                this._scene.delete(this._scene.find(() => true)[0]);
+            }
+        }
+    }
+
+    layout() {
+        const startPos = {
+            x: -this._sizes.item.width,
+            y: -this._sizes.item.height,
+        };
+
+        // iterate through clones and properly set the positions
+        const objects = Array.from(this._scene.contents);
+        let objectIndex = 0;
+        for (let y = 0; y < this._repetitions.vertical; y++) {
+            for (let x = 0; x < this._repetitions.horizontal; x++) {
+                const currObject = objects[objectIndex];
+
+                currObject.position.x = startPos.x + x * this._sizes.item.width;
+                currObject.position.y =
+                    startPos.y + y * this._sizes.item.height;
+
+                objectIndex++;
+            }
+        }
+    }
 }

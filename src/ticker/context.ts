@@ -57,7 +57,6 @@ export default class Context {
         this.onAttrUpdate = () => {};
 
         this._sizeObserver = new Dimensions();
-        this._sizes = new LiveSize(this._sizeObserver);
         this._sizeObserver.setEntry("root", this._root, () => {
             this._sizes.update(this._sizeObserver);
             this.onSizeUpdate(this._sizes);
@@ -66,6 +65,7 @@ export default class Context {
             this._sizes.update(this._sizeObserver);
             this.onSizeUpdate(this._sizes);
         });
+        this._sizes = new LiveSize(this._sizeObserver);
 
         this._attributeObserver = new Attributes(this.root, options);
         this._attributes = new LiveAttributes(this._attributeObserver);
@@ -100,7 +100,7 @@ export default class Context {
  * Data container / reference that should always
  * contain the latest dimension / size values.
  */
-class LiveSize {
+export class LiveSize {
     private _root: Rect;
     private _item: Rect;
 
@@ -131,7 +131,7 @@ class LiveSize {
  * Data reference / container that should always
  * contain the latest attribute values
  */
-class LiveAttributes {
+export class LiveAttributes {
     private _autoplay: boolean;
     private _speed: number;
     private _direction: number;

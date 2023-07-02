@@ -81,7 +81,10 @@ export function fillGrid(
  * @param repeatable repeatable item size
  * @returns the count of repeatable items with 2 extra items added in both directions
  */
-function getTRepetitions(container: Rect, repeatable: Rect): DirectionalCount {
+export function getTRepetitions(
+    container: Rect,
+    repeatable: Rect
+): DirectionalCount {
     const repetitions = getRepetitions(container, repeatable);
     repetitions.horizontal += 2;
     repetitions.vertical += 2;

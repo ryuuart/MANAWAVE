@@ -1,14 +1,14 @@
 import Basic from "test/pages/basic/Basic";
 import { Scene, clearScene } from "../scene";
-import { layoutGrid } from "../layout";
 import TickerSystem from "../system";
 
 import allDirectionsSnapshot from "./data/all_direction.json";
-import { simulateItem } from "../simulation";
+import { Simulation, simulateItem } from "../simulation";
 import { Item } from "../item";
+import Context from "../context";
 
 describe("ticker", () => {
-    describe("container", () => {
+    describe("scene", () => {
         afterEach(() => {
             Basic.clearContent();
         });
@@ -81,108 +81,75 @@ describe("ticker", () => {
         });
     });
 
-    describe("layout", () => {
+    describe("simulation", () => {
         afterEach(() => {
             Basic.clearContent();
         });
+        it("should fill and layout a grid of items", async () => {
+            Basic.loadContent();
 
-        it("should layout a grid of items", async () => {
-            const testItemSize = { width: 123, height: 123 };
-            const testContainerSize = { width: 300, height: 300 };
-            const testContainer = new Scene<Positionable>();
+            const scene = new Scene<Item>();
+            const ctx = Context.setup(Basic.ticker!);
+            const simulation = new Simulation(ctx.sizes, ctx.attributes, scene);
 
-            const resultContainer = new Scene<Positionable>();
+            const resultScene = new Scene<Positionable>();
             const RESULT = [
+                { position: { x: -396, y: -132 } },
+                { position: { x: 0, y: -132 } },
+                { position: { x: 396, y: -132 } },
+                { position: { x: 792, y: -132 } },
+                { position: { x: 1188, y: -132 } },
+                { position: { x: -396, y: 0 } },
                 { position: { x: 0, y: 0 } },
-                {
-                    position: {
-                        x: 123,
-                        y: 0,
-                    },
-                },
-                {
-                    position: {
-                        x: 246,
-                        y: 0,
-                    },
-                },
-                {
-                    position: {
-                        x: 0,
-                        y: 123,
-                    },
-                },
-                {
-                    position: {
-                        x: 123,
-                        y: 123,
-                    },
-                },
-                {
-                    position: {
-                        x: 246,
-                        y: 123,
-                    },
-                },
-                {
-                    position: {
-                        x: 0,
-                        y: 246,
-                    },
-                },
-                {
-                    position: {
-                        x: 123,
-                        y: 246,
-                    },
-                },
-                {
-                    position: {
-                        x: 246,
-                        y: 246,
-                    },
-                },
+                { position: { x: 396, y: 0 } },
+                { position: { x: 792, y: 0 } },
+                { position: { x: 1188, y: 0 } },
+                { position: { x: -396, y: 132 } },
+                { position: { x: 0, y: 132 } },
+                { position: { x: 396, y: 132 } },
+                { position: { x: 792, y: 132 } },
+                { position: { x: 1188, y: 132 } },
+                { position: { x: -396, y: 264 } },
+                { position: { x: 0, y: 264 } },
+                { position: { x: 396, y: 264 } },
+                { position: { x: 792, y: 264 } },
+                { position: { x: 1188, y: 264 } },
+                { position: { x: -396, y: 396 } },
+                { position: { x: 0, y: 396 } },
+                { position: { x: 396, y: 396 } },
+                { position: { x: 792, y: 396 } },
+                { position: { x: 1188, y: 396 } },
+                { position: { x: -396, y: 528 } },
+                { position: { x: 0, y: 528 } },
+                { position: { x: 396, y: 528 } },
+                { position: { x: 792, y: 528 } },
+                { position: { x: 1188, y: 528 } },
+                { position: { x: -396, y: 660 } },
+                { position: { x: 0, y: 660 } },
+                { position: { x: 396, y: 660 } },
+                { position: { x: 792, y: 660 } },
+                { position: { x: 1188, y: 660 } },
             ];
             for (const resultPosObj of RESULT) {
-                resultContainer.add(resultPosObj);
+                resultScene.add(resultPosObj);
             }
 
-            // simulate creation of grid
-            for (let i = 0; i < 9; i++) {
-                testContainer.add({
-                    position: {
-                        x: 0,
-                        y: 0,
-                    },
-                });
-            }
-
-            layoutGrid(testContainer, {
-                gridRect: {
-                    width: testContainerSize.width,
-                    height: testContainerSize.height,
-                },
-                itemRect: {
-                    width: testItemSize.width,
-                    height: testItemSize.height,
-                },
-                repetitions: {
-                    horizontal: 3,
-                    vertical: 3,
-                },
-            });
+            simulation.fill();
+            simulation.layout();
 
             // go through our expected grid layout and see if our testContainer
             // did generate a match
-            for (const resultPosObj of resultContainer.contents) {
-                const matchedPosObj = testContainer.find((rect) => {
+            for (const resultPosObj of resultScene.contents) {
+                const matchedPosObj = scene.find((item) => {
                     return (
-                        resultPosObj.position.x === rect.position.x &&
-                        resultPosObj.position.y === rect.position.y
+                        resultPosObj.position.x === item.position.x &&
+                        resultPosObj.position.y === item.position.y
                     );
                 });
 
-                expect(matchedPosObj[0]).toEqual(resultPosObj);
+                expect({ position: matchedPosObj[0].position }).toEqual(
+                    resultPosObj
+                );
             }
         });
     });
