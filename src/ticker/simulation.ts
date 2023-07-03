@@ -178,7 +178,7 @@ export class Simulation {
     constructor(sizes: LiveSize, attr: LiveAttributes, scene: Scene<Item>) {
         this._scene = scene;
         this._attributes = attr;
-        this._sizes = sizes;
+        this._sizes = new LiveSize(sizes);
         this._repetitions = getTRepetitions(this._sizes.root, this._sizes.item);
     }
 

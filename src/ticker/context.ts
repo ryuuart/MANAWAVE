@@ -57,15 +57,18 @@ export default class Context {
         this.onAttrUpdate = () => {};
 
         this._sizeObserver = new Dimensions();
-        this._sizeObserver.setEntry("root", this._root, () => {
-            this._sizes.update(this._sizeObserver);
+        this._sizeObserver.setEntry("root", this._root, (rect: Rect) => {
+            this._sizes.update({ root: rect });
             this.onSizeUpdate(this._sizes);
         });
-        this._sizeObserver.setEntry("item", this._mBox, () => {
-            this._sizes.update(this._sizeObserver);
+        this._sizeObserver.setEntry("item", this._mBox, (rect: Rect) => {
+            this._sizes.update({ item: rect });
             this.onSizeUpdate(this._sizes);
         });
-        this._sizes = new LiveSize(this._sizeObserver);
+        this._sizes = new LiveSize({
+            root: this._sizeObserver.get("root")!,
+            item: this._sizeObserver.get("item")!,
+        });
 
         this._attributeObserver = new Attributes(this.root, options);
         this._attributes = new LiveAttributes(this._attributeObserver);
@@ -104,18 +107,23 @@ export class LiveSize {
     private _root: Rect;
     private _item: Rect;
 
-    constructor(dimensions: Dimensions) {
-        this._root = structuredClone(dimensions.get("root"))!;
-        this._item = structuredClone(dimensions.get("item"))!;
+    constructor(initial: Partial<{ root: Rect; item: Rect }> = {}) {
+        this._root = { width: 0, height: 0 };
+        this._item = { width: 0, height: 0 };
+
+        const { root, item } = initial;
+        if (root) this._root = root;
+        if (item) this._item = item;
     }
 
     /**
      * Updates the dimensions / size values to the latest
-     * @param dimensions observer that contains the newest raw dimension values
+     * @param payload new data to update
      */
-    update(dimensions: Dimensions) {
-        this._root = structuredClone(dimensions.get("root"))!;
-        this._item = structuredClone(dimensions.get("item"))!;
+    update(payload: Partial<{ root: Rect; item: Rect }>) {
+        const { root, item } = payload;
+        if (root) this._root = root;
+        if (item) this._item = item;
     }
 
     get root(): Rect {
@@ -136,20 +144,38 @@ export class LiveAttributes {
     private _speed: number;
     private _direction: number;
 
-    constructor(attributes: Attributes) {
-        this._autoplay = attributes.autoplay;
-        this._speed = attributes.speed;
-        this._direction = attributes.direction;
+    constructor(
+        initial: Partial<{
+            autoplay: boolean;
+            speed: number;
+            direction: number;
+        }> = {}
+    ) {
+        this._autoplay = false;
+        this._speed = 1;
+        this._direction = 0;
+
+        const { autoplay, speed, direction } = initial;
+        if (autoplay) this._autoplay = autoplay;
+        if (speed) this._speed = speed;
+        if (direction) this._direction = direction;
     }
 
     /**
      * Updates the attributes to the most recent attributes
-     * @param attributes observer that contains the raw, updated attributes
+     * @param payload new data to update
      */
-    update(attributes: Attributes) {
-        this._autoplay = attributes.autoplay;
-        this._speed = attributes.speed;
-        this._direction = attributes.direction;
+    update(
+        payload: Partial<{
+            autoplay: boolean;
+            speed: number;
+            direction: number;
+        }>
+    ) {
+        const { autoplay, speed, direction } = payload;
+        if (autoplay) this._autoplay = autoplay;
+        if (speed) this._speed = speed;
+        if (direction) this._direction = direction;
     }
 
     get autoplay(): boolean {

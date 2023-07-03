@@ -5,7 +5,7 @@ import TickerSystem from "../system";
 import allDirectionsSnapshot from "./data/all_direction.json";
 import { Simulation, simulateItem } from "../simulation";
 import { Item } from "../item";
-import Context from "../context";
+import { LiveAttributes, LiveSize } from "../context";
 
 describe("ticker", () => {
     describe("scene", () => {
@@ -89,8 +89,12 @@ describe("ticker", () => {
             Basic.loadContent();
 
             const scene = new Scene<Item>();
-            const ctx = Context.setup(Basic.ticker!);
-            const simulation = new Simulation(ctx.sizes, ctx.attributes, scene);
+            const sizes = new LiveSize({
+                root: { width: 1188, height: 660 },
+                item: { width: 396, height: 132 },
+            });
+            const attr = new LiveAttributes();
+            const simulation = new Simulation(sizes, attr, scene);
 
             const resultScene = new Scene<Positionable>();
             const RESULT = [
