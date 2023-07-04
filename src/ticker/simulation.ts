@@ -1,7 +1,7 @@
 import { getRepetitions } from "@ouroboros/dom/measure";
-import { accumulateVec2, normalize, toRadians } from "./math";
+import { accumulateVec2, angleToDirection, normalize, toRadians } from "./math";
 import { Item } from "./item";
-import Context, { LiveAttributes, LiveSize } from "./context";
+import { LiveAttributes, LiveSize } from "./context";
 import { getTRepetitions } from "./layout";
 import { Scene } from "./scene";
 
@@ -172,21 +172,39 @@ export class Simulation {
     private _sizes: LiveSize;
     private _attributes: LiveAttributes;
     private _repetitions: DirectionalCount;
+    private _limits: DirectionalCount;
+    private _intendedDirection: vec2;
 
     private _scene: Scene<Item>;
 
     constructor(sizes: LiveSize, attr: LiveAttributes, scene: Scene<Item>) {
         this._scene = scene;
-        this._attributes = attr;
+        this._attributes = new LiveAttributes(attr);
         this._sizes = new LiveSize(sizes);
+
         this._repetitions = getTRepetitions(this._sizes.root, this._sizes.item);
+        this._limits = getTLimits(this._sizes.root, this._sizes.item);
+        this._intendedDirection = angleToDirection(this._attributes.direction);
     }
 
+    /**
+     * Flushes the state of the simulation to a new one, starting at the
+     * beginning.
+     */
     setup() {
+        this._repetitions = getTRepetitions(this._sizes.root, this._sizes.item);
+        this._limits = getTLimits(this._sizes.root, this._sizes.item);
+        this._intendedDirection = angleToDirection(this._attributes.direction);
+
+        this._scene.clear();
         this.fill();
         this.layout();
     }
 
+    /**
+     * Populates a {@link Scene} with items enough to be laid out in a grid.
+     * @see {@link layout}
+     */
     fill() {
         const nTemplatesToGenerate =
             this._repetitions.horizontal * this._repetitions.vertical -
@@ -203,7 +221,20 @@ export class Simulation {
         }
     }
 
+    /**
+     * Positions all items in a {@link Scene} according to a grid layout.
+     * Needs to be filled with the proper amount of items.
+     * @see {@link fill}
+     */
     layout() {
+        if (
+            this._scene.length <
+            this._repetitions.vertical * this._repetitions.horizontal
+        )
+            throw new Error(
+                "The Ticker Simulation is out-of-sync with its size."
+            );
+
         const startPos = {
             x: -this._sizes.item.width,
             y: -this._sizes.item.height,
@@ -222,6 +253,74 @@ export class Simulation {
 
                 objectIndex++;
             }
+        }
+    }
+
+    /**
+     * Updates the current simulation attribute
+     * @param properties any attribute
+     */
+    updateAttribute(properties: Partial<Ticker.Attributes>) {
+        this._attributes.update(properties);
+        this._intendedDirection = angleToDirection(this._attributes.direction);
+    }
+
+    /**
+     * Updates the current size the simulation
+     * @param size new ticker or item size
+     */
+    updateSize(size: Partial<Ticker.Sizes>) {
+        const prev = structuredClone(this._repetitions);
+
+        this._sizes.update(size);
+        this._repetitions = getTRepetitions(this._sizes.root, this._sizes.item);
+        this._limits = getTLimits(this._sizes.root, this._sizes.item);
+
+        const curr = this._repetitions;
+
+        if (
+            prev.horizontal !== curr.horizontal ||
+            prev.vertical !== curr.vertical
+        ) {
+            this.setup();
+        }
+    }
+
+    /**
+     * Step through the simulation and update its overall state.
+     * @param dt time between steps
+     * @param t total elapsed time
+     */
+    step(dt: DOMHighResTimeStamp, t: DOMHighResTimeStamp) {
+        for (const item of this._scene.contents) {
+            // start measuring changes in actual direction
+            const accumulateDirection = makeDirectionAccumulator();
+            const initialPosition = item.position;
+            let actualDirection = { x: 0, y: 0 };
+
+            // override
+
+            // measure a directional change if the override induced a
+            // change in direction
+            actualDirection = accumulateDirection(
+                initialPosition,
+                item.position
+            );
+
+            // actually move the item
+            item.move(this._intendedDirection, this._attributes.speed);
+
+            // measure a directional change from the recent movement
+            actualDirection = accumulateDirection(
+                actualDirection,
+                item.position
+            );
+
+            // if the movement caused the item to go out-of-bounds, loop it
+            item.loop(this._sizes.item, this._limits, actualDirection);
+
+            // age the item
+            item.lifetime += dt;
         }
     }
 }

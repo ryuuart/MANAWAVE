@@ -75,6 +75,16 @@ export class Scene<T> {
     }
 
     /**
+     * Clears all contents of a container
+     * @param container a container with any number of objects inside
+     */
+    clear() {
+        for (const object of this._store) {
+            this._store.delete(object);
+        }
+    }
+
+    /**
      * Finds a list of objects that match the provided predicate or criteria.
      * @param callback a predicate ran against all objects in the container
      * @returns a list of found objects

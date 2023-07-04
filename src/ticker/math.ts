@@ -24,3 +24,10 @@ export function accumulateVec2(start: vec2) {
         return total;
     };
 }
+
+export function angleToDirection(angle: number): vec2 {
+    return {
+        x: Math.cos(toRadians(angle)),
+        y: -Math.sin(toRadians(angle)),
+    };
+}

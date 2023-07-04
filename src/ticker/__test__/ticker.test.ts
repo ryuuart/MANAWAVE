@@ -6,6 +6,7 @@ import allDirectionsSnapshot from "./data/all_direction.json";
 import { Simulation, simulateItem } from "../simulation";
 import { Item } from "../item";
 import { LiveAttributes, LiveSize } from "../context";
+import { angleToDirection } from "../math";
 
 describe("ticker", () => {
     describe("scene", () => {
@@ -78,6 +79,61 @@ describe("ticker", () => {
             expect(0 in testCase1).toBeFalsy();
             expect(0 in testCase2).toBeFalsy();
             expect(0 in testCase3).toBeFalsy();
+        });
+    });
+
+    describe("item", () => {
+        it("can move given speed and direction", async () => {
+            const item = new Item();
+
+            item.move(angleToDirection(0), 1);
+            expect(item.position.x).toBeCloseTo(1);
+            expect(item.position.y).toBeCloseTo(0);
+            item.move(angleToDirection(90), 1);
+            expect(item.position.x).toBeCloseTo(1);
+            expect(item.position.y).toBeCloseTo(-1);
+            item.move(angleToDirection(180), 1);
+            expect(item.position.x).toBeCloseTo(0);
+            expect(item.position.y).toBeCloseTo(-1);
+            item.move(angleToDirection(270), 1);
+            expect(item.position.x).toBeCloseTo(0);
+            expect(item.position.y).toBeCloseTo(0);
+        });
+
+        it("can loop its position around a given rectangle", async () => {
+            const item = new Item();
+            const size = { width: 2, height: 1 };
+            const limits = { horizontal: 3, vertical: 3 };
+
+            // should loop if it reaches the limit in the right direction
+            item.position.x = 3;
+            item.loop(size, limits, angleToDirection(0));
+            expect(item.position.x).toBeCloseTo(-2);
+
+            // shouldn't change position if the direction is opposite
+            item.position.x = 3;
+            item.loop(size, limits, angleToDirection(180));
+            expect(item.position.x).toBeCloseTo(3);
+
+            // now it should change its position considering this direction
+            item.position.x = -2;
+            item.loop(size, limits, angleToDirection(180));
+            expect(item.position.x).toBeCloseTo(3);
+
+            // now it should change its position vertically
+            item.position.y = -1;
+            item.loop(size, limits, angleToDirection(90));
+            expect(item.position.y).toBeCloseTo(3);
+
+            // now it shouldn't change its position given an opposing direction
+            item.position.y = -1;
+            item.loop(size, limits, angleToDirection(270));
+            expect(item.position.y).toBeCloseTo(-1);
+
+            // now following the opposing direction, it should change its position
+            item.position.y = 3;
+            item.loop(size, limits, angleToDirection(270));
+            expect(item.position.y).toBeCloseTo(-1);
         });
     });
 
@@ -161,28 +217,18 @@ describe("ticker", () => {
     describe("system", () => {
         it("should update a system deterministically over time", async () => {
             // we create a repeating pattern over a small box
-            const tSizes = {
-                ticker: allDirectionsSnapshot.setup.tickerSize,
+            const sizes = new LiveSize({
+                root: allDirectionsSnapshot.setup.tickerSize,
                 item: allDirectionsSnapshot.setup.itemSize,
-            };
-            const tAttr = {
-                speed: 1,
-                direction: 0,
-            };
-
-            const system = new TickerSystem({
-                sizes: tSizes,
-                attributes: tAttr,
-                dom: {
-                    root: document.createElement("div"),
-                    template: document.createDocumentFragment(),
-                },
             });
+            const attr = new LiveAttributes({ speed: 1, direction: 0 });
+            const scene = new Scene<Item>();
+            const simulation = new Simulation(sizes, attr, scene);
 
             // restart the system over 360 degrees
             for (let theta = 0; theta <= 360; theta++) {
-                system.updateAttributes({ direction: theta });
-                system.start(); // start won't start if not stopped. have to start to stop...
+                simulation.updateAttribute({ direction: theta });
+                simulation.setup(); // start won't start if not stopped. have to start to stop...
 
                 // keep track of each step of the animation updates
                 const testMotionFrames = [];
@@ -195,10 +241,10 @@ describe("ticker", () => {
                 ) {
                     const dt = i * allDirectionsSnapshot.setup.dt;
                     t += dt;
-                    system.update(dt, t);
+                    simulation.step(dt, t);
                 }
 
-                for (const item of system.scene.contents) {
+                for (const item of scene.contents) {
                     testMotionFrames.push({
                         x: item.position.x.toFixed(2),
                         y: item.position.y.toFixed(2),
@@ -210,8 +256,6 @@ describe("ticker", () => {
                     const xOrder = parseFloat(a.x) - parseFloat(b.x);
                     return xOrder;
                 });
-
-                system.stop(); // resets position
 
                 // have to fix type errors
                 const testData: {
