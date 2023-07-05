@@ -409,14 +409,11 @@ describe("dom", () => {
                 const template = new DocumentFragment();
                 const canvas = new Canvas(root, template);
 
-                const item = new Item();
+                const item = new Item(undefined, { width: 999, height: 999 });
                 const itemComponent = new ItemComponent(item);
 
                 item.position = { x: 999, y: 999 };
-                canvas.setItemComponent(itemComponent, item, {
-                    width: 999,
-                    height: 999,
-                });
+                canvas.setItemComponent(itemComponent, item);
 
                 expect(itemComponent.size).toEqual({ width: 999, height: 999 });
                 expect(itemComponent.position).toEqual({ x: 999, y: 999 });
@@ -441,6 +438,9 @@ describe("dom", () => {
                     //@ts-ignore
                     return (await this.getSize("width")) === 600;
                 });
+
+                // have to wait for the debounce
+                await browser.pause(300);
 
                 // changed size is right
                 expect(sizes.root).toEqual({ height: 600, width: 600 });
@@ -622,7 +622,7 @@ describe("dom", () => {
                 root.appendToDOM(domRoot);
 
                 const canvas = new Canvas(root, template);
-                const scene = new Scene<Item>();
+                const scene = new Scene();
                 scene.add(new Item());
 
                 canvas.draw(scene);
@@ -645,13 +645,14 @@ describe("dom", () => {
 
                 // lets draw an update on our scene, does it update
                 for (const items of scene.contents) {
+                    items.size = { width: 99, height: 99 };
                     items.position = { x: 999, y: 999 };
                 }
-                scene.sizes = {
-                    ticker: { width: 999, height: 999 },
-                    item: { width: 99, height: 99 },
-                };
+                scene.size = { width: 999, height: 999 };
                 canvas.draw(scene);
+
+                // have to wait for debounce
+                await browser.pause(300);
 
                 await expect(await itemPosition()).toEqual(
                     "matrix(1, 0, 0, 1, 999, 999)"

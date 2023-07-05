@@ -1,12 +1,11 @@
 import { System } from "@ouroboros/anim";
 import { Scene } from "./scene";
-import { Item } from "./item";
 import { Simulation } from "./simulation";
 import { Renderer } from "@ouroboros/dom/renderer";
 import Context from "./context";
 
 export default class TickerSystem extends System {
-    private _scene: Scene<Item>;
+    private _scene: Scene;
     private _renderer: Renderer;
     private _simulation: Simulation;
 

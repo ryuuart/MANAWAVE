@@ -1,4 +1,4 @@
-import { Ouroboros } from "..";
+import { Ouroboros } from "../ouroboros";
 
 /**
  * HTML custom element (with no shadowroot) that contains the repeated elements

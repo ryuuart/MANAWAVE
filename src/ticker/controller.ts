@@ -1,11 +1,11 @@
 import { AnimationController } from "@ouroboros/anim";
 import Context, { LiveAttributes, LiveSize } from "./context";
-import TickerSystem from "./system";
+import System from "./system";
 import PlaybackObject from "@ouroboros/anim/PlaybackObject";
 
 export default class Controller extends PlaybackObject {
     private _context: Context;
-    private _system: TickerSystem;
+    private _system: System;
 
     constructor(context: Context) {
         super();
@@ -14,7 +14,7 @@ export default class Controller extends PlaybackObject {
         this._context.onSizeUpdate = this.onResize.bind(this);
         this._context.onAttrUpdate = this.onAttrUpdate.bind(this);
 
-        this._system = new TickerSystem(this._context);
+        this._system = new System(this._context);
 
         this.init();
 
