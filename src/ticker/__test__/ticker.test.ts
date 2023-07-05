@@ -141,6 +141,7 @@ describe("ticker", () => {
         afterEach(() => {
             Basic.clearContent();
         });
+
         it("should fill and layout a grid of items", async () => {
             Basic.loadContent();
 
@@ -212,10 +213,8 @@ describe("ticker", () => {
                 );
             }
         });
-    });
 
-    describe("system", () => {
-        it("should update a system deterministically over time", async () => {
+        it("should update a simulation deterministically over time", async () => {
             // we create a repeating pattern over a small box
             const sizes = new LiveSize({
                 root: allDirectionsSnapshot.setup.tickerSize,
@@ -268,105 +267,49 @@ describe("ticker", () => {
         });
 
         it("should react to changes in size", async () => {
-            const tSizes = {
-                ticker: { width: 10, height: 10 },
+            const scene = new Scene<Item>();
+            const sizes = new LiveSize({
+                root: { width: 10, height: 10 },
                 item: { width: 10, height: 10 },
-            };
-
-            const tProps = {
+            });
+            const attr = new LiveAttributes({
                 direction: 0,
                 speed: 1,
-            };
-
-            const system = new TickerSystem({
-                sizes: tSizes,
-                attributes: tProps,
-                dom: {
-                    root: document.createElement("div"),
-                    template: new DocumentFragment(),
-                },
             });
+            const simulation = new Simulation(sizes, attr, scene);
 
-            system.start();
+            simulation.setup();
+
             // initial test
-            expect(system.scene.length).toEqual(9);
+            expect(scene.length).toEqual(9);
 
             // update ticker
-            tSizes.ticker = { width: 20, height: 20 };
-            system.updateSize(tSizes);
-            expect(system.scene.length).toEqual(16);
+            sizes.update({ root: { width: 20, height: 20 } });
+            simulation.updateSize(sizes);
+            expect(scene.length).toEqual(16);
 
             // return back
-            tSizes.ticker = { width: 10, height: 10 };
-            system.updateSize(tSizes);
-            expect(system.scene.length).toEqual(9);
+            sizes.update({ root: { width: 10, height: 10 } });
+            simulation.updateSize(sizes);
+            expect(scene.length).toEqual(9);
 
             // update item
-            tSizes.item = { width: 5, height: 5 };
-            system.updateSize(tSizes);
-            expect(system.scene.length).toEqual(16);
+            sizes.update({ item: { width: 5, height: 5 } });
+            simulation.updateSize(sizes);
+            expect(scene.length).toEqual(16);
 
             // update ticker on top of item
-            tSizes.ticker = { width: 20, height: 20 };
-            system.updateSize(tSizes);
-            expect(system.scene.length).toEqual(36);
+            sizes.update({ root: { width: 20, height: 20 } });
+            simulation.updateSize(sizes);
+            expect(scene.length).toEqual(36);
 
             // return back to normal
-            tSizes.ticker = { width: 10, height: 10 };
-            tSizes.item = { width: 10, height: 10 };
-            system.updateSize(tSizes);
-            expect(system.scene.length).toEqual(9);
-        });
-    });
-
-    describe("simulation", () => {
-        it("can override intended simulation motion in a callback", async () => {
-            const item = new Item();
-            const simulationData = {
-                sizes: {
-                    ticker: { width: 10, height: 10 },
-                    item: { width: 1, height: 1 },
-                },
-                direction: 0,
-                speed: 1,
-                t: 0,
-                dt: 0,
-            };
-
-            simulateItem(item, simulationData);
-
-            expect(item.position).toEqual({ x: 1, y: 0 });
-
-            // test using all values to override the start position, x direction, and speed
-            const overrideCallback: Parameters<typeof simulateItem>["2"] = ({
-                sizes,
-                item,
-                direction,
-                speed,
-            }) => {
-                item.position.x += Math.ceil(
-                    (sizes.ticker.width + sizes.item.width) / 2
-                );
-                item.position.y += Math.ceil(
-                    (sizes.ticker.height + sizes.item.height) / 2
-                );
-                direction.x = Math.cos(Math.PI);
-                direction.y = Math.sin(Math.PI);
-                speed.value = 2;
-            };
-
-            simulateItem(item, simulationData, overrideCallback);
-
-            expect(item.position).toEqual({ x: 5, y: 6 });
-
-            // simulate alterations in the y-direction
-            simulateItem(item, simulationData, ({ direction, item }) => {
-                item.position.y += 2;
-                direction.x = Math.cos((3 * Math.PI) / 2);
-                direction.y = Math.sin((3 * Math.PI) / 2);
+            sizes.update({
+                root: { width: 10, height: 10 },
+                item: { width: 10, height: 10 },
             });
-
-            expect(item.position).toEqual({ x: 5, y: 7 });
+            simulation.updateSize(sizes);
+            expect(scene.length).toEqual(9);
         });
     });
 });
