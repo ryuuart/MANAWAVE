@@ -109,7 +109,7 @@ export class Canvas {
      * Takes a {@link Scene} and translates it to the DOM
      * @param scene description of what to draw
      */
-    draw(scene: Scene<Item>) {
+    draw(scene: Scene) {
         this.updateRootComponent(scene.size);
 
         const itemQueue = [];
