@@ -5,13 +5,22 @@ export class Item implements Positionable {
     id: string;
     lifetime: DOMHighResTimeStamp;
     position: vec2;
+    size: Rect;
 
-    constructor() {
+    constructor(position?: vec2, size?: Rect) {
         this.lifetime = 0;
         this.position = {
             x: 0,
             y: 0,
         };
+        this.size = {
+            width: 0,
+            height: 0,
+        };
+
+        if (position) this.position = position;
+        if (size) this.size = size;
+
         this.id = uid();
     }
 
@@ -36,15 +45,15 @@ export class Item implements Positionable {
      * @param limits the rectangle to loop around
      * @param direction the actual direction / motion of the item
      */
-    loop(itemSize: Rect, limits: DirectionalCount, direction: vec2) {
+    loop(limits: DirectionalCount, direction: vec2) {
         if (direction.x > 0 && this.position.x >= limits.horizontal) {
-            this.position.x = -itemSize.width;
-        } else if (direction.x < 0 && this.position.x <= -itemSize.width) {
+            this.position.x = -this.size.width;
+        } else if (direction.x < 0 && this.position.x <= -this.size.width) {
             this.position.x = limits.horizontal;
         }
         if (direction.y > 0 && this.position.y >= limits.vertical) {
-            this.position.y = -itemSize.height;
-        } else if (direction.y < 0 && this.position.y <= -itemSize.height) {
+            this.position.y = -this.size.height;
+        } else if (direction.y < 0 && this.position.y <= -this.size.height) {
             this.position.y = limits.vertical;
         }
     }

@@ -1,5 +1,8 @@
 import { Attributes } from "@ouroboros/dom/attributes";
+import WebComponent from "@ouroboros/dom/element";
 import { Dimensions, MeasurementBox } from "@ouroboros/dom/measure";
+import styles from "../dom/styles/ouroboros.module.css";
+import { debounce } from "@ouroboros/utils/debounce";
 
 /**
  * Represents the current external, browser-facing state
@@ -35,6 +38,8 @@ export default class Context {
         else selected = document.querySelector<HTMLElement>(selector);
 
         if (selected) {
+            if (!(selected instanceof WebComponent))
+                selected.classList.add(styles.ouroboros);
             const mBox = new MeasurementBox(...selected.children);
             const template = new DocumentFragment();
             template.append(...selected.children);
@@ -57,14 +62,22 @@ export default class Context {
         this.onAttrUpdate = () => {};
 
         this._sizeObserver = new Dimensions();
-        this._sizeObserver.setEntry("root", this._root, (rect: Rect) => {
-            this._sizes.update({ root: rect });
-            this.onSizeUpdate(this._sizes);
-        });
-        this._sizeObserver.setEntry("item", this._mBox, (rect: Rect) => {
-            this._sizes.update({ item: rect });
-            this.onSizeUpdate(this._sizes);
-        });
+        this._sizeObserver.setEntry(
+            "root",
+            this._root,
+            debounce((rect: Rect) => {
+                this._sizes.update({ root: rect });
+                this.onSizeUpdate(this._sizes);
+            }, 150)
+        );
+        this._sizeObserver.setEntry(
+            "item",
+            this._mBox,
+            debounce((rect: Rect) => {
+                this._sizes.update({ item: rect });
+                this.onSizeUpdate(this._sizes);
+            }, 150)
+        );
         this._sizes = new LiveSize({
             root: this._sizeObserver.get("root")!,
             item: this._sizeObserver.get("item")!,
@@ -82,8 +95,8 @@ export default class Context {
         return this._root;
     }
 
-    get template(): Node {
-        return this._template.cloneNode(true);
+    get template(): DocumentFragment {
+        return this._template.cloneNode(true) as DocumentFragment;
     }
 
     get sizes(): LiveSize {
@@ -127,11 +140,11 @@ export class LiveSize {
     }
 
     get root(): Rect {
-        return this._root;
+        return structuredClone(this._root);
     }
 
     get item(): Rect {
-        return this._item;
+        return structuredClone(this._item);
     }
 }
 

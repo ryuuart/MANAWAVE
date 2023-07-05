@@ -1,17 +1,10 @@
 export class Scene<T> {
     private _store: Set<T>;
-    private _sizes: Ticker.Sizes;
+    private _size: Rect;
 
-    constructor(sizes?: Ticker.Sizes) {
+    constructor() {
         this._store = new Set();
-
-        // hard-coded sizes because these are the only global sizes we'll have
-        this._sizes = {
-            ticker: { width: 0, height: 0 },
-            item: { width: 0, height: 0 },
-        };
-
-        if (sizes) this._sizes = structuredClone(sizes);
+        this._size = { width: 0, height: 0 };
     }
 
     /**
@@ -31,15 +24,15 @@ export class Scene<T> {
     /**
      * Get the current shared size of all scene objects
      */
-    get sizes(): Ticker.Sizes {
-        return structuredClone(this._sizes);
+    get size(): Rect {
+        return this._size;
     }
 
     /**
      * Updates the current shared size of all scene objects
      */
-    set sizes(sizes: Partial<Ticker.Sizes>) {
-        this._sizes = { ...this._sizes, ...sizes };
+    set size(sizes: Rect) {
+        this._size = sizes;
     }
 
     /**

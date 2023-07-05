@@ -1,24 +1,50 @@
-import { Dimensions } from "@ouroboros/dom/measure";
-import Context from "./context";
+import { AnimationController } from "@ouroboros/anim";
+import Context, { LiveAttributes, LiveSize } from "./context";
 import TickerSystem from "./system";
+import PlaybackObject from "@ouroboros/anim/PlaybackObject";
 
-export default class Controller {
-    private _dimensions: Dimensions;
+export default class Controller extends PlaybackObject {
+    private _context: Context;
     private _system: TickerSystem;
 
     constructor(context: Context) {
-        this._dimensions = new Dimensions();
-        this._system = new TickerSystem(context);
+        super();
 
-        this._dimensions.setEntry("root", context.root, (rect: Rect) => {
-            this._system.updateSimulation({
-                sizes: { ticker: context.tickerSize },
-            });
-        });
-        this._dimensions.setEntry("item", context.itemMBox, (rect: Rect) => {
-            this._system.updateSimulation({
-                sizes: { item: context.tickerSize },
-            });
-        });
+        this._context = context;
+        this._context.onSizeUpdate = this.onResize.bind(this);
+        this._context.onAttrUpdate = this.onAttrUpdate.bind(this);
+
+        this._system = new TickerSystem(this._context);
+
+        this.init();
+
+        if (this._context.attributes.autoplay) this._system.play();
+    }
+
+    onResize(size: LiveSize) {
+        this._system.updateSize(size);
+    }
+
+    onAttrUpdate(attr: LiveAttributes) {
+        this._system.updateAttributes(attr);
+    }
+
+    onPause(): void {
+        this._system.pause();
+    }
+
+    onPlay(): void {
+        this._system.play();
+    }
+
+    init() {
+        this._system.start();
+        this._system.pause();
+        AnimationController.registerSystem(this._system);
+    }
+
+    deinit() {
+        this._system.stop();
+        AnimationController.deregisterSystem(this._system);
     }
 }

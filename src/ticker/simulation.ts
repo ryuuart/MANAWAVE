@@ -192,6 +192,8 @@ export class Simulation {
      * beginning.
      */
     setup() {
+        this._scene.size = this._sizes.root;
+
         this._repetitions = getTRepetitions(this._sizes.root, this._sizes.item);
         this._limits = getTLimits(this._sizes.root, this._sizes.item);
         this._intendedDirection = angleToDirection(this._attributes.direction);
@@ -212,7 +214,7 @@ export class Simulation {
 
         if (nTemplatesToGenerate > 0)
             for (let i = 0; i < nTemplatesToGenerate; i++) {
-                this._scene.add(new Item());
+                this._scene.add(new Item(undefined, this._sizes.item));
             }
         else if (nTemplatesToGenerate < 0) {
             for (let i = 0; i < Math.abs(nTemplatesToGenerate); i++) {
@@ -247,6 +249,8 @@ export class Simulation {
             for (let x = 0; x < this._repetitions.horizontal; x++) {
                 const currObject = objects[objectIndex];
 
+                currObject.size = this._sizes.item;
+
                 currObject.position.x = startPos.x + x * this._sizes.item.width;
                 currObject.position.y =
                     startPos.y + y * this._sizes.item.height;
@@ -274,8 +278,6 @@ export class Simulation {
 
         this._sizes.update(size);
         this._repetitions = getTRepetitions(this._sizes.root, this._sizes.item);
-        this._limits = getTLimits(this._sizes.root, this._sizes.item);
-
         const curr = this._repetitions;
 
         if (
@@ -283,6 +285,14 @@ export class Simulation {
             prev.vertical !== curr.vertical
         ) {
             this.setup();
+        } else {
+            this._scene.size = this._sizes.root;
+            this._limits = getTLimits(this._sizes.root, this._sizes.item);
+
+            // only the item size needs to be updated
+            for (const item of this._scene.contents) {
+                item.size = this._sizes.item;
+            }
         }
     }
 
@@ -317,7 +327,7 @@ export class Simulation {
             );
 
             // if the movement caused the item to go out-of-bounds, loop it
-            item.loop(this._sizes.item, this._limits, actualDirection);
+            item.loop(this._limits, actualDirection);
 
             // age the item
             item.lifetime += dt;
