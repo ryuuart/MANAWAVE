@@ -1,17 +1,9 @@
 import PlaybackObject from "./anim/PlaybackObject";
-import { convertDirection, mergeOOptions } from "./dom/attributes";
-import { Dimensions, MeasurementBox } from "./dom/measure";
-import TickerSystem from "./ticker/system";
-import styles from "./dom/styles/ouroboros.module.css";
-import { AnimationController } from "./anim";
-import { debounce } from "./utils/debounce";
+import Controller from "./ticker/controller";
+import Context from "./ticker/context";
 
 export class Ouroboros extends PlaybackObject {
-    private simulation!: TickerSystem;
-    private dimensions: Dimensions;
-
-    private _selector: Parameters<Document["querySelector"]>[0] | HTMLElement;
-    private _options?: Partial<Ouroboros.Options>;
+    private _controller: Controller;
 
     constructor(
         selector: Parameters<Document["querySelector"]>[0] | HTMLElement,
@@ -19,78 +11,15 @@ export class Ouroboros extends PlaybackObject {
     ) {
         super();
 
-        this._selector = selector;
-        this._options = options;
-        this.dimensions = new Dimensions();
-
-        this.start();
+        const context = Context.setup(selector, options);
+        this._controller = new Controller(context);
     }
 
     onStart() {
-        let element: HTMLElement;
-        if (this._selector instanceof HTMLElement) element = this._selector;
-        else element = document.querySelector(this._selector) as HTMLElement;
-
-        if (element) {
-            const mBox = new MeasurementBox(...element.children);
-
-            const template = document.createDocumentFragment();
-            template.append(...element.children);
-
-            mBox.startMeasuringFrom(element);
-
-            this.dimensions.setEntry(
-                "root",
-                element,
-                debounce((rect: Rect) => {
-                    if (this.simulation)
-                        this.simulation.updateSize({ ticker: rect });
-                }, 150)
-            );
-
-            this.dimensions.setEntry(
-                "item",
-                mBox,
-                debounce((rect: Rect) => {
-                    if (this.simulation)
-                        this.simulation.updateSize({ item: rect });
-                }, 150)
-            );
-
-            const tSizes = {
-                ticker: this.dimensions.get("root")!,
-                item: this.dimensions.get("item")!,
-            };
-
-            element.classList.add(styles.ouroboros);
-            const currOptions = mergeOOptions(element, this._options);
-
-            const tAttributes = {
-                speed: currOptions.speed,
-                direction: convertDirection(currOptions.direction),
-            };
-
-            const tContext = {
-                dom: {
-                    root: element,
-                    template,
-                },
-                sizes: tSizes,
-                attributes: tAttributes,
-            };
-
-            this.simulation = new TickerSystem(tContext);
-
-            AnimationController.registerSystem(this.simulation);
-            this.simulation.start();
-            if (!currOptions.autoplay) this.simulation.pause();
-        } else {
-            throw new Error("Element not found for Ouroboros.");
-        }
+        this._controller.init();
     }
 
     onStop() {
-        this.simulation.stop();
-        AnimationController.deregisterSystem(this.simulation);
+        this._controller.deinit();
     }
 }

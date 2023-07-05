@@ -85,3 +85,86 @@ export function mergeOOptions(
 
     return currProps;
 }
+
+/**
+ * Represents the current attributes of the system at any point in time.
+ */
+export class Attributes {
+    private observer: MutationObserver;
+    private target: HTMLElement;
+    private options: Partial<Ouroboros.Options>;
+
+    private _autoplay: boolean;
+    private _speed: number;
+    private _direction: string | number;
+
+    onUpdate: (values: {
+        autoplay: boolean;
+        speed: number;
+        direction: number;
+    }) => void;
+
+    constructor(target: HTMLElement, options: Partial<Ouroboros.Options> = {}) {
+        this.target = target;
+        this.options = options;
+        this._autoplay = false;
+        this._speed = 1;
+        this._direction = 0;
+
+        this.onUpdate = (vals) => {};
+
+        this.update();
+
+        this.observer = new MutationObserver(this.onElementMutate.bind(this));
+        this.observer.observe(target, {
+            attributes: true,
+            attributeFilter: ["speed", "direction", "autoplay"],
+        });
+    }
+
+    /**
+     * Updates the value of the attributes based off current state of the
+     * target element and options. You can provide updated options if you want.
+     *
+     * @param options updates the current overriding options
+     */
+    update(options?: Partial<Ouroboros.Options>) {
+        this.options = { ...this.options, ...options };
+        const values = mergeOOptions(this.target, this.options);
+
+        this._autoplay = values.autoplay;
+        this._speed = values.speed;
+        this._direction = values.direction;
+
+        this.onUpdate({
+            autoplay: this.autoplay,
+            speed: this.speed,
+            direction: this.direction,
+        });
+    }
+
+    get speed(): number {
+        return this._speed;
+    }
+
+    get autoplay(): boolean {
+        return this._autoplay;
+    }
+
+    get direction(): number {
+        return convertDirection(this._direction);
+    }
+
+    /**
+     * Hook that updates the attribute values if there are changes in
+     * the target element attributes.
+     * @param mutations all attribute changes for the target element
+     */
+    private onElementMutate(mutations: MutationRecord[]) {
+        for (const mutation of mutations) {
+            if (mutation.type === "attributes") {
+                this.update();
+            }
+        }
+    }
+}

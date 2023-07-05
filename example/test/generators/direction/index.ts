@@ -1,4 +1,4 @@
-import TickerSystem from "@ouroboros/ticker/system";
+import System from "@ouroboros/ticker/system";
 import { download, jsonToBinary } from "../download";
 
 type Frame = {
@@ -30,7 +30,7 @@ const snapshot: SnapshotData = {
     data: {},
 };
 
-const system = new TickerSystem(document.createElement("div"), {
+const system = new System(document.createElement("div"), {
     sizes: { ticker: snapshot.setup.tickerSize, item: snapshot.setup.itemSize },
     attributes: { direction: 0, speed: 1 },
 });

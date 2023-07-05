@@ -1,79 +1,80 @@
-import Basic from "test/pages/basic/Basic";
-import { Scene, clearScene } from "../scene";
-import { layoutGrid } from "../layout";
-import TickerSystem from "../system";
-
 import allDirectionsSnapshot from "./data/all_direction.json";
-import { simulateItem } from "../simulation";
+
+import { Scene } from "../scene";
+import { Simulation } from "../simulation";
 import { Item } from "../item";
+import { LiveAttributes, LiveSize } from "../context";
+import { angleToDirection } from "../math";
 
 describe("ticker", () => {
-    describe("container", () => {
-        afterEach(() => {
-            Basic.clearContent();
-        });
+    describe("scene", () => {
         it("should find and remove a given item condition", async () => {
-            const container = new Scene<number>();
+            const scene = new Scene();
 
-            // create 3 numbers and try to find them out-of-order
-            const testNum1 = 123;
-            const testNum2 = 456;
-            const testNum3 = 789;
+            // create 3 items and try to find them out-of-order
+            const testItem1 = new Item({ x: 0, y: 0 });
+            const testItem2 = new Item({ x: 1, y: 1 });
+            const testItem3 = new Item({ x: 2, y: 2 });
 
-            container.add(testNum1);
-            container.add(testNum2);
-            container.add(testNum3);
+            scene.add(testItem1);
+            scene.add(testItem2);
+            scene.add(testItem3);
 
-            let testNum1FindResult = container.find((n) => n === testNum1);
-            let testNum3FindResult = container.find((n) => n === testNum3);
-            let testNum2FindResult = container.find((n) => n === testNum2);
+            let testNum1FindResult = scene.find((n) => n === testItem1);
+            let testNum3FindResult = scene.find((n) => n === testItem3);
+            let testNum2FindResult = scene.find((n) => n === testItem2);
 
-            expect(testNum1FindResult[0]).toEqual(testNum1);
-            expect(testNum2FindResult[0]).toEqual(testNum2);
-            expect(testNum3FindResult[0]).toEqual(testNum3);
+            expect(testNum1FindResult[0]).toEqual(testItem1);
+            expect(testNum2FindResult[0]).toEqual(testItem2);
+            expect(testNum3FindResult[0]).toEqual(testItem3);
 
             // now delete these numbers and see if we actually removed them
-            container.delete(testNum2FindResult[0]);
-            testNum2FindResult = container.find((n) => n === testNum2);
+            scene.delete(testNum2FindResult[0]);
+            testNum2FindResult = scene.find((n) => n === testItem2);
             expect(0 in testNum2FindResult).toBeFalsy();
 
-            container.delete(testNum3FindResult[0]);
-            testNum3FindResult = container.find((n) => n === testNum3);
+            scene.delete(testNum3FindResult[0]);
+            testNum3FindResult = scene.find((n) => n === testItem3);
             expect(0 in testNum3FindResult).toBeFalsy();
 
-            container.delete(testNum1FindResult[0]);
-            testNum1FindResult = container.find((n) => n === testNum1);
+            scene.delete(testNum1FindResult[0]);
+            testNum1FindResult = scene.find((n) => n === testItem1);
             expect(0 in testNum1FindResult).toBeFalsy();
         });
-        it("should delete objects only if they're in the container", async () => {
-            const testContainer = new Scene<{ n: number }>();
 
-            const testObject = { n: 123 };
+        it("should delete objects only if they're in the scene", async () => {
+            const testContainer = new Scene();
+
+            const testObject = new Item({ x: 123, y: 123 });
             testContainer.add(testObject);
 
             // a similar object, but not the same reference
-            testContainer.delete({ n: 123 });
-            const case1 = testContainer.find((object) => object.n === 123);
+            testContainer.delete(new Item());
+            const case1 = testContainer.find(
+                (object) => object.position.x === 123
+            );
             expect(0 in case1).toBeTruthy();
 
             // should remove the test object now
             testContainer.delete(testObject);
-            const case2 = testContainer.find((object) => object.n === 123);
+            const case2 = testContainer.find(
+                (object) => object.position.x === 123
+            );
             expect(0 in case2).toBeFalsy();
         });
-        it("should clear all contents in a container", async () => {
-            const container = new Scene<{ n: number }>();
+        it("should clear all contents in a scene", async () => {
+            const scene = new Scene();
 
             // add some numbers, try to clear it all
-            container.add({ n: 1 });
-            container.add({ n: 2 });
-            container.add({ n: 3 });
+            scene.add(new Item({ x: 1, y: 0 }));
+            scene.add(new Item({ x: 2, y: 0 }));
+            scene.add(new Item({ x: 3, y: 0 }));
 
-            clearScene(container);
+            scene.clear();
 
-            const testCase1 = container.find((obj) => obj.n === 1);
-            const testCase2 = container.find((obj) => obj.n === 1);
-            const testCase3 = container.find((obj) => obj.n === 1);
+            const testCase1 = scene.find((obj) => obj.position.x === 1);
+            const testCase2 = scene.find((obj) => obj.position.x === 2);
+            const testCase3 = scene.find((obj) => obj.position.x === 3);
 
             expect(0 in testCase1).toBeFalsy();
             expect(0 in testCase2).toBeFalsy();
@@ -81,137 +82,145 @@ describe("ticker", () => {
         });
     });
 
-    describe("layout", () => {
-        afterEach(() => {
-            Basic.clearContent();
+    describe("item", () => {
+        it("can move given speed and direction", async () => {
+            const item = new Item();
+
+            item.move(angleToDirection(0), 1);
+            expect(item.position.x).toBeCloseTo(1);
+            expect(item.position.y).toBeCloseTo(0);
+            item.move(angleToDirection(90), 1);
+            expect(item.position.x).toBeCloseTo(1);
+            expect(item.position.y).toBeCloseTo(-1);
+            item.move(angleToDirection(180), 1);
+            expect(item.position.x).toBeCloseTo(0);
+            expect(item.position.y).toBeCloseTo(-1);
+            item.move(angleToDirection(270), 1);
+            expect(item.position.x).toBeCloseTo(0);
+            expect(item.position.y).toBeCloseTo(0);
         });
 
-        it("should layout a grid of items", async () => {
-            const testItemSize = { width: 123, height: 123 };
-            const testContainerSize = { width: 300, height: 300 };
-            const testContainer = new Scene<Positionable>();
+        it("can loop its position around a given rectangle", async () => {
+            const item = new Item(undefined, { width: 2, height: 1 });
+            const limits = { horizontal: 3, vertical: 3 };
 
-            const resultContainer = new Scene<Positionable>();
-            const RESULT = [
-                { position: { x: 0, y: 0 } },
-                {
-                    position: {
-                        x: 123,
-                        y: 0,
-                    },
-                },
-                {
-                    position: {
-                        x: 246,
-                        y: 0,
-                    },
-                },
-                {
-                    position: {
-                        x: 0,
-                        y: 123,
-                    },
-                },
-                {
-                    position: {
-                        x: 123,
-                        y: 123,
-                    },
-                },
-                {
-                    position: {
-                        x: 246,
-                        y: 123,
-                    },
-                },
-                {
-                    position: {
-                        x: 0,
-                        y: 246,
-                    },
-                },
-                {
-                    position: {
-                        x: 123,
-                        y: 246,
-                    },
-                },
-                {
-                    position: {
-                        x: 246,
-                        y: 246,
-                    },
-                },
-            ];
-            for (const resultPosObj of RESULT) {
-                resultContainer.add(resultPosObj);
-            }
+            // should loop if it reaches the limit in the right direction
+            item.position.x = 3;
+            item.loop(limits, angleToDirection(0));
+            expect(item.position.x).toBeCloseTo(-2);
 
-            // simulate creation of grid
-            for (let i = 0; i < 9; i++) {
-                testContainer.add({
-                    position: {
-                        x: 0,
-                        y: 0,
-                    },
-                });
-            }
+            // shouldn't change position if the direction is opposite
+            item.position.x = 3;
+            item.loop(limits, angleToDirection(180));
+            expect(item.position.x).toBeCloseTo(3);
 
-            layoutGrid(testContainer, {
-                gridRect: {
-                    width: testContainerSize.width,
-                    height: testContainerSize.height,
-                },
-                itemRect: {
-                    width: testItemSize.width,
-                    height: testItemSize.height,
-                },
-                repetitions: {
-                    horizontal: 3,
-                    vertical: 3,
-                },
-            });
+            // now it should change its position considering this direction
+            item.position.x = -2;
+            item.loop(limits, angleToDirection(180));
+            expect(item.position.x).toBeCloseTo(3);
 
-            // go through our expected grid layout and see if our testContainer
-            // did generate a match
-            for (const resultPosObj of resultContainer.contents) {
-                const matchedPosObj = testContainer.find((rect) => {
-                    return (
-                        resultPosObj.position.x === rect.position.x &&
-                        resultPosObj.position.y === rect.position.y
-                    );
-                });
+            // now it should change its position vertically
+            item.position.y = -1;
+            item.loop(limits, angleToDirection(90));
+            expect(item.position.y).toBeCloseTo(3);
 
-                expect(matchedPosObj[0]).toEqual(resultPosObj);
-            }
+            // now it shouldn't change its position given an opposing direction
+            item.position.y = -1;
+            item.loop(limits, angleToDirection(270));
+            expect(item.position.y).toBeCloseTo(-1);
+
+            // now following the opposing direction, it should change its position
+            item.position.y = 3;
+            item.loop(limits, angleToDirection(270));
+            expect(item.position.y).toBeCloseTo(-1);
         });
     });
 
-    describe("system", () => {
-        it("should update a system deterministically over time", async () => {
-            // we create a repeating pattern over a small box
-            const tSizes = {
-                ticker: allDirectionsSnapshot.setup.tickerSize,
-                item: allDirectionsSnapshot.setup.itemSize,
-            };
-            const tAttr = {
-                speed: 1,
-                direction: 0,
-            };
-
-            const system = new TickerSystem({
-                sizes: tSizes,
-                attributes: tAttr,
-                dom: {
-                    root: document.createElement("div"),
-                    template: document.createDocumentFragment(),
-                },
+    describe("simulation", () => {
+        it("should fill and layout a grid of items", async () => {
+            const scene = new Scene();
+            const sizes = new LiveSize({
+                root: { width: 1188, height: 660 },
+                item: { width: 396, height: 132 },
             });
+            const attr = new LiveAttributes();
+            const simulation = new Simulation(sizes, attr, scene);
+
+            const resultScene = new Scene();
+            const RESULT = [
+                { position: { x: -396, y: -132 } },
+                { position: { x: 0, y: -132 } },
+                { position: { x: 396, y: -132 } },
+                { position: { x: 792, y: -132 } },
+                { position: { x: 1188, y: -132 } },
+                { position: { x: -396, y: 0 } },
+                { position: { x: 0, y: 0 } },
+                { position: { x: 396, y: 0 } },
+                { position: { x: 792, y: 0 } },
+                { position: { x: 1188, y: 0 } },
+                { position: { x: -396, y: 132 } },
+                { position: { x: 0, y: 132 } },
+                { position: { x: 396, y: 132 } },
+                { position: { x: 792, y: 132 } },
+                { position: { x: 1188, y: 132 } },
+                { position: { x: -396, y: 264 } },
+                { position: { x: 0, y: 264 } },
+                { position: { x: 396, y: 264 } },
+                { position: { x: 792, y: 264 } },
+                { position: { x: 1188, y: 264 } },
+                { position: { x: -396, y: 396 } },
+                { position: { x: 0, y: 396 } },
+                { position: { x: 396, y: 396 } },
+                { position: { x: 792, y: 396 } },
+                { position: { x: 1188, y: 396 } },
+                { position: { x: -396, y: 528 } },
+                { position: { x: 0, y: 528 } },
+                { position: { x: 396, y: 528 } },
+                { position: { x: 792, y: 528 } },
+                { position: { x: 1188, y: 528 } },
+                { position: { x: -396, y: 660 } },
+                { position: { x: 0, y: 660 } },
+                { position: { x: 396, y: 660 } },
+                { position: { x: 792, y: 660 } },
+                { position: { x: 1188, y: 660 } },
+            ];
+            for (const resultPosObj of RESULT) {
+                resultScene.add(new Item(resultPosObj.position, sizes.item));
+            }
+
+            simulation.fill();
+            simulation.layout();
+
+            // go through our expected grid layout and see if our testContainer
+            // did generate a match
+            for (const resultPosObj of resultScene.contents) {
+                const matchedPosObj = scene.find((item) => {
+                    return (
+                        resultPosObj.position.x === item.position.x &&
+                        resultPosObj.position.y === item.position.y
+                    );
+                });
+
+                expect(matchedPosObj[0].position).toEqual(
+                    resultPosObj.position
+                );
+            }
+        });
+
+        it("should update a simulation deterministically over time", async () => {
+            // we create a repeating pattern over a small box
+            const sizes = new LiveSize({
+                root: allDirectionsSnapshot.setup.tickerSize,
+                item: allDirectionsSnapshot.setup.itemSize,
+            });
+            const attr = new LiveAttributes({ speed: 1, direction: 0 });
+            const scene = new Scene();
+            const simulation = new Simulation(sizes, attr, scene);
 
             // restart the system over 360 degrees
             for (let theta = 0; theta <= 360; theta++) {
-                system.updateAttributes({ direction: theta });
-                system.start(); // start won't start if not stopped. have to start to stop...
+                simulation.updateAttribute({ direction: theta });
+                simulation.setup(); // start won't start if not stopped. have to start to stop...
 
                 // keep track of each step of the animation updates
                 const testMotionFrames = [];
@@ -224,10 +233,10 @@ describe("ticker", () => {
                 ) {
                     const dt = i * allDirectionsSnapshot.setup.dt;
                     t += dt;
-                    system.update(dt, t);
+                    simulation.step(dt, t);
                 }
 
-                for (const item of system.scene.contents) {
+                for (const item of scene.contents) {
                     testMotionFrames.push({
                         x: item.position.x.toFixed(2),
                         y: item.position.y.toFixed(2),
@@ -240,8 +249,6 @@ describe("ticker", () => {
                     return xOrder;
                 });
 
-                system.stop(); // resets position
-
                 // have to fix type errors
                 const testData: {
                     [key: string]: { frames: { x: string; y: string }[] };
@@ -253,105 +260,49 @@ describe("ticker", () => {
         });
 
         it("should react to changes in size", async () => {
-            const tSizes = {
-                ticker: { width: 10, height: 10 },
+            const scene = new Scene();
+            const sizes = new LiveSize({
+                root: { width: 10, height: 10 },
                 item: { width: 10, height: 10 },
-            };
-
-            const tProps = {
+            });
+            const attr = new LiveAttributes({
                 direction: 0,
                 speed: 1,
-            };
-
-            const system = new TickerSystem({
-                sizes: tSizes,
-                attributes: tProps,
-                dom: {
-                    root: document.createElement("div"),
-                    template: new DocumentFragment(),
-                },
             });
+            const simulation = new Simulation(sizes, attr, scene);
 
-            system.start();
+            simulation.setup();
+
             // initial test
-            expect(system.scene.length).toEqual(9);
+            expect(scene.length).toEqual(9);
 
             // update ticker
-            tSizes.ticker = { width: 20, height: 20 };
-            system.updateSize(tSizes);
-            expect(system.scene.length).toEqual(16);
+            sizes.update({ root: { width: 20, height: 20 } });
+            simulation.updateSize(sizes);
+            expect(scene.length).toEqual(16);
 
             // return back
-            tSizes.ticker = { width: 10, height: 10 };
-            system.updateSize(tSizes);
-            expect(system.scene.length).toEqual(9);
+            sizes.update({ root: { width: 10, height: 10 } });
+            simulation.updateSize(sizes);
+            expect(scene.length).toEqual(9);
 
             // update item
-            tSizes.item = { width: 5, height: 5 };
-            system.updateSize(tSizes);
-            expect(system.scene.length).toEqual(16);
+            sizes.update({ item: { width: 5, height: 5 } });
+            simulation.updateSize(sizes);
+            expect(scene.length).toEqual(16);
 
             // update ticker on top of item
-            tSizes.ticker = { width: 20, height: 20 };
-            system.updateSize(tSizes);
-            expect(system.scene.length).toEqual(36);
+            sizes.update({ root: { width: 20, height: 20 } });
+            simulation.updateSize(sizes);
+            expect(scene.length).toEqual(36);
 
             // return back to normal
-            tSizes.ticker = { width: 10, height: 10 };
-            tSizes.item = { width: 10, height: 10 };
-            system.updateSize(tSizes);
-            expect(system.scene.length).toEqual(9);
-        });
-    });
-
-    describe("simulation", () => {
-        it("can override intended simulation motion in a callback", async () => {
-            const item = new Item();
-            const simulationData = {
-                sizes: {
-                    ticker: { width: 10, height: 10 },
-                    item: { width: 1, height: 1 },
-                },
-                direction: 0,
-                speed: 1,
-                t: 0,
-                dt: 0,
-            };
-
-            simulateItem(item, simulationData);
-
-            expect(item.position).toEqual({ x: 1, y: 0 });
-
-            // test using all values to override the start position, x direction, and speed
-            const overrideCallback: Parameters<typeof simulateItem>["2"] = ({
-                sizes,
-                item,
-                direction,
-                speed,
-            }) => {
-                item.position.x += Math.ceil(
-                    (sizes.ticker.width + sizes.item.width) / 2
-                );
-                item.position.y += Math.ceil(
-                    (sizes.ticker.height + sizes.item.height) / 2
-                );
-                direction.x = Math.cos(Math.PI);
-                direction.y = Math.sin(Math.PI);
-                speed.value = 2;
-            };
-
-            simulateItem(item, simulationData, overrideCallback);
-
-            expect(item.position).toEqual({ x: 5, y: 6 });
-
-            // simulate alterations in the y-direction
-            simulateItem(item, simulationData, ({ direction, item }) => {
-                item.position.y += 2;
-                direction.x = Math.cos((3 * Math.PI) / 2);
-                direction.y = Math.sin((3 * Math.PI) / 2);
+            sizes.update({
+                root: { width: 10, height: 10 },
+                item: { width: 10, height: 10 },
             });
-
-            expect(item.position).toEqual({ x: 5, y: 7 });
+            simulation.updateSize(sizes);
+            expect(scene.length).toEqual(9);
         });
     });
 });

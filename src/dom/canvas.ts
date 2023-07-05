@@ -83,13 +83,6 @@ export class Canvas {
         // update ticker size if we need to
         if (!isRectEqual(size, this.root.size)) {
             this.root.setSize(size);
-
-            // very unique hack
-            // by flushing the buffers and recreating all components
-            // it ends up being faster than triggering a reflow on all
-            // components to resync their states
-            this.swapBuffer();
-            this.swapBuffer();
         }
     }
 
@@ -103,8 +96,9 @@ export class Canvas {
      * @param item new data for {@link ItemComponent}
      * @param size new size for {@link ItemComponent}
      */
-    setItemComponent(component: ItemComponent, item: Item, size: Rect) {
-        if (!isRectEqual(size, component.size)) component.setSize(size);
+    setItemComponent(component: ItemComponent, item: Item) {
+        if (!isRectEqual(item.size, component.size))
+            component.setSize(item.size);
         component.setPosition(item.position);
 
         this.activeBuffer.set(component.id, component);
@@ -116,7 +110,7 @@ export class Canvas {
      * @param scene description of what to draw
      */
     draw(scene: Scene<Item>) {
-        this.updateRootComponent(scene.sizes.ticker);
+        this.updateRootComponent(scene.size);
 
         const itemQueue = [];
         for (const item of scene.contents) {
@@ -125,7 +119,7 @@ export class Canvas {
             if (!component) {
                 itemQueue.push(item);
             } else {
-                this.setItemComponent(component, item, scene.sizes.item);
+                this.setItemComponent(component, item);
             }
         }
 

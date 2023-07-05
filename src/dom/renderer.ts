@@ -2,6 +2,7 @@ import { Item } from "@ouroboros/ticker/item";
 import { Scene } from "@ouroboros/ticker/scene";
 import TickerComponent from "./components/ticker";
 import { Canvas } from "./canvas";
+import Context from "@ouroboros/ticker/context";
 
 /**
  * Takes in some contexts and provides an environment to
@@ -14,11 +15,11 @@ import { Canvas } from "./canvas";
 export class Renderer {
     private canvas: Canvas;
 
-    constructor(context: Ticker.Context) {
-        const template = context.dom.template;
+    constructor(context: Context) {
+        const template = context.template;
         const root = new TickerComponent();
-        root.setSize(context.sizes.ticker);
-        root.appendToDOM(context.dom.root);
+        root.setSize(context.sizes.root);
+        root.appendToDOM(context.root);
 
         this.canvas = new Canvas(root, template);
     }

@@ -70,7 +70,7 @@ export class Dimensions {
      * @returns assigned dimension or size
      */
     get(name: string): Rect | undefined {
-        return this.dimensions.get(name)?.rect;
+        return structuredClone(this.dimensions.get(name)?.rect);
     }
 
     /**

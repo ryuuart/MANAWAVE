@@ -6,6 +6,7 @@ import {
     measure,
 } from "../measure";
 import {
+    Attributes,
     convertDirection,
     extractOAttributes,
     mergeOOptions,
@@ -18,6 +19,7 @@ import Basic from "test/pages/basic/Basic";
 import { Item } from "@ouroboros/ticker/item";
 import { Canvas } from "../canvas";
 import { Scene } from "@ouroboros/ticker/scene";
+import Context from "@ouroboros/ticker/context";
 
 describe("dom", () => {
     afterEach(() => {
@@ -25,6 +27,20 @@ describe("dom", () => {
     });
 
     describe("unit", () => {
+        describe("context", () => {
+            it("should initialize a ticker for setup and modification", async () => {
+                Basic.loadContent();
+
+                const ctx = Context.setup(Basic.ticker!);
+
+                expect(ctx.root.children).toContain(ctx.itemMBox.element);
+
+                ctx.root.append(ctx.template);
+
+                await expect(await $(ctx.root)).toHaveChildren(4);
+            });
+        });
+
         describe("measurement", () => {
             it("should measure a dom element if rendered", async () => {
                 Square.loadContent();
@@ -167,7 +183,7 @@ describe("dom", () => {
                 // square's size should be different when square's size changed
                 Square.square!.style.width = "300px";
                 Square.square!.style.height = "500px";
-                (await $(Square.square!)).waitUntil(async function () {
+                await $(Square.square!).waitUntil(async function () {
                     return (
                         // @ts-ignore
                         (await this.getSize("width")) === 300 &&
@@ -178,6 +194,7 @@ describe("dom", () => {
                 expect(squareLog[1]).toEqual({ width: 300, height: 500 });
             });
         });
+
         describe("attribute", () => {
             it("convert strings to angle degrees", async () => {
                 const direction1 = "up";
@@ -246,6 +263,88 @@ describe("dom", () => {
                     direction: 123,
                 });
             });
+
+            it("should always return the most up-to-date attribute", async () => {
+                Square.loadContent();
+
+                const attr = new Attributes(Square.square!);
+
+                expect(attr.autoplay).toEqual(false);
+                expect(attr.speed).toEqual(1);
+                expect(attr.direction).toEqual(0);
+
+                // does changing attributes work?
+                Square.square!.setAttribute("autoplay", "true");
+                await $(Square.square!).waitUntil(async function () {
+                    //@ts-ignore
+                    return (await this.getAttribute("autoplay")) === "true";
+                });
+                expect(attr.autoplay).toEqual(true);
+
+                Square.square!.setAttribute("speed", "999");
+                await $(Square.square!).waitUntil(async function () {
+                    //@ts-ignore
+                    return (await this.getAttribute("speed")) === "999";
+                });
+                expect(attr.speed).toEqual(999);
+
+                Square.square!.setAttribute("direction", "999");
+                await $(Square.square!).waitUntil(async function () {
+                    //@ts-ignore
+                    return (await this.getAttribute("direction")) === "999";
+                });
+                expect(attr.direction).toEqual(999);
+            });
+
+            it("should react to changes in option override", async () => {
+                Square.loadContent();
+
+                const attr = new Attributes(Square.square!, {
+                    speed: 123,
+                    direction: 123,
+                });
+
+                // does override work?
+                Square.square!.setAttribute("speed", "999");
+                await $(Square.square!).waitUntil(async function () {
+                    //@ts-ignore
+                    return (await this.getAttribute("speed")) === "999";
+                });
+                expect(attr.speed).toEqual(123);
+
+                Square.square!.setAttribute("direction", "999");
+                await $(Square.square!).waitUntil(async function () {
+                    //@ts-ignore
+                    return (await this.getAttribute("direction")) === "999";
+                });
+                expect(attr.direction).toEqual(123);
+
+                // updated options should override element attributes
+                attr.update({ direction: "up" });
+                Square.square!.setAttribute("direction", "360");
+                await $(Square.square!).waitUntil(async function () {
+                    //@ts-ignore
+                    return (await this.getAttribute("direction")) === "360";
+                });
+                expect(attr.direction).toEqual(90);
+            });
+
+            it("should notify a change", async () => {
+                Square.loadContent();
+
+                let testDirection = 0;
+                const attr = new Attributes(Square.square!);
+                attr.onUpdate = ({ direction }) => {
+                    testDirection = direction;
+                };
+
+                Square.square!.setAttribute("direction", "left");
+                await $(Square.square!).waitUntil(async function () {
+                    //@ts-ignore
+                    return (await this.getAttribute("direction")) === "left";
+                });
+                expect(testDirection).toEqual(180);
+            });
         });
 
         describe("component", () => {
@@ -310,14 +409,11 @@ describe("dom", () => {
                 const template = new DocumentFragment();
                 const canvas = new Canvas(root, template);
 
-                const item = new Item();
+                const item = new Item(undefined, { width: 999, height: 999 });
                 const itemComponent = new ItemComponent(item);
 
                 item.position = { x: 999, y: 999 };
-                canvas.setItemComponent(itemComponent, item, {
-                    width: 999,
-                    height: 999,
-                });
+                canvas.setItemComponent(itemComponent, item);
 
                 expect(itemComponent.size).toEqual({ width: 999, height: 999 });
                 expect(itemComponent.position).toEqual({ x: 999, y: 999 });
@@ -326,6 +422,47 @@ describe("dom", () => {
     });
 
     describe("integration", () => {
+        describe("context", () => {
+            it("should update its root size", async () => {
+                Basic.loadContent();
+
+                const ctx = Context.setup(Basic.ticker!);
+                const sizes = ctx.sizes;
+
+                // initial size is right
+                expect(sizes.root).toEqual({ height: 600, width: 1188 });
+
+                // trigger a change
+                Basic.ticker!.style.width = "600px";
+                await $(Basic.ticker!).waitUntil(async function () {
+                    //@ts-ignore
+                    return (await this.getSize("width")) === 600;
+                });
+
+                // have to wait for the debounce
+                await browser.pause(300);
+
+                // changed size is right
+                expect(sizes.root).toEqual({ height: 600, width: 600 });
+            });
+
+            it("should update its attributes", async () => {
+                Basic.loadContent();
+
+                const ctx = Context.setup(Basic.ticker!);
+                const attr = ctx.attributes;
+
+                expect(attr.direction).toEqual(0);
+
+                Basic.ticker!.setAttribute("direction", "left");
+                await $(Basic.ticker!).waitUntil(async function () {
+                    //@ts-ignore
+                    return (await this.getAttribute("direction")) === "left";
+                });
+                expect(attr.direction).toEqual(180);
+            });
+        });
+
         describe("component", () => {
             it("should update its size on the page given new data", async () => {
                 const ticker = new TickerComponent();
@@ -342,10 +479,10 @@ describe("dom", () => {
                     }
                 );
 
-                expect(
+                await expect(
                     await $(`.${tickerStyles.container}`).getSize("width")
                 ).toEqual(999);
-                expect(
+                await expect(
                     await $(`.${tickerStyles.container}`).getSize("height")
                 ).toEqual(999);
 
@@ -360,10 +497,10 @@ describe("dom", () => {
                     }
                 );
 
-                expect(
+                await expect(
                     await $(`.${tickerStyles.container}`).getSize("width")
                 ).toEqual(100);
-                expect(
+                await expect(
                     await $(`.${tickerStyles.container}`).getSize("height")
                 ).toEqual(100);
             });
@@ -485,7 +622,7 @@ describe("dom", () => {
                 root.appendToDOM(domRoot);
 
                 const canvas = new Canvas(root, template);
-                const scene = new Scene<Item>();
+                const scene = new Scene();
                 scene.add(new Item());
 
                 canvas.draw(scene);
@@ -508,13 +645,14 @@ describe("dom", () => {
 
                 // lets draw an update on our scene, does it update
                 for (const items of scene.contents) {
+                    items.size = { width: 99, height: 99 };
                     items.position = { x: 999, y: 999 };
                 }
-                scene.sizes = {
-                    ticker: { width: 999, height: 999 },
-                    item: { width: 99, height: 99 },
-                };
+                scene.size = { width: 999, height: 999 };
                 canvas.draw(scene);
+
+                // have to wait for debounce
+                await browser.pause(300);
 
                 await expect(await itemPosition()).toEqual(
                     "matrix(1, 0, 0, 1, 999, 999)"

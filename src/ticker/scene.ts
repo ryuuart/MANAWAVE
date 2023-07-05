@@ -1,23 +1,18 @@
-export class Scene<T> {
-    private _store: Set<T>;
-    private _sizes: Ticker.Sizes;
+import { Item } from "./item";
 
-    constructor(sizes?: Ticker.Sizes) {
+export class Scene {
+    private _store: Set<Item>;
+    private _size: Rect;
+
+    constructor() {
         this._store = new Set();
-
-        // hard-coded sizes because these are the only global sizes we'll have
-        this._sizes = {
-            ticker: { width: 0, height: 0 },
-            item: { width: 0, height: 0 },
-        };
-
-        if (sizes) this._sizes = structuredClone(sizes);
+        this._size = { width: 0, height: 0 };
     }
 
     /**
      * Get an iterable of the container's current content
      */
-    get contents(): IterableIterator<T> {
+    get contents(): IterableIterator<Item> {
         return this._store.values();
     }
 
@@ -31,22 +26,22 @@ export class Scene<T> {
     /**
      * Get the current shared size of all scene objects
      */
-    get sizes(): Ticker.Sizes {
-        return structuredClone(this._sizes);
+    get size(): Rect {
+        return this._size;
     }
 
     /**
      * Updates the current shared size of all scene objects
      */
-    set sizes(sizes: Partial<Ticker.Sizes>) {
-        this._sizes = { ...this._sizes, ...sizes };
+    set size(sizes: Rect) {
+        this._size = sizes;
     }
 
     /**
      * Adds a given object into the container
      * @param object object to add into the container
      */
-    add(object: T) {
+    add(object: Item) {
         this._store.add(object);
     }
 
@@ -55,7 +50,7 @@ export class Scene<T> {
      * @param object observed object
      * @returns if observed object is found or not
      */
-    has(object: T): boolean {
+    has(object: Item): boolean {
         return this._store.has(object);
     }
 
@@ -70,8 +65,18 @@ export class Scene<T> {
      *
      * @param object an object in the container
      */
-    delete(object: T) {
+    delete(object: Item) {
         this._store.delete(object);
+    }
+
+    /**
+     * Clears all contents of a container
+     * @param container a container with any number of objects inside
+     */
+    clear() {
+        for (const object of this._store) {
+            this._store.delete(object);
+        }
     }
 
     /**
@@ -79,23 +84,12 @@ export class Scene<T> {
      * @param callback a predicate ran against all objects in the container
      * @returns a list of found objects
      */
-    find(callback: (object: T) => boolean): T[] {
-        const objects: T[] = [];
+    find(callback: (object: Item) => boolean): Item[] {
+        const objects: Item[] = [];
         for (const object of this._store) {
             if (callback(object)) objects.push(object);
         }
 
         return objects;
-    }
-}
-
-/**
- * Clears all contents of a container
- * @param container a container with any number of objects inside
- */
-export function clearScene<T>(container: Scene<T>) {
-    const contents = container.contents;
-    for (const object of contents) {
-        container.delete(object);
     }
 }
