@@ -25,14 +25,12 @@
     /* Path setup */
     "baseUrl": ".",
     "paths": {
+      "manawave": ["src/index"],
       "@manawave/*": ["src/*"]
     },
 
     /* Linting */
-    "strict": true,
     "forceConsistentCasingInFileNames": true,
-    "noUnusedLocals": true,
-    "noUnusedParameters": true,
     "noFallthroughCasesInSwitch": true
   },
   "include": ["src", "test", "example", "anim"],

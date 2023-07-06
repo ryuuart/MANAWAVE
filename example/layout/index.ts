@@ -1,4 +1,10 @@
-import { Ouroboros } from "../../src";
+import { MW } from "manawave";
+
+const ob = new MW("#dom-base", {
+    autoplay: true,
+    direction: "345",
+    speed: 2,
+});
 
 const mousePos = {
     x: 0,
@@ -8,10 +14,4 @@ const mousePos = {
 window.addEventListener("mousemove", (ev) => {
     mousePos.x = ev.x;
     mousePos.y = ev.y;
-});
-
-const ob = new Ouroboros("#dom-base", {
-    autoplay: true,
-    direction: "345",
-    speed: 2,
 });
