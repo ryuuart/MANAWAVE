@@ -29,7 +29,7 @@ export class Renderer {
      * @see {@link Canvas} for context how this is done
      * @param scene scene to render onto the DOM
      */
-    render(scene: Scene<Item>) {
+    render(scene: Scene) {
         this.canvas.draw(scene);
     }
 }
