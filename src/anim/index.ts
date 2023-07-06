@@ -1,4 +1,4 @@
-import AnimationController from "@ouroboros/anim/AnimationController";
+import AnimationController from "@manawave/anim/AnimationController";
 import System from "./System";
 
 export { System, AnimationController };

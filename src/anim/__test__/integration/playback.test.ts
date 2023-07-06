@@ -1,6 +1,6 @@
-import { System } from "@ouroboros/anim";
-import AnimationController from "@ouroboros/anim/AnimationController";
-import { Position, lerp, setTranslate } from "@ouroboros/anim/__test__/Util";
+import { System } from "@manawave/anim";
+import AnimationController from "@manawave/anim/AnimationController";
+import { Position, lerp, setTranslate } from "@manawave/anim/__test__/Util";
 import Basic from "test/pages/basic/Basic";
 import Square from "test/pages/square/Square";
 

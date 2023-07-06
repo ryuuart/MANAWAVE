@@ -1,10 +1,10 @@
-import { Ouroboros } from "../ouroboros";
+import { MW } from "../manawave";
 
 /**
  * HTML custom element (with no shadowroot) that contains the repeated elements
  */
 export default class WebComponent extends HTMLElement {
-    private ouroboros: Ouroboros | undefined | null;
+    private ouroboros: MW | undefined | null;
 
     constructor() {
         super();
@@ -12,7 +12,7 @@ export default class WebComponent extends HTMLElement {
 
     connectedCallback() {
         if (this.isConnected) {
-            this.ouroboros = new Ouroboros(this);
+            this.ouroboros = new MW(this);
         }
     }
 

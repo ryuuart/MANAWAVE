@@ -1,3 +1,3 @@
-import { Ouroboros } from "@ouroboros/index";
+import { Ouroboros } from "@manawave/index";
 
 Ouroboros;

@@ -1,8 +1,8 @@
-import { isRectEqual } from "@ouroboros/utils/rect";
+import { isRectEqual } from "@manawave/utils/rect";
 import ItemComponent from "./components/item";
 import TickerComponent from "./components/ticker";
-import { Item } from "@ouroboros/ticker/item";
-import { Scene } from "@ouroboros/ticker/scene";
+import { Item } from "@manawave/ticker/item";
+import { Scene } from "@manawave/ticker/scene";
 
 /**
  * Contains all logic for displaying visual data for a Ticker

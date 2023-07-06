@@ -1,8 +1,8 @@
-import { Attributes } from "@ouroboros/dom/attributes";
-import WebComponent from "@ouroboros/dom/element";
-import { Dimensions, MeasurementBox } from "@ouroboros/dom/measure";
+import { Attributes } from "@manawave/dom/attributes";
+import WebComponent from "@manawave/dom/element";
+import { Dimensions, MeasurementBox } from "@manawave/dom/measure";
 import styles from "../dom/styles/ouroboros.module.css";
-import { debounce } from "@ouroboros/utils/debounce";
+import { debounce } from "@manawave/utils/debounce";
 
 /**
  * Represents the current external, browser-facing state
@@ -31,7 +31,7 @@ export default class Context {
      */
     static setup(
         selector: Parameters<Document["querySelector"]>[0] | HTMLElement,
-        options: Partial<Ouroboros.Options> = {}
+        options: Partial<manawave.Options> = {}
     ): Context {
         let selected;
         if (selector instanceof HTMLElement) selected = selector;
@@ -53,7 +53,7 @@ export default class Context {
         root: HTMLElement,
         mBox: MeasurementBox,
         template: DocumentFragment,
-        options: Partial<Ouroboros.Options>
+        options: Partial<manawave.Options>
     ) {
         this._root = root;
         this._mBox = mBox;

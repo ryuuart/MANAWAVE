@@ -1,5 +1,5 @@
 import { AnimationController } from "./anim";
-import { Ouroboros } from "./ouroboros";
+import { MW } from "./manawave";
 import WebComponent from "./dom/element";
 import "./dom/styles/styles.css";
 
@@ -9,4 +9,4 @@ if (!customElements.get("ouroboros-ticker")) {
 
 AnimationController.start();
 
-export { Ouroboros };
+export { MW };

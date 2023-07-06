@@ -1,4 +1,4 @@
-import System from "@ouroboros/ticker/system";
+import System from "@manawave/ticker/system";
 import { download, jsonToBinary } from "../download";
 
 type Frame = {

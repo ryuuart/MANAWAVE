@@ -1,4 +1,4 @@
-import { uid } from "@ouroboros/utils/uid";
+import { uid } from "@manawave/utils/uid";
 import { setSize } from "./utils";
 
 /**

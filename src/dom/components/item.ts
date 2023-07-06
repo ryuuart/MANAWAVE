@@ -1,4 +1,4 @@
-import { Item } from "@ouroboros/ticker/item";
+import { Item } from "@manawave/ticker/item";
 import { Component } from "../component";
 import styles from "../styles/item.module.css";
 export default class ItemComponent extends Component {

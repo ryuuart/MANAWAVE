@@ -1,4 +1,4 @@
-import PlaybackObject from "@ouroboros/anim/PlaybackObject";
+import PlaybackObject from "@manawave/anim/PlaybackObject";
 
 describe("player", () => {
     it("should call the playback hooks", async () => {

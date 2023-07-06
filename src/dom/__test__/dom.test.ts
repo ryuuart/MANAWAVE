@@ -16,10 +16,10 @@ import ItemComponent from "../components/item";
 import tickerStyles from "../styles/ticker.module.css";
 import itemStyles from "../styles/item.module.css";
 import Basic from "test/pages/basic/Basic";
-import { Item } from "@ouroboros/ticker/item";
+import { Item } from "@manawave/ticker/item";
 import { Canvas } from "../canvas";
-import { Scene } from "@ouroboros/ticker/scene";
-import Context from "@ouroboros/ticker/context";
+import { Scene } from "@manawave/ticker/scene";
+import Context from "@manawave/ticker/context";
 
 describe("dom", () => {
     afterEach(() => {

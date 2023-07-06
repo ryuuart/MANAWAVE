@@ -17,7 +17,7 @@ type DirectionalCount = {
     vertical: number;
 };
 
-namespace Ouroboros {
+namespace manawave {
     type Options = {
         autoplay: boolean;
         direction: "up" | "right" | "down" | "left" | string | number;
@@ -34,14 +34,5 @@ namespace Ticker {
     type Attributes = {
         speed: number;
         direction: number;
-    };
-
-    type Context = {
-        dom: {
-            root: HTMLElement;
-            template: DocumentFragment;
-        };
-        attributes: Ticker.Attributes;
-        sizes: Ticker.Sizes;
     };
 }

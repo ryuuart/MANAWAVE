@@ -1,8 +1,8 @@
-import { Item } from "@ouroboros/ticker/item";
-import { Scene } from "@ouroboros/ticker/scene";
+import { Item } from "@manawave/ticker/item";
+import { Scene } from "@manawave/ticker/scene";
 import TickerComponent from "./components/ticker";
 import { Canvas } from "./canvas";
-import Context from "@ouroboros/ticker/context";
+import Context from "@manawave/ticker/context";
 
 /**
  * Takes in some contexts and provides an environment to

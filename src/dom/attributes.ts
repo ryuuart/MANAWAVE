@@ -7,8 +7,8 @@
  */
 export function extractOAttributes(
     element: HTMLElement
-): Partial<Ouroboros.Options> {
-    const result: Partial<Ouroboros.Options> = {};
+): Partial<manawave.Options> {
+    const result: Partial<manawave.Options> = {};
 
     const autoplay = element.getAttribute("autoplay");
     if (autoplay) result.autoplay = autoplay.toLowerCase() === "true";
@@ -33,7 +33,7 @@ export function extractOAttributes(
  * @returns the direction in angle degrees
  */
 export function convertDirection(
-    direction: Ouroboros.Options["direction"]
+    direction: manawave.Options["direction"]
 ): number {
     if (typeof direction === "number") return direction;
 
@@ -69,9 +69,9 @@ export function convertDirection(
  */
 export function mergeOOptions(
     element: HTMLElement,
-    options?: Partial<Ouroboros.Options>
-): Ouroboros.Options {
-    const currProps: Ouroboros.Options = {
+    options?: Partial<manawave.Options>
+): manawave.Options {
+    const currProps: manawave.Options = {
         autoplay: false,
         speed: 1,
         direction: 0,
@@ -92,7 +92,7 @@ export function mergeOOptions(
 export class Attributes {
     private observer: MutationObserver;
     private target: HTMLElement;
-    private options: Partial<Ouroboros.Options>;
+    private options: Partial<manawave.Options>;
 
     private _autoplay: boolean;
     private _speed: number;
@@ -104,7 +104,7 @@ export class Attributes {
         direction: number;
     }) => void;
 
-    constructor(target: HTMLElement, options: Partial<Ouroboros.Options> = {}) {
+    constructor(target: HTMLElement, options: Partial<manawave.Options> = {}) {
         this.target = target;
         this.options = options;
         this._autoplay = false;
@@ -128,7 +128,7 @@ export class Attributes {
      *
      * @param options updates the current overriding options
      */
-    update(options?: Partial<Ouroboros.Options>) {
+    update(options?: Partial<manawave.Options>) {
         this.options = { ...this.options, ...options };
         const values = mergeOOptions(this.target, this.options);
 

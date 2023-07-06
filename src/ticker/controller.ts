@@ -1,7 +1,7 @@
-import { AnimationController } from "@ouroboros/anim";
+import { AnimationController } from "@manawave/anim";
 import Context, { LiveAttributes, LiveSize } from "./context";
 import System from "./system";
-import PlaybackObject from "@ouroboros/anim/PlaybackObject";
+import PlaybackObject from "@manawave/anim/PlaybackObject";
 
 export default class Controller extends PlaybackObject {
     private _context: Context;

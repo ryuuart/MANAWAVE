@@ -1,7 +1,7 @@
-import { System } from "@ouroboros/anim";
+import { System } from "@manawave/anim";
 import { Scene } from "./scene";
 import { Simulation } from "./simulation";
-import { Renderer } from "@ouroboros/dom/renderer";
+import { Renderer } from "@manawave/dom/renderer";
 import Context from "./context";
 
 export default class TickerSystem extends System {

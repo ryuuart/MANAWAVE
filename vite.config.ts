@@ -14,8 +14,8 @@ export default defineConfig({
     build: {
         lib: {
             entry: resolve(_dirname, "src/index.ts"),
-            name: "Ouroboros",
-            fileName: "ouroboros",
+            name: "manawave",
+            fileName: "manawave",
         },
         rollupOptions: {
             input: {

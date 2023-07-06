@@ -2,12 +2,12 @@ import PlaybackObject from "./anim/PlaybackObject";
 import Controller from "./ticker/controller";
 import Context from "./ticker/context";
 
-export class Ouroboros extends PlaybackObject {
+export class MW extends PlaybackObject {
     private _controller: Controller;
 
     constructor(
         selector: Parameters<Document["querySelector"]>[0] | HTMLElement,
-        options?: Partial<Ouroboros.Options>
+        options?: Partial<manawave.Options>
     ) {
         super();
 

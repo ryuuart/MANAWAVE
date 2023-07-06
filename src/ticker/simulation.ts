@@ -1,4 +1,4 @@
-import { getRepetitions } from "@ouroboros/dom/measure";
+import { getRepetitions } from "@manawave/dom/measure";
 import { accumulateVec2, angleToDirection } from "./math";
 import { Item } from "./item";
 import { LiveAttributes, LiveSize } from "./context";

@@ -1,4 +1,4 @@
-import { System } from "@ouroboros/anim";
+import { System } from "@manawave/anim";
 
 /**
  * A blank system that simulates a real system by modifying a string
