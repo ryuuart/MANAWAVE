@@ -1,0 +1,76 @@
+:root {
+  --color-black: black;
+  --color-pink: deeppink;
+  --color-white: white;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+
+  font-family: serif;
+  font-size: xx-large;
+  font-weight: bold;
+
+  background-color: var(--color-background);
+  color: var(--color-text);
+}
+
+main {
+  position: relative;
+}
+
+main > * {
+  position: relative;
+  z-index: 1;
+}
+
+.petal-field--container {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 0;
+
+  width: 100vw;
+  height: 100vh;
+}
+
+.petal-field--petal {
+  writing-mode: vertical-lr;
+  height: 10ch;
+  margin: 1rem;
+}
+
+@media screen and (prefers-color-scheme: dark) {
+  body {
+    --color-background: var(--color-black);
+    --color-text: var(--color-pink);
+    text-shadow: -1px -1px 0 var(--color-pink), 1px -1px 0 var(--color-pink),
+      -1px 1px 0 var(--color-pink), 1px 1px 0 var(--color-pink);
+  }
+  body.light-theme {
+    --color-background: var(--color-pink);
+    --color-text: var(--color-black);
+    text-shadow: -1px -1px 0 var(--color-pink), 1px -1px 0 var(--color-pink),
+      -1px 1px 0 var(--color-pink), 1px 1px 0 var(--color-pink);
+  }
+}
+
+@media screen and (prefers-color-scheme: light) {
+  body {
+    --color-background: var(--color-white);
+    --color-text: var(--color-black);
+    text-shadow: -1px -1px 0 var(--color-pink), 1px -1px 0 var(--color-pink),
+      -1px 1px 0 var(--color-pink), 1px 1px 0 var(--color-pink);
+  }
+
+  body.dark-theme {
+    --color-background: var(--color-black);
+    --color-text: var(--color-white);
+    text-shadow: -1px -1px 0 var(--color-pink), 1px -1px 0 var(--color-pink),
+      -1px 1px 0 var(--color-pink), 1px 1px 0 var(--color-pink);
+  }
+}

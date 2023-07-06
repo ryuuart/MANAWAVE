@@ -16,8 +16,10 @@ import { Scene } from "./scene";
  */
 function getTRepetitions(container: Rect, repeatable: Rect): DirectionalCount {
     const repetitions = getRepetitions(container, repeatable);
-    repetitions.horizontal += 2;
-    repetitions.vertical += 2;
+    if (repetitions.horizontal === 0) repetitions.horizontal += 2;
+    else repetitions.horizontal += 1;
+    if (repetitions.vertical === 0) repetitions.vertical += 2;
+    else repetitions.vertical += 1;
 
     return repetitions;
 }
@@ -195,31 +197,11 @@ export class Simulation {
      */
     step(dt: DOMHighResTimeStamp, t: DOMHighResTimeStamp) {
         for (const item of this._scene.contents) {
-            // start measuring changes in actual direction
-            const accumulateDirection = makeDirectionAccumulator();
-            const initialPosition = item.position;
-            let actualDirection = { x: 0, y: 0 };
-
-            // override
-
-            // measure a directional change if the override induced a
-            // change in direction
-            actualDirection = accumulateDirection(
-                initialPosition,
-                item.position
-            );
-
             // actually move the item
             item.move(this._intendedDirection, this._attributes.speed);
 
-            // measure a directional change from the recent movement
-            actualDirection = accumulateDirection(
-                actualDirection,
-                item.position
-            );
-
             // if the movement caused the item to go out-of-bounds, loop it
-            item.loop(this._limits, actualDirection);
+            item.loop(this._limits, this._intendedDirection);
 
             // age the item
             item.lifetime += dt;
