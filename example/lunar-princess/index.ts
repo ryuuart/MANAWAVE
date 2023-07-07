@@ -1,8 +1,12 @@
-import { MW } from "manawave";
+import { getMW } from "manawave";
 
 window.addEventListener("load", () => {
-    const themeBtn = document.getElementById("theme-btn");
-    themeBtn.addEventListener("click", () => {
+    const themeBtnElement = document.getElementById("theme-btn")!;
+    const petalFieldElement = document.getElementById("petal-field")!;
+
+    const mw = getMW(petalFieldElement)!;
+
+    themeBtnElement.addEventListener("click", () => {
         const prefersDarkScheme = window.matchMedia(
             "(prefers-color-scheme: dark)"
         );
