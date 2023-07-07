@@ -30,7 +30,10 @@
     },
 
     /* Linting */
+    "strict": true,
     "forceConsistentCasingInFileNames": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
     "noFallthroughCasesInSwitch": true
   },
   "include": ["src", "test", "example", "anim"],
