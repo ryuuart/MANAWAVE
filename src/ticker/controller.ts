@@ -16,9 +16,7 @@ export default class Controller extends PlaybackObject {
 
         this._system = new System(this._context);
 
-        this.init();
-
-        if (this._context.attributes.autoplay) this._system.play();
+        this.start();
     }
 
     onResize(size: LiveSize) {
@@ -29,22 +27,24 @@ export default class Controller extends PlaybackObject {
         this._system.updateAttributes(attr);
     }
 
-    onPause(): void {
+    protected onPause(): void {
         this._system.pause();
     }
 
-    onPlay(): void {
+    protected onPlay(): void {
         this._system.play();
     }
 
-    init() {
+    protected onStart() {
         this._system.start();
-        this._system.pause();
+        if (!this._context.attributes.autoplay) this._system.pause();
+
         AnimationController.registerSystem(this._system);
     }
 
-    deinit() {
+    protected onStop() {
         this._system.stop();
+        console.log("stopped");
         AnimationController.deregisterSystem(this._system);
     }
 }

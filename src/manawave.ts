@@ -1,9 +1,11 @@
 import PlaybackObject from "./anim/PlaybackObject";
 import Controller from "./ticker/controller";
 import Context from "./ticker/context";
+import MWM from "./MWM";
 
 export class MW extends PlaybackObject {
     private _controller: Controller;
+    private _context: Context;
 
     constructor(
         selector: Parameters<Document["querySelector"]>[0] | HTMLElement,
@@ -11,15 +13,29 @@ export class MW extends PlaybackObject {
     ) {
         super();
 
-        const context = Context.setup(selector, options);
-        this._controller = new Controller(context);
+        this._context = Context.setup(selector, options);
+        MWM.register(this._context.root, this);
+
+        this._controller = new Controller(this._context);
+
+        this.start();
     }
 
-    onStart() {
-        this._controller.init();
+    beforeElementAdd(callback: (element: HTMLElement) => void) {}
+
+    protected onPause(): void {
+        this._controller.pause();
     }
 
-    onStop() {
-        this._controller.deinit();
+    protected onPlay(): void {
+        this._controller.play();
+    }
+
+    protected onStart() {
+        this._controller.start();
+    }
+
+    protected onStop() {
+        this._controller.stop();
     }
 }
