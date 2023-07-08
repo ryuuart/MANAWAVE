@@ -47,13 +47,13 @@ main > * {
 @media screen and (prefers-color-scheme: dark) {
   body {
     --color-background: var(--color-black);
-    --color-text: var(--color-pink);
+    --color-text: var(--color-white);
     text-shadow: -1px -1px 0 var(--color-pink), 1px -1px 0 var(--color-pink),
       -1px 1px 0 var(--color-pink), 1px 1px 0 var(--color-pink),
       4px 4px 8px var(--color-pink);
   }
   body.light-theme {
-    --color-background: var(--color-pink);
+    --color-background: var(--color-white);
     --color-text: var(--color-black);
     text-shadow: -1px -1px 0 var(--color-pink), 1px -1px 0 var(--color-pink),
       -1px 1px 0 var(--color-pink), 1px 1px 0 var(--color-pink),
