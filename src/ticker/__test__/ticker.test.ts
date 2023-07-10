@@ -5,6 +5,7 @@ import { Simulation } from "../simulation";
 import { Item } from "../item";
 import { LiveAttributes, LiveSize } from "../context";
 import { angleToDirection } from "../math";
+import Pipeline from "../pipeline";
 
 describe("ticker", () => {
     describe("scene", () => {
@@ -152,37 +153,26 @@ describe("ticker", () => {
                 { position: { x: 0, y: -132 } },
                 { position: { x: 396, y: -132 } },
                 { position: { x: 792, y: -132 } },
-                { position: { x: 1188, y: -132 } },
                 { position: { x: -396, y: 0 } },
                 { position: { x: 0, y: 0 } },
                 { position: { x: 396, y: 0 } },
                 { position: { x: 792, y: 0 } },
-                { position: { x: 1188, y: 0 } },
                 { position: { x: -396, y: 132 } },
                 { position: { x: 0, y: 132 } },
                 { position: { x: 396, y: 132 } },
                 { position: { x: 792, y: 132 } },
-                { position: { x: 1188, y: 132 } },
                 { position: { x: -396, y: 264 } },
                 { position: { x: 0, y: 264 } },
                 { position: { x: 396, y: 264 } },
                 { position: { x: 792, y: 264 } },
-                { position: { x: 1188, y: 264 } },
                 { position: { x: -396, y: 396 } },
                 { position: { x: 0, y: 396 } },
                 { position: { x: 396, y: 396 } },
                 { position: { x: 792, y: 396 } },
-                { position: { x: 1188, y: 396 } },
                 { position: { x: -396, y: 528 } },
                 { position: { x: 0, y: 528 } },
                 { position: { x: 396, y: 528 } },
                 { position: { x: 792, y: 528 } },
-                { position: { x: 1188, y: 528 } },
-                { position: { x: -396, y: 660 } },
-                { position: { x: 0, y: 660 } },
-                { position: { x: 396, y: 660 } },
-                { position: { x: 792, y: 660 } },
-                { position: { x: 1188, y: 660 } },
             ];
             for (const resultPosObj of RESULT) {
                 resultScene.add(new Item(resultPosObj.position, sizes.item));
@@ -274,27 +264,31 @@ describe("ticker", () => {
             simulation.setup();
 
             // initial test
-            expect(scene.length).toEqual(9);
+            expect(scene.length).toEqual(4);
 
             // update ticker
             sizes.update({ root: { width: 20, height: 20 } });
             simulation.updateSize(sizes);
-            expect(scene.length).toEqual(16);
+            await browser.pause(300);
+            expect(scene.length).toEqual(9);
 
             // return back
             sizes.update({ root: { width: 10, height: 10 } });
             simulation.updateSize(sizes);
-            expect(scene.length).toEqual(9);
+            await browser.pause(300);
+            expect(scene.length).toEqual(4);
 
             // update item
             sizes.update({ item: { width: 5, height: 5 } });
             simulation.updateSize(sizes);
-            expect(scene.length).toEqual(16);
+            await browser.pause(300);
+            expect(scene.length).toEqual(9);
 
             // update ticker on top of item
             sizes.update({ root: { width: 20, height: 20 } });
             simulation.updateSize(sizes);
-            expect(scene.length).toEqual(36);
+            await browser.pause(300);
+            expect(scene.length).toEqual(25);
 
             // return back to normal
             sizes.update({
@@ -302,7 +296,41 @@ describe("ticker", () => {
                 item: { width: 10, height: 10 },
             });
             simulation.updateSize(sizes);
-            expect(scene.length).toEqual(9);
+            await browser.pause(300);
+            expect(scene.length).toEqual(4);
+        });
+
+        describe("pipeline", () => {
+            it("should change its layout provided a pipeline", async () => {
+                const pipeline = new Pipeline();
+                const sizes = new LiveSize({
+                    root: { width: 1, height: 1 },
+                    item: { width: 1, height: 1 },
+                });
+                const attr = new LiveAttributes();
+                const scene = new Scene();
+                const simulation = new Simulation(sizes, attr, scene, pipeline);
+
+                const testCase = [
+                    { position: { x: -2, y: 0 } },
+                    { position: { x: -1, y: 0 } },
+                    { position: { x: -2, y: 1 } },
+                    { position: { x: -1, y: 1 } },
+                ];
+
+                pipeline.onLayout = ({ position }) => {
+                    position.x -= 1;
+                    position.y += 1;
+
+                    return { position };
+                };
+
+                simulation.setup();
+
+                Array.from(scene.contents).forEach((item, i) => {
+                    expect(item.position).toEqual(testCase[i].position);
+                });
+            });
         });
     });
 });

@@ -1,10 +1,26 @@
-import { getMW } from "manawave";
+import { toRadians } from "@manawave/ticker/math";
+import { MW, getMW } from "manawave";
 
 window.addEventListener("load", () => {
     const themeBtnElement = document.getElementById("theme-btn")!;
     const petalFieldElement = document.getElementById("petal-field")!;
 
     const mw = getMW(petalFieldElement)!;
+
+    let circlePos = -10;
+    mw.onLayout = ({ position, limits }) => {
+        circlePos += 40;
+        return {
+            position: {
+                x:
+                    position.x +
+                    Math.cos(toRadians(circlePos)) * limits.width * 0.04,
+                y:
+                    position.y +
+                    Math.sin(toRadians(circlePos)) * limits.height * 0.08,
+            },
+        };
+    };
 
     themeBtnElement.addEventListener("click", () => {
         const prefersDarkScheme = window.matchMedia(

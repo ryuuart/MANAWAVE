@@ -3,6 +3,7 @@ import { accumulateVec2, angleToDirection } from "./math";
 import { Item } from "./item";
 import { LiveAttributes, LiveSize } from "./context";
 import { Scene } from "./scene";
+import Pipeline from "./pipeline";
 
 /**
  * Calculates the total repetitions required vertically and horizontally for a ticker. The repetitions are
@@ -71,7 +72,14 @@ export class Simulation {
 
     private _scene: Scene;
 
-    constructor(sizes: LiveSize, attr: LiveAttributes, scene: Scene) {
+    private _pipeline: Pipeline;
+
+    constructor(
+        sizes: LiveSize,
+        attr: LiveAttributes,
+        scene: Scene,
+        pipeline?: Pipeline
+    ) {
         this._scene = scene;
         this._attributes = new LiveAttributes(attr);
         this._sizes = new LiveSize(sizes);
@@ -79,6 +87,8 @@ export class Simulation {
         this._repetitions = getTRepetitions(this._sizes.root, this._sizes.item);
         this._limits = getTLimits(this._sizes.root, this._sizes.item);
         this._intendedDirection = angleToDirection(this._attributes.direction);
+
+        this._pipeline = !pipeline ? new Pipeline() : pipeline;
     }
 
     /**
@@ -141,6 +151,7 @@ export class Simulation {
         let objectIndex = 0;
         for (let y = 0; y < this._repetitions.vertical; y++) {
             for (let x = 0; x < this._repetitions.horizontal; x++) {
+                // sets the size and position
                 const currObject = objects[objectIndex];
 
                 currObject.size = this._sizes.item;
@@ -148,6 +159,17 @@ export class Simulation {
                 currObject.position.x = startPos.x + x * this._sizes.item.width;
                 currObject.position.y =
                     startPos.y + y * this._sizes.item.height;
+
+                // allow users to customize default behavior
+                let userOverride = this._pipeline.onLayout({
+                    position: structuredClone(currObject.position),
+                    limits: this._sizes.root,
+                });
+                if (userOverride) {
+                    if (userOverride.size) currObject.size = userOverride.size;
+                    if (userOverride.position)
+                        currObject.position = userOverride.position;
+                }
 
                 objectIndex++;
             }

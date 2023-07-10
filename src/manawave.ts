@@ -2,6 +2,7 @@ import PlaybackObject from "./anim/PlaybackObject";
 import Controller from "./ticker/controller";
 import Context from "./ticker/context";
 import MWM from "./MWM";
+import Pipeline from "./ticker/pipeline";
 
 export class MW extends PlaybackObject {
     private _controller: Controller;
@@ -21,7 +22,12 @@ export class MW extends PlaybackObject {
         this.start();
     }
 
-    beforeElementAdd(callback: (element: HTMLElement) => void) {}
+    /**
+     * Sets the hook to be invoked when layout occurs
+     */
+    set onLayout(callback: Pipeline["_onLayout"]) {
+        this._controller.setOnLayout(callback);
+    }
 
     protected onPause(): void {
         this._controller.pause();

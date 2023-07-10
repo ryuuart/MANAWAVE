@@ -2,6 +2,7 @@ import { AnimationController } from "@manawave/anim";
 import Context, { LiveAttributes, LiveSize } from "./context";
 import System from "./system";
 import PlaybackObject from "@manawave/anim/PlaybackObject";
+import Pipeline from "./pipeline";
 
 export default class Controller extends PlaybackObject {
     private _context: Context;
@@ -17,6 +18,23 @@ export default class Controller extends PlaybackObject {
         this._system = new System(this._context);
 
         this.start();
+    }
+
+    /**
+     * Sets the hook to be called when layout occurs
+     * @param callback callback invoked when layout occurs
+     */
+    setOnLayout(callback: Pipeline["_onLayout"]) {
+        this._context.onLayout = callback;
+        this.forceUpdate();
+    }
+
+    /**
+     * Forcibly re-fill / re-layout the system regardless of playback status
+     */
+    forceUpdate() {
+        this._system.onStart();
+        if (!this._context.attributes.autoplay) this.pause();
     }
 
     onResize(size: LiveSize) {
@@ -37,14 +55,13 @@ export default class Controller extends PlaybackObject {
 
     protected onStart() {
         this._system.start();
-        if (!this._context.attributes.autoplay) this._system.pause();
+        if (!this._context.attributes.autoplay) this.pause();
 
         AnimationController.registerSystem(this._system);
     }
 
     protected onStop() {
         this._system.stop();
-        console.log("stopped");
         AnimationController.deregisterSystem(this._system);
     }
 }

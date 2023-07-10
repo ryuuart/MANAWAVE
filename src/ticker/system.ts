@@ -17,7 +17,8 @@ export default class TickerSystem extends System {
         this._simulation = new Simulation(
             context.sizes,
             context.attributes,
-            this._scene
+            this._scene,
+            context.pipeline
         );
     }
 

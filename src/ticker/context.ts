@@ -3,6 +3,7 @@ import WebComponent from "@manawave/dom/element";
 import { Dimensions, MeasurementBox } from "@manawave/dom/measure";
 import styles from "../dom/styles/ouroboros.module.css";
 import { debounce } from "@manawave/utils/debounce";
+import Pipeline from "./pipeline";
 
 /**
  * Represents the current external, browser-facing state
@@ -19,6 +20,8 @@ export default class Context {
     private _attributeObserver: Attributes;
     private _attributes: LiveAttributes;
     onAttrUpdate: (size: LiveAttributes) => void;
+
+    private _pipeline: Pipeline;
 
     /**
      * Sets up {@link Context} by modifying the selected {@link HTMLElement}
@@ -89,6 +92,8 @@ export default class Context {
             this._attributes.update(this._attributeObserver);
             this.onAttrUpdate(this._attributes);
         };
+
+        this._pipeline = new Pipeline();
     }
 
     get root(): HTMLElement {
@@ -109,6 +114,14 @@ export default class Context {
 
     get itemMBox(): MeasurementBox {
         return this._mBox;
+    }
+
+    get pipeline(): Pipeline {
+        return this._pipeline;
+    }
+
+    set onLayout(callback: Pipeline["_onLayout"]) {
+        this._pipeline.onLayout = callback;
     }
 }
 
