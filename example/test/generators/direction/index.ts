@@ -1,4 +1,3 @@
-import System from "@manawave/ticker/system";
 import { download, jsonToBinary } from "../download";
 import { LiveAttributes, LiveSize } from "@manawave/ticker/context";
 import { Simulation } from "@manawave/ticker/simulation";
