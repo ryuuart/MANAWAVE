@@ -32,12 +32,16 @@ function getTRepetitions(container: Rect, repeatable: Rect): DirectionalCount {
  * @param item size of individual item
  * @returns the outer boundaries or edge of the ticker aligned to item sizes
  */
-function getTLimits(ticker: Rect, item: Rect): DirectionalCount {
+function getTLimits(ticker: Rect, item: Rect): BoundingBox {
     const limits = getRepetitions(ticker, item);
-    limits.horizontal *= item.width;
-    limits.vertical *= item.height;
+    const box = {
+        left: -item.width,
+        right: limits.horizontal * item.width,
+        top: -item.height,
+        bottom: limits.vertical * item.height,
+    };
 
-    return limits;
+    return box;
 }
 
 /**
@@ -67,7 +71,7 @@ export class Simulation {
     private _sizes: LiveSize;
     private _attributes: LiveAttributes;
     private _repetitions: DirectionalCount;
-    private _limits: DirectionalCount;
+    private _limits: BoundingBox;
     private _intendedDirection: vec2;
 
     private _scene: Scene;

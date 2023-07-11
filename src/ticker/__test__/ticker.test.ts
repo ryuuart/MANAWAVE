@@ -103,7 +103,7 @@ describe("ticker", () => {
 
         it("can loop its position around a given rectangle", async () => {
             const item = new Item(undefined, { width: 2, height: 1 });
-            const limits = { horizontal: 3, vertical: 3 };
+            const limits = { top: -1, bottom: 3, right: 3, left: -2 };
 
             // should loop if it reaches the limit in the right direction
             item.position.x = 3;
