@@ -9,10 +9,17 @@ type MoveHook = (data: {
 }) => Partial<{
     direction: number;
 }> | void;
+type LoopHook = (data: {
+    limits: BoundingBox;
+    itemSize: Rect;
+    tickerSize: Rect;
+    direction: vec2;
+}) => Partial<{ limits: BoundingBox }> | void;
 
 export type PipelineHooksMap = {
     layout: LayoutHook;
     move: MoveHook;
+    loop: LoopHook;
 };
 
 /**
@@ -22,9 +29,11 @@ export type PipelineHooksMap = {
 export class Pipeline {
     onLayout: PipelineHooksMap["layout"];
     onMove: PipelineHooksMap["move"];
+    onLoop: PipelineHooksMap["loop"];
 
     constructor() {
         this.onLayout = () => {};
         this.onMove = () => {};
+        this.onLoop = () => {};
     }
 }

@@ -223,15 +223,15 @@ export class Simulation {
      */
     step(dt: DOMHighResTimeStamp, t: DOMHighResTimeStamp) {
         for (const item of this._scene.contents) {
-            let userOverride = this._pipeline.onMove({
-                direction: this._attributes.direction,
+            let userOverrideMove = this._pipeline.onMove({
+                direction: structuredClone(this._attributes.direction),
                 dt,
                 t,
             });
-            if (userOverride) {
-                if (userOverride.direction !== undefined) {
+            if (userOverrideMove) {
+                if (userOverrideMove.direction !== undefined) {
                     this._intendedDirection = angleToDirection(
-                        userOverride.direction
+                        userOverrideMove.direction
                     );
                 }
             }
@@ -239,8 +239,19 @@ export class Simulation {
             // actually move the item
             item.move(this._intendedDirection, this._attributes.speed);
 
+            let userOverrideLoop = this._pipeline.onLoop({
+                limits: structuredClone(this._limits),
+                itemSize: this._sizes.item,
+                tickerSize: this._sizes.root,
+                direction: structuredClone(this._intendedDirection),
+            });
+            if (userOverrideLoop) {
+                if (userOverrideLoop.limits) {
+                    item.loop(userOverrideLoop.limits, this._intendedDirection);
+                }
+            }
             // if the movement caused the item to go out-of-bounds, loop it
-            item.loop(this._limits, this._intendedDirection);
+            else item.loop(this._limits, this._intendedDirection);
 
             // age the item
             item.lifetime += dt;

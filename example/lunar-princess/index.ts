@@ -2,7 +2,7 @@ import { toRadians } from "@manawave/ticker/math";
 import { MW, getMW } from "manawave";
 
 let mouseAngle = 0;
-window.addEventListener("mouseover", (ev) => {
+window.addEventListener("mousemove", (ev) => {
     mouseAngle =
         -(Math.atan2(ev.y - innerHeight / 2, ev.x - innerWidth / 2) * 180) /
         Math.PI;
@@ -16,7 +16,7 @@ window.addEventListener("load", () => {
 
     let circlePos = -10;
     mw.onLayout = ({ position, limits }) => {
-        circlePos += 40;
+        circlePos += 20;
         return {
             position: {
                 x:

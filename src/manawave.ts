@@ -36,6 +36,13 @@ export class MW extends PlaybackObject {
         this._controller.setHook("move", callback);
     }
 
+    /**
+     * Sets the hook to be invoked when an item is about to loop from one end to the other
+     */
+    set onLoop(callback: PipelineHooksMap["loop"]) {
+        this._controller.setHook("loop", callback);
+    }
+
     protected onPause(): void {
         this._controller.pause();
     }

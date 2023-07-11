@@ -39,6 +39,9 @@ export default class Controller extends PlaybackObject {
                 this._context.pipeline.onMove =
                     callback as PipelineHooksMap["move"];
                 break;
+            case "loop":
+                this._context.pipeline.onLoop =
+                    callback as PipelineHooksMap["loop"];
         }
     }
 

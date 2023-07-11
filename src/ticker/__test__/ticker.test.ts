@@ -372,6 +372,64 @@ describe("ticker", () => {
                     expect(item.position).toEqual(testCase[i].position);
                 });
             });
+
+            it("should override the limits", async () => {
+                const pipeline = new Pipeline();
+                const sizes = new LiveSize({
+                    root: { width: 1, height: 1 },
+                    item: { width: 1, height: 1 },
+                });
+                const attr = new LiveAttributes({ direction: 45 });
+                const scene = new Scene();
+                const simulation = new Simulation(sizes, attr, scene, pipeline);
+
+                const testCase = [
+                    {
+                        position: {
+                            x: -1.2928932188134525,
+                            y: -0.8284271247461898,
+                        },
+                    },
+                    {
+                        position: {
+                            x: 0.12132034355964261,
+                            y: -0.8284271247461898,
+                        },
+                    },
+                    {
+                        position: {
+                            x: -1.2928932188134525,
+                            y: -0.12132034355964239,
+                        },
+                    },
+                    {
+                        position: {
+                            x: 0.12132034355964261,
+                            y: -0.12132034355964239,
+                        },
+                    },
+                ];
+
+                pipeline.onLoop = ({ limits }) => {
+                    return {
+                        limits: {
+                            left: limits.left - 1,
+                            right: limits.right + 1,
+                            top: limits.top - 1,
+                            bottom: limits.bottom + 1,
+                        },
+                    };
+                };
+
+                simulation.setup();
+                for (let dt = 0.123, t = 0; t < 11; t += dt) {
+                    simulation.step(dt, t);
+                }
+
+                Array.from(scene.contents).forEach((item, i) => {
+                    expect(item.position).toEqual(testCase[i].position);
+                });
+            });
         });
     });
 });
