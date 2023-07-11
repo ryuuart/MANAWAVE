@@ -331,6 +331,47 @@ describe("ticker", () => {
                     expect(item.position).toEqual(testCase[i].position);
                 });
             });
+
+            it("should change its direction provided a pipeline", async () => {
+                const pipeline = new Pipeline();
+                const sizes = new LiveSize({
+                    root: { width: 1, height: 1 },
+                    item: { width: 1, height: 1 },
+                });
+                const attr = new LiveAttributes();
+                const scene = new Scene();
+                const simulation = new Simulation(sizes, attr, scene, pipeline);
+
+                const testCase = [
+                    { position: { x: -1, y: -0.41256778644971204 } },
+                    {
+                        position: {
+                            x: -0.29206200812364436,
+                            y: -0.41256778644971204,
+                        },
+                    },
+                    { position: { x: -1, y: 0.2937254077498802 } },
+                    {
+                        position: {
+                            x: -0.29206200812364436,
+                            y: 0.2937254077498802,
+                        },
+                    },
+                ];
+
+                pipeline.onMove = ({ direction, t }) => {
+                    return { direction: Math.cos(t * 0.005) * 45 };
+                };
+
+                simulation.setup();
+                for (let dt = 0.123, t = 0; t < 11; t += dt) {
+                    simulation.step(dt, t);
+                }
+
+                Array.from(scene.contents).forEach((item, i) => {
+                    expect(item.position).toEqual(testCase[i].position);
+                });
+            });
         });
     });
 });

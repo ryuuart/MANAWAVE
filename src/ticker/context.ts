@@ -123,6 +123,10 @@ export default class Context {
     set onLayout(callback: Pipeline["_onLayout"]) {
         this._pipeline.onLayout = callback;
     }
+
+    set onMove(callback: Pipeline["_onMove"]) {
+        this._pipeline.onMove = callback;
+    }
 }
 
 /**

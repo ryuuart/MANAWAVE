@@ -219,6 +219,19 @@ export class Simulation {
      */
     step(dt: DOMHighResTimeStamp, t: DOMHighResTimeStamp) {
         for (const item of this._scene.contents) {
+            let userOverride = this._pipeline.onMove({
+                direction: this._attributes.direction,
+                dt,
+                t,
+            });
+            if (userOverride) {
+                if (userOverride.direction !== undefined) {
+                    this._intendedDirection = angleToDirection(
+                        userOverride.direction
+                    );
+                }
+            }
+
             // actually move the item
             item.move(this._intendedDirection, this._attributes.speed);
 

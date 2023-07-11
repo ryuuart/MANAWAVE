@@ -1,6 +1,13 @@
 import { toRadians } from "@manawave/ticker/math";
 import { MW, getMW } from "manawave";
 
+let mouseAngle = 0;
+window.addEventListener("mouseover", (ev) => {
+    mouseAngle =
+        -(Math.atan2(ev.y - innerHeight / 2, ev.x - innerWidth / 2) * 180) /
+        Math.PI;
+});
+
 window.addEventListener("load", () => {
     const themeBtnElement = document.getElementById("theme-btn")!;
     const petalFieldElement = document.getElementById("petal-field")!;
@@ -20,6 +27,9 @@ window.addEventListener("load", () => {
                     Math.sin(toRadians(circlePos)) * limits.height * 0.08,
             },
         };
+    };
+    mw.onMove = ({ direction, dt, t }) => {
+        return { direction: Math.cos(t * 0.005) * 45 };
     };
 
     themeBtnElement.addEventListener("click", () => {

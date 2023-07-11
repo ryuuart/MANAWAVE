@@ -29,6 +29,10 @@ export default class Controller extends PlaybackObject {
         this.forceUpdate();
     }
 
+    setOnMove(callback: Pipeline["_onMove"]) {
+        this._context.onMove = callback;
+    }
+
     /**
      * Forcibly re-fill / re-layout the system regardless of playback status
      */

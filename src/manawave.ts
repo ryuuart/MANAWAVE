@@ -29,6 +29,13 @@ export class MW extends PlaybackObject {
         this._controller.setOnLayout(callback);
     }
 
+    /**
+     * Sets the hook to be invoked when an item is about to be moved
+     */
+    set onMove(callback: Pipeline["_onMove"]) {
+        this._controller.setOnMove(callback);
+    }
+
     protected onPause(): void {
         this._controller.pause();
     }
