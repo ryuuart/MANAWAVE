@@ -2,7 +2,7 @@ import { AnimationController } from "@manawave/anim";
 import Context, { LiveAttributes, LiveSize } from "./context";
 import System from "./system";
 import PlaybackObject from "@manawave/anim/PlaybackObject";
-import Pipeline from "./pipeline";
+import { PipelineHooksMap } from "./pipeline";
 
 export default class Controller extends PlaybackObject {
     private _context: Context;
@@ -21,16 +21,24 @@ export default class Controller extends PlaybackObject {
     }
 
     /**
-     * Sets the hook to be called when layout occurs
-     * @param callback callback invoked when layout occurs
+     * Sets a given callback into the {@link Pipeline}
+     * @param type type of hook
+     * @param callback hook that should be invoked depending on type
      */
-    setOnLayout(callback: Pipeline["_onLayout"]) {
-        this._context.onLayout = callback;
-        this.forceUpdate();
-    }
-
-    setOnMove(callback: Pipeline["_onMove"]) {
-        this._context.onMove = callback;
+    setHook<K extends keyof PipelineHooksMap>(
+        type: K,
+        callback: PipelineHooksMap[K]
+    ) {
+        switch (type) {
+            case "layout":
+                this._context.pipeline.onLayout =
+                    callback as PipelineHooksMap["layout"];
+                break;
+            case "move":
+                this._context.pipeline.onMove =
+                    callback as PipelineHooksMap["move"];
+                break;
+        }
     }
 
     /**

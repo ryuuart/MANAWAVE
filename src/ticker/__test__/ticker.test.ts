@@ -5,7 +5,7 @@ import { Simulation } from "../simulation";
 import { Item } from "../item";
 import { LiveAttributes, LiveSize } from "../context";
 import { angleToDirection } from "../math";
-import Pipeline from "../pipeline";
+import { Pipeline } from "../pipeline";
 
 describe("ticker", () => {
     describe("scene", () => {

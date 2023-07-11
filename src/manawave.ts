@@ -2,7 +2,7 @@ import PlaybackObject from "./anim/PlaybackObject";
 import Controller from "./ticker/controller";
 import Context from "./ticker/context";
 import MWM from "./MWM";
-import Pipeline from "./ticker/pipeline";
+import { PipelineHooksMap } from "./ticker/pipeline";
 
 export class MW extends PlaybackObject {
     private _controller: Controller;
@@ -25,15 +25,15 @@ export class MW extends PlaybackObject {
     /**
      * Sets the hook to be invoked when layout occurs
      */
-    set onLayout(callback: Pipeline["_onLayout"]) {
-        this._controller.setOnLayout(callback);
+    set onLayout(callback: PipelineHooksMap["layout"]) {
+        this._controller.setHook("layout", callback);
     }
 
     /**
      * Sets the hook to be invoked when an item is about to be moved
      */
-    set onMove(callback: Pipeline["_onMove"]) {
-        this._controller.setOnMove(callback);
+    set onMove(callback: PipelineHooksMap["move"]) {
+        this._controller.setHook("move", callback);
     }
 
     protected onPause(): void {

@@ -3,7 +3,7 @@ import { accumulateVec2, angleToDirection } from "./math";
 import { Item } from "./item";
 import { LiveAttributes, LiveSize } from "./context";
 import { Scene } from "./scene";
-import Pipeline from "./pipeline";
+import { Pipeline } from "./pipeline";
 
 /**
  * Calculates the total repetitions required vertically and horizontally for a ticker. The repetitions are
