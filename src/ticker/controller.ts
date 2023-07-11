@@ -33,6 +33,7 @@ export default class Controller extends PlaybackObject {
             case "layout":
                 this._context.pipeline.onLayout =
                     callback as PipelineHooksMap["layout"];
+                this.forceUpdate();
                 break;
             case "move":
                 this._context.pipeline.onMove =
