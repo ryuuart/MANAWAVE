@@ -48,6 +48,10 @@ export default class Controller extends PlaybackObject {
                     callback as PipelineHooksMap["elementCreated"];
                 this.forceUpdate();
                 break;
+            case "elementDraw":
+                this._context.pipeline.onElementDraw =
+                    callback as PipelineHooksMap["elementDraw"];
+                this.forceUpdate();
         }
     }
 

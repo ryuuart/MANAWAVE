@@ -91,6 +91,13 @@ export class Canvas {
 
             component.appendToDOM(this.createBuffer);
             this.activeBuffer.set(component.id, component);
+
+            this._pipeline.onElementDraw({
+                element: component.element,
+                id: component.id,
+                dt: item.timestamp.dt,
+                t: item.timestamp.t,
+            });
         }
         this.root.appendChildDOM(this.createBuffer);
     }
@@ -122,6 +129,14 @@ export class Canvas {
             component.setSize(item.size);
         component.setPosition(item.position);
 
+        this._pipeline.onElementDraw({
+            element: component.element,
+            id: component.id,
+            dt: item.timestamp.dt,
+            t: item.timestamp.t,
+        });
+
+        // "draw" the item by moving it to the active buffer
         this.activeBuffer.set(component.id, component);
         this.inactiveBuffer.delete(component.id);
     }

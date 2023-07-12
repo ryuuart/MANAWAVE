@@ -36,8 +36,15 @@ export class MW extends PlaybackObject {
         this._controller.setHook("move", callback);
     }
 
+    /**
+     * Sets the hook to be invoked when an item is about to be rendered to the DOM
+     */
     set onElementCreated(callback: PipelineHooksMap["elementCreated"]) {
         this._controller.setHook("elementCreated", callback);
+    }
+
+    set onElementDraw(callback: PipelineHooksMap["elementDraw"]) {
+        this._controller.setHook("elementDraw", callback);
     }
 
     /**

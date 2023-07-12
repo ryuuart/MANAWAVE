@@ -253,8 +253,9 @@ export class Simulation {
             // if the movement caused the item to go out-of-bounds, loop it
             else item.loop(this._limits, this._intendedDirection);
 
-            // age the item
-            item.lifetime += dt;
+            // gotta update the timestamp
+            item.timestamp.dt = dt;
+            item.timestamp.t = t;
         }
     }
 }

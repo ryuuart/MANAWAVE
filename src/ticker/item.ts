@@ -3,12 +3,14 @@ import { normalize } from "./math";
 
 export class Item implements Positionable {
     id: string;
-    lifetime: DOMHighResTimeStamp;
     position: vec2;
     size: Rect;
+    timestamp: {
+        dt: DOMHighResTimeStamp;
+        t: DOMHighResTimeStamp;
+    };
 
     constructor(position?: vec2, size?: Rect) {
-        this.lifetime = 0;
         this.position = {
             x: 0,
             y: 0,
@@ -16,6 +18,10 @@ export class Item implements Positionable {
         this.size = {
             width: 0,
             height: 0,
+        };
+        this.timestamp = {
+            dt: 0,
+            t: 0,
         };
 
         if (position) this.position = position;

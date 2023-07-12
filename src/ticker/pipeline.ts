@@ -23,11 +23,19 @@ type ElementCreatedHook = (data: {
     id: string;
 }) => Partial<{ element: HTMLElement }> | void;
 
+type ElementDrawHook = (data: {
+    element: HTMLElement;
+    id: string;
+    dt: DOMHighResTimeStamp;
+    t: DOMHighResTimeStamp;
+}) => void;
+
 export type PipelineHooksMap = {
     layout: LayoutHook;
     move: MoveHook;
     loop: LoopHook;
     elementCreated: ElementCreatedHook;
+    elementDraw: ElementDrawHook;
 };
 
 /**
@@ -39,11 +47,13 @@ export class Pipeline {
     onMove: PipelineHooksMap["move"];
     onLoop: PipelineHooksMap["loop"];
     onElementCreated: PipelineHooksMap["elementCreated"];
+    onElementDraw: PipelineHooksMap["elementDraw"];
 
     constructor() {
         this.onLayout = () => {};
         this.onMove = () => {};
         this.onLoop = () => {};
         this.onElementCreated = () => {};
+        this.onElementDraw = () => {};
     }
 }
