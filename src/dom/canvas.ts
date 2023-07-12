@@ -1,3 +1,4 @@
+import { Pipeline } from "./../ticker/pipeline";
 import { isRectEqual } from "@manawave/utils/rect";
 import ItemComponent from "./components/item";
 import TickerComponent from "./components/ticker";
@@ -19,7 +20,13 @@ export class Canvas {
     private template: DocumentFragment;
     private root: TickerComponent;
 
-    constructor(canvas: TickerComponent, initialTemplate: DocumentFragment) {
+    private _pipeline: Pipeline;
+
+    constructor(
+        canvas: TickerComponent,
+        initialTemplate: DocumentFragment,
+        pipeline?: Pipeline
+    ) {
         this.bufferA = new Map();
         this.bufferB = new Map();
 
@@ -31,6 +38,9 @@ export class Canvas {
         this.template = initialTemplate;
 
         this.root = canvas;
+
+        if (pipeline) this._pipeline = pipeline;
+        else this._pipeline = new Pipeline();
     }
 
     /**
@@ -68,6 +78,16 @@ export class Canvas {
         // now lets create new items
         for (const item of queue) {
             const component = new ItemComponent(item, this.template);
+
+            const userOverride = this._pipeline.onElementCreated({
+                element: component.element,
+            });
+            if (userOverride) {
+                if (userOverride.element) {
+                    component.element = userOverride.element;
+                }
+            }
+
             component.appendToDOM(this.createBuffer);
             this.activeBuffer.set(component.id, component);
         }

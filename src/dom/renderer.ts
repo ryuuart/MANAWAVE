@@ -21,7 +21,7 @@ export class Renderer {
         root.setSize(context.sizes.root);
         root.appendToDOM(context.root);
 
-        this.canvas = new Canvas(root, template);
+        this.canvas = new Canvas(root, template, context.pipeline);
     }
 
     /**

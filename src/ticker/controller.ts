@@ -42,6 +42,12 @@ export default class Controller extends PlaybackObject {
             case "loop":
                 this._context.pipeline.onLoop =
                     callback as PipelineHooksMap["loop"];
+                break;
+            case "elementCreated":
+                this._context.pipeline.onElementCreated =
+                    callback as PipelineHooksMap["elementCreated"];
+                this.forceUpdate();
+                break;
         }
     }
 

@@ -3,14 +3,18 @@ import { Component } from "../component";
 import styles from "../styles/item.module.css";
 export default class ItemComponent extends Component {
     private _position: vec2;
+    element: HTMLElement;
 
     constructor(item: Item, template?: DocumentFragment) {
+        const container = document.createElement("div");
+        container.classList.add(styles.item);
         const element = document.createElement("div");
-        element.classList.add(styles.item);
+        container.append(element);
         if (template) element.append(template.cloneNode(true));
 
-        super(element, item.id);
+        super(container, item.id);
 
+        this.element = element;
         this._position = item.position;
         this.setPosition(structuredClone(item.position));
     }

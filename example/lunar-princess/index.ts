@@ -8,6 +8,17 @@ window.addEventListener("mousemove", (ev) => {
         Math.PI;
 });
 
+function genAnimoptions(): KeyframeAnimationOptions {
+    const animOptions: KeyframeAnimationOptions = {
+        duration: 8000 + Math.random() * 8000,
+        iterations: Infinity,
+        delay: Math.random() * 3000,
+        easing: "cubic-bezier(0.42, 0, 0.58, 1)",
+        composite: "add",
+    };
+    return animOptions;
+}
+
 window.addEventListener("load", () => {
     const themeBtnElement = document.getElementById("theme-btn")!;
     const petalFieldElement = document.getElementById("petal-field")!;
@@ -23,13 +34,57 @@ window.addEventListener("load", () => {
                     position.x +
                     Math.cos(toRadians(circlePos)) * limits.width * 0.04,
                 y:
+                    limits.height +
                     position.y +
                     Math.sin(toRadians(circlePos)) * limits.height * 0.08,
             },
         };
     };
-    mw.onMove = ({ direction, dt, t }) => {
-        return { direction: Math.cos(t * 0.005) * 45 };
+    mw.onMove = () => {
+        return { direction: mouseAngle };
+    };
+    mw.onLoop = ({ limits, itemSize }) => ({
+        limits: {
+            left: limits.left - itemSize.width * 0.5,
+            right: limits.right + itemSize.width * 0.5,
+            top: limits.top - itemSize.height * 0.5,
+            bottom: limits.bottom + itemSize.height * 0.5,
+        },
+    });
+
+    mw.onElementCreated = ({ element }) => {
+        for (const child of element.children[0].children) {
+            element.style.transform = `scale(${
+                0.5 + (Math.random() - 0.5) * 2
+            })`;
+            const rotationAnimations: Keyframe[] = [
+                { transform: "rotate3d(0)" },
+                {
+                    transform: `rotate3d(${
+                        Math.random() * 0.2
+                    }, ${Math.random()}, ${
+                        Math.random() * 0.2
+                    }, ${360}deg) translate(0)`,
+                },
+            ];
+            const translationAnimations: Keyframe[] = [
+                {
+                    transform: `translate(0)`,
+                },
+                {
+                    transform: `translate(${Math.random() * 256}px, ${
+                        Math.random() * 256
+                    }px)`,
+                },
+                {
+                    transform: `translate(0)`,
+                },
+            ];
+
+            child.animate(rotationAnimations, genAnimoptions());
+            child.animate(translationAnimations, genAnimoptions());
+        }
+        return { element };
     };
 
     themeBtnElement.addEventListener("click", () => {
