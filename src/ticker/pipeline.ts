@@ -2,6 +2,7 @@ type LayoutHook = (data: {
     position: vec2;
     limits: Rect;
 }) => Partial<{ size: Rect; position: vec2 }> | void;
+
 type MoveHook = (data: {
     direction: number;
     dt: DOMHighResTimeStamp;
@@ -9,14 +10,17 @@ type MoveHook = (data: {
 }) => Partial<{
     direction: number;
 }> | void;
+
 type LoopHook = (data: {
     limits: BoundingBox;
     itemSize: Rect;
     tickerSize: Rect;
     direction: vec2;
 }) => Partial<{ limits: BoundingBox }> | void;
+
 type ElementCreatedHook = (data: {
     element: HTMLElement;
+    id: string;
 }) => Partial<{ element: HTMLElement }> | void;
 
 export type PipelineHooksMap = {

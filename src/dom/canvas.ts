@@ -80,6 +80,7 @@ export class Canvas {
             const component = new ItemComponent(item, this.template);
 
             const userOverride = this._pipeline.onElementCreated({
+                id: component.id,
                 element: component.element,
             });
             if (userOverride) {
