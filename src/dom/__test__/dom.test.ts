@@ -20,6 +20,7 @@ import { Item } from "@manawave/ticker/item";
 import { Canvas } from "../canvas";
 import { Scene } from "@manawave/ticker/scene";
 import Context from "@manawave/ticker/context";
+import { Pipeline } from "@manawave/ticker/pipeline";
 
 describe("dom", () => {
     afterEach(() => {
@@ -417,6 +418,35 @@ describe("dom", () => {
 
                 expect(itemComponent.size).toEqual({ width: 999, height: 999 });
                 expect(itemComponent.position).toEqual({ x: 999, y: 999 });
+            });
+        });
+
+        describe("pipeline", () => {
+            it("should override the item template clone when it's created", async () => {
+                Square.loadContent();
+
+                // modify background to be red
+                const pipeline = new Pipeline();
+                pipeline.onElementCreated = ({ element }) => {
+                    element.style.backgroundColor = "red";
+                };
+
+                // set up a naive ticker
+                const ticker = new TickerComponent();
+                ticker.setSize({ width: 999, height: 999 });
+                ticker.appendToDOM(document.getElementById("test-root")!);
+                const template = new DocumentFragment();
+                template.append(Square.square!);
+                const canvas = new Canvas(ticker, template, pipeline);
+
+                // create and render the item with override
+                canvas.createItemComponents([new Item()]);
+
+                // does it actually have the red color
+                const element = await $(`.${itemStyles.item} > *`);
+                await expect(element).toHaveStyle({
+                    backgroundColor: "rgba(255,0,0,1)",
+                });
             });
         });
     });
