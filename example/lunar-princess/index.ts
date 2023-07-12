@@ -10,7 +10,7 @@ window.addEventListener("mousemove", (ev) => {
 
 function genAnimoptions(): KeyframeAnimationOptions {
     const animOptions: KeyframeAnimationOptions = {
-        duration: 8000 + Math.random() * 8000,
+        duration: 10000 + Math.random() * 8000,
         iterations: Infinity,
         delay: Math.random() * 3000,
         easing: "cubic-bezier(0.42, 0, 0.58, 1)",
@@ -45,44 +45,48 @@ window.addEventListener("load", () => {
     };
     mw.onLoop = ({ limits, itemSize }) => ({
         limits: {
-            left: limits.left - itemSize.width * 0.5,
-            right: limits.right + itemSize.width * 0.5,
-            top: limits.top - itemSize.height * 0.5,
-            bottom: limits.bottom + itemSize.height * 0.5,
+            left: limits.left - itemSize.width * 2,
+            right: limits.right + itemSize.width * 2,
+            top: limits.top - itemSize.height * 2,
+            bottom: limits.bottom + itemSize.height * 2,
         },
     });
 
     mw.onElementCreated = ({ element }) => {
         for (const child of element.children[0].children) {
-            element.style.transform = `scale(${
-                0.5 + (Math.random() - 0.5) * 2
-            })`;
+            const el = child as HTMLElement;
+            el.style.transform = `scale(${
+                0.75 + Math.random() * 1.5
+            }) rotate3d(${Math.random()}, ${Math.random()}, ${Math.random()} , ${
+                Math.random() * 90
+            }deg)`;
+
             const rotationAnimations: Keyframe[] = [
-                { transform: "rotate3d(0)" },
+                { transform: "rotate3d(0, 0, 0, 0)" },
                 {
                     transform: `rotate3d(${
                         Math.random() * 0.2
-                    }, ${Math.random()}, ${
-                        Math.random() * 0.2
-                    }, ${360}deg) translate(0)`,
+                    }, ${Math.random()}, ${Math.random() * 0.2}, ${360}deg)`,
                 },
             ];
             const translationAnimations: Keyframe[] = [
                 {
-                    transform: `translate(0)`,
+                    transform: `translate3d(0, 0, 0)`,
                 },
                 {
-                    transform: `translate(${Math.random() * 256}px, ${
+                    transform: `translate3d(${Math.random() * 256}px, ${
                         Math.random() * 256
-                    }px)`,
+                    }px, ${Math.random() * 512}px)`,
                 },
                 {
-                    transform: `translate(0)`,
+                    transform: `translate3d(0, 0, 0)`,
                 },
             ];
 
-            child.animate(rotationAnimations, genAnimoptions());
-            child.animate(translationAnimations, genAnimoptions());
+            el.animate(rotationAnimations, genAnimoptions());
+            el.animate(translationAnimations, genAnimoptions());
+
+            if (Math.random() * 10 < 4) el.style.visibility = "hidden";
         }
         return { element };
     };
