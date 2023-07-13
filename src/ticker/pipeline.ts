@@ -36,6 +36,8 @@ type ElementDestroyedHook = (data: {
     id: string;
 }) => void;
 
+type EachElementHook = (data: { element: HTMLElement; id: string }) => void;
+
 export type PipelineHooksMap = {
     layout: LayoutHook;
     move: MoveHook;
@@ -43,6 +45,7 @@ export type PipelineHooksMap = {
     elementCreated: ElementCreatedHook;
     elementDraw: ElementDrawHook;
     elementDestroyed: ElementDestroyedHook;
+    eachElement: EachElementHook;
 };
 
 /**

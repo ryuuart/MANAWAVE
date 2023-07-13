@@ -21,6 +21,17 @@ export default class Controller extends PlaybackObject {
     }
 
     /**
+     * Peeks or views each element in the ticker for operation or observation.
+     *
+     * @param callback hook that operates on each observed elements
+     */
+    eachElement(callback: PipelineHooksMap["eachElement"]) {
+        this._system.viewItems((item) => {
+            callback({ element: item.element, id: item.id });
+        });
+    }
+
+    /**
      * Sets a given callback into the {@link Pipeline}
      * @param type type of hook
      * @param callback hook that should be invoked depending on type

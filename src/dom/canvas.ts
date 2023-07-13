@@ -43,6 +43,11 @@ export class Canvas {
         else this._pipeline = new Pipeline();
     }
 
+    /**Get any component that is currently on screen */
+    get allItemComponents(): ItemComponent[] {
+        return Array.from(this.inactiveBuffer.values());
+    }
+
     /**
      * Switches to a clean buffer
      */

@@ -23,6 +23,14 @@ export class MW extends PlaybackObject {
     }
 
     /**
+     * View or operate all elements in the ticker that is currently on screen.
+     * @param callback hook invoked on each observed element
+     */
+    eachElement(callback: PipelineHooksMap["eachElement"]) {
+        this._controller.eachElement(callback);
+    }
+
+    /**
      * Sets the hook to be invoked when layout occurs
      */
     set onLayout(callback: PipelineHooksMap["layout"]) {

@@ -21,6 +21,7 @@ import { Canvas } from "../canvas";
 import { Scene } from "@manawave/ticker/scene";
 import Context from "@manawave/ticker/context";
 import { Pipeline } from "@manawave/ticker/pipeline";
+import Controller from "@manawave/ticker/controller";
 
 describe("dom", () => {
     afterEach(() => {
@@ -176,8 +177,11 @@ describe("dom", () => {
                 // square's size should remain the same even though ticker's size changed
                 Basic.ticker!.style.width = "100px";
                 await $(Basic.ticker!).waitUntil(async function () {
-                    // @ts-ignore
-                    return (await this.getSize("width")) === 100;
+                    return (
+                        // @ts-ignore
+                        (await this.getSize("width")) === 100 &&
+                        squareLog.length === 1
+                    );
                 });
                 expect(squareLog[0].width).toBe(100);
 
@@ -189,7 +193,8 @@ describe("dom", () => {
                         // @ts-ignore
                         (await this.getSize("width")) === 300 &&
                         // @ts-ignore
-                        (await this.getSize("height")) === 500
+                        (await this.getSize("height")) === 500 &&
+                        squareLog.length === 2
                     );
                 });
                 expect(squareLog[1]).toEqual({ width: 300, height: 500 });
@@ -813,6 +818,26 @@ describe("dom", () => {
                 await expect(
                     await $(domRoot.firstElementChild! as HTMLElement)
                 ).not.toHaveChildren();
+            });
+        });
+
+        describe("pipeline", () => {
+            it("should arbitrarily operate on all item elements in the ticker", async () => {
+                // make square red
+                Basic.loadContent();
+                const ctx = Context.setup(Basic.ticker!);
+                const controller = new Controller(ctx);
+                controller.eachElement(({ element }) => {
+                    element.style.backgroundColor = "red";
+                });
+
+                // does it actually have the red color
+                const elements = await $$(`.${itemStyles.item} > *`);
+                for (const element of elements) {
+                    await expect(element).toHaveStyle({
+                        backgroundColor: "rgba(255,0,0,1)",
+                    });
+                }
             });
         });
     });
