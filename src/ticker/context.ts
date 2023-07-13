@@ -96,6 +96,12 @@ export default class Context {
         this._pipeline = new Pipeline();
     }
 
+    set attributes(
+        attr: Partial<{ speed: number; direction: number; autoplay: boolean }>
+    ) {
+        this._attributeObserver.update(attr);
+    }
+
     get root(): HTMLElement {
         return this._root;
     }

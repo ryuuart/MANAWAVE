@@ -64,6 +64,45 @@ export class MW extends PlaybackObject {
         this._controller.setHook("loop", callback);
     }
 
+    /**
+     * Current speed of the ticker
+     */
+    get speed(): number {
+        return this._context.attributes.speed;
+    }
+
+    /**
+     * Current direction of the ticker
+     */
+    get direction(): number {
+        return this._context.attributes.direction;
+    }
+
+    /**
+     * Overrides the global speed of the ticker
+     *
+     * @remark the hooks will override this
+     */
+    set speed(n: number) {
+        this._controller.updateAttribute({ speed: n });
+    }
+
+    /**
+     * Overrides the global direction of the ticker
+     *
+     * @remark the hooks will override this
+     */
+    set direction(n: number) {
+        this._controller.updateAttribute({ direction: n });
+    }
+
+    /**
+     * Overrides the global autoplay setting of the ticker
+     */
+    set autoplay(state: boolean) {
+        this._controller.updateAttribute({ autoplay: state });
+    }
+
     protected onPause(): void {
         this._controller.pause();
     }

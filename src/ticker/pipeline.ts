@@ -5,6 +5,7 @@ type LayoutHook = (data: {
 
 type MoveHook = (data: {
     direction: number;
+    speed: number;
     dt: DOMHighResTimeStamp;
     t: DOMHighResTimeStamp;
 }) => Partial<{

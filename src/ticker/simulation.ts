@@ -224,6 +224,7 @@ export class Simulation {
     step(dt: DOMHighResTimeStamp, t: DOMHighResTimeStamp) {
         for (const item of this._scene.contents) {
             let userOverrideMove = this._pipeline.onMove({
+                speed: this._attributes.speed,
                 direction: structuredClone(this._attributes.direction),
                 dt,
                 t,

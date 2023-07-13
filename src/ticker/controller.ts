@@ -67,6 +67,12 @@ export default class Controller extends PlaybackObject {
         if (!this._context.attributes.autoplay) this.pause();
     }
 
+    updateAttribute(
+        attr: Partial<{ speed: number; direction: number; autoplay: boolean }>
+    ) {
+        this._context.attributes = attr;
+    }
+
     onResize(size: LiveSize) {
         this._system.updateSize(size);
     }
