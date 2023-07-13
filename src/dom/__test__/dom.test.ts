@@ -448,6 +448,67 @@ describe("dom", () => {
                     backgroundColor: "rgba(255,0,0,1)",
                 });
             });
+
+            it("should override the item template clone each time it's drawn", async () => {
+                Square.loadContent();
+
+                // get the current opacity
+                async function getCurrentOpacity(selector: string) {
+                    const element = await $(selector);
+                    const css = await element.getCSSProperty("opacity");
+
+                    return css.value;
+                }
+
+                // modify background to be red
+                const pipeline = new Pipeline();
+                pipeline.onElementDraw = ({ element, t }) => {
+                    element.style.opacity = `${Math.cos(t * 0.001)}`;
+                };
+
+                // set up a naive ticker
+                const ticker = new TickerComponent();
+                ticker.setSize({ width: 999, height: 999 });
+                ticker.appendToDOM(document.getElementById("test-root")!);
+                const template = new DocumentFragment();
+                template.append(Square.square!);
+                const canvas = new Canvas(ticker, template, pipeline);
+
+                // need a basic scene
+                const scene = new Scene();
+                scene.add(new Item());
+
+                // initial
+                canvas.draw(scene);
+
+                expect(
+                    await getCurrentOpacity(`.${itemStyles.item} > *`)
+                ).toBeCloseTo(1);
+
+                // simulate some time
+                for (let t = 0, dt = 100; t < 300; t += dt) {
+                    for (const item of scene.contents)
+                        item.timestamp = { dt, t };
+                    canvas.draw(scene);
+                }
+
+                // snapshot
+                expect(
+                    await getCurrentOpacity(`.${itemStyles.item} > *`)
+                ).toBeCloseTo(0.980067);
+
+                // simulate more time
+                for (let t = 300, dt = 100; t < 600; t += dt) {
+                    for (const item of scene.contents)
+                        item.timestamp = { dt, t };
+                    canvas.draw(scene);
+                }
+
+                // snapshot
+                expect(
+                    await getCurrentOpacity(`.${itemStyles.item} > *`)
+                ).toBeCloseTo(0.877583);
+            });
         });
     });
 
