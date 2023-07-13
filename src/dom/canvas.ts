@@ -66,6 +66,9 @@ export class Canvas {
         // now lets remove dead items
         for (const [k, v] of this.inactiveBuffer) {
             v.onRemove();
+
+            this._pipeline.onElementDestroyed({ element: v.element, id: v.id });
+
             this.inactiveBuffer.delete(k);
         }
     }

@@ -43,8 +43,18 @@ export class MW extends PlaybackObject {
         this._controller.setHook("elementCreated", callback);
     }
 
+    /**
+     * Sets the hook to be invoked when an item is updated or drawn to the DOM
+     */
     set onElementDraw(callback: PipelineHooksMap["elementDraw"]) {
         this._controller.setHook("elementDraw", callback);
+    }
+
+    /**
+     * Sets the hook to be invoked when an item is removed from the DOM
+     */
+    set onElementDestroyed(callback: PipelineHooksMap["elementDestroyed"]) {
+        this._controller.setHook("elementDestroyed", callback);
     }
 
     /**

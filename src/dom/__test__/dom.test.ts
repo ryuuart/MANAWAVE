@@ -509,6 +509,40 @@ describe("dom", () => {
                     await getCurrentOpacity(`.${itemStyles.item} > *`)
                 ).toBeCloseTo(0.877583);
             });
+
+            it("should allow users to cleanup dead references when an item is removed", async () => {
+                let initialRef;
+                let newRef;
+                // modify background to be red
+                const pipeline = new Pipeline();
+                pipeline.onElementCreated = ({ id }) => {
+                    newRef = id;
+                };
+                pipeline.onElementDestroyed = ({ id }) => {
+                    initialRef = id;
+                };
+
+                // set up a naive ticker
+                const ticker = new TickerComponent();
+                ticker.setSize({ width: 999, height: 999 });
+                ticker.appendToDOM(document.getElementById("test-root")!);
+                const template = new DocumentFragment();
+                template.append(Square.square!);
+                const canvas = new Canvas(ticker, template, pipeline);
+
+                // create and render the item with override
+                canvas.createItemComponents([new Item()]);
+
+                canvas.swapBuffer();
+                canvas.clearDeadComponents();
+
+                expect(newRef).toEqual(initialRef);
+
+                // create and render the item with override
+                canvas.createItemComponents([new Item()]);
+
+                expect(newRef).not.toEqual(initialRef);
+            });
         });
     });
 

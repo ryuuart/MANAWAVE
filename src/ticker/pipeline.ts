@@ -30,12 +30,18 @@ type ElementDrawHook = (data: {
     t: DOMHighResTimeStamp;
 }) => void;
 
+type ElementDestroyedHook = (data: {
+    element: HTMLElement;
+    id: string;
+}) => void;
+
 export type PipelineHooksMap = {
     layout: LayoutHook;
     move: MoveHook;
     loop: LoopHook;
     elementCreated: ElementCreatedHook;
     elementDraw: ElementDrawHook;
+    elementDestroyed: ElementDestroyedHook;
 };
 
 /**
@@ -48,6 +54,7 @@ export class Pipeline {
     onLoop: PipelineHooksMap["loop"];
     onElementCreated: PipelineHooksMap["elementCreated"];
     onElementDraw: PipelineHooksMap["elementDraw"];
+    onElementDestroyed: PipelineHooksMap["elementDestroyed"];
 
     constructor() {
         this.onLayout = () => {};
@@ -55,5 +62,6 @@ export class Pipeline {
         this.onLoop = () => {};
         this.onElementCreated = () => {};
         this.onElementDraw = () => {};
+        this.onElementDestroyed = () => {};
     }
 }

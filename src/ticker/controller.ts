@@ -52,6 +52,10 @@ export default class Controller extends PlaybackObject {
                 this._context.pipeline.onElementDraw =
                     callback as PipelineHooksMap["elementDraw"];
                 this.forceUpdate();
+                break;
+            case "elementDestroyed":
+                this._context.pipeline.onElementDestroyed =
+                    callback as PipelineHooksMap["elementDestroyed"];
         }
     }
 
