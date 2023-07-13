@@ -41,6 +41,10 @@ export default class Context {
         else selected = document.querySelector<HTMLElement>(selector);
 
         if (selected) {
+            if (selected.childElementCount <= 0)
+                throw new Error(
+                    "It looks like there is nothing inside the ticker. A ticker needs at least one element inside to do anything."
+                );
             if (!(selected instanceof WebComponent))
                 selected.classList.add(styles.ouroboros);
             const mBox = new MeasurementBox(...selected.children);
