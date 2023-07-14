@@ -4,6 +4,9 @@ import Context from "./ticker/context";
 import MWM from "./MWM";
 import { PipelineHooksMap } from "./ticker/pipeline";
 
+/**
+ * Main manawave object used to control the behavior of the ticker
+ */
 export class MW extends PlaybackObject {
     private _controller: Controller;
     private _context: Context;
@@ -14,11 +17,14 @@ export class MW extends PlaybackObject {
     ) {
         super();
 
+        // sets up, measure the DOM, and store results into global context
         this._context = Context.setup(selector, options);
+        // associate the root element
         MWM.register(this._context.root, this);
 
         this._controller = new Controller(this._context);
 
+        // start this individual animation
         this.start();
     }
 

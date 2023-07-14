@@ -1,4 +1,4 @@
-import { MW } from "../manawave";
+import { MW } from "../MW";
 
 /**
  * HTML custom element (with no shadowroot) that contains the repeated elements
