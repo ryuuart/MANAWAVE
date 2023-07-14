@@ -4,20 +4,11 @@ import { MW } from "../manawave";
  * HTML custom element (with no shadowroot) that contains the repeated elements
  */
 export default class WebComponent extends HTMLElement {
-    private ouroboros: MW | undefined | null;
-
-    constructor() {
-        super();
-    }
+    private MW: MW | undefined | null;
 
     connectedCallback() {
-        if (this.isConnected) {
-            this.ouroboros = new MW(this);
+        if (this.isConnected && !this.MW) {
+            this.MW = new MW(this);
         }
-    }
-
-    disconnectedCallback() {
-        this.ouroboros?.stop();
-        this.ouroboros = null;
     }
 }
