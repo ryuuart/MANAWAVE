@@ -25,6 +25,7 @@
     /* Path setup */
     "baseUrl": ".",
     "paths": {
+      "manawave": ["src/index"],
       "@manawave/*": ["src/*"]
     },
 

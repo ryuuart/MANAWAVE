@@ -1,8 +1,8 @@
-import { Item } from "@manawave/ticker/item";
 import { Scene } from "@manawave/ticker/scene";
 import TickerComponent from "./components/ticker";
 import { Canvas } from "./canvas";
 import Context from "@manawave/ticker/context";
+import ItemComponent from "./components/item";
 
 /**
  * Takes in some contexts and provides an environment to
@@ -21,7 +21,7 @@ export class Renderer {
         root.setSize(context.sizes.root);
         root.appendToDOM(context.root);
 
-        this.canvas = new Canvas(root, template);
+        this.canvas = new Canvas(root, template, context.pipeline);
     }
 
     /**
@@ -31,5 +31,16 @@ export class Renderer {
      */
     render(scene: Scene) {
         this.canvas.draw(scene);
+    }
+
+    /**
+     * Views all the current item components on the {@link Canvas}
+     *
+     * @param callback observation hook that allows you to operate on elements if needed
+     */
+    view(callback: (item: ItemComponent) => void) {
+        for (const itemComponent of this.canvas.allItemComponents) {
+            callback(itemComponent);
+        }
     }
 }

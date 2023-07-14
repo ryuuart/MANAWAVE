@@ -1,3 +1,4 @@
+import { Pipeline } from "./../ticker/pipeline";
 import { isRectEqual } from "@manawave/utils/rect";
 import ItemComponent from "./components/item";
 import TickerComponent from "./components/ticker";
@@ -19,7 +20,13 @@ export class Canvas {
     private template: DocumentFragment;
     private root: TickerComponent;
 
-    constructor(canvas: TickerComponent, initialTemplate: DocumentFragment) {
+    private _pipeline: Pipeline;
+
+    constructor(
+        canvas: TickerComponent,
+        initialTemplate: DocumentFragment,
+        pipeline?: Pipeline
+    ) {
         this.bufferA = new Map();
         this.bufferB = new Map();
 
@@ -31,6 +38,14 @@ export class Canvas {
         this.template = initialTemplate;
 
         this.root = canvas;
+
+        if (pipeline) this._pipeline = pipeline;
+        else this._pipeline = new Pipeline();
+    }
+
+    /**Get any component that is currently on screen */
+    get allItemComponents(): ItemComponent[] {
+        return Array.from(this.inactiveBuffer.values());
     }
 
     /**
@@ -56,6 +71,9 @@ export class Canvas {
         // now lets remove dead items
         for (const [k, v] of this.inactiveBuffer) {
             v.onRemove();
+
+            this._pipeline.onElementDestroyed({ element: v.element, id: v.id });
+
             this.inactiveBuffer.delete(k);
         }
     }
@@ -68,8 +86,26 @@ export class Canvas {
         // now lets create new items
         for (const item of queue) {
             const component = new ItemComponent(item, this.template);
+
+            const userOverride = this._pipeline.onElementCreated({
+                id: component.id,
+                element: component.element,
+            });
+            if (userOverride) {
+                if (userOverride.element) {
+                    component.element = userOverride.element;
+                }
+            }
+
             component.appendToDOM(this.createBuffer);
             this.activeBuffer.set(component.id, component);
+
+            this._pipeline.onElementDraw({
+                element: component.element,
+                id: component.id,
+                dt: item.timestamp.dt,
+                t: item.timestamp.t,
+            });
         }
         this.root.appendChildDOM(this.createBuffer);
     }
@@ -101,6 +137,14 @@ export class Canvas {
             component.setSize(item.size);
         component.setPosition(item.position);
 
+        this._pipeline.onElementDraw({
+            element: component.element,
+            id: component.id,
+            dt: item.timestamp.dt,
+            t: item.timestamp.t,
+        });
+
+        // "draw" the item by moving it to the active buffer
         this.activeBuffer.set(component.id, component);
         this.inactiveBuffer.delete(component.id);
     }

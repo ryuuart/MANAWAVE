@@ -5,6 +5,7 @@ import { Simulation } from "../simulation";
 import { Item } from "../item";
 import { LiveAttributes, LiveSize } from "../context";
 import { angleToDirection } from "../math";
+import { Pipeline } from "../pipeline";
 
 describe("ticker", () => {
     describe("scene", () => {
@@ -102,7 +103,7 @@ describe("ticker", () => {
 
         it("can loop its position around a given rectangle", async () => {
             const item = new Item(undefined, { width: 2, height: 1 });
-            const limits = { horizontal: 3, vertical: 3 };
+            const limits = { top: -1, bottom: 3, right: 3, left: -2 };
 
             // should loop if it reaches the limit in the right direction
             item.position.x = 3;
@@ -152,37 +153,26 @@ describe("ticker", () => {
                 { position: { x: 0, y: -132 } },
                 { position: { x: 396, y: -132 } },
                 { position: { x: 792, y: -132 } },
-                { position: { x: 1188, y: -132 } },
                 { position: { x: -396, y: 0 } },
                 { position: { x: 0, y: 0 } },
                 { position: { x: 396, y: 0 } },
                 { position: { x: 792, y: 0 } },
-                { position: { x: 1188, y: 0 } },
                 { position: { x: -396, y: 132 } },
                 { position: { x: 0, y: 132 } },
                 { position: { x: 396, y: 132 } },
                 { position: { x: 792, y: 132 } },
-                { position: { x: 1188, y: 132 } },
                 { position: { x: -396, y: 264 } },
                 { position: { x: 0, y: 264 } },
                 { position: { x: 396, y: 264 } },
                 { position: { x: 792, y: 264 } },
-                { position: { x: 1188, y: 264 } },
                 { position: { x: -396, y: 396 } },
                 { position: { x: 0, y: 396 } },
                 { position: { x: 396, y: 396 } },
                 { position: { x: 792, y: 396 } },
-                { position: { x: 1188, y: 396 } },
                 { position: { x: -396, y: 528 } },
                 { position: { x: 0, y: 528 } },
                 { position: { x: 396, y: 528 } },
                 { position: { x: 792, y: 528 } },
-                { position: { x: 1188, y: 528 } },
-                { position: { x: -396, y: 660 } },
-                { position: { x: 0, y: 660 } },
-                { position: { x: 396, y: 660 } },
-                { position: { x: 792, y: 660 } },
-                { position: { x: 1188, y: 660 } },
             ];
             for (const resultPosObj of RESULT) {
                 resultScene.add(new Item(resultPosObj.position, sizes.item));
@@ -274,27 +264,31 @@ describe("ticker", () => {
             simulation.setup();
 
             // initial test
-            expect(scene.length).toEqual(9);
+            expect(scene.length).toEqual(4);
 
             // update ticker
             sizes.update({ root: { width: 20, height: 20 } });
             simulation.updateSize(sizes);
-            expect(scene.length).toEqual(16);
+            await browser.pause(300);
+            expect(scene.length).toEqual(9);
 
             // return back
             sizes.update({ root: { width: 10, height: 10 } });
             simulation.updateSize(sizes);
-            expect(scene.length).toEqual(9);
+            await browser.pause(300);
+            expect(scene.length).toEqual(4);
 
             // update item
             sizes.update({ item: { width: 5, height: 5 } });
             simulation.updateSize(sizes);
-            expect(scene.length).toEqual(16);
+            await browser.pause(300);
+            expect(scene.length).toEqual(9);
 
             // update ticker on top of item
             sizes.update({ root: { width: 20, height: 20 } });
             simulation.updateSize(sizes);
-            expect(scene.length).toEqual(36);
+            await browser.pause(300);
+            expect(scene.length).toEqual(25);
 
             // return back to normal
             sizes.update({
@@ -302,7 +296,140 @@ describe("ticker", () => {
                 item: { width: 10, height: 10 },
             });
             simulation.updateSize(sizes);
-            expect(scene.length).toEqual(9);
+            await browser.pause(300);
+            expect(scene.length).toEqual(4);
+        });
+
+        describe("pipeline", () => {
+            it("should change its layout provided a pipeline", async () => {
+                const pipeline = new Pipeline();
+                const sizes = new LiveSize({
+                    root: { width: 1, height: 1 },
+                    item: { width: 1, height: 1 },
+                });
+                const attr = new LiveAttributes();
+                const scene = new Scene();
+                const simulation = new Simulation(sizes, attr, scene, pipeline);
+
+                const testCase = [
+                    { position: { x: -2, y: 0 } },
+                    { position: { x: -1, y: 0 } },
+                    { position: { x: -2, y: 1 } },
+                    { position: { x: -1, y: 1 } },
+                ];
+
+                pipeline.onLayout = ({ position }) => {
+                    position.x -= 1;
+                    position.y += 1;
+
+                    return { position };
+                };
+
+                simulation.setup();
+
+                Array.from(scene.contents).forEach((item, i) => {
+                    expect(item.position).toEqual(testCase[i].position);
+                });
+            });
+
+            it("should change its direction provided a pipeline", async () => {
+                const pipeline = new Pipeline();
+                const sizes = new LiveSize({
+                    root: { width: 1, height: 1 },
+                    item: { width: 1, height: 1 },
+                });
+                const attr = new LiveAttributes();
+                const scene = new Scene();
+                const simulation = new Simulation(sizes, attr, scene, pipeline);
+
+                const testCase = [
+                    { position: { x: -1, y: -0.41256778644971204 } },
+                    {
+                        position: {
+                            x: -0.29206200812364436,
+                            y: -0.41256778644971204,
+                        },
+                    },
+                    { position: { x: -1, y: 0.2937254077498802 } },
+                    {
+                        position: {
+                            x: -0.29206200812364436,
+                            y: 0.2937254077498802,
+                        },
+                    },
+                ];
+
+                pipeline.onMove = ({ direction, t }) => {
+                    return { direction: Math.cos(t * 0.005) * 45 };
+                };
+
+                simulation.setup();
+                for (let dt = 0.123, t = 0; t < 11; t += dt) {
+                    simulation.step(dt, t);
+                }
+
+                Array.from(scene.contents).forEach((item, i) => {
+                    expect(item.position).toEqual(testCase[i].position);
+                });
+            });
+
+            it("should override the limits", async () => {
+                const pipeline = new Pipeline();
+                const sizes = new LiveSize({
+                    root: { width: 1, height: 1 },
+                    item: { width: 1, height: 1 },
+                });
+                const attr = new LiveAttributes({ direction: 45 });
+                const scene = new Scene();
+                const simulation = new Simulation(sizes, attr, scene, pipeline);
+
+                const testCase = [
+                    {
+                        position: {
+                            x: -1.2928932188134525,
+                            y: -0.8284271247461898,
+                        },
+                    },
+                    {
+                        position: {
+                            x: 0.12132034355964261,
+                            y: -0.8284271247461898,
+                        },
+                    },
+                    {
+                        position: {
+                            x: -1.2928932188134525,
+                            y: -0.12132034355964239,
+                        },
+                    },
+                    {
+                        position: {
+                            x: 0.12132034355964261,
+                            y: -0.12132034355964239,
+                        },
+                    },
+                ];
+
+                pipeline.onLoop = ({ limits }) => {
+                    return {
+                        limits: {
+                            left: limits.left - 1,
+                            right: limits.right + 1,
+                            top: limits.top - 1,
+                            bottom: limits.bottom + 1,
+                        },
+                    };
+                };
+
+                simulation.setup();
+                for (let dt = 0.123, t = 0; t < 11; t += dt) {
+                    simulation.step(dt, t);
+                }
+
+                Array.from(scene.contents).forEach((item, i) => {
+                    expect(item.position).toEqual(testCase[i].position);
+                });
+            });
         });
     });
 });

@@ -20,6 +20,8 @@ import { Item } from "@manawave/ticker/item";
 import { Canvas } from "../canvas";
 import { Scene } from "@manawave/ticker/scene";
 import Context from "@manawave/ticker/context";
+import { Pipeline } from "@manawave/ticker/pipeline";
+import Controller from "@manawave/ticker/controller";
 
 describe("dom", () => {
     afterEach(() => {
@@ -175,8 +177,11 @@ describe("dom", () => {
                 // square's size should remain the same even though ticker's size changed
                 Basic.ticker!.style.width = "100px";
                 await $(Basic.ticker!).waitUntil(async function () {
-                    // @ts-ignore
-                    return (await this.getSize("width")) === 100;
+                    return (
+                        // @ts-ignore
+                        (await this.getSize("width")) === 100 &&
+                        squareLog.length === 1
+                    );
                 });
                 expect(squareLog[0].width).toBe(100);
 
@@ -188,7 +193,8 @@ describe("dom", () => {
                         // @ts-ignore
                         (await this.getSize("width")) === 300 &&
                         // @ts-ignore
-                        (await this.getSize("height")) === 500
+                        (await this.getSize("height")) === 500 &&
+                        squareLog.length === 2
                     );
                 });
                 expect(squareLog[1]).toEqual({ width: 300, height: 500 });
@@ -417,6 +423,130 @@ describe("dom", () => {
 
                 expect(itemComponent.size).toEqual({ width: 999, height: 999 });
                 expect(itemComponent.position).toEqual({ x: 999, y: 999 });
+            });
+        });
+
+        describe("pipeline", () => {
+            it("should override the item template clone when it's created", async () => {
+                Square.loadContent();
+
+                // modify background to be red
+                const pipeline = new Pipeline();
+                pipeline.onElementCreated = ({ element }) => {
+                    element.style.backgroundColor = "red";
+                };
+
+                // set up a naive ticker
+                const ticker = new TickerComponent();
+                ticker.setSize({ width: 999, height: 999 });
+                ticker.appendToDOM(document.getElementById("test-root")!);
+                const template = new DocumentFragment();
+                template.append(Square.square!);
+                const canvas = new Canvas(ticker, template, pipeline);
+
+                // create and render the item with override
+                canvas.createItemComponents([new Item()]);
+
+                // does it actually have the red color
+                const element = await $(`.${itemStyles.item} > *`);
+                await expect(element).toHaveStyle({
+                    backgroundColor: "rgba(255,0,0,1)",
+                });
+            });
+
+            it("should override the item template clone each time it's drawn", async () => {
+                Square.loadContent();
+
+                // get the current opacity
+                async function getCurrentOpacity(selector: string) {
+                    const element = await $(selector);
+                    const css = await element.getCSSProperty("opacity");
+
+                    return css.value;
+                }
+
+                // modify background to be red
+                const pipeline = new Pipeline();
+                pipeline.onElementDraw = ({ element, t }) => {
+                    element.style.opacity = `${Math.cos(t * 0.001)}`;
+                };
+
+                // set up a naive ticker
+                const ticker = new TickerComponent();
+                ticker.setSize({ width: 999, height: 999 });
+                ticker.appendToDOM(document.getElementById("test-root")!);
+                const template = new DocumentFragment();
+                template.append(Square.square!);
+                const canvas = new Canvas(ticker, template, pipeline);
+
+                // need a basic scene
+                const scene = new Scene();
+                scene.add(new Item());
+
+                // initial
+                canvas.draw(scene);
+
+                expect(
+                    await getCurrentOpacity(`.${itemStyles.item} > *`)
+                ).toBeCloseTo(1);
+
+                // simulate some time
+                for (let t = 0, dt = 100; t < 300; t += dt) {
+                    for (const item of scene.contents)
+                        item.timestamp = { dt, t };
+                    canvas.draw(scene);
+                }
+
+                // snapshot
+                expect(
+                    await getCurrentOpacity(`.${itemStyles.item} > *`)
+                ).toBeCloseTo(0.980067);
+
+                // simulate more time
+                for (let t = 300, dt = 100; t < 600; t += dt) {
+                    for (const item of scene.contents)
+                        item.timestamp = { dt, t };
+                    canvas.draw(scene);
+                }
+
+                // snapshot
+                expect(
+                    await getCurrentOpacity(`.${itemStyles.item} > *`)
+                ).toBeCloseTo(0.877583);
+            });
+
+            it("should allow users to cleanup dead references when an item is removed", async () => {
+                let initialRef;
+                let newRef;
+                // modify background to be red
+                const pipeline = new Pipeline();
+                pipeline.onElementCreated = ({ id }) => {
+                    newRef = id;
+                };
+                pipeline.onElementDestroyed = ({ id }) => {
+                    initialRef = id;
+                };
+
+                // set up a naive ticker
+                const ticker = new TickerComponent();
+                ticker.setSize({ width: 999, height: 999 });
+                ticker.appendToDOM(document.getElementById("test-root")!);
+                const template = new DocumentFragment();
+                template.append(Square.square!);
+                const canvas = new Canvas(ticker, template, pipeline);
+
+                // create and render the item with override
+                canvas.createItemComponents([new Item()]);
+
+                canvas.swapBuffer();
+                canvas.clearDeadComponents();
+
+                expect(newRef).toEqual(initialRef);
+
+                // create and render the item with override
+                canvas.createItemComponents([new Item()]);
+
+                expect(newRef).not.toEqual(initialRef);
             });
         });
     });
@@ -688,6 +818,26 @@ describe("dom", () => {
                 await expect(
                     await $(domRoot.firstElementChild! as HTMLElement)
                 ).not.toHaveChildren();
+            });
+        });
+
+        describe("pipeline", () => {
+            it("should arbitrarily operate on all item elements in the ticker", async () => {
+                // make square red
+                Basic.loadContent();
+                const ctx = Context.setup(Basic.ticker!);
+                const controller = new Controller(ctx);
+                controller.eachElement(({ element }) => {
+                    element.style.backgroundColor = "red";
+                });
+
+                // does it actually have the red color
+                const elements = await $$(`.${itemStyles.item} > *`);
+                for (const element of elements) {
+                    await expect(element).toHaveStyle({
+                        backgroundColor: "rgba(255,0,0,1)",
+                    });
+                }
             });
         });
     });

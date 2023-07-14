@@ -82,20 +82,20 @@ export default abstract class PlaybackObject {
     /**
      * Hook invoked when playback started
      */
-    onStart() {}
+    protected onStart(): void {}
 
     /**
      * Hook invoked when playback paused
      */
-    onPause() {}
+    protected onPause(): void {}
 
     /**
      * Hook invoked when playback continued
      */
-    onPlay() {}
+    protected onPlay(): void {}
 
     /**
      * Hook invoked when playback stopped
      */
-    onStop() {}
+    protected onStop(): void {}
 }

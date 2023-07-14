@@ -3,6 +3,7 @@ import WebComponent from "@manawave/dom/element";
 import { Dimensions, MeasurementBox } from "@manawave/dom/measure";
 import styles from "../dom/styles/ouroboros.module.css";
 import { debounce } from "@manawave/utils/debounce";
+import { Pipeline } from "./pipeline";
 
 /**
  * Represents the current external, browser-facing state
@@ -19,6 +20,8 @@ export default class Context {
     private _attributeObserver: Attributes;
     private _attributes: LiveAttributes;
     onAttrUpdate: (size: LiveAttributes) => void;
+
+    private _pipeline: Pipeline;
 
     /**
      * Sets up {@link Context} by modifying the selected {@link HTMLElement}
@@ -38,6 +41,10 @@ export default class Context {
         else selected = document.querySelector<HTMLElement>(selector);
 
         if (selected) {
+            if (selected.childElementCount <= 0)
+                throw new Error(
+                    "It looks like there is nothing inside the ticker. A ticker needs at least one element inside to do anything."
+                );
             if (!(selected instanceof WebComponent))
                 selected.classList.add(styles.ouroboros);
             const mBox = new MeasurementBox(...selected.children);
@@ -89,6 +96,14 @@ export default class Context {
             this._attributes.update(this._attributeObserver);
             this.onAttrUpdate(this._attributes);
         };
+
+        this._pipeline = new Pipeline();
+    }
+
+    set attributes(
+        attr: Partial<{ speed: number; direction: number; autoplay: boolean }>
+    ) {
+        this._attributeObserver.update(attr);
     }
 
     get root(): HTMLElement {
@@ -109,6 +124,10 @@ export default class Context {
 
     get itemMBox(): MeasurementBox {
         return this._mBox;
+    }
+
+    get pipeline(): Pipeline {
+        return this._pipeline;
     }
 }
 

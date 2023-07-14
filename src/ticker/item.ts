@@ -3,12 +3,14 @@ import { normalize } from "./math";
 
 export class Item implements Positionable {
     id: string;
-    lifetime: DOMHighResTimeStamp;
     position: vec2;
     size: Rect;
+    timestamp: {
+        dt: DOMHighResTimeStamp;
+        t: DOMHighResTimeStamp;
+    };
 
     constructor(position?: vec2, size?: Rect) {
-        this.lifetime = 0;
         this.position = {
             x: 0,
             y: 0,
@@ -16,6 +18,10 @@ export class Item implements Positionable {
         this.size = {
             width: 0,
             height: 0,
+        };
+        this.timestamp = {
+            dt: 0,
+            t: 0,
         };
 
         if (position) this.position = position;
@@ -41,20 +47,19 @@ export class Item implements Positionable {
      * This will loop (change the position) an {@link Item} from one end to the other end
      * of a rectangle. In more technical terms, it adjusts the position of
      * an {@link Item} to fit inside the rectangle, looping the item to fit it in.
-     * @param itemSize the current size of the item
      * @param limits the rectangle to loop around
      * @param direction the actual direction / motion of the item
      */
-    loop(limits: DirectionalCount, direction: vec2) {
-        if (direction.x > 0 && this.position.x >= limits.horizontal) {
-            this.position.x = -this.size.width;
-        } else if (direction.x < 0 && this.position.x <= -this.size.width) {
-            this.position.x = limits.horizontal;
+    loop(limits: BoundingBox, direction: vec2) {
+        if (direction.x > 0 && this.position.x >= limits.right) {
+            this.position.x = limits.left;
+        } else if (direction.x < 0 && this.position.x <= limits.left) {
+            this.position.x = limits.right;
         }
-        if (direction.y > 0 && this.position.y >= limits.vertical) {
-            this.position.y = -this.size.height;
-        } else if (direction.y < 0 && this.position.y <= -this.size.height) {
-            this.position.y = limits.vertical;
+        if (direction.y > 0 && this.position.y >= limits.bottom) {
+            this.position.y = limits.top;
+        } else if (direction.y < 0 && this.position.y <= limits.top) {
+            this.position.y = limits.bottom;
         }
     }
 }

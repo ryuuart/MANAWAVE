@@ -2,6 +2,7 @@ import { AnimationController } from "@manawave/anim";
 import Context, { LiveAttributes, LiveSize } from "./context";
 import System from "./system";
 import PlaybackObject from "@manawave/anim/PlaybackObject";
+import { PipelineHooksMap } from "./pipeline";
 
 export default class Controller extends PlaybackObject {
     private _context: Context;
@@ -16,9 +17,71 @@ export default class Controller extends PlaybackObject {
 
         this._system = new System(this._context);
 
-        this.init();
+        this.start();
+    }
 
-        if (this._context.attributes.autoplay) this._system.play();
+    /**
+     * Peeks or views each element in the ticker for operation or observation.
+     *
+     * @param callback hook that operates on each observed elements
+     */
+    eachElement(callback: PipelineHooksMap["eachElement"]) {
+        this._system.viewItems((item) => {
+            callback({ element: item.element, id: item.id });
+        });
+    }
+
+    /**
+     * Sets a given callback into the {@link Pipeline}
+     * @param type type of hook
+     * @param callback hook that should be invoked depending on type
+     */
+    setHook<K extends keyof PipelineHooksMap>(
+        type: K,
+        callback: PipelineHooksMap[K]
+    ) {
+        switch (type) {
+            case "layout":
+                this._context.pipeline.onLayout =
+                    callback as PipelineHooksMap["layout"];
+                this.forceUpdate();
+                break;
+            case "move":
+                this._context.pipeline.onMove =
+                    callback as PipelineHooksMap["move"];
+                break;
+            case "loop":
+                this._context.pipeline.onLoop =
+                    callback as PipelineHooksMap["loop"];
+                break;
+            case "elementCreated":
+                this._context.pipeline.onElementCreated =
+                    callback as PipelineHooksMap["elementCreated"];
+                this.forceUpdate();
+                break;
+            case "elementDraw":
+                this._context.pipeline.onElementDraw =
+                    callback as PipelineHooksMap["elementDraw"];
+                this.forceUpdate();
+                break;
+            case "elementDestroyed":
+                this._context.pipeline.onElementDestroyed =
+                    callback as PipelineHooksMap["elementDestroyed"];
+        }
+    }
+
+    /**
+     * Forcibly re-fill / re-layout the system regardless of playback status
+     */
+    forceUpdate() {
+        this._system.onStart();
+        if (!this._context.attributes.autoplay) this.pause();
+    }
+
+    updateAttribute(
+        attr: Partial<{ speed: number; direction: number; autoplay: boolean }>
+    ) {
+        this._context.attributes = attr;
     }
 
     onResize(size: LiveSize) {
@@ -29,21 +92,22 @@ export default class Controller extends PlaybackObject {
         this._system.updateAttributes(attr);
     }
 
-    onPause(): void {
+    protected onPause(): void {
         this._system.pause();
     }
 
-    onPlay(): void {
+    protected onPlay(): void {
         this._system.play();
     }
 
-    init() {
+    protected onStart() {
         this._system.start();
-        this._system.pause();
+        if (!this._context.attributes.autoplay) this.pause();
+
         AnimationController.registerSystem(this._system);
     }
 
-    deinit() {
+    protected onStop() {
         this._system.stop();
         AnimationController.deregisterSystem(this._system);
     }

@@ -1,5 +1,7 @@
-import System from "@manawave/ticker/system";
 import { download, jsonToBinary } from "../download";
+import { LiveAttributes, LiveSize } from "@manawave/ticker/context";
+import { Simulation } from "@manawave/ticker/simulation";
+import { Scene } from "@manawave/ticker/scene";
 
 type Frame = {
     x: string;
@@ -30,14 +32,17 @@ const snapshot: SnapshotData = {
     data: {},
 };
 
-const system = new System(document.createElement("div"), {
-    sizes: { ticker: snapshot.setup.tickerSize, item: snapshot.setup.itemSize },
-    attributes: { direction: 0, speed: 1 },
+const sizes = new LiveSize({
+    root: snapshot.setup.tickerSize,
+    item: snapshot.setup.itemSize,
 });
+const attr = new LiveAttributes({ direction: 0, speed: 1 });
+const scene = new Scene();
+const simulation = new Simulation(sizes, attr, scene);
 
 for (let theta = 0; theta <= 360; theta++) {
-    system.updateAttributes({ direction: theta });
-    system.start();
+    simulation.updateAttribute({ direction: theta });
+    simulation.setup();
 
     const motionFrames = [];
 
@@ -45,10 +50,10 @@ for (let theta = 0; theta <= 360; theta++) {
     for (let i = 0; i < snapshot.setup.numMotions; i++) {
         const dt = i * snapshot.setup.dt;
         t += dt;
-        system.update(dt, t);
+        simulation.step(dt, t);
     }
 
-    for (const item of system.scene.contents) {
+    for (const item of scene.contents) {
         motionFrames.push({
             x: item.position.x.toFixed(2),
             y: item.position.y.toFixed(2),
@@ -59,8 +64,6 @@ for (let theta = 0; theta <= 360; theta++) {
         const xOrder = parseFloat(a.x) - parseFloat(b.x);
         return xOrder;
     });
-
-    system.stop();
 
     snapshot.data[theta.toString()] = { frames: motionFrames };
 }

@@ -48,6 +48,7 @@ export class MeasurementBox {
 type DimensionEntry = {
     onChange?: (rect: Rect) => void;
     rect: Rect;
+    isConnected: boolean; // prevents recursive calls to resize if the element is not connected
 };
 
 /**
@@ -97,6 +98,7 @@ export class Dimensions {
         this.targets.set(element, name);
         this.dimensions.set(name, {
             rect: initialRect,
+            isConnected: true,
             onChange: resizeHandler,
         });
         this.observer.observe(element);
@@ -113,6 +115,9 @@ export class Dimensions {
                 const dEntry = this.dimensions.get(name);
 
                 if (dEntry) {
+                    if (!entry.target.isConnected) dEntry.isConnected = false;
+                    else dEntry.isConnected = true;
+
                     const newSize = {
                         width: entry.borderBoxSize[0].inlineSize,
                         height: entry.borderBoxSize[0].blockSize,
@@ -120,7 +125,8 @@ export class Dimensions {
 
                     dEntry.rect = newSize;
 
-                    if (dEntry.onChange) dEntry.onChange(newSize);
+                    if (entry.target.isConnected)
+                        if (dEntry.onChange) dEntry.onChange(newSize);
                 }
             }
         }

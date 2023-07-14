@@ -17,6 +17,13 @@ type DirectionalCount = {
     vertical: number;
 };
 
+type BoundingBox = {
+    left: number;
+    right: number;
+    top: number;
+    bottom: number;
+};
+
 namespace manawave {
     type Options = {
         autoplay: boolean;

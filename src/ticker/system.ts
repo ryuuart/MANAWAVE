@@ -3,6 +3,7 @@ import { Scene } from "./scene";
 import { Simulation } from "./simulation";
 import { Renderer } from "@manawave/dom/renderer";
 import Context from "./context";
+import ItemComponent from "@manawave/dom/components/item";
 
 export default class TickerSystem extends System {
     private _scene: Scene;
@@ -17,7 +18,8 @@ export default class TickerSystem extends System {
         this._simulation = new Simulation(
             context.sizes,
             context.attributes,
-            this._scene
+            this._scene,
+            context.pipeline
         );
     }
 
@@ -46,6 +48,14 @@ export default class TickerSystem extends System {
     updateSize(size: Partial<Ticker.Sizes>) {
         this._simulation.updateSize(size);
         this.onDraw();
+    }
+
+    /**
+     * Views current items in ticker
+     * @see {@link Renderer} view
+     */
+    viewItems(callback: (item: ItemComponent) => void) {
+        this._renderer.view(callback);
     }
 
     onUpdate(dt: DOMHighResTimeStamp, t: DOMHighResTimeStamp) {

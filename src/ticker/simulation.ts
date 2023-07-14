@@ -3,6 +3,7 @@ import { accumulateVec2, angleToDirection } from "./math";
 import { Item } from "./item";
 import { LiveAttributes, LiveSize } from "./context";
 import { Scene } from "./scene";
+import { Pipeline } from "./pipeline";
 
 /**
  * Calculates the total repetitions required vertically and horizontally for a ticker. The repetitions are
@@ -16,8 +17,10 @@ import { Scene } from "./scene";
  */
 function getTRepetitions(container: Rect, repeatable: Rect): DirectionalCount {
     const repetitions = getRepetitions(container, repeatable);
-    repetitions.horizontal += 2;
-    repetitions.vertical += 2;
+    if (repetitions.horizontal === 0) repetitions.horizontal += 2;
+    else repetitions.horizontal += 1;
+    if (repetitions.vertical === 0) repetitions.vertical += 2;
+    else repetitions.vertical += 1;
 
     return repetitions;
 }
@@ -29,12 +32,16 @@ function getTRepetitions(container: Rect, repeatable: Rect): DirectionalCount {
  * @param item size of individual item
  * @returns the outer boundaries or edge of the ticker aligned to item sizes
  */
-function getTLimits(ticker: Rect, item: Rect): DirectionalCount {
+function getTLimits(ticker: Rect, item: Rect): BoundingBox {
     const limits = getRepetitions(ticker, item);
-    limits.horizontal *= item.width;
-    limits.vertical *= item.height;
+    const box = {
+        left: -item.width,
+        right: limits.horizontal * item.width,
+        top: -item.height,
+        bottom: limits.vertical * item.height,
+    };
 
-    return limits;
+    return box;
 }
 
 /**
@@ -64,12 +71,19 @@ export class Simulation {
     private _sizes: LiveSize;
     private _attributes: LiveAttributes;
     private _repetitions: DirectionalCount;
-    private _limits: DirectionalCount;
+    private _limits: BoundingBox;
     private _intendedDirection: vec2;
 
     private _scene: Scene;
 
-    constructor(sizes: LiveSize, attr: LiveAttributes, scene: Scene) {
+    private _pipeline: Pipeline;
+
+    constructor(
+        sizes: LiveSize,
+        attr: LiveAttributes,
+        scene: Scene,
+        pipeline?: Pipeline
+    ) {
         this._scene = scene;
         this._attributes = new LiveAttributes(attr);
         this._sizes = new LiveSize(sizes);
@@ -77,6 +91,8 @@ export class Simulation {
         this._repetitions = getTRepetitions(this._sizes.root, this._sizes.item);
         this._limits = getTLimits(this._sizes.root, this._sizes.item);
         this._intendedDirection = angleToDirection(this._attributes.direction);
+
+        this._pipeline = !pipeline ? new Pipeline() : pipeline;
     }
 
     /**
@@ -139,6 +155,7 @@ export class Simulation {
         let objectIndex = 0;
         for (let y = 0; y < this._repetitions.vertical; y++) {
             for (let x = 0; x < this._repetitions.horizontal; x++) {
+                // sets the size and position
                 const currObject = objects[objectIndex];
 
                 currObject.size = this._sizes.item;
@@ -146,6 +163,17 @@ export class Simulation {
                 currObject.position.x = startPos.x + x * this._sizes.item.width;
                 currObject.position.y =
                     startPos.y + y * this._sizes.item.height;
+
+                // allow users to customize default behavior
+                let userOverride = this._pipeline.onLayout({
+                    position: structuredClone(currObject.position),
+                    limits: this._sizes.root,
+                });
+                if (userOverride) {
+                    if (userOverride.size) currObject.size = userOverride.size;
+                    if (userOverride.position)
+                        currObject.position = userOverride.position;
+                }
 
                 objectIndex++;
             }
@@ -195,34 +223,40 @@ export class Simulation {
      */
     step(dt: DOMHighResTimeStamp, t: DOMHighResTimeStamp) {
         for (const item of this._scene.contents) {
-            // start measuring changes in actual direction
-            const accumulateDirection = makeDirectionAccumulator();
-            const initialPosition = item.position;
-            let actualDirection = { x: 0, y: 0 };
-
-            // override
-
-            // measure a directional change if the override induced a
-            // change in direction
-            actualDirection = accumulateDirection(
-                initialPosition,
-                item.position
-            );
+            let userOverrideMove = this._pipeline.onMove({
+                speed: this._attributes.speed,
+                direction: structuredClone(this._attributes.direction),
+                dt,
+                t,
+            });
+            if (userOverrideMove) {
+                if (userOverrideMove.direction !== undefined) {
+                    this._intendedDirection = angleToDirection(
+                        userOverrideMove.direction
+                    );
+                }
+            }
 
             // actually move the item
             item.move(this._intendedDirection, this._attributes.speed);
 
-            // measure a directional change from the recent movement
-            actualDirection = accumulateDirection(
-                actualDirection,
-                item.position
-            );
-
+            let userOverrideLoop = this._pipeline.onLoop({
+                limits: structuredClone(this._limits),
+                itemSize: this._sizes.item,
+                tickerSize: this._sizes.root,
+                direction: structuredClone(this._intendedDirection),
+            });
+            if (userOverrideLoop) {
+                if (userOverrideLoop.limits) {
+                    item.loop(userOverrideLoop.limits, this._intendedDirection);
+                }
+            }
             // if the movement caused the item to go out-of-bounds, loop it
-            item.loop(this._limits, actualDirection);
+            else item.loop(this._limits, this._intendedDirection);
 
-            // age the item
-            item.lifetime += dt;
+            // gotta update the timestamp
+            item.timestamp.dt = dt;
+            item.timestamp.t = t;
         }
     }
 }
