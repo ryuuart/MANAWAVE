@@ -1,5 +1,5 @@
-import AnimationController from "./AnimationController";
-import PlaybackObject from "./PlaybackObject";
+import AnimationController from "./animationController";
+import PlaybackObject from "./playbackObject";
 
 export default abstract class System extends PlaybackObject {
     /**

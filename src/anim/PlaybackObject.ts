@@ -25,8 +25,6 @@ export default abstract class PlaybackObject {
 
     /**
      * Start the playback
-     *
-     * @see {@link PlaybackObject.stop }
      */
     start() {
         if (!this._hasStarted) {

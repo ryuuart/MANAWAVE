@@ -1,7 +1,7 @@
 import { AnimationController } from "@manawave/anim";
 import Context, { LiveAttributes, LiveSize } from "./context";
 import System from "./system";
-import PlaybackObject from "@manawave/anim/PlaybackObject";
+import PlaybackObject from "@manawave/anim/playbackObject";
 import { PipelineHooksMap } from "./pipeline";
 
 export default class Controller extends PlaybackObject {

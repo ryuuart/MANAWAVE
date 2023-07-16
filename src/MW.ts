@@ -1,4 +1,4 @@
-import PlaybackObject from "./anim/PlaybackObject";
+import PlaybackObject from "./anim/playbackObject";
 import Controller from "./ticker/controller";
 import Context from "./ticker/context";
 import MWM from "./MWM";

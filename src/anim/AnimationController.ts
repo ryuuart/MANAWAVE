@@ -1,5 +1,5 @@
 import { System } from ".";
-import PlaybackObject from "./PlaybackObject";
+import PlaybackObject from "./playbackObject";
 
 /**
  * Singleton that controls all animations
