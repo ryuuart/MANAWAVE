@@ -70,7 +70,7 @@ export const config: Options.Testrunner = {
             // maxInstances can get overwritten per capability. So if you have an in-house Selenium
             // grid with only 5 firefox instances available you can make sure that not more than
             // 5 instances get started at a time.
-            maxInstances: 5,
+            maxInstances: 2,
             //
             browserName: "chrome",
             acceptInsecureCerts: true,
@@ -78,6 +78,16 @@ export const config: Options.Testrunner = {
             // it is possible to configure which logTypes to include/exclude.
             // excludeDriverLogs: ['*'], // pass '*' to exclude all driver session logs
             // excludeDriverLogs: ['bugreport', 'server'],
+        },
+        {
+            maxInstances: 2,
+            browserName: "safari",
+            acceptInsecureCerts: true,
+        },
+        {
+            maxInstances: 2,
+            browserName: "firefox",
+            acceptInsecureCerts: true,
         },
     ],
     //
