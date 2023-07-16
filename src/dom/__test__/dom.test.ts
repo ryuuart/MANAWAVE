@@ -24,6 +24,10 @@ import { Pipeline } from "@manawave/ticker/pipeline";
 import Controller from "@manawave/ticker/controller";
 
 describe("dom", () => {
+    before(async () => {
+        await browser.setWindowSize(1200, 945);
+    });
+
     afterEach(() => {
         document.getElementById("test-root")?.replaceChildren();
     });
@@ -449,9 +453,12 @@ describe("dom", () => {
 
                 // does it actually have the red color
                 const element = await $(`.${itemStyles.item} > *`);
-                await expect(element).toHaveStyle({
-                    backgroundColor: "rgba(255,0,0,1)",
-                });
+                const elementColor = (
+                    await element.getCSSProperty("background")
+                ).value;
+                await expect(elementColor).toMatch(
+                    /rgba?\(255, *0, *0(, *1)?\)/
+                );
             });
 
             it("should override the item template clone each time it's drawn", async () => {
@@ -827,16 +834,19 @@ describe("dom", () => {
                 Basic.loadContent();
                 const ctx = Context.setup(Basic.ticker!);
                 const controller = new Controller(ctx);
-                controller.eachElement(({ element }) => {
+                controller.eachElement(async ({ element }) => {
                     element.style.backgroundColor = "red";
                 });
 
                 // does it actually have the red color
                 const elements = await $$(`.${itemStyles.item} > *`);
                 for (const element of elements) {
-                    await expect(element).toHaveStyle({
-                        backgroundColor: "rgba(255,0,0,1)",
-                    });
+                    const elementColor = (
+                        await element.getCSSProperty("background")
+                    ).value;
+                    await expect(elementColor).toMatch(
+                        /rgba?\(255, *0, *0(, *1)?\)/
+                    );
                 }
             });
         });
