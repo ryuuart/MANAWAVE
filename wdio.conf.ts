@@ -70,7 +70,7 @@ export const config: Options.Testrunner = {
             // maxInstances can get overwritten per capability. So if you have an in-house Selenium
             // grid with only 5 firefox instances available you can make sure that not more than
             // 5 instances get started at a time.
-            maxInstances: 2,
+            maxInstances: 3,
             //
             browserName: "chrome",
             acceptInsecureCerts: true,
@@ -80,12 +80,12 @@ export const config: Options.Testrunner = {
             // excludeDriverLogs: ['bugreport', 'server'],
         },
         {
-            maxInstances: 2,
+            maxInstances: 1,
             browserName: "safari",
             acceptInsecureCerts: true,
         },
         {
-            maxInstances: 2,
+            maxInstances: 3,
             browserName: "firefox",
             acceptInsecureCerts: true,
         },
@@ -126,7 +126,7 @@ export const config: Options.Testrunner = {
 
     //
     // Default timeout for all waitFor* commands.
-    waitforTimeout: 10000,
+    waitforTimeout: 15000,
     //
     // Default timeout in milliseconds for request
     // if browser driver or grid doesn't send response
@@ -167,7 +167,7 @@ export const config: Options.Testrunner = {
     // Test reporter for stdout.
     // The only one supported by default is 'dot'
     // see also: https://webdriver.io/docs/dot-reporter
-    reporters: [["spec", { addConsoleLogs: true }]],
+    reporters: [["spec", { addConsoleLogs: true, onlyFailures: true }]],
 
     //
     // Options to be passed to Mocha.
