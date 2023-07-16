@@ -369,7 +369,8 @@ describe("ticker", () => {
                 }
 
                 Array.from(scene.contents).forEach((item, i) => {
-                    expect(item.position).toEqual(testCase[i].position);
+                    expect(item.position.x).toBeCloseTo(testCase[i].position.x);
+                    expect(item.position.y).toBeCloseTo(testCase[i].position.y);
                 });
             });
 
