@@ -10,10 +10,12 @@ import { Pipeline } from "./pipeline";
  * of the internal ticker.
  */
 export default class Context {
+    // stuff in the dom to keep on using
     private _root: HTMLElement;
     private _mBox: MeasurementBox;
     private _template: DocumentFragment;
 
+    // values to keep updated from the dom
     private _sizeObserver: Dimensions;
     private _sizes: LiveSize;
     onSizeUpdate: (size: LiveSize) => void;
@@ -21,6 +23,7 @@ export default class Context {
     private _attributes: LiveAttributes;
     onAttrUpdate: (size: LiveAttributes) => void;
 
+    // hooks to override default behavior
     private _pipeline: Pipeline;
 
     /**
@@ -36,6 +39,7 @@ export default class Context {
         selector: Parameters<Document["querySelector"]>[0] | HTMLElement,
         options: Partial<manawave.Options> = {}
     ): Context {
+        // try to find it
         let selected;
         if (selector instanceof HTMLElement) selected = selector;
         else selected = document.querySelector<HTMLElement>(selector);
@@ -45,13 +49,21 @@ export default class Context {
                 throw new Error(
                     "It looks like there is nothing inside the ticker. A ticker needs at least one element inside to do anything."
                 );
+
+            // if it's not a web component, then it needs some basic styling
             if (!(selected instanceof WebComponent))
                 selected.classList.add(styles.ouroboros);
+
+            // WARNING IT HAS TO BE IN THIS SPECIFIC ORDER DO NOT CHANGE
+            // basically, it first boxes the repeating items to be measured over time
+            // then it removes them from the dom and places it inside a template to clone from
+            // then it adds a measurement box to the dom to be measured over time
             const mBox = new MeasurementBox(...selected.children);
             const template = new DocumentFragment();
             template.append(...selected.children);
             mBox.startMeasuringFrom(selected);
 
+            // store results to use and propagate
             return new Context(selected, mBox, template, options);
         } else throw new Error("Selected manawave Element not found.");
     }
@@ -62,12 +74,14 @@ export default class Context {
         template: DocumentFragment,
         options: Partial<manawave.Options>
     ) {
+        // set defaults
         this._root = root;
         this._mBox = mBox;
         this._template = template;
         this.onSizeUpdate = () => {};
         this.onAttrUpdate = () => {};
 
+        // start propagating size changes
         this._sizeObserver = new Dimensions();
         this._sizeObserver.setEntry(
             "root",
@@ -90,6 +104,7 @@ export default class Context {
             item: this._sizeObserver.get("item")!,
         });
 
+        // start propagating attribute changes
         this._attributeObserver = new Attributes(this.root, options);
         this._attributes = new LiveAttributes(this._attributeObserver);
         this._attributeObserver.onUpdate = () => {
@@ -97,35 +112,57 @@ export default class Context {
             this.onAttrUpdate(this._attributes);
         };
 
+        // set main pipeline for entire system
         this._pipeline = new Pipeline();
     }
 
+    /**
+     * Propagate new attribute values throughout the system
+     */
     set attributes(
         attr: Partial<{ speed: number; direction: number; autoplay: boolean }>
     ) {
         this._attributeObserver.update(attr);
     }
 
+    /**
+     * @returns the containing DOM element for the entire ticker
+     */
     get root(): HTMLElement {
         return this._root;
     }
 
+    /**
+     * @returns a template to clone repeating items
+     */
     get template(): DocumentFragment {
         return this._template.cloneNode(true) as DocumentFragment;
     }
 
+    /**
+     * @returns a snapshot of the current sizes of the system
+     */
     get sizes(): LiveSize {
         return this._sizes;
     }
 
+    /**
+     * @returns a snapshot of the current attributes of the system
+     */
     get attributes(): LiveAttributes {
         return this._attributes;
     }
 
+    /**
+     * @returns the object and element used to measure the repeating items
+     */
     get itemMBox(): MeasurementBox {
         return this._mBox;
     }
 
+    /**
+     * @returns the set of hooks used to customize behavior throughout the system
+     */
     get pipeline(): Pipeline {
         return this._pipeline;
     }
@@ -143,6 +180,7 @@ export class LiveSize {
         this._root = { width: 0, height: 0 };
         this._item = { width: 0, height: 0 };
 
+        // override if necessary
         const { root, item } = initial;
         if (root) this._root = root;
         if (item) this._item = item;
@@ -158,10 +196,16 @@ export class LiveSize {
         if (item) this._item = item;
     }
 
+    /**
+     * @returns the size of the root container element
+     */
     get root(): Rect {
         return structuredClone(this._root);
     }
 
+    /**
+     * @returns the size of the repeating item element
+     */
     get item(): Rect {
         return structuredClone(this._item);
     }
@@ -187,6 +231,7 @@ export class LiveAttributes {
         this._speed = 1;
         this._direction = 0;
 
+        // override if needed
         const { autoplay, speed, direction } = initial;
         if (autoplay) this._autoplay = autoplay;
         if (speed) this._speed = speed;
