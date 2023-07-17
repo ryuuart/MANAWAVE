@@ -1,7 +1,7 @@
 import { Attributes } from "@manawave/dom/attributes";
 import WebComponent from "@manawave/dom/element";
 import { Dimensions, MeasurementBox } from "@manawave/dom/measure";
-import styles from "../dom/styles/ouroboros.module.css";
+import styles from "../dom/styles/manawave.module.css";
 import { debounce } from "@manawave/utils/debounce";
 import { Pipeline } from "./pipeline";
 
@@ -52,7 +52,7 @@ export default class Context {
 
             // if it's not a web component, then it needs some basic styling
             if (!(selected instanceof WebComponent))
-                selected.classList.add(styles.ouroboros);
+                selected.classList.add(styles.manawaveRoot);
 
             // WARNING IT HAS TO BE IN THIS SPECIFIC ORDER DO NOT CHANGE
             // basically, it first boxes the repeating items to be measured over time
