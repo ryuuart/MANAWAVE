@@ -48,13 +48,17 @@ h1 {
 }
 
 .petal-field--petal {
-  writing-mode: vertical-lr;
+  display: flex;
+  flex-flow: column wrap;
+  align-items: start;
+
+  width: 5ch;
   height: 10ch;
   margin: 1rem;
 }
 
 .petal-field--petal > div {
-  display: inline-block;
+  width: min-content;
 }
 
 #theme-btn {

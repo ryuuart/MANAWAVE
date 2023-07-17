@@ -86,7 +86,7 @@ window.addEventListener("load", () => {
             el.animate(rotationAnimations, genAnimoptions());
             el.animate(translationAnimations, genAnimoptions());
 
-            if (Math.random() * 10 < 4) el.style.visibility = "hidden";
+            if (Math.random() * 10 < 6) el.style.visibility = "hidden";
         }
         return { element };
     };
