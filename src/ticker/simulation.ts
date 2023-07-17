@@ -1,5 +1,5 @@
 import { getRepetitions } from "@manawave/dom/measure";
-import { accumulateVec2, angleToDirection } from "./math";
+import { angleToDirection } from "./math";
 import { Item } from "./item";
 import { LiveAttributes, LiveSize } from "./context";
 import { Scene } from "./scene";
@@ -7,13 +7,12 @@ import { Pipeline } from "./pipeline";
 
 /**
  * Calculates the total repetitions required vertically and horizontally for a ticker. The repetitions are
- * padded by 2 to account for ticker items that need to loop offscreen.
+ * padded by 2 or 1 to account for ticker items that need to loop offscreen.
  *
  * @see {@link getRepetitions } in DOM/measure
- * @see {@link loopItem } in simulation
  * @param container size of a container of repeatable items
  * @param repeatable repeatable item size
- * @returns the count of repeatable items with 2 extra items added in both directions
+ * @returns the count of repeatable items with 2 or 1 added
  */
 function getTRepetitions(container: Rect, repeatable: Rect): DirectionalCount {
     const repetitions = getRepetitions(container, repeatable);
@@ -28,45 +27,26 @@ function getTRepetitions(container: Rect, repeatable: Rect): DirectionalCount {
 /**
  * Get the limits of a ticker aligned to the size of individual items.
  *
- * @param ticker size of ticker
- * @param item size of individual item
+ * @param container size of ticker
+ * @param repeatable size of individual item
  * @returns the outer boundaries or edge of the ticker aligned to item sizes
  */
-function getTLimits(ticker: Rect, item: Rect): BoundingBox {
-    const limits = getRepetitions(ticker, item);
+function calcRectLimits(container: Rect, repeatable: Rect): BoundingBox {
+    const limits = getRepetitions(container, repeatable);
     const box = {
-        left: -item.width,
-        right: limits.horizontal * item.width,
-        top: -item.height,
-        bottom: limits.vertical * item.height,
+        left: -repeatable.width,
+        right: limits.horizontal * repeatable.width,
+        top: -repeatable.height,
+        bottom: limits.vertical * repeatable.height,
     };
 
     return box;
 }
 
 /**
- * Creates an accumulator that reduces or sums directional changes over time. In other words, it
- * creates a function that allows you to sum directional differences throughout your code. You get
- * the latest result with each function call, and it allows you to operate on this logic continually.
- *
- * @returns a function that accumulates directional changes
+ * Represents a simulation that animates items across a rectangle
+ * from one end to the opposite end.
  */
-function makeDirectionAccumulator() {
-    const accumulate = accumulateVec2({ x: 0, y: 0 });
-
-    /**
-     * Calculates the difference between positions to create a direction.
-     * This function will sum this difference with all previous directional differences.
-     *
-     * @param prevPos the start or previous position
-     * @param currPos the affected or new position
-     */
-    return function (prevPos: vec2, currPos: vec2): vec2 {
-        const delta = { x: currPos.x - prevPos.x, y: currPos.y - prevPos.y };
-        return accumulate(delta);
-    };
-}
-
 export class Simulation {
     private _sizes: LiveSize;
     private _attributes: LiveAttributes;
@@ -88,10 +68,12 @@ export class Simulation {
         this._attributes = new LiveAttributes(attr);
         this._sizes = new LiveSize(sizes);
 
+        // initial measurements
         this._repetitions = getTRepetitions(this._sizes.root, this._sizes.item);
-        this._limits = getTLimits(this._sizes.root, this._sizes.item);
+        this._limits = calcRectLimits(this._sizes.root, this._sizes.item);
         this._intendedDirection = angleToDirection(this._attributes.direction);
 
+        // use a pipeline if provided
         this._pipeline = !pipeline ? new Pipeline() : pipeline;
     }
 
@@ -103,7 +85,7 @@ export class Simulation {
         this._scene.size = this._sizes.root;
 
         this._repetitions = getTRepetitions(this._sizes.root, this._sizes.item);
-        this._limits = getTLimits(this._sizes.root, this._sizes.item);
+        this._limits = calcRectLimits(this._sizes.root, this._sizes.item);
         this._intendedDirection = angleToDirection(this._attributes.direction);
 
         this._scene.clear();
@@ -113,6 +95,7 @@ export class Simulation {
 
     /**
      * Populates a {@link Scene} with items enough to be laid out in a grid.
+     * @remark will remove as needed if overflow
      * @see {@link layout}
      */
     fill() {
@@ -137,14 +120,15 @@ export class Simulation {
      * @see {@link fill}
      */
     layout() {
-        if (
+        const isItemSync =
             this._scene.length <
-            this._repetitions.vertical * this._repetitions.horizontal
-        )
+            this._repetitions.vertical * this._repetitions.horizontal;
+        if (isItemSync)
             throw new Error(
                 "The Ticker Simulation is out-of-sync with its size."
             );
 
+        // needs an offset to account for blank space at beginning
         const startPos = {
             x: -this._sizes.item.width,
             y: -this._sizes.item.height,
@@ -196,18 +180,22 @@ export class Simulation {
     updateSize(size: Partial<Ticker.Sizes>) {
         const prev = structuredClone(this._repetitions);
 
+        // propagate the new size
         this._sizes.update(size);
         this._repetitions = getTRepetitions(this._sizes.root, this._sizes.item);
+
         const curr = this._repetitions;
 
+        // do we need to refill and relayout because there are more items needed now?
         if (
             prev.horizontal !== curr.horizontal ||
             prev.vertical !== curr.vertical
         ) {
             this.setup();
         } else {
+            // recalculate
             this._scene.size = this._sizes.root;
-            this._limits = getTLimits(this._sizes.root, this._sizes.item);
+            this._limits = calcRectLimits(this._sizes.root, this._sizes.item);
 
             // only the item size needs to be updated
             for (const item of this._scene.contents) {
@@ -223,12 +211,14 @@ export class Simulation {
      */
     step(dt: DOMHighResTimeStamp, t: DOMHighResTimeStamp) {
         for (const item of this._scene.contents) {
+            // is there user override info for motion?
             let userOverrideMove = this._pipeline.onMove({
                 speed: this._attributes.speed,
                 direction: structuredClone(this._attributes.direction),
                 dt,
                 t,
             });
+            // there is so override the default direction
             if (userOverrideMove) {
                 if (userOverrideMove.direction !== undefined) {
                     this._intendedDirection = angleToDirection(
@@ -236,16 +226,17 @@ export class Simulation {
                     );
                 }
             }
-
             // actually move the item
             item.move(this._intendedDirection, this._attributes.speed);
 
+            // is there user override info for looping?
             let userOverrideLoop = this._pipeline.onLoop({
                 limits: structuredClone(this._limits),
                 itemSize: this._sizes.item,
                 tickerSize: this._sizes.root,
                 direction: structuredClone(this._intendedDirection),
             });
+            // there is so use the override
             if (userOverrideLoop) {
                 if (userOverrideLoop.limits) {
                     item.loop(userOverrideLoop.limits, this._intendedDirection);
@@ -255,6 +246,8 @@ export class Simulation {
             else item.loop(this._limits, this._intendedDirection);
 
             // gotta update the timestamp
+            // this is mostly to propagate time data to things
+            // using items and needing time
             item.timestamp.dt = dt;
             item.timestamp.t = t;
         }

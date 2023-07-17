@@ -5,7 +5,13 @@ import { Renderer } from "@manawave/dom/renderer";
 import Context from "./context";
 import ItemComponent from "@manawave/dom/components/item";
 
-export default class TickerSystem extends System {
+/**
+ * Intersection of the {@link Simulation} and {@link Renderer}. It steps
+ * through the simulation and renders the scene. Its
+ * purpose is purely to drive and provide context to both
+ * the {@link Simulation} and {@link Renderer}.
+ */
+export default class MWSystem extends System {
     private _scene: Scene;
     private _renderer: Renderer;
     private _simulation: Simulation;

@@ -4,6 +4,11 @@ import System from "./system";
 import PlaybackObject from "@manawave/anim/playbackObject";
 import { PipelineHooksMap } from "./pipeline";
 
+/**
+ * Provides control and management between different _manawave_ components.
+ * It mostsly converses with the {@link System} and {@link Context} to
+ * propagate changes throughout _manawave_
+ */
 export default class Controller extends PlaybackObject {
     private _context: Context;
     private _system: System;
@@ -33,6 +38,7 @@ export default class Controller extends PlaybackObject {
 
     /**
      * Sets a given callback into the {@link Pipeline}
+     * @remark some callbacks need to force the system to update to use them
      * @param type type of hook
      * @param callback hook that should be invoked depending on type
      */
@@ -78,16 +84,30 @@ export default class Controller extends PlaybackObject {
         if (!this._context.attributes.autoplay) this.pause();
     }
 
+    /**
+     * Updates the _manawave_ attributes
+     * @param attr updated attribute values
+     */
     updateAttribute(
         attr: Partial<{ speed: number; direction: number; autoplay: boolean }>
     ) {
         this._context.attributes = attr;
     }
 
+    /**
+     * Invoked when the root element or measured template changes their
+     * respective size
+     * @param size updated size values
+     */
     onResize(size: LiveSize) {
         this._system.updateSize(size);
     }
 
+    /**
+     * Invoked when the root element or {@link Controller} updates the _manawave_
+     * attributes.
+     * @param attr updated attribute valeus
+     */
     onAttrUpdate(attr: LiveAttributes) {
         this._system.updateAttributes(attr);
     }

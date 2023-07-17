@@ -1,8 +1,10 @@
+// invoked when all items are positioned
 type LayoutHook = (data: {
     position: vec2;
     limits: Rect;
 }) => Partial<{ size: Rect; position: vec2 }> | void;
 
+// invoked when the logical item moves
 type MoveHook = (data: {
     direction: number;
     speed: number;
@@ -12,6 +14,7 @@ type MoveHook = (data: {
     direction: number;
 }> | void;
 
+// invoked when the logical item loops
 type LoopHook = (data: {
     limits: BoundingBox;
     itemSize: Rect;
@@ -19,11 +22,13 @@ type LoopHook = (data: {
     direction: vec2;
 }) => Partial<{ limits: BoundingBox }> | void;
 
+// invoked when the item DOM element gets created
 type ElementCreatedHook = (data: {
     element: HTMLElement;
     id: string;
 }) => Partial<{ element: HTMLElement }> | void;
 
+// invoked when the item DOM element gets updated
 type ElementDrawHook = (data: {
     element: HTMLElement;
     id: string;
@@ -31,11 +36,13 @@ type ElementDrawHook = (data: {
     t: DOMHighResTimeStamp;
 }) => void;
 
+// invoked when the item DOM element gets destroyed
 type ElementDestroyedHook = (data: {
     element: HTMLElement;
     id: string;
 }) => void;
 
+// invoked on every element when desired
 type EachElementHook = (data: { element: HTMLElement; id: string }) => void;
 
 export type PipelineHooksMap = {
