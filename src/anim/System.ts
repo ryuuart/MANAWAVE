@@ -1,6 +1,10 @@
 import AnimationController from "./animationController";
 import PlaybackObject from "./playbackObject";
 
+/**
+ * An animated system that performs logical updates on its update call and
+ * visual updates on its render call. Intended to be used with {@link requestAnimationFrame }.
+ */
 export default abstract class System extends PlaybackObject {
     /**
      * Runs {@link System.onDraw } accounting for playback controls.
