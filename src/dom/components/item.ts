@@ -1,13 +1,19 @@
 import { Item } from "@manawave/ticker/item";
 import { Component } from "../component";
 import styles from "../styles/item.module.css";
+
+/**
+ * An positioned object within a Ticker
+ */
 export default class ItemComponent extends Component {
     private _position: vec2;
     element: HTMLElement;
 
     constructor(item: Item, template?: DocumentFragment) {
+        // container for needed styling
         const container = document.createElement("div");
         container.classList.add(styles.item);
+        // another container to contain all template items for users to use
         const element = document.createElement("div");
         container.append(element);
         if (template) element.append(template.cloneNode(true));

@@ -1,6 +1,9 @@
 import { Component } from "../component";
 import styles from "../styles/ticker.module.css";
 
+/**
+ * Represents a Ticker that would repeat ItemComponent across it
+ */
 export default class TickerComponent extends Component {
     constructor() {
         const element = document.createElement("div");

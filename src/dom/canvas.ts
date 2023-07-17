@@ -9,6 +9,20 @@ import { Scene } from "@manawave/ticker/scene";
  * Contains all logic for displaying visual data for a Ticker
  * {@link Scene}. Anything specifically relating to the DOM is managed
  * and stored here.
+ *
+ * It uses a 2-buffer system. The idea is to always draw on a blank canvas, so I use
+ * 2 buffers to simulate this. You can't really repeatedly draw on an HTML document
+ * by recreating DOM nodes and drawing them. The performance would be terrifying to say the least.
+ *
+ * What I do is basically on each draw, "draw" or write to an active buffer and invalidate the previous buffer.
+ * Any DOM nodes that need to be created will be created and any that already exist will just move from
+ * the inactive buffer to the active one. This is what simulates a "draw".
+ *
+ * Anything that's dead as in there's not really a reference to it gets removed.
+ *
+ * It's similar to using an object pool as a pixels to draw on a buffer. That's my mindset here. I hoped that
+ * by using a bunch of maps, I'm seriously saving in terms of time complexity for a bit more of space. The main problem
+ * this is solving is to batch DOM operations and perform in bursts.
  */
 export class Canvas {
     private bufferA: Map<string, ItemComponent>;

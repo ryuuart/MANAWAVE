@@ -98,6 +98,7 @@ export class Attributes {
     private _speed: number;
     private _direction: string | number;
 
+    // overrideable, and invoked when attribute values are updated
     onUpdate: (values: {
         autoplay: boolean;
         speed: number;
@@ -111,7 +112,7 @@ export class Attributes {
         this._speed = 1;
         this._direction = 0;
 
-        this.onUpdate = (vals) => {};
+        this.onUpdate = () => {};
 
         this.update();
 
