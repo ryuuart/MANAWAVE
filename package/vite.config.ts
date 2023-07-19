@@ -25,8 +25,11 @@ export default defineConfig({
         },
     },
     plugins: [
-        cssInjectedByJsPlugin(),
         tsconfigPaths(),
+        {
+            ...cssInjectedByJsPlugin(),
+            apply: "build",
+        },
         {
             ...dts({
                 entryRoot: "src",

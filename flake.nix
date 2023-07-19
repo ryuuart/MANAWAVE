@@ -14,7 +14,6 @@
             devShells.default = pkgs.mkShell {
                 packages = [ 
                     pkgs.nodejs
-                    pkgs.nodePackages.pnpm 
                  ];
 
                 shellHook = ''
