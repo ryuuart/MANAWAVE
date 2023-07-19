@@ -12,7 +12,9 @@
             pkgs = import nixpkgs { inherit system; };
         in rec {
             devShells.default = pkgs.mkShell {
-                packages = [ pkgs.nodejs ];
+                packages = [ 
+                    pkgs.nodejs
+                 ];
 
                 shellHook = ''
                     echo
