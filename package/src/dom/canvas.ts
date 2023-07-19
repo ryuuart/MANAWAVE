@@ -1,4 +1,4 @@
-import { Pipeline } from "./../ticker/pipeline";
+import { Pipeline } from "../ticker/pipeline";
 import { isRectEqual } from "@manawave/utils/rect";
 import ItemComponent from "./components/item";
 import TickerComponent from "./components/ticker";
