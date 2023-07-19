@@ -24,7 +24,7 @@ type BoundingBox = {
     bottom: number;
 };
 
-namespace manawave {
+declare namespace manawave {
     type Options = {
         autoplay: boolean;
         direction: "up" | "right" | "down" | "left" | string | number;
@@ -32,7 +32,7 @@ namespace manawave {
     };
 }
 
-namespace Ticker {
+declare namespace Ticker {
     type Sizes = {
         ticker: Rect;
         item: Rect;

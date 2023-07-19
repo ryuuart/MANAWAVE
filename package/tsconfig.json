@@ -36,6 +36,6 @@
     "noUnusedParameters": true,
     "noFallthroughCasesInSwitch": true
   },
-  "include": ["src", "test", "example", "anim"],
+  "include": ["src", "test", "example", "anim", "types/*.d.ts"],
   "exclude": ["node_modules"]
 }
