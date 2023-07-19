@@ -31,3 +31,5 @@ output
 
 # Per user
 .hintrc
+.nx/installation
+.nx/cache
