@@ -12,18 +12,27 @@ jobs:
       packages: write
 
     steps:
-      - uses: actions/checkout@v3
-      - uses: pnpm/action-setup@v2
-        with:
-          version: 8
-      - name: Use Node.js
+      - name: Checkout Repo
+        uses: actions/checkout@v3
+
+      - name: Use Node.js 18.x
         uses: actions/setup-node@v3
         with:
           node-version: "18.x"
           registry-url: "https://registry.npmjs.org"
 
-      - run: pnpm --filter manawave install --frozen-lockfile
-      - run: pnpm nx build manawave
-      - run: pnpm publish package --no-git-checks
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: 8
+
+      - name: Install Deps
+        run: pnpm --filter manawave install --frozen-lockfile
+
+      - name: Build manawave
+        run: pnpm nx build manawave
+
+      - name: Publish to npm registry
+        run: pnpm publish package --no-git-checks
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
