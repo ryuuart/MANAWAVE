@@ -1,5 +1,7 @@
 {
   "name": "manawave",
+  "license": "MIT",
+  "author": "Long Nguyen",
   "version": "0.9.1",
   "description": "It's not a marquee, it's more than that!",
   "type": "module",
@@ -25,8 +27,6 @@
     "test:run": "wdio run wdio.conf.ts"
   },
   "keywords": [],
-  "author": "",
-  "license": "ISC",
   "devDependencies": {
     "@wdio/appium-service": "^8.8.4",
     "@wdio/browser-runner": "^8.8.5",
