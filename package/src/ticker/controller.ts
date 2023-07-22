@@ -2,7 +2,6 @@ import { AnimationController } from "@manawave/anim";
 import Context, { LiveAttributes, LiveSize } from "./context";
 import System from "./system";
 import PlaybackObject from "@manawave/anim/playbackObject";
-import { PipelineHooksMap } from "./pipeline";
 
 /**
  * Provides control and management between different _manawave_ components.
@@ -47,32 +46,32 @@ export default class Controller extends PlaybackObject {
         callback: PipelineHooksMap[K]
     ) {
         switch (type) {
-            case "layout":
+            case "onLayout":
                 this._context.pipeline.onLayout =
-                    callback as PipelineHooksMap["layout"];
+                    callback as PipelineHooksMap["onLayout"];
                 this.forceUpdate();
                 break;
-            case "move":
+            case "onMove":
                 this._context.pipeline.onMove =
-                    callback as PipelineHooksMap["move"];
+                    callback as PipelineHooksMap["onMove"];
                 break;
-            case "loop":
+            case "onLoop":
                 this._context.pipeline.onLoop =
-                    callback as PipelineHooksMap["loop"];
+                    callback as PipelineHooksMap["onLoop"];
                 break;
-            case "elementCreated":
+            case "onElementCreated":
                 this._context.pipeline.onElementCreated =
-                    callback as PipelineHooksMap["elementCreated"];
+                    callback as PipelineHooksMap["onElementCreated"];
                 this.forceUpdate();
                 break;
-            case "elementDraw":
+            case "onElementDraw":
                 this._context.pipeline.onElementDraw =
-                    callback as PipelineHooksMap["elementDraw"];
+                    callback as PipelineHooksMap["onElementDraw"];
                 this.forceUpdate();
                 break;
-            case "elementDestroyed":
+            case "onElementDestroyed":
                 this._context.pipeline.onElementDestroyed =
-                    callback as PipelineHooksMap["elementDestroyed"];
+                    callback as PipelineHooksMap["onElementDestroyed"];
         }
     }
 

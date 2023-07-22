@@ -2,7 +2,6 @@ import PlaybackObject from "./anim/playbackObject";
 import Controller from "./ticker/controller";
 import Context from "./ticker/context";
 import MWM from "./MWM";
-import { PipelineHooksMap } from "./ticker/pipeline";
 
 /**
  * Main manawave object used to control the behavior of the ticker
@@ -39,43 +38,43 @@ export class MW extends PlaybackObject {
     /**
      * Sets the hook to be invoked when layout occurs
      */
-    set onLayout(callback: PipelineHooksMap["layout"]) {
-        this._controller.setHook("layout", callback);
+    set onLayout(callback: PipelineHooksMap["onLayout"]) {
+        this._controller.setHook("onLayout", callback);
     }
 
     /**
      * Sets the hook to be invoked when an item is about to be moved
      */
-    set onMove(callback: PipelineHooksMap["move"]) {
-        this._controller.setHook("move", callback);
+    set onMove(callback: PipelineHooksMap["onMove"]) {
+        this._controller.setHook("onMove", callback);
     }
 
     /**
      * Sets the hook to be invoked when an item is about to be rendered to the DOM
      */
-    set onElementCreated(callback: PipelineHooksMap["elementCreated"]) {
-        this._controller.setHook("elementCreated", callback);
+    set onElementCreated(callback: PipelineHooksMap["onElementCreated"]) {
+        this._controller.setHook("onElementCreated", callback);
     }
 
     /**
      * Sets the hook to be invoked when an item is updated or drawn to the DOM
      */
-    set onElementDraw(callback: PipelineHooksMap["elementDraw"]) {
-        this._controller.setHook("elementDraw", callback);
+    set onElementDraw(callback: PipelineHooksMap["onElementDraw"]) {
+        this._controller.setHook("onElementDraw", callback);
     }
 
     /**
      * Sets the hook to be invoked when an item is removed from the DOM
      */
-    set onElementDestroyed(callback: PipelineHooksMap["elementDestroyed"]) {
-        this._controller.setHook("elementDestroyed", callback);
+    set onElementDestroyed(callback: PipelineHooksMap["onElementDestroyed"]) {
+        this._controller.setHook("onElementDestroyed", callback);
     }
 
     /**
      * Sets the hook to be invoked when an item is about to loop from one end to the other
      */
-    set onLoop(callback: PipelineHooksMap["loop"]) {
-        this._controller.setHook("loop", callback);
+    set onLoop(callback: PipelineHooksMap["onLoop"]) {
+        this._controller.setHook("onLoop", callback);
     }
 
     /**

@@ -114,6 +114,14 @@ export default class Context {
 
         // set main pipeline for entire system
         this._pipeline = new Pipeline();
+        this._pipeline.onElementCreated =
+            options.onElementCreated ?? (() => {});
+        this._pipeline.onElementDestroyed =
+            options.onElementDestroyed ?? (() => {});
+        this._pipeline.onElementDraw = options.onElementDraw ?? (() => {});
+        this._pipeline.onLayout = options.onLayout ?? (() => {});
+        this._pipeline.onLoop = options.onLoop ?? (() => {});
+        this._pipeline.onMove = options.onMove ?? (() => {});
     }
 
     /**
