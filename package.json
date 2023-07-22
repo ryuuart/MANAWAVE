@@ -2,7 +2,9 @@
   "name": "manawave-monorepo",
   "version": "0.0.0",
   "private": true,
-  "scripts": {},
+  "scripts": {
+    "version": "changeset version && pnpm install --no-frozen-lockfile"
+  },
   "devDependencies": {
     "nx": "16.5.3"
   },
