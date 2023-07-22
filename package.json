@@ -2,13 +2,9 @@
   "name": "manawave-monorepo",
   "version": "0.0.0",
   "private": true,
-  "scripts": {
-    "build": "nx build manawave"
-  },
+  "scripts": {},
   "devDependencies": {
     "nx": "16.5.3"
   },
-  "nx": {
-    "targets": {}
-  }
+  "nx": {}
 }

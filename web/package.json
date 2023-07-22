@@ -12,5 +12,14 @@
   "dependencies": {
     "manawave": "0.9.0",
     "astro": "^2.8.4"
+  },
+  "nx": {
+    "targets": {
+      "dev": {
+        "dependsOn": [
+          "^build"
+        ]
+      }
+    }
   }
 }
