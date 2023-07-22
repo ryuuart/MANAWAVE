@@ -7,6 +7,7 @@ import styles from "../styles/ticker.module.css";
 export default class TickerComponent extends Component {
     constructor() {
         const element = document.createElement("div");
+        element.ariaHidden = "true";
         element.classList.add(styles.container);
 
         super(element);
