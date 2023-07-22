@@ -6,5 +6,8 @@
   "devDependencies": {
     "nx": "16.5.3"
   },
-  "nx": {}
+  "nx": {},
+  "dependencies": {
+    "@changesets/cli": "^2.26.2"
+  }
 }
