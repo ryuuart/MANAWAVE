@@ -12,7 +12,7 @@
     "astro": "astro"
   },
   "dependencies": {
-    "manawave": "^0.10.0",
+    "manawave": "^0.10.1",
     "astro": "^2.8.4"
   },
   "nx": {
