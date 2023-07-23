@@ -1,5 +1,11 @@
 # manawave
 
+## 0.10.2
+
+### Patch Changes
+
+- [`03a1afa`](https://github.com/ryuuart/manawave/commit/03a1afac85676b3af42dbc04263c943a6225fd96) Thanks [@ryuuart](https://github.com/ryuuart)! - Add homepage and repository data for package
+
 ## 0.10.1
 
 ### Patch Changes
