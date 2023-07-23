@@ -3,6 +3,11 @@
   "license": "MIT",
   "author": "Long Nguyen",
   "version": "0.10.1",
+  "homepage": "https://manawave.long-nguyen.dev/",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ryuuart/manawave.git"
+  },
   "description": "It's not a marquee, it's more than that!",
   "type": "module",
   "files": [
