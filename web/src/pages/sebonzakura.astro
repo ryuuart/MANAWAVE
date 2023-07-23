@@ -8,7 +8,7 @@ import Layout from "../layouts/Layout.astro";
       <h1>千本桜 • 1000 cherry petals</h1>
       <input id="theme-btn" type="button" value="Switch Energies" />
     </header>
-    <manawave-ticker
+    <div
       id="petal-field"
       autoplay
       direction="280"
@@ -27,7 +27,7 @@ import Layout from "../layouts/Layout.astro";
         <div>な</div>
         <div>い</div>
       </div>
-    </manawave-ticker>
+    </div>
   </main>
 </Layout>
 
@@ -150,7 +150,7 @@ import Layout from "../layouts/Layout.astro";
 </style>
 
 <script>
-  import { getMW } from "manawave";
+  import { MW } from "manawave";
 
   /**
    * Converts degrees to radians
@@ -183,71 +183,70 @@ import Layout from "../layouts/Layout.astro";
     const themeBtnElement = document.getElementById("theme-btn")!;
     const petalFieldElement = document.getElementById("petal-field")!;
 
-    const mw = getMW(petalFieldElement)!;
-
     let circlePos = -10;
-    mw.onLayout = ({ position, limits }) => {
-      circlePos += 20;
-      return {
-        position: {
-          x: position.x + Math.cos(toRadians(circlePos)) * limits.width * 0.04,
-          y:
-            limits.height +
-            position.y +
-            Math.sin(toRadians(circlePos)) * limits.height * 0.08,
-        },
-      };
-    };
-    mw.onMove = () => {
-      return { direction: mouseAngle };
-    };
-    mw.onLoop = ({ limits, itemSize }) => ({
-      limits: {
-        left: limits.left - itemSize.width * 2,
-        right: limits.right + itemSize.width * 2,
-        top: limits.top - itemSize.height * 2,
-        bottom: limits.bottom + itemSize.height * 2,
+    const mw = new MW(petalFieldElement, {
+      onLayout: ({ position, limits }) => {
+        circlePos += 20;
+        return {
+          position: {
+            x: position.x + Math.cos(toRadians(circlePos)) * limits.width * 0.04,
+            y:
+              limits.height +
+              position.y +
+              Math.sin(toRadians(circlePos)) * limits.height * 0.08,
+          },
+        };
       },
-    });
+      onMove : () => {
+        return { direction: mouseAngle };
+      },
+      onLoop : ({ limits, itemSize }) => ({
+        limits: {
+          left: limits.left - itemSize.width * 2,
+          right: limits.right + itemSize.width * 2,
+          top: limits.top - itemSize.height * 2,
+          bottom: limits.bottom + itemSize.height * 2,
+        },
+      }),
+      onElementCreated : ({ element }) => {
+        for (const child of element.children[0].children) {
+          const el = child as HTMLElement;
+          el.style.transform = `scale(${
+            0.75 + Math.random() * 1.5
+          }) rotate3d(${Math.random()}, ${Math.random()}, ${Math.random()} , ${
+            Math.random() * 90
+          }deg)`;
 
-    mw.onElementCreated = ({ element }) => {
-      for (const child of element.children[0].children) {
-        const el = child as HTMLElement;
-        el.style.transform = `scale(${
-          0.75 + Math.random() * 1.5
-        }) rotate3d(${Math.random()}, ${Math.random()}, ${Math.random()} , ${
-          Math.random() * 90
-        }deg)`;
+          const rotationAnimations: Keyframe[] = [
+            { transform: "rotate3d(0, 0, 0, 0)" },
+            {
+              transform: `rotate3d(${Math.random() * 0.2}, ${Math.random()}, ${
+                Math.random() * 0.2
+              }, ${360}deg)`,
+            },
+          ];
+          const translationAnimations: Keyframe[] = [
+            {
+              transform: `translate3d(0, 0, 0)`,
+            },
+            {
+              transform: `translate3d(${Math.random() * 256}px, ${
+                Math.random() * 256
+              }px, ${Math.random() * 512}px)`,
+            },
+            {
+              transform: `translate3d(0, 0, 0)`,
+            },
+          ];
 
-        const rotationAnimations: Keyframe[] = [
-          { transform: "rotate3d(0, 0, 0, 0)" },
-          {
-            transform: `rotate3d(${Math.random() * 0.2}, ${Math.random()}, ${
-              Math.random() * 0.2
-            }, ${360}deg)`,
-          },
-        ];
-        const translationAnimations: Keyframe[] = [
-          {
-            transform: `translate3d(0, 0, 0)`,
-          },
-          {
-            transform: `translate3d(${Math.random() * 256}px, ${
-              Math.random() * 256
-            }px, ${Math.random() * 512}px)`,
-          },
-          {
-            transform: `translate3d(0, 0, 0)`,
-          },
-        ];
+          el.animate(rotationAnimations, genAnimoptions());
+          el.animate(translationAnimations, genAnimoptions());
 
-        el.animate(rotationAnimations, genAnimoptions());
-        el.animate(translationAnimations, genAnimoptions());
-
-        if (Math.random() * 10 < 6) el.style.visibility = "hidden";
+          if (Math.random() * 10 < 6) el.style.visibility = "hidden";
+        }
+        return { element };
       }
-      return { element };
-    };
+    });
 
     themeBtnElement.addEventListener("click", () => {
       const prefersDarkScheme = window.matchMedia(
