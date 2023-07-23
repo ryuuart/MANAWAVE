@@ -4,6 +4,5 @@
   "commit": false,
   "access": "public",
   "baseBranch": "main",
-  "updateInternalDependencies": "patch",
-  "ignore": ["manawave-demo"]
+  "updateInternalDependencies": "minor"
 }
