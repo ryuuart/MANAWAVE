@@ -1,0 +1,32 @@
+---
+import Section from "../../../layouts/home/Section.astro";
+---
+
+<Section class="poem">
+  <div class="text">
+    <p>
+      Within manawave's embrace,<br />
+      A realm seer's gaze takes flight,<br />
+      Five realms unveiled, they trace,<br />
+      Seeking truths in cosmic light.
+    </p>
+  </div>
+  <div class="placeholder-img"></div>
+</Section>
+
+<style>
+  section.poem {
+    grid-row: poem-start / poem-end;
+    grid-template-rows: 1fr 2fr;
+  }
+
+  .text {
+    grid-area: 1 / 2 / 2 / 6;
+  }
+
+  .placeholder-img {
+    grid-area: 2 / 2 / 3 / 6;
+
+    background-color: blue;
+  }
+</style>
