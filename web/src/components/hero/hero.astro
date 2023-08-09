@@ -1,0 +1,71 @@
+---
+import Section from "../../layouts/home/Section.astro";
+---
+
+<Section class="hero">
+  <header>
+    <p class="author">ryuuart::</p>
+    <div class="title">
+      <h1>manawave</h1>
+      <p class="tagline">ambient::infinity</p>
+    </div>
+  </header>
+  <div class="cta-desc">
+    <p>
+      MANAWAVE is a controllable, configurable, and omnidirectional marquee
+      defined with only HTML & CSS. It has zero dependencies and is built on
+      vanilla JavaScript.
+    </p>
+  </div>
+  <div class="cta">
+    <div><a>Get Started</a></div>
+    <div><a>5 Realms</a></div>
+  </div>
+  <div class="primordia sideways-lr">
+    <div>Primordia</div>
+    <div>08.10.23</div>
+  </div>
+</Section>
+
+<style>
+  section.hero {
+    grid-row: hero-start / hero-end;
+
+    grid-template-rows: auto 1fr auto auto;
+  }
+
+  header {
+    grid-area: 1 / 2 / 2 / 6;
+
+    display: grid;
+    grid-template-columns: auto auto;
+  }
+
+  header * {
+    margin: 0;
+  }
+
+  header > .author {
+    margin-right: 0.5rem;
+  }
+
+  header h1 {
+    text-transform: uppercase;
+  }
+
+  .cta-desc {
+    grid-area: 3 / 2 / 4 / 5;
+  }
+
+  .cta {
+    grid-area: 4 / 2/ 5 / 5;
+  }
+
+  .primordia {
+    grid-area: 3 / 1 / 4 / 2;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: end;
+  }
+</style>
