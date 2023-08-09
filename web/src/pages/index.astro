@@ -1,13 +1,13 @@
 ---
 import Layout from "../layouts/Layout.astro";
-import HeroSection from "../components/hero/hero.astro";
+import HeroSection from "../components/home/hero/hero.astro";
 ---
 
 <Layout title="manawave">
-    <main class="box-line-left">
-      <div class="separator--rinf_c2 vr front"></div>
-      <HeroSection />
-    </main>
+  <main class="box-line-left">
+    <div class="separator--rinf_c2 vr front"></div>
+    <HeroSection />
+  </main>
 </Layout>
 
 <style>
@@ -17,9 +17,10 @@ import HeroSection from "../components/hero/hero.astro";
     display: grid;
     gap: 0.5rem;
     grid-template-columns: repeat(5, 1fr);
-    grid-template-rows: [hero-start] 
-      auto [hero-end poem-start] 
-      auto [poem-end realms-start] 
+    grid-template-rows:
+      [hero-start]
+      auto [hero-end poem-start]
+      auto [poem-end realms-start]
       auto [realms-end];
   }
 </style>
@@ -32,7 +33,7 @@ import HeroSection from "../components/hero/hero.astro";
 
   .separator--rinf_c2 {
     grid-row: hero-start / realms-end;
-    grid-column: 2 / span 1; 
+    grid-column: 2 / span 1;
   }
 
   .behind {
@@ -44,6 +45,6 @@ import HeroSection from "../components/hero/hero.astro";
   }
 
   .vr {
-   border-left: 1px solid var(--color-fg); 
+    border-left: 1px solid var(--color-fg);
   }
 </style>
