@@ -1,0 +1,17 @@
+---
+const { class: className } = Astro.props;
+---
+
+<section class={className}>
+  <slot />
+</section>
+
+<style>
+  section {
+    grid-column: 1 / 6;
+
+    display: grid;
+    gap: 0.5rem;
+    grid-template-columns: repeat(5, 1fr);
+  }
+</style>

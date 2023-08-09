@@ -1,0 +1,37 @@
+---
+import Section from "../../../layouts/home/Section.astro";
+import Header from "./Header.astro";
+import Primordia from "./Primordia.astro";
+---
+
+<Section class="hero">
+  <Header />
+  <div class="cta-desc">
+    <p>
+      MANAWAVE is a controllable, configurable, and omnidirectional marquee
+      defined with only HTML & CSS. It has zero dependencies and is built on
+      vanilla JavaScript.
+    </p>
+  </div>
+  <div class="cta">
+    <div><a>Get Started</a></div>
+    <div><a>5 Realms</a></div>
+  </div>
+  <Primordia />
+</Section>
+
+<style>
+  section.hero {
+    grid-row: hero-start / hero-end;
+
+    grid-template-rows: auto 1fr auto auto;
+  }
+
+  .cta-desc {
+    grid-area: 3 / 2 / 4 / 5;
+  }
+
+  .cta {
+    grid-area: 4 / 2/ 5 / 5;
+  }
+</style>

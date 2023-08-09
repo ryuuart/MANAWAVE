@@ -1,0 +1,52 @@
+---
+import Section from "../../../layouts/home/Section.astro";
+import realmsData from "./realms.json";
+import RealmItem from "./RealmItem.astro";
+---
+
+<Section class="realms">
+  <div class="name">
+    <p>ryuuart::</p>
+  </div>
+  <header>
+    <h2>5 Realms</h2>
+    <p>visions&nbsp;•&nbsp;dreams&nbsp;•&nbsp;self</p>
+  </header>
+  <ul>
+    {
+      realmsData.map((i) => (
+        <li>
+          <RealmItem title={i.title} tagline={i.tagline} url={i.url} />
+        </li>
+      ))
+    }
+  </ul>
+</Section>
+
+<style>
+  section.realms {
+    grid-row: realms-start / realms-end;
+    grid-template-rows: auto auto;
+  }
+
+  .name {
+    grid-column: 1 / 1 / 2 / 2;
+
+    display: flex;
+    justify-content: end;
+  }
+
+  header {
+    grid-area: 1 / 2 / 2 / 5;
+  }
+
+  ul {
+    grid-area: 2 / 2 / 3 / 6;
+
+    padding: 0;
+  }
+
+  li {
+    list-style: none;
+  }
+</style>

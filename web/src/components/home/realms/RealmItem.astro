@@ -1,0 +1,33 @@
+---
+const { title, tagline, url } = Astro.props;
+---
+
+<div class="container">
+  <div class="aura"></div>
+  <div class="content">
+    <div>
+      <a href={url}>{title}</a>
+    </div>
+    <p>{tagline}</p>
+  </div>
+</div>
+
+<style>
+  .container {
+    display: flex;
+    flex-flow: row nowrap;
+  }
+
+  .aura {
+    flex: 0;
+    flex-basis: 2rem;
+
+    height: 2rem;
+
+    background: white;
+  }
+
+  .content {
+    flex-grow: 1;
+  }
+</style>
