@@ -11,6 +11,9 @@ import RealmsSection from "../components/home/realms/Realms.astro";
     <HeroSection />
     <PoemSection />
     <RealmsSection />
+    <footer>
+      <p>Copyright &copy; 2023 Long Nguyen. All rights reserved.</p>
+    </footer>
   </main>
 </Layout>
 
@@ -25,7 +28,13 @@ import RealmsSection from "../components/home/realms/Realms.astro";
       [hero-start]
       auto [hero-end poem-start]
       auto [poem-end realms-start]
-      auto [realms-end];
+      auto [realms-end]
+      auto;
+  }
+
+  footer {
+    grid-area: realms-end / 2 / span 1 / 6;
+    display: grid;
   }
 </style>
 
@@ -36,7 +45,7 @@ import RealmsSection from "../components/home/realms/Realms.astro";
   }
 
   .separator--rinf_c2 {
-    grid-row: hero-start / realms-end;
+    grid-row: hero-start / span realms-end 2;
     grid-column: 2 / span 1;
   }
 
