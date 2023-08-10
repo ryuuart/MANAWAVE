@@ -19,15 +19,27 @@ import Section from "../../../layouts/home/Section.astro";
     margin-top: 7rem;
 
     grid-row: poem-start / poem-end;
-    grid-template-rows: 1fr 2fr;
+    grid-template-rows: 1fr 1fr;
   }
 
   .text {
     grid-area: 1 / 2 / 2 / 6;
+
+    font-family: "PP Migra", serif;
+    font-style: italic;
+    font-weight: 400;
+    font-size: 1rem;
+    line-height: 2;
+
+    margin-left: 1rem;
+    margin-bottom: 8rem;
   }
 
   .placeholder-img {
     grid-area: 2 / 2 / 3 / 6;
+
+    margin: 1rem;
+    margin-bottom: 0;
 
     background-color: blue;
   }
