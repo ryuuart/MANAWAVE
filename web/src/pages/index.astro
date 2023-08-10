@@ -1,61 +1,65 @@
 ---
 import Layout from "../layouts/Layout.astro";
+import Section from "../layouts/home/Section.astro";
 import HeroSection from "../components/home/hero/Hero.astro";
 import PoemSection from "../components/home/poem/Poem.astro";
 import RealmsSection from "../components/home/realms/Realms.astro";
 ---
 
 <Layout title="manawave">
-  <div class="layout">
-    <main class="box-line-left">
-      <div class="separator--rinf_c2 vr front"></div>
-      <HeroSection />
-      <PoemSection />
-      <RealmsSection />
-      <footer>
-        <small>
-          Copyright &copy; 2023 Long Nguyen.
-          <br />
-          All rights reserved.
-        </small>
-      </footer>
-    </main>
-  </div>
+  <main class="box-line-left">
+    <Section html={false} class="hero-spacer"/>
+    <div class="hr hr-hero"></div>
+    <HeroSection />
+    <Section html={false} class="poem-spacer"/>
+    <hr class="hr-poem"/>
+    <PoemSection />
+    <RealmsSection />
+  </main>
 </Layout>
 
 <style>
-  .layout {
-    display: grid;
-    grid-template-columns: 1fr auto 1fr;
-  }
-
   main {
     grid-column-start: 2;
 
-    max-width: 390px;
-    margin: 0 auto;
-
     display: grid;
-    gap: 0.5rem;
-    grid-template-columns: repeat(5, 1fr);
+    grid-template-columns: 1fr auto 1fr;
     grid-template-rows:
-      [hero-start]
-      auto [hero-end poem-start]
+      4rem
+      auto [hero-start]
+      auto [hero-end]
+      7rem [poem-spacer poem-start]
+      auto
       auto [poem-end realms-start]
-      auto [realms-end]
-      auto;
+      auto [realms-end];
   }
 
-  footer {
-    grid-area: realms-end / 2 / span 1 / 6;
+  hr, .hr {
+    grid-column: 1 / -1;
 
-    font-size: 0.75rem;
+    border: none;
+    border-top: 1px solid var(--color-fg);
 
-    margin-left: 1rem;
+    width: 100%;
+    margin: 0;
+
+    overflow: hidden;
   }
 
-  small {
-    font-size: 0.75rem;
+  .hero-spacer {
+    grid-row: 1 / hero-start;
+  }
+
+  .poem-spacer: {
+    grid-row: poem-spacer / poem-start;
+  }
+
+  .hr-hero {
+    grid-row: 2 / hero-start;
+  }
+
+  .hr-poem {
+    grid-row: poem-start / span 1;
   }
 </style>
 
@@ -70,7 +74,7 @@ import RealmsSection from "../components/home/realms/Realms.astro";
     grid-column: 2 / span 1;
   }
 
-  .behind {
+  .behind-1 {
     z-index: -1;
   }
 

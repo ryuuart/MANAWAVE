@@ -1,17 +1,31 @@
 ---
-const { class: className } = Astro.props;
+const { class: className, html=true } = Astro.props;
 ---
-
+{
+(html) ? 
 <section class={className}>
+  <div class="vr behind-1"></div>
   <slot />
 </section>
+: 
+<div class={`section ${className}`}>
+  <div class="vr behind-1"></div>
+  <slot />
+</div>
+}
 
 <style>
-  section {
-    grid-column: 1 / 6;
+  section, .section {
+    max-width: 390px;
+
+    grid-column: 2 / span 1;
 
     display: grid;
     gap: 0.5rem;
     grid-template-columns: repeat(5, 1fr);
+  }
+
+  .vr {
+    grid-area: 1 / 2 / -1 / span 1;
   }
 </style>
