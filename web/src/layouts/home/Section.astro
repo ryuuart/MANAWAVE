@@ -3,15 +3,22 @@ const { class: className } = Astro.props;
 ---
 
 <section class={className}>
+  <div class="vr front-1"></div>
   <slot />
 </section>
 
 <style>
   section {
-    grid-column: 1 / 6;
+    max-width: 390px;
+
+    grid-column: 2 / span 1;
 
     display: grid;
     gap: 0.5rem;
     grid-template-columns: repeat(5, 1fr);
+  }
+
+  .vr {
+    grid-area: 1 / 2 / -1 / span 1;
   }
 </style>
