@@ -25,6 +25,7 @@ import RealmItem from "./RealmItem.astro";
 
 <style>
   section.realms {
+    margin-top: 1rem;
     grid-row: realms-start / realms-end;
     grid-template-rows: auto auto;
   }
@@ -34,19 +35,43 @@ import RealmItem from "./RealmItem.astro";
 
     display: flex;
     justify-content: end;
+
+    margin-right: 0.5rem;
   }
 
   header {
     grid-area: 1 / 2 / 2 / 5;
+
+    margin-left: 1rem;
   }
 
   ul {
     grid-area: 2 / 2 / 3 / 6;
 
     padding: 0;
+
+    display: flex;
+    flex-flow: column nowrap;
+
+    gap: 2rem;
+
+    margin-left: 1rem;
   }
 
   li {
     list-style: none;
+  }
+
+  h2 {
+    text-transform: uppercase;
+
+    margin: 0;
+    margin-bottom: -0.5rem;
+  }
+
+  p {
+    margin: 0;
+
+    font-size: 0.75rem;
   }
 </style>

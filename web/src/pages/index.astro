@@ -6,20 +6,34 @@ import RealmsSection from "../components/home/realms/Realms.astro";
 ---
 
 <Layout title="manawave">
-  <main class="box-line-left">
-    <div class="separator--rinf_c2 vr front"></div>
-    <HeroSection />
-    <PoemSection />
-    <RealmsSection />
-    <footer>
-      <p>Copyright &copy; 2023 Long Nguyen. All rights reserved.</p>
-    </footer>
-  </main>
+  <div class="layout">
+    <main class="box-line-left">
+      <div class="separator--rinf_c2 vr front"></div>
+      <HeroSection />
+      <PoemSection />
+      <RealmsSection />
+      <footer>
+        <small>
+          Copyright &copy; 2023 Long Nguyen.
+          <br />
+          All rights reserved.
+        </small>
+      </footer>
+    </main>
+  </div>
 </Layout>
 
 <style>
+  .layout {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+  }
+
   main {
-    margin: 0 1.5rem;
+    grid-column-start: 2;
+
+    max-width: 390px;
+    margin: 0 auto;
 
     display: grid;
     gap: 0.5rem;
@@ -34,7 +48,14 @@ import RealmsSection from "../components/home/realms/Realms.astro";
 
   footer {
     grid-area: realms-end / 2 / span 1 / 6;
-    display: grid;
+
+    font-size: 0.75rem;
+
+    margin-left: 1rem;
+  }
+
+  small {
+    font-size: 0.75rem;
   }
 </style>
 
