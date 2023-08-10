@@ -13,7 +13,7 @@
     "astro": "astro"
   },
   "dependencies": {
-    "@fontsource/crimson-text": "^5.0.8",
+    "@fontsource/crimson-pro": "^5.0.8",
     "astro": "^2.8.4",
     "manawave": "^0.10.1"
   },
