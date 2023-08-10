@@ -11,6 +11,7 @@ import RealmsSection from "../components/home/realms/Realms.astro";
     <Section html={false} class="hero-spacer"/>
     <div class="hr hr-hero"></div>
     <HeroSection />
+    <Section html={false} class="poem-spacer"/>
     <hr class="hr-poem"/>
     <PoemSection />
     <RealmsSection />
@@ -26,7 +27,8 @@ import RealmsSection from "../components/home/realms/Realms.astro";
     grid-template-rows:
       4rem
       auto [hero-start]
-      auto [hero-end poem-start]
+      auto [hero-end]
+      7rem [poem-spacer poem-start]
       auto
       auto [poem-end realms-start]
       auto [realms-end];
@@ -46,6 +48,10 @@ import RealmsSection from "../components/home/realms/Realms.astro";
 
   .hero-spacer {
     grid-row: 1 / hero-start;
+  }
+
+  .poem-spacer: {
+    grid-row: poem-spacer / poem-start;
   }
 
   .hr-hero {
