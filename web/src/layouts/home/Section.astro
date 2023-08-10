@@ -4,12 +4,12 @@ const { class: className, html=true } = Astro.props;
 {
 (html) ? 
 <section class={className}>
-  <div class="vr front-1"></div>
+  <div class="vr behind-1"></div>
   <slot />
 </section>
 : 
 <div class={`section ${className}`}>
-  <div class="vr front-1"></div>
+  <div class="vr behind-1"></div>
   <slot />
 </div>
 }
