@@ -5,10 +5,10 @@ const { title, tagline, url } = Astro.props;
 <div class="container">
   <div class="aura"></div>
   <div class="content">
-    <div>
+    <div class="title">
       <a href={url}>{title}</a>
     </div>
-    <p>{tagline}</p>
+    <p class="tagline">{tagline}</p>
   </div>
 </div>
 
@@ -16,6 +16,8 @@ const { title, tagline, url } = Astro.props;
   .container {
     display: flex;
     flex-flow: row nowrap;
+
+    gap: 0.5rem;
   }
 
   .aura {
@@ -29,5 +31,27 @@ const { title, tagline, url } = Astro.props;
 
   .content {
     flex-grow: 1;
+  }
+
+  .title {
+    font-family: "PP Migra", serif;
+    font-style: italic;
+    font-weight: 800;
+    font-size: 1.5rem;
+
+    margin-bottom: -0.5rem;
+  }
+
+  a {
+    text-transform: uppercase;
+    text-decoration: none;
+  }
+
+  a:visited {
+    color: unset;
+  }
+
+  .tagline {
+    margin: 0;
   }
 </style>
