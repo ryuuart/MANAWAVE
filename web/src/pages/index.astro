@@ -13,7 +13,11 @@ import RealmsSection from "../components/home/realms/Realms.astro";
       <PoemSection />
       <RealmsSection />
       <footer>
-        <p>Copyright &copy; 2023 Long Nguyen. All rights reserved.</p>
+        <small>
+          Copyright &copy; 2023 Long Nguyen.
+          <br />
+          All rights reserved.
+        </small>
       </footer>
     </main>
   </div>
@@ -44,7 +48,12 @@ import RealmsSection from "../components/home/realms/Realms.astro";
 
   footer {
     grid-area: realms-end / 2 / span 1 / 6;
-    display: grid;
+
+    font-size: 0.75rem;
+  }
+
+  small {
+    font-size: 0.75rem;
   }
 </style>
 
