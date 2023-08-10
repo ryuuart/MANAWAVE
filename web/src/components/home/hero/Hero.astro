@@ -6,6 +6,7 @@ import Primordia from "./Primordia.astro";
 
 <Section class="hero">
   <Header />
+  <div class="spacer"></div>
   <div class="cta-desc">
     <p>
       MANAWAVE is a controllable, configurable, and omnidirectional marquee
@@ -27,10 +28,17 @@ import Primordia from "./Primordia.astro";
   }
 
   section.hero {
-    margin-top: 6rem;
+    margin-top: 4rem;
 
     grid-row: hero-start / hero-end;
-    grid-template-rows: auto minmax(40vh, 16rem) auto;
+    grid-template-rows: auto auto auto;
+  }
+
+  .spacer {
+    grid-area: 2 / 1 / 3 / 6;
+
+    height: 40vh;
+    max-height: 20rem;
   }
 
   .cta-desc {
