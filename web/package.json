@@ -13,8 +13,9 @@
     "astro": "astro"
   },
   "dependencies": {
-    "manawave": "^0.10.1",
-    "astro": "^2.8.4"
+    "@fontsource/crimson-text": "^5.0.8",
+    "astro": "^2.8.4",
+    "manawave": "^0.10.1"
   },
   "nx": {
     "targets": {
