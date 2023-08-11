@@ -1,6 +1,6 @@
 ---
 import Layout from "../layouts/Layout.astro";
-import Section from "../layouts/home/Section.astro";
+import Block from "../layouts/home/Block.astro";
 import HeroSection from "../components/home/hero/Hero.astro";
 import PoemSection from "../components/home/poem/Poem.astro";
 import RealmsSection from "../components/home/realms/Realms.astro";
@@ -8,11 +8,11 @@ import RealmsSection from "../components/home/realms/Realms.astro";
 
 <Layout title="manawave">
   <main class="box-line-left">
-    <Section html={false} class="hero-spacer"/>
+    <Block class="hero-spacer" />
     <div class="hr hr-hero"></div>
     <HeroSection />
-    <Section html={false} class="poem-spacer"/>
-    <hr class="hr-poem"/>
+    <Block class="poem-spacer" />
+    <hr class="hr-poem" />
     <PoemSection />
     <RealmsSection />
   </main>
@@ -34,7 +34,8 @@ import RealmsSection from "../components/home/realms/Realms.astro";
       auto [realms-end];
   }
 
-  hr, .hr {
+  hr,
+  .hr {
     grid-column: 1 / -1;
 
     border: none;
