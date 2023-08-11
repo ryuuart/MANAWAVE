@@ -1,0 +1,16 @@
+---
+import Block from "../../layouts/home/Block.astro";
+
+const { size } = Astro.props;
+---
+
+<Block>
+  <div class="spacer"></div>
+</Block>
+
+<style define:vars={{ spacerSize: size }}>
+  .spacer {
+    grid-area: 1 / 1 / -1 / -1;
+    min-height: var(--spacerSize);
+  }
+</style>

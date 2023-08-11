@@ -1,65 +1,32 @@
 ---
 import Layout from "../layouts/Layout.astro";
-import Section from "../layouts/home/Section.astro";
+import Block from "../layouts/home/Block.astro";
 import HeroSection from "../components/home/hero/Hero.astro";
 import PoemSection from "../components/home/poem/Poem.astro";
 import RealmsSection from "../components/home/realms/Realms.astro";
+import Footer from "../components/home/Footer.astro";
+import HR from "../components/home/HR.astro";
+import Spacer from "../components/home/Spacer.astro";
 ---
 
 <Layout title="manawave">
-  <main class="box-line-left">
-    <Section html={false} class="hero-spacer"/>
-    <div class="hr hr-hero"></div>
+  <main>
+    <Spacer size="4rem" />
+    <HR semantic={false} />
     <HeroSection />
-    <Section html={false} class="poem-spacer"/>
-    <hr class="hr-poem"/>
+    <Spacer size="7rem" />
+    <HR />
     <PoemSection />
     <RealmsSection />
+    <Footer />
   </main>
 </Layout>
 
 <style>
   main {
-    grid-column-start: 2;
-
     display: grid;
     grid-template-columns: 1fr auto 1fr;
-    grid-template-rows:
-      4rem
-      auto [hero-start]
-      auto [hero-end]
-      7rem [poem-spacer poem-start]
-      auto
-      auto [poem-end realms-start]
-      auto [realms-end];
-  }
-
-  hr, .hr {
-    grid-column: 1 / -1;
-
-    border: none;
-    border-top: 1px solid var(--color-fg);
-
-    width: 100%;
-    margin: 0;
-
-    overflow: hidden;
-  }
-
-  .hero-spacer {
-    grid-row: 1 / hero-start;
-  }
-
-  .poem-spacer: {
-    grid-row: poem-spacer / poem-start;
-  }
-
-  .hr-hero {
-    grid-row: 2 / hero-start;
-  }
-
-  .hr-poem {
-    grid-row: poem-start / span 1;
+    grid-auto-rows: auto;
   }
 </style>
 
@@ -69,20 +36,11 @@ import RealmsSection from "../components/home/realms/Realms.astro";
     transform: rotate(180deg);
   }
 
-  .separator--rinf_c2 {
-    grid-row: hero-start / span realms-end 2;
-    grid-column: 2 / span 1;
-  }
-
   .behind-1 {
     z-index: -1;
   }
 
   .front-1 {
     z-index: 1;
-  }
-
-  .vr {
-    border-left: 1px solid var(--color-fg);
   }
 </style>

@@ -1,31 +1,17 @@
 ---
-const { class: className, html=true } = Astro.props;
+import Block from "./Block.astro";
+
+const { class: className } = Astro.props;
 ---
-{
-(html) ? 
-<section class={className}>
-  <div class="vr behind-1"></div>
-  <slot />
-</section>
-: 
-<div class={`section ${className}`}>
-  <div class="vr behind-1"></div>
-  <slot />
-</div>
-}
+
+<Block class:list={[className]}>
+  <section class="block">
+    <slot />
+  </section>
+</Block>
 
 <style>
-  section, .section {
-    max-width: 390px;
-
-    grid-column: 2 / span 1;
-
-    display: grid;
-    gap: 0.5rem;
-    grid-template-columns: repeat(5, 1fr);
-  }
-
-  .vr {
-    grid-area: 1 / 2 / -1 / span 1;
+  section {
+    grid-area: 1 / 1 / -1 / -1;
   }
 </style>

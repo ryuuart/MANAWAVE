@@ -1,0 +1,27 @@
+---
+const { class: className } = Astro.props;
+---
+
+<div class:list={[className, "container", "block"]}>
+  <div class="vr behind-1"></div>
+  <slot />
+</div>
+
+<style>
+  .container {
+    max-width: 390px;
+
+    grid-column: 2 / span 1;
+  }
+
+  :global(.block) {
+    display: grid;
+    gap: 0.5rem;
+    grid-template-columns: repeat(5, 1fr);
+  }
+
+  :global(.vr) {
+    border-left: 1px solid var(--color-fg);
+    grid-area: 1 / 2 / -1 / span 1;
+  }
+</style>

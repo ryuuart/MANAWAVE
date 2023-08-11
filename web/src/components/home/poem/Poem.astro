@@ -16,8 +16,7 @@ import Section from "../../../layouts/home/Section.astro";
 
 <style>
   section.poem {
-    grid-row: poem-start / poem-end;
-    grid-template-rows: 1fr 16rem;
+    grid-template-rows: 1fr auto;
   }
 
   .text {
@@ -39,6 +38,7 @@ import Section from "../../../layouts/home/Section.astro";
 
     margin: 1rem;
 
+    min-height: 16rem;
     max-width: 16rem;
 
     background-color: blue;
