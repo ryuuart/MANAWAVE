@@ -6,7 +6,7 @@ import RealmsSection from "../components/home/realms/Realms.astro";
 import Footer from "../components/home/Footer.astro";
 import HR from "../components/home/HR.astro";
 import Spacer from "../components/home/Spacer.astro";
-import godText from "../components/home/god.txt?raw";
+import GodText from "../components/home/hero/GodText.astro";
 ---
 
 <Layout title="manawave">
@@ -19,16 +19,7 @@ import godText from "../components/home/god.txt?raw";
     <PoemSection />
     <RealmsSection />
     <Footer />
-    <div class="god-text behind-1">
-      <div class="god-text-ticker-container">
-        <manawave-ticker autoplay direction="down" class="text-1">
-          <p>{godText}</p>
-        </manawave-ticker>
-        <manawave-ticker autoplay direction="up" class="text-2">
-          <p>{godText}</p>
-        </manawave-ticker>
-      </div>
-    </div>
+    <GodText />
   </main>
 </Layout>
 
@@ -68,35 +59,6 @@ import godText from "../components/home/god.txt?raw";
   }
   main > :global(:nth-child(10)) {
     grid-row: 10 / span 1;
-  }
-
-  main > .god-text {
-    grid-area: 1 / 2 / 8 / span 1;
-    margin: 1.5rem;
-
-    mix-blend-mode: overlay;
-    filter: blur(1.5px);
-
-    position: relative;
-  }
-
-  .god-text > manawave-ticker {
-    max-height: 100vh;
-  }
-
-  .god-text p {
-    margin: 0;
-
-    font-size: 1.5rem;
-  }
-
-  .god-text-ticker-container {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 0.5rem;
-
-    position: absolute;
-    inset: 0;
   }
 </style>
 
