@@ -36,14 +36,6 @@ import HR from "../components/home/HR.astro";
       auto [poem-end realms-start]
       auto [realms-end];
   }
-
-  .hero-spacer {
-    grid-row: 1 / hero-start;
-  }
-
-  .poem-spacer: {
-    grid-row: poem-spacer / poem-start;
-  }
 </style>
 
 <style is:global>
@@ -52,20 +44,11 @@ import HR from "../components/home/HR.astro";
     transform: rotate(180deg);
   }
 
-  .separator--rinf_c2 {
-    grid-row: hero-start / span realms-end 2;
-    grid-column: 2 / span 1;
-  }
-
   .behind-1 {
     z-index: -1;
   }
 
   .front-1 {
     z-index: 1;
-  }
-
-  .vr {
-    border-left: 1px solid var(--color-fg);
   }
 </style>
