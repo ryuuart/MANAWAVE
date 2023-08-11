@@ -19,14 +19,14 @@ import godText from "../components/home/god.txt?raw";
     <PoemSection />
     <RealmsSection />
     <Footer />
-    <div class="god-text behind-2">
+    <div class="god-text behind-1">
       <div class="god-text-ticker-container">
-        <manawave-ticker autoplay direction="down" class="text-1"
-          ><p>{godText}</p></manawave-ticker
-        >
-        <manawave-ticker autoplay direction="up" class="text-2"
-          ><p>{godText}</p></manawave-ticker
-        >
+        <manawave-ticker autoplay direction="down" class="text-1">
+          <p>{godText}</p>
+        </manawave-ticker>
+        <manawave-ticker autoplay direction="up" class="text-2">
+          <p>{godText}</p>
+        </manawave-ticker>
       </div>
     </div>
   </main>
@@ -74,6 +74,7 @@ import godText from "../components/home/god.txt?raw";
     grid-area: 1 / 2 / 8 / span 1;
     margin: 1.5rem;
 
+    mix-blend-mode: overlay;
     filter: blur(1.5px);
 
     position: relative;
