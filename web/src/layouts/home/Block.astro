@@ -2,7 +2,7 @@
 const { class: className } = Astro.props;
 ---
 
-<div class:list={["container", "block"]}>
+<div class:list={[className, "container", "block"]}>
   <div class="vr behind-1"></div>
   <slot />
 </div>
