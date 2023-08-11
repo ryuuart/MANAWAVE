@@ -1,13 +1,17 @@
 <div class="primordia sideways-lr">
-  <div class="title">Primordia</div>
-  <div class="description">08.10.23</div>
+  <div>
+    <div class="title">Primordia</div>
+    <div class="description">08.10.23</div>
+  </div>
+  <img class="holotape" src="/assets/img/holotape.svg" />
 </div>
 
 <style>
   .primordia {
-    grid-area: 3 / 1 / 4 / 2;
-
+    grid-area: 2 / 1 / 4 / 2;
     justify-self: end;
+
+    display: flex;
   }
 
   .title {
@@ -22,5 +26,11 @@
 
   .description {
     font-size: 0.75rem;
+  }
+
+  .holotape {
+    align-self: flex-start;
+
+    margin-inline-start: 1.5rem;
   }
 </style>
