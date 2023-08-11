@@ -47,8 +47,24 @@ import Primordia from "./Primordia.astro";
   .cta {
     grid-area: 4 / 2/ 5 / 5;
 
+    position: relative;
+
     margin-left: 1rem;
     margin-top: 1rem;
+  }
+
+  .cta::before {
+    display: block;
+    content: "";
+
+    width: 0.25rem;
+    height: 85%;
+
+    position: absolute;
+    top: 0.75rem;
+    left: -1.25rem;
+
+    background: var(--color-fg);
   }
 
   .primordia {
