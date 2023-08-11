@@ -1,19 +1,69 @@
 ---
-const { position, semantic = true } = Astro.props;
+import Block from "../../layouts/home/Block.astro";
+
+const { semantic = true } = Astro.props;
 ---
 
-{semantic ? <hr class="hr" /> : <div class="hr" />}
+<>
+  <div class="h-cybertick-container">
+    <Block class="vr-container" />
+    <div class="tick-container">
+      <div class="tick tick-1"></div>
+      <div class="tick tick-2"></div>
+    </div>
+  </div>
+  {semantic ? <hr class="hr" /> : <div class="hr" />}
+</>
 
 <style>
+  .h-cybertick-container {
+    grid-column: 1 / -1;
+
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+  }
+
   .hr {
     grid-column: 1 / -1;
 
     border: none;
-    border-top: 1px solid var(--color-fg);
+    border-bottom: 1px solid var(--color-fg);
 
     width: 100%;
     margin: 0;
 
     overflow: hidden;
+  }
+
+  .vr-container {
+    grid-row: 1 / -1;
+
+    width: 100vw;
+  }
+
+  .tick-container {
+    grid-area: 1 / 1 / -1 / -1;
+
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 0.5rem;
+  }
+
+  .tick {
+    background: var(--color-fg);
+
+    min-height: 0.25rem;
+    width: 15vw;
+    max-width: 6rem;
+
+    grid-row: 1 / -1;
+  }
+
+  .tick-1 {
+    grid-column: -2 / -3;
+  }
+
+  .tick-2 {
+    grid-column: -1 / -2;
   }
 </style>
