@@ -1,4 +1,8 @@
-<div class="primordia sideways-lr">
+---
+const { class: className } = Astro.props;
+---
+
+<div class:list={[className, "primordia", "sideways-lr"]}>
   <div>
     <div class="title">Primordia</div>
     <div class="description">08.10.23</div>
@@ -8,9 +12,6 @@
 
 <style>
   .primordia {
-    grid-area: 2 / 1 / 4 / 2;
-    justify-self: end;
-
     display: flex;
   }
 

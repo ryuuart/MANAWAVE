@@ -18,7 +18,7 @@ import Primordia from "./Primordia.astro";
     <div><a>Get Started</a></div>
     <div><a>5 Realms</a></div>
   </div>
-  <Primordia />
+  <Primordia class="primordia" />
 </Section>
 
 <style>
@@ -49,5 +49,10 @@ import Primordia from "./Primordia.astro";
 
     margin-left: 1rem;
     margin-top: 1rem;
+  }
+
+  .primordia {
+    grid-area: 2 / 1 / 4 / 2;
+    justify-self: end;
   }
 </style>
