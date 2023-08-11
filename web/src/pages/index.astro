@@ -5,15 +5,16 @@ import HeroSection from "../components/home/hero/Hero.astro";
 import PoemSection from "../components/home/poem/Poem.astro";
 import RealmsSection from "../components/home/realms/Realms.astro";
 import Footer from "../components/home/Footer.astro";
+import HR from "../components/home/HR.astro";
 ---
 
 <Layout title="manawave">
   <main class="box-line-left">
     <Block class="hero-spacer" />
-    <div class="hr hr-hero"></div>
+    <HR semantic={false} />
     <HeroSection />
     <Block class="poem-spacer" />
-    <hr class="hr-poem" />
+    <HR />
     <PoemSection />
     <RealmsSection />
     <Footer />
@@ -36,33 +37,12 @@ import Footer from "../components/home/Footer.astro";
       auto [realms-end];
   }
 
-  hr,
-  .hr {
-    grid-column: 1 / -1;
-
-    border: none;
-    border-top: 1px solid var(--color-fg);
-
-    width: 100%;
-    margin: 0;
-
-    overflow: hidden;
-  }
-
   .hero-spacer {
     grid-row: 1 / hero-start;
   }
 
   .poem-spacer: {
     grid-row: poem-spacer / poem-start;
-  }
-
-  .hr-hero {
-    grid-row: 2 / hero-start;
-  }
-
-  .hr-poem {
-    grid-row: poem-start / span 1;
   }
 </style>
 

@@ -1,0 +1,19 @@
+---
+const { position, semantic = true } = Astro.props;
+---
+
+{semantic ? <hr class="hr" /> : <div class="hr" />}
+
+<style>
+  .hr {
+    grid-column: 1 / -1;
+
+    border: none;
+    border-top: 1px solid var(--color-fg);
+
+    width: 100%;
+    margin: 0;
+
+    overflow: hidden;
+  }
+</style>
