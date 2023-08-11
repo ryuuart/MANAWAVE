@@ -1,0 +1,41 @@
+---
+import godText from "../god.txt?raw";
+---
+
+<div class="god-text behind-1">
+  <div class="manawave-ticker-container">
+    <manawave-ticker autoplay direction="down" class="text-1">
+      <p>{godText}</p>
+    </manawave-ticker>
+    <manawave-ticker autoplay direction="up" class="text-2">
+      <p>{godText}</p>
+    </manawave-ticker>
+  </div>
+</div>
+
+<style>
+  .god-text {
+    grid-area: 1 / 2 / 8 / span 1;
+    margin: 1.5rem;
+
+    mix-blend-mode: overlay;
+    filter: blur(1.5px);
+
+    position: relative;
+  }
+
+  .god-text p {
+    margin: 0;
+
+    font-size: 1.5rem;
+  }
+
+  .manawave-ticker-container {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.5rem;
+
+    position: absolute;
+    inset: 0;
+  }
+</style>

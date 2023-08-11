@@ -4,8 +4,8 @@ import Block from "./Block.astro";
 const { class: className } = Astro.props;
 ---
 
-<Block class:list={[className]}>
-  <section class="block">
+<Block>
+  <section class:list={[className, "block"]}>
     <slot />
   </section>
 </Block>
