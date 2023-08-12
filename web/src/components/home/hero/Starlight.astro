@@ -1,5 +1,11 @@
 <div class="container behind-2">
-  <video autoplay muted loop playsinline poster="/assets/img/starlight.jpg">
+  <video
+    data-starlight-video
+    muted
+    loop
+    playsinline
+    poster="/assets/img/starlight.jpg"
+  >
     <source src="/assets/videos/starlight.webm" type="video/webm" />
     <source src="/assets/videos/starlight.mp4" type="video/mp4" />
   </video>
@@ -22,3 +28,19 @@
     transform: scale(3);
   }
 </style>
+
+{
+  /* 
+Handles the problem described in 
+https://stackoverflow.com/questions/8911247/hide-iphone-html5-video-play-button#comment126180552_69709669
+*/
+}
+<script>
+  const video = document.querySelector<HTMLVideoElement>(
+    "[data-starlight-video]"
+  )!;
+  video
+    .play()
+    .then(() => {})
+    .catch(() => {});
+</script>
