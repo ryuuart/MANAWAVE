@@ -15,8 +15,8 @@ import Primordia from "./Primordia.astro";
     </p>
   </div>
   <div class="cta">
-    <div><a>Get Started</a></div>
-    <div><a>5 Realms</a></div>
+    <div><a href="https://github.com/ryuuart/manawave">Get Started</a></div>
+    <div><a href="#realms">5 Realms</a></div>
   </div>
   <Primordia class="primordia" />
 </Section>
@@ -53,6 +53,10 @@ import Primordia from "./Primordia.astro";
     margin-top: 1rem;
   }
 
+  .cta > div {
+    margin-bottom: 0.5rem;
+  }
+
   .cta::before {
     display: block;
     content: "";
@@ -70,5 +74,10 @@ import Primordia from "./Primordia.astro";
   .primordia {
     grid-area: 2 / 1 / 4 / 2;
     justify-self: end;
+  }
+
+  a {
+    text-transform: uppercase;
+    text-decoration: underline;
   }
 </style>
