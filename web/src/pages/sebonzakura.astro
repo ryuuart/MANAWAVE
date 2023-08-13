@@ -189,7 +189,8 @@ import Layout from "../layouts/Layout.astro";
         circlePos += 20;
         return {
           position: {
-            x: position.x + Math.cos(toRadians(circlePos)) * limits.width * 0.04,
+            x:
+              position.x + Math.cos(toRadians(circlePos)) * limits.width * 0.04,
             y:
               limits.height +
               position.y +
@@ -197,10 +198,10 @@ import Layout from "../layouts/Layout.astro";
           },
         };
       },
-      onMove : () => {
+      onMove: () => {
         return { direction: mouseAngle };
       },
-      onLoop : ({ limits, itemSize }) => ({
+      onLoop: ({ limits, itemSize }) => ({
         limits: {
           left: limits.left - itemSize.width * 2,
           right: limits.right + itemSize.width * 2,
@@ -208,7 +209,7 @@ import Layout from "../layouts/Layout.astro";
           bottom: limits.bottom + itemSize.height * 2,
         },
       }),
-      onElementCreated : ({ element }) => {
+      onElementCreated: ({ element }) => {
         for (const child of element.children[0].children) {
           const el = child as HTMLElement;
           el.style.transform = `scale(${
@@ -245,7 +246,7 @@ import Layout from "../layouts/Layout.astro";
           if (Math.random() * 10 < 6) el.style.visibility = "hidden";
         }
         return { element };
-      }
+      },
     });
 
     themeBtnElement.addEventListener("click", () => {

@@ -1,0 +1,80 @@
+---
+interface Props {
+  title: string;
+  tagline: string;
+}
+
+const { title, tagline } = Astro.props;
+---
+
+<header>
+  <h1>{title}</h1>
+  <div class="tagline-wrapper">
+    <p>{tagline}</p>
+    <div class="cyberbend-container">
+      <svg
+        width="32"
+        height="32"
+        viewBox="0 0 32 32"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <g clip-path="url(#clip0_446_428)">
+          <path d="M0 0L32 32"></path>
+        </g>
+        <defs>
+          <clipPath id="clip0_446_428">
+            <rect width="32" height="32"></rect>
+          </clipPath>
+        </defs>
+      </svg>
+    </div>
+  </div>
+</header>
+
+<style>
+  header {
+    grid-area: 1 / 2 / span 1 / -1;
+
+    border-bottom: 1px solid var(--color-fg);
+
+    margin: 1rem;
+    margin-bottom: 0;
+    padding-bottom: 1rem;
+  }
+
+  h1 {
+    text-transform: uppercase;
+
+    margin: 0;
+    margin-bottom: -0.5rem;
+  }
+
+  p {
+    margin: 0;
+
+    position: relative;
+  }
+
+  .tagline-wrapper {
+    position: relative;
+  }
+
+  .cyberbend-container {
+    width: 1.5rem;
+    height: 1.5rem;
+
+    position: absolute;
+    left: -1.5rem;
+    top: 0.6rem;
+  }
+
+  .cyberbend-container > svg {
+    height: 100%;
+    width: 100%;
+  }
+
+  .cyberbend-container > svg path {
+    stroke: var(--color-fg);
+  }
+</style>

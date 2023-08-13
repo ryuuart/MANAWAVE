@@ -1,0 +1,49 @@
+<div class="aura">
+  <div class="wrapper">
+    <div class="img-container">
+      <div class="img"></div>
+    </div>
+    <div class="left-vertical-line"></div>
+  </div>
+</div>
+
+<style>
+  .aura {
+    grid-area: 2 / 1 / 3 / 2;
+
+    margin: 1rem;
+    margin-right: 0;
+  }
+
+  .wrapper {
+    position: relative;
+
+    height: 100%;
+
+    top: -3rem;
+  }
+
+  .img-container {
+    position: relative;
+
+    border-top: 1px solid var(--color-fg);
+    border-left: 1px solid var(--color-fg);
+
+    padding: 0.5rem;
+  }
+
+  .img {
+    background: var(--color-fg);
+
+    width: 2rem;
+    height: 2rem;
+
+    position: relative;
+  }
+
+  .left-vertical-line {
+    height: 100%;
+
+    border-left: 1px solid var(--color-fg);
+  }
+</style>
