@@ -3,6 +3,7 @@ import Layout from "../Layout.astro";
 import Header from "../../components/realms/Header.astro";
 
 import realmData from "../../../data/realms.json";
+import Aura from "../../components/realms/Aura.astro";
 
 interface Props {
   pageTitle: string;
@@ -27,9 +28,7 @@ const { title, tagline, story, song } = realmData[realm];
     <section>
       <slot />
     </section>
-    <div class="aura">
-      <div class="aura-img"></div>
-    </div>
+    <Aura />
   </main>
 </Layout>
 
@@ -45,8 +44,8 @@ const { title, tagline, story, song } = realmData[realm];
     grid-template-columns: min-content auto auto;
     grid-template-rows: min-content min-content auto;
 
-    width: 100vw;
-    height: 100vh;
+    max-width: 100vw;
+    min-height: 100vh;
   }
 
   article {
@@ -83,52 +82,5 @@ const { title, tagline, story, song } = realmData[realm];
 
   manawave-ticker {
     height: 100%;
-  }
-
-  .aura {
-    grid-area: 2 / 1 / 3 / 2;
-
-    border-left: 1px solid black;
-
-    margin: 1rem;
-  }
-
-  .aura-img {
-    background: black;
-
-    width: 2rem;
-    height: 2rem;
-
-    margin: 0.5rem;
-
-    position: relative;
-
-    top: -3rem;
-  }
-
-  .aura-img::before {
-    content: "";
-    position: absolute;
-
-    height: 1px;
-    width: calc(100% + 2rem);
-
-    border-top: 1px solid black;
-
-    top: -0.5rem;
-    left: -0.5rem;
-  }
-
-  .aura-img::after {
-    content: "";
-    position: absolute;
-
-    width: 1px;
-    height: calc(100% + 1rem);
-
-    border-left: 1px solid black;
-
-    top: -0.5rem;
-    left: calc(-0.5rem - 1px);
   }
 </style>
