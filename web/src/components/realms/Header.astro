@@ -11,24 +11,6 @@ const { title, tagline } = Astro.props;
   <h1>{title}</h1>
   <div class="tagline-wrapper">
     <p>{tagline}</p>
-    <div class="cyberbend-container">
-      <svg
-        width="32"
-        height="32"
-        viewBox="0 0 32 32"
-        fill="none"
-        xmlns="http://www.w3.org/2000/svg"
-      >
-        <g clip-path="url(#clip0_446_428)">
-          <path d="M0 0L32 32"></path>
-        </g>
-        <defs>
-          <clipPath id="clip0_446_428">
-            <rect width="32" height="32"></rect>
-          </clipPath>
-        </defs>
-      </svg>
-    </div>
   </div>
 </header>
 
@@ -56,25 +38,21 @@ const { title, tagline } = Astro.props;
     position: relative;
   }
 
-  .tagline-wrapper {
-    position: relative;
-  }
+  p::before {
+    content: "";
+    width: calc(1.5rem + 0.05px);
+    height: 0.6666666667px;
 
-  .cyberbend-container {
-    width: 1.5rem;
-    height: 1.5rem;
+    background: var(--color-fg);
 
     position: absolute;
-    left: -1.5rem;
-    top: 0.6rem;
+    bottom: calc(-6px + 0.5px);
+    left: calc(-1.5rem - 0.5px);
+
+    transform: rotate(44deg) scale(1.4);
   }
 
-  .cyberbend-container > svg {
-    height: 100%;
-    width: 100%;
-  }
-
-  .cyberbend-container > svg path {
-    stroke: var(--color-fg);
+  .tagline-wrapper {
+    position: relative;
   }
 </style>
