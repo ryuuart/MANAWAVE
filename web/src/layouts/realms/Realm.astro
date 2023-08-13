@@ -1,29 +1,31 @@
 ---
 import Layout from "../Layout.astro";
 import Header from "../../components/realms/Header.astro";
+
+interface Props {
+  pageTitle: string;
+  title: string;
+  tagline: string;
+  story: string;
+  song: string;
+}
+
+const { pageTitle, title, tagline, story, song } = Astro.props;
 ---
 
-<Layout title="">
+<Layout title={pageTitle}>
   <main>
     <div class="return">
       <a href="../">return</a>
     </div>
-    <Header />
+    <Header title={title} tagline={tagline} />
     <article>
       <p>
-        SEBONZAKURA (千本桜) came to me while listening to TOUHOU music at the
-        gym. Given the passion, I suddenly saw a field of moonlit typographic
-        cherry petals.
+        {story}
       </p>
     </article>
     <section>
-      <manawave-ticker>
-        <div>
-          SEBONZAKURA (千本桜) came to me while listening to TOUHOU music at the
-          gym. Given the passion, I suddenly saw a field of moonlit typographic
-          cherry petals.
-        </div>
-      </manawave-ticker>
+      <slot />
     </section>
     <div class="aura">
       <div class="aura-img"></div>

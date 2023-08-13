@@ -1,0 +1,42 @@
+---
+import Realm from "../../layouts/realms/Realm.astro";
+import realmData from "../../../data/realms.json";
+
+interface Params {
+  realm: keyof typeof realmData;
+}
+
+export function isRealm(realm: string | undefined): realm is Params["realm"] {
+  if (realm) return realm in realmData;
+  else return false;
+}
+
+export function getStaticPaths() {
+  const params: { params: Params }[] = [];
+
+  for (const [realm, data] of Object.entries(realmData)) {
+    if (isRealm(realm))
+      params.push({
+        params: { realm },
+      });
+  }
+
+  return params;
+}
+
+const { realm: realmParam } = Astro.params;
+let realm: keyof typeof realmData = "sebonzakura";
+if (isRealm(realmParam)) {
+  realm = realmParam;
+}
+
+const { title, tagline, story, song } = realmData[realm];
+---
+
+<Realm
+  pageTitle={realmData[realm].title}
+  title={title}
+  tagline={tagline}
+  story={story}
+  song={song}
+/>

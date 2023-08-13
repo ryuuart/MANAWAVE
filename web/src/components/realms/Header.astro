@@ -1,6 +1,15 @@
+---
+interface Props {
+  title: string;
+  tagline: string;
+}
+
+const { title, tagline } = Astro.props;
+---
+
 <header>
-  <h1>title</h1>
-  <p>tagline</p>
+  <h1>{title}</h1>
+  <p>{tagline}</p>
 </header>
 
 <style>
@@ -25,20 +34,5 @@
     margin: 0;
 
     position: relative;
-  }
-
-  p::before {
-    content: "";
-
-    width: 0.0625rem;
-    height: 1.53rem;
-
-    background: black;
-
-    position: absolute;
-    transform: skew(46deg);
-
-    top: 10px;
-    left: -12px;
   }
 </style>

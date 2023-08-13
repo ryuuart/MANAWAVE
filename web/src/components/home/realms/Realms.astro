@@ -1,6 +1,6 @@
 ---
 import Section from "../../../layouts/home/Section.astro";
-import realmsData from "./realms.json";
+import realmsData from "../../../../data/realms.json";
 import RealmItem from "./RealmItem.astro";
 ---
 
@@ -14,7 +14,7 @@ import RealmItem from "./RealmItem.astro";
   </header>
   <ul>
     {
-      realmsData.map((i) => (
+      Object.values(realmsData).map((i) => (
         <li>
           <RealmItem title={i.title} tagline={i.tagline} url={i.url} />
         </li>
