@@ -1,0 +1,44 @@
+<header>
+  <h1>title</h1>
+  <p>tagline</p>
+</header>
+
+<style>
+  header {
+    grid-area: 1 / 2 / span 1 / -1;
+
+    border-bottom: 1px solid black;
+
+    margin: 1rem;
+    margin-bottom: 0;
+    padding-bottom: 1rem;
+  }
+
+  h1 {
+    text-transform: uppercase;
+
+    margin: 0;
+    margin-bottom: -0.5rem;
+  }
+
+  p {
+    margin: 0;
+
+    position: relative;
+  }
+
+  p::before {
+    content: "";
+
+    width: 0.0625rem;
+    height: 1.53rem;
+
+    background: black;
+
+    position: absolute;
+    transform: skew(46deg);
+
+    top: 10px;
+    left: -12px;
+  }
+</style>

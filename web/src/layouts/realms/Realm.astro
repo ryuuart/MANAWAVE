@@ -1,0 +1,132 @@
+---
+import Layout from "../Layout.astro";
+import Header from "../../components/realms/Header.astro";
+---
+
+<Layout title="">
+  <main>
+    <div class="return">
+      <a href="../">return</a>
+    </div>
+    <Header />
+    <article>
+      <p>
+        SEBONZAKURA (千本桜) came to me while listening to TOUHOU music at the
+        gym. Given the passion, I suddenly saw a field of moonlit typographic
+        cherry petals.
+      </p>
+    </article>
+    <section>
+      <manawave-ticker>
+        <div>
+          SEBONZAKURA (千本桜) came to me while listening to TOUHOU music at the
+          gym. Given the passion, I suddenly saw a field of moonlit typographic
+          cherry petals.
+        </div>
+      </manawave-ticker>
+    </section>
+    <div class="aura">
+      <div class="aura-img"></div>
+    </div>
+  </main>
+</Layout>
+
+<style>
+  body {
+    background: white;
+    color: black;
+  }
+
+  main {
+    display: grid;
+    gap: 0.5rem;
+    grid-template-columns: min-content auto auto;
+    grid-template-rows: min-content min-content auto;
+
+    width: 100vw;
+    height: 100vh;
+  }
+
+  article {
+    grid-area: 2 / 2 / span 1 / -1;
+
+    max-width: 66ch;
+  }
+
+  .return {
+    grid-area: 1 / 1 / span 1 / span 1;
+
+    align-self: flex-end;
+    justify-self: flex-end;
+
+    margin-bottom: calc(1.75rem + 1ch);
+  }
+
+  a {
+    text-decoration: underline;
+    text-transform: none;
+  }
+
+  section {
+    grid-area: 3 / 1 / 4 / -1;
+
+    border: 1px solid black;
+
+    margin: 1rem;
+  }
+
+  p {
+    margin: 1rem;
+  }
+
+  manawave-ticker {
+    height: 100%;
+  }
+
+  .aura {
+    grid-area: 2 / 1 / 3 / 2;
+
+    border-left: 1px solid black;
+
+    margin: 1rem;
+  }
+
+  .aura-img {
+    background: black;
+
+    width: 2rem;
+    height: 2rem;
+
+    margin: 0.5rem;
+
+    position: relative;
+
+    top: -3rem;
+  }
+
+  .aura-img::before {
+    content: "";
+    position: absolute;
+
+    height: 1px;
+    width: calc(100% + 2rem);
+
+    border-top: 1px solid black;
+
+    top: -0.5rem;
+    left: -0.5rem;
+  }
+
+  .aura-img::after {
+    content: "";
+    position: absolute;
+
+    width: 1px;
+    height: calc(100% + 1rem);
+
+    border-left: 1px solid black;
+
+    top: -0.5rem;
+    left: calc(-0.5rem - 1px);
+  }
+</style>
