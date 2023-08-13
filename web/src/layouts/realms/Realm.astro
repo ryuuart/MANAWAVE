@@ -2,15 +2,15 @@
 import Layout from "../Layout.astro";
 import Header from "../../components/realms/Header.astro";
 
+import realmData from "../../../data/realms.json";
+
 interface Props {
   pageTitle: string;
-  title: string;
-  tagline: string;
-  story: string;
-  song: string;
+  realm: keyof typeof realmData;
 }
 
-const { pageTitle, title, tagline, story, song } = Astro.props;
+const { pageTitle, realm } = Astro.props;
+const { title, tagline, story, song } = realmData[realm];
 ---
 
 <Layout title={pageTitle}>
