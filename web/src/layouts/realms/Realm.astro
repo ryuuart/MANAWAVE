@@ -21,9 +21,18 @@ const { title, tagline, story, song } = realmData[realm];
     </div>
     <Header title={title} tagline={tagline} />
     <article>
-      <p>
-        {story}
-      </p>
+      <div class="story-container">
+        <h2>Story</h2>
+        <p>
+          {story}
+        </p>
+      </div>
+      <div class="song-container">
+        <h2>Chosen Song</h2>
+        <div>
+          <a href={song.link}>{song.name}</a>
+        </div>
+      </div>
     </article>
     <section>
       <div>
@@ -57,11 +66,25 @@ const { title, tagline, story, song } = realmData[realm];
   article {
     grid-area: 2 / 2 / span 1 / -1;
 
-    display: flow-root;
+    display: grid;
+    grid-template-columns: auto;
 
     max-width: 66ch;
 
     padding: 1rem;
+  }
+
+  h2 {
+    font-family: "Crimson Pro", serif;
+    font-style: normal;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+
+    margin: 0;
+  }
+
+  .story-container p {
+    margin-bottom: 1rem;
   }
 
   .return {
@@ -108,6 +131,11 @@ const { title, tagline, story, song } = realmData[realm];
   @media screen and (min-width: 768px) {
     main {
       margin: 1rem;
+    }
+
+    article {
+      grid-template-columns: auto auto;
+      gap: 1.5rem;
     }
   }
 

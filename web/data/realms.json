@@ -4,34 +4,49 @@
     "tagline": "1000 cherry dream petals",
     "url": "/realms/sebonzakura",
     "story": "SEBONZAKURA (千本桜) came to me while listening to TOUHOU music at the gym. Given the passion, I suddenly saw a field of moonlit typographic cherry petals.",
-    "song": ""
+    "song": {
+      "name": "感情の魔天楼　～ World's End",
+      "link": "https://www.youtube.com/watch?v=N1w4T9G9g7M"
+    }
   },
   "hyperpink": {
     "title": "hyperpink",
     "tagline": "prima donna",
     "url": "/realms/hyperpink",
     "story": "",
-    "song": ""
+    "song": {
+      "name": "",
+      "link": ""
+    }
   },
   "hero": {
     "title": "Hero",
     "tagline": "another self",
     "url": "/realms/hero",
     "story": "",
-    "song": ""
+    "song": {
+      "name": "",
+      "link": ""
+    }
   },
   "hypertrance": {
     "title": "#HYPERTRANCE",
     "tagline": "infinite evolution —",
     "url": "/realms/hypertrance",
     "story": "",
-    "song": ""
+    "song": {
+      "name": "",
+      "link": ""
+    }
   },
   "flarewater": {
     "title": "flarewater",
     "tagline": "elemental flavor",
     "url": "/realms/flarewater",
     "story": "",
-    "song": ""
+    "song": {
+      "name": "",
+      "link": ""
+    }
   }
 }
