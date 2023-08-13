@@ -48,19 +48,30 @@ const { title, tagline, story, song } = realmData[realm];
     --color-fg: black;
     --color-bg: white;
   }
+
+  html,
+  body {
+    height: 100%;
+  }
+
   body {
     background: var(--color-bg);
     color: var(--color-fg);
+
+    display: flex;
+    flex-direction: column;
   }
 
   main {
+    flex-grow: 1;
+
     display: grid;
     gap: 0.5rem;
     grid-template-columns: min-content auto;
     grid-template-rows: min-content min-content auto;
 
     max-width: 100vw;
-    min-height: 100vh;
+    max-height: 100vh;
   }
 
   article {
@@ -119,10 +130,6 @@ const { title, tagline, story, song } = realmData[realm];
 
   p {
     margin: 0;
-  }
-
-  manawave-ticker {
-    height: 100%;
   }
 
   @media screen and (min-width: 350px) {
