@@ -62,6 +62,7 @@ const { title, tagline, story, song } = realmData[realm];
 
     width: 100%;
     max-width: 48rem;
+    max-height: 100vh;
   }
 
   main {
@@ -71,8 +72,6 @@ const { title, tagline, story, song } = realmData[realm];
     gap: 0.5rem;
     grid-template-columns: min-content auto;
     grid-template-rows: min-content min-content auto;
-
-    max-height: 100vh;
   }
 
   :global(a) {
@@ -96,7 +95,7 @@ const { title, tagline, story, song } = realmData[realm];
   section {
     grid-area: 3 / 1 / 4 / -1;
 
-    padding: 1rem;
+    margin: 1rem;
   }
 
   section > div {
