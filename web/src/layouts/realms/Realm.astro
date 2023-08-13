@@ -39,30 +39,20 @@ const { title, tagline, story, song } = realmData[realm];
     --color-bg: white;
   }
 
-  html,
-  body {
-    height: 100%;
-  }
-
   body {
     background: var(--color-bg);
     color: var(--color-fg);
-
-    display: flex;
-    flex-direction: column;
   }
 
   .wrapper {
     margin: auto;
-
-    flex-grow: 1;
 
     display: flex;
     flex-direction: column;
 
     width: 100%;
     max-width: 48rem;
-    max-height: 100vh;
+    min-height: 100vh;
   }
 
   main {
@@ -96,6 +86,8 @@ const { title, tagline, story, song } = realmData[realm];
     grid-area: 3 / 1 / 4 / -1;
 
     margin: 1rem;
+
+    min-height: 18rem;
   }
 
   section > div {
