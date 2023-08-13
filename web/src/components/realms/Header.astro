@@ -35,4 +35,17 @@ const { title, tagline } = Astro.props;
 
     position: relative;
   }
+
+  p::before {
+    content: "";
+
+    width: 1.5rem;
+    height: calc(100% + 0.5rem - 1px);
+
+    position: absolute;
+    left: -1.5rem;
+    top: 0.6rem;
+
+    background-image: url("/public/assets/img/cyberbend.svg");
+  }
 </style>
