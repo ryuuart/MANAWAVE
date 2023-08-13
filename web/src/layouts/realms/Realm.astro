@@ -4,6 +4,7 @@ import Header from "../../components/realms/Header.astro";
 
 import realmData from "../../../data/realms.json";
 import Aura from "../../components/realms/Aura.astro";
+import Story from "../../components/realms/Story.astro";
 
 interface Props {
   pageTitle: string;
@@ -21,20 +22,7 @@ const { title, tagline, story, song } = realmData[realm];
         <a href="../">return</a>
       </div>
       <Header title={title} tagline={tagline} />
-      <article>
-        <div class="story-container">
-          <h2>Story</h2>
-          <p>
-            {story}
-          </p>
-        </div>
-        <div class="song-container">
-          <h2>Chosen Song</h2>
-          <div>
-            <a href={song.link}>{song.name}</a>
-          </div>
-        </div>
-      </article>
+      <Story story={story} song={song} />
       <section>
         <div>
           <slot />
@@ -87,31 +75,13 @@ const { title, tagline, story, song } = realmData[realm];
     max-height: 100vh;
   }
 
-  article {
-    grid-area: 2 / 2 / span 1 / -1;
-
-    display: grid;
-    grid-template-columns: auto;
-
-    max-width: 66ch;
-
-    padding: 1rem;
+  :global(a) {
+    text-decoration: underline;
+    text-transform: none;
   }
 
-  h2 {
-    font-family: "Crimson Pro", serif;
-    font-style: normal;
-    font-size: 0.75rem;
-    text-transform: uppercase;
-
+  :global(p) {
     margin: 0;
-  }
-
-  .story-container p {
-    margin-bottom: 1rem;
-
-    font-family: "PP Migra", "Crimson Pro", serif;
-    font-style: italic;
   }
 
   .return {
@@ -121,11 +91,6 @@ const { title, tagline, story, song } = realmData[realm];
     justify-self: flex-end;
 
     margin-bottom: calc(1.75rem + 1ch);
-  }
-
-  a {
-    text-decoration: underline;
-    text-transform: none;
   }
 
   section {
@@ -141,10 +106,6 @@ const { title, tagline, story, song } = realmData[realm];
     height: 100%;
   }
 
-  p {
-    margin: 0;
-  }
-
   @media screen and (min-width: 350px) {
     main {
       margin: 0.5rem;
@@ -154,11 +115,6 @@ const { title, tagline, story, song } = realmData[realm];
   @media screen and (min-width: 768px) {
     main {
       margin: 1rem;
-    }
-
-    article {
-      grid-template-columns: auto auto;
-      gap: 1.5rem;
     }
   }
 </style>
