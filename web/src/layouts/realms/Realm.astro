@@ -15,32 +15,34 @@ const { title, tagline, story, song } = realmData[realm];
 ---
 
 <Layout title={pageTitle}>
-  <main>
-    <div class="return">
-      <a href="../">return</a>
-    </div>
-    <Header title={title} tagline={tagline} />
-    <article>
-      <div class="story-container">
-        <h2>Story</h2>
-        <p>
-          {story}
-        </p>
+  <div class="wrapper">
+    <main>
+      <div class="return">
+        <a href="../">return</a>
       </div>
-      <div class="song-container">
-        <h2>Chosen Song</h2>
-        <div>
-          <a href={song.link}>{song.name}</a>
+      <Header title={title} tagline={tagline} />
+      <article>
+        <div class="story-container">
+          <h2>Story</h2>
+          <p>
+            {story}
+          </p>
         </div>
-      </div>
-    </article>
-    <section>
-      <div>
-        <slot />
-      </div>
-    </section>
-    <Aura />
-  </main>
+        <div class="song-container">
+          <h2>Chosen Song</h2>
+          <div>
+            <a href={song.link}>{song.name}</a>
+          </div>
+        </div>
+      </article>
+      <section>
+        <div>
+          <slot />
+        </div>
+      </section>
+      <Aura />
+    </main>
+  </div>
 </Layout>
 
 <style>
@@ -62,6 +64,18 @@ const { title, tagline, story, song } = realmData[realm];
     flex-direction: column;
   }
 
+  .wrapper {
+    margin: auto;
+
+    flex-grow: 1;
+
+    display: flex;
+    flex-direction: column;
+
+    width: 100%;
+    max-width: 48rem;
+  }
+
   main {
     flex-grow: 1;
 
@@ -70,7 +84,6 @@ const { title, tagline, story, song } = realmData[realm];
     grid-template-columns: min-content auto;
     grid-template-rows: min-content min-content auto;
 
-    max-width: 100vw;
     max-height: 100vh;
   }
 
@@ -146,12 +159,6 @@ const { title, tagline, story, song } = realmData[realm];
     article {
       grid-template-columns: auto auto;
       gap: 1.5rem;
-    }
-  }
-
-  @media screen and (min-width: 768px) {
-    main {
-      margin: 2rem;
     }
   }
 </style>
