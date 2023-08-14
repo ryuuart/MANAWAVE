@@ -10,5 +10,269 @@ const config: RealmLayoutConfig = {
 ---
 
 <Realm pageTitle="sebonzakura" realm="sebonzakura" config={config}>
-  <manawave-ticker><div>sebonzakura</div></manawave-ticker>
+  <div class="manawave-wrapper">
+    <header>
+      <h1>千本桜 • 1000 cherry petals</h1>
+      <input id="theme-btn" type="button" value="Switch Energies" />
+    </header>
+    <div
+      id="petal-field"
+      autoplay
+      direction="280"
+      speed="1"
+      class="petal-field--container"
+    >
+      <div lang="ja" class="petal-field--petal">
+        <div>も</div>
+        <div>う</div>
+        <div>歌</div>
+        <div>し</div>
+        <div>か</div>
+        <div>聞</div>
+        <div>こ</div>
+        <div>え</div>
+        <div>な</div>
+        <div>い</div>
+      </div>
+    </div>
+  </div>
 </Realm>
+
+<style is:global>
+  :root {
+    --color-black: black;
+    --color-pink: deeppink;
+    --color-white: white;
+  }
+
+  @media screen and (prefers-color-scheme: dark) {
+    body {
+      --color-bg: var(--color-black);
+      --color-fg: var(--color-white);
+    }
+    body.light-theme {
+      --color-bg: var(--color-white);
+      --color-fg: var(--color-black);
+    }
+  }
+
+  @media screen and (prefers-color-scheme: light) {
+    body {
+      --color-bg: var(--color-white);
+      --color-fg: var(--color-black);
+    }
+
+    body.dark-theme {
+      --color-bg: var(--color-black);
+      --color-fg: var(--color-white);
+    }
+</style>
+
+<style>
+  .manawave-wrapper {
+    display: flow-root;
+    width: 100%;
+    height: 100%;
+
+    background-color: var(--color-bg);
+    color: var(--color-fg);
+  }
+
+  .manawave-wrapper > * {
+    position: relative;
+    z-index: 1;
+  }
+
+  .petal-field--container {
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 0;
+
+    width: 100%;
+    height: 100%;
+  }
+
+  .petal-field--petal {
+    display: flex;
+    flex-flow: column wrap;
+    align-items: start;
+
+    width: 5ch;
+    height: 10ch;
+    margin: 1rem;
+  }
+
+  .petal-field--petal > div {
+    width: min-content;
+  }
+
+  #theme-btn {
+    padding: 1rem;
+
+    background: var(--color-text);
+    backdrop-filter: blur(1rem);
+    border-radius: 0;
+
+    color: var(--color-pink);
+    border: 1px solid var(--color-pink);
+
+    font-family: serif;
+    font-size: 1.5rem;
+  }
+
+  @media screen and (prefers-color-scheme: dark) {
+    .manawave-wrapper {
+      --color-bg: var(--color-black);
+      --color-fg: var(--color-white);
+      text-shadow: -1px -1px 0 var(--color-pink), 1px -1px 0 var(--color-pink),
+        -1px 1px 0 var(--color-pink), 1px 1px 0 var(--color-pink),
+        4px 4px 8px var(--color-pink);
+    }
+    .manawave-wrapper.light-theme {
+      --color-bg: var(--color-white);
+      --color-fg: var(--color-black);
+      text-shadow: -1px -1px 0 var(--color-pink), 1px -1px 0 var(--color-pink),
+        -1px 1px 0 var(--color-pink), 1px 1px 0 var(--color-pink),
+        4px 4px 8px var(--color-pink);
+    }
+  }
+
+  @media screen and (prefers-color-scheme: light) {
+    .manawave-wrapper {
+      --color-bg: var(--color-white);
+      --color-fg: var(--color-black);
+      text-shadow: -1px -1px 0 var(--color-pink), 1px -1px 0 var(--color-pink),
+        -1px 1px 0 var(--color-pink), 1px 1px 0 var(--color-pink),
+        4px 4px 8px var(--color-pink);
+    }
+
+    .manawave-wrapper.dark-theme {
+      --color-bg: var(--color-black);
+      --color-fg: var(--color-white);
+      text-shadow: -1px -1px 0 var(--color-pink), 1px -1px 0 var(--color-pink),
+        -1px 1px 0 var(--color-pink), 1px 1px 0 var(--color-pink),
+        4px 4px 8px var(--color-pink);
+    }
+  }
+</style>
+
+<script>
+  import { MW } from "manawave";
+
+  /**
+   * Converts degrees to radians
+   * @param degrees the angle in degrees
+   * @returns the angle in radians
+   */
+  function toRadians(degrees: number): number {
+    return (degrees * Math.PI) / 180;
+  }
+
+  let mouseAngle = 0;
+  window.addEventListener("mousemove", (ev) => {
+    mouseAngle =
+      -(Math.atan2(ev.y - innerHeight / 2, ev.x - innerWidth / 2) * 180) /
+      Math.PI;
+  });
+
+  function genAnimoptions(): KeyframeAnimationOptions {
+    const animOptions: KeyframeAnimationOptions = {
+      duration: 10000 + Math.random() * 8000,
+      iterations: Infinity,
+      delay: Math.random() * 3000,
+      easing: "cubic-bezier(0.42, 0, 0.58, 1)",
+      composite: "add",
+    };
+    return animOptions;
+  }
+
+  window.addEventListener("load", () => {
+    const themeBtnElement = document.getElementById("theme-btn")!;
+    const petalFieldElement = document.getElementById("petal-field")!;
+    const wrapper = document.querySelector(".manawave-wrapper")!;
+
+    let circlePos = -10;
+    const mw = new MW(petalFieldElement, {
+      onLayout: ({ position, limits }) => {
+        circlePos += 20;
+        return {
+          position: {
+            x:
+              position.x + Math.cos(toRadians(circlePos)) * limits.width * 0.04,
+            y:
+              limits.height +
+              position.y +
+              Math.sin(toRadians(circlePos)) * limits.height * 0.08,
+          },
+        };
+      },
+      onMove: () => {
+        return { direction: mouseAngle };
+      },
+      onLoop: ({ limits, itemSize }) => ({
+        limits: {
+          left: limits.left - itemSize.width * 2,
+          right: limits.right + itemSize.width * 2,
+          top: limits.top - itemSize.height * 2,
+          bottom: limits.bottom + itemSize.height * 2,
+        },
+      }),
+      onElementCreated: ({ element }) => {
+        for (const child of element.children[0].children) {
+          const el = child as HTMLElement;
+          el.style.transform = `scale(${
+            0.75 + Math.random() * 1.5
+          }) rotate3d(${Math.random()}, ${Math.random()}, ${Math.random()} , ${
+            Math.random() * 90
+          }deg)`;
+
+          const rotationAnimations: Keyframe[] = [
+            { transform: "rotate3d(0, 0, 0, 0)" },
+            {
+              transform: `rotate3d(${Math.random() * 0.2}, ${Math.random()}, ${
+                Math.random() * 0.2
+              }, ${360}deg)`,
+            },
+          ];
+          const translationAnimations: Keyframe[] = [
+            {
+              transform: `translate3d(0, 0, 0)`,
+            },
+            {
+              transform: `translate3d(${Math.random() * 256}px, ${
+                Math.random() * 256
+              }px, ${Math.random() * 512}px)`,
+            },
+            {
+              transform: `translate3d(0, 0, 0)`,
+            },
+          ];
+
+          el.animate(rotationAnimations, genAnimoptions());
+          el.animate(translationAnimations, genAnimoptions());
+
+          if (Math.random() * 10 < 6) el.style.visibility = "hidden";
+        }
+        return { element };
+      },
+    });
+
+    themeBtnElement.addEventListener("click", () => {
+      const prefersDarkScheme = window.matchMedia(
+        "(prefers-color-scheme: dark)"
+      );
+
+      if (prefersDarkScheme.matches) {
+        // ...then apply the .light-theme class to override those styles
+        document.body.classList.toggle("light-theme");
+        wrapper.classList.toggle("light-theme");
+        // Otherwise...
+      } else {
+        // ...apply the .dark-theme class to override the default light styles
+        document.body.classList.toggle("dark-theme");
+        wrapper.classList.toggle("dark-theme");
+      }
+    });
+  });
+</script>
