@@ -2,11 +2,15 @@
 import Realm from "../../layouts/realms/Realm.astro";
 ---
 
-<Realm pageTitle="hyperpink" realm="hyperpink">
+<Realm
+  pageTitle="hyperpink"
+  realm="hyperpink"
+  config={{ colors: { tab: "hyperpink" } }}
+>
   <manawave-ticker><div>hyperpink</div></manawave-ticker>
 </Realm>
 
-<style>
+<style is:global>
   :root {
     --color-bg: hotpink;
   }

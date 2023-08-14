@@ -8,6 +8,7 @@ import Story from "../../components/realms/Story.astro";
 
 export type RealmLayoutConfig = {
   colors?: {
+    tab?: string;
     fg?: string;
     bg?: string;
   };
@@ -32,7 +33,7 @@ if (config) {
 }
 ---
 
-<Layout title={pageTitle}>
+<Layout title={pageTitle} tabcolor={config?.colors?.tab ?? "black"}>
   <div class="wrapper">
     <main>
       <div class="return">
