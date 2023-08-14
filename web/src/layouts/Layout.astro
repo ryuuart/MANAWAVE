@@ -2,9 +2,10 @@
 import "@fontsource/crimson-pro";
 interface Props {
   title: string;
+  tabcolor?: string;
 }
 
-const { title } = Astro.props;
+const { title, tabcolor = "black" } = Astro.props;
 ---
 
 <!DOCTYPE html>
@@ -14,6 +15,8 @@ const { title } = Astro.props;
     <meta name="description" content="ambient infinity" />
     <meta name="viewport" content="width=device-width" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="theme-color" content={tabcolor} />
+    <link rel="stylesheet" href="/styles/global.css" />
     <meta name="generator" content={Astro.generator} />
     <title>{title}</title>
   </head>
@@ -21,60 +24,6 @@ const { title } = Astro.props;
     <slot />
   </body>
 </html>
-<style is:global>
-  @font-face {
-    font-family: "PP Migra";
-    src: url("/fonts/PPMigra-Italic.woff2") format("woff2");
-    font-weight: 400;
-    font-style: italic;
-    font-display: swap;
-  }
-
-  @font-face {
-    font-family: "PP Migra";
-    src: url("/fonts/PPMigra-ExtraboldItalic.woff2") format("woff2");
-    font-weight: 800;
-    font-style: italic;
-    font-display: swap;
-  }
-
-  :root {
-    /* Colors */
-    --color-bg: black;
-    --color-fg: white;
-  }
-
-  * {
-    box-sizing: border-box;
-  }
-
-  body {
-    background: var(--color-bg);
-    color: var(--color-fg);
-
-    margin: 0;
-
-    font-family: "Crimson Pro", serif;
-  }
-
-  h1,
-  h2 {
-    font-family: "PP Migra", serif;
-    font-style: italic;
-    font-weight: 800;
-  }
-
-  a {
-    color: unset;
-
-    text-transform: uppercase;
-    text-decoration: none;
-  }
-
-  a:visited {
-    color: unset;
-  }
-</style>
 
 <script>
   import { MW } from "manawave";

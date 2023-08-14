@@ -14,7 +14,7 @@
   },
   "dependencies": {
     "@fontsource/crimson-pro": "^5.0.8",
-    "astro": "^2.8.4",
+    "astro": "^2.10.7",
     "manawave": "^0.10.1"
   },
   "nx": {
