@@ -50,3 +50,8 @@ a {
 a:visited {
   color: unset;
 }
+
+span.japanese {
+  font-family: serif;
+  font-style: normal;
+}

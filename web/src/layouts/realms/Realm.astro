@@ -40,6 +40,12 @@ const { title, tagline, story, song } = realmData[realm];
   </div>
 </Layout>
 
+<style is:global>
+  main {
+    overflow: auto;
+  }
+</style>
+
 <style>
   .wrapper {
     margin: auto;
@@ -85,6 +91,8 @@ const { title, tagline, story, song } = realmData[realm];
     margin: 1rem;
 
     min-height: 18rem;
+
+    position: relative;
   }
 
   section > div {
