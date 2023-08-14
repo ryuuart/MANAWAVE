@@ -9,8 +9,6 @@ import Story from "../../components/realms/Story.astro";
 export type RealmLayoutConfig = {
   colors?: {
     tab?: string;
-    fg?: string;
-    bg?: string;
   };
 };
 
@@ -22,15 +20,6 @@ interface Props {
 
 const { pageTitle, realm, config } = Astro.props;
 const { title, tagline, story, song } = realmData[realm];
-
-let colorRealmBG = "white";
-let colorRealmFG = "black";
-if (config) {
-  if (config.colors) {
-    if (config.colors.fg) colorRealmFG = config.colors.fg;
-    if (config.colors.bg) colorRealmBG = config.colors.bg;
-  }
-}
 ---
 
 <Layout title={pageTitle} tabcolor={config?.colors?.tab ?? "black"}>
@@ -51,7 +40,7 @@ if (config) {
   </div>
 </Layout>
 
-<style define:vars={{ colorRealmBG, colorRealmFG }}>
+<style>
   .wrapper {
     margin: auto;
 
