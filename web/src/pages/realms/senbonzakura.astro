@@ -181,6 +181,7 @@ import Realm from "../../layouts/realms/Realm.astro";
     return (degrees * Math.PI) / 180;
   }
 
+  // Detects mouse position and converts it to a direction vector
   let mouseAngle = 0;
   window.addEventListener("mousemove", (ev) => {
     mouseAngle =
@@ -188,6 +189,11 @@ import Realm from "../../layouts/realms/Realm.astro";
       Math.PI;
   });
 
+  /**
+   * Generate default animation options for each "petal".
+   * In short, every petal should slowly spin at different rates.
+   * Each animation will take transformations and add it on top each other.
+   */
   function genAnimoptions(): KeyframeAnimationOptions {
     const animOptions: KeyframeAnimationOptions = {
       duration: 10000 + Math.random() * 8000,
@@ -200,10 +206,12 @@ import Realm from "../../layouts/realms/Realm.astro";
   }
 
   window.addEventListener("load", () => {
+    // Get all the elements we need to work with
     const themeBtnElement = document.getElementById("theme-btn")!;
     const petalFieldElement = document.getElementById("petal-field")!;
     const wrapperElement = document.querySelector(".manawave-wrapper")!;
 
+    // Set the tab bar color
     const prefersDarkScheme = window.matchMedia("(prefers-color-scheme: dark)");
     let colorThemeElement = document.querySelector('meta[name="theme-color"]')!;
     if (prefersDarkScheme.matches) {
@@ -212,8 +220,11 @@ import Realm from "../../layouts/realms/Realm.astro";
       colorThemeElement.setAttribute("content", "white");
     }
 
+    // refers to the petal positioning to follow the path of a circle
     let circlePos = -10;
+
     const mw = new MW(petalFieldElement, {
+      // change the default starting position to that circle per element
       onLayout: ({ position, limits }) => {
         circlePos += 20;
         return {
@@ -227,9 +238,11 @@ import Realm from "../../layouts/realms/Realm.astro";
           },
         };
       },
+      // change the specified direction to follow our mouse
       onMove: () => {
         return { direction: mouseAngle };
       },
+      // add some space before wrapping around so petals don't teleport as much
       onLoop: ({ limits, itemSize }) => ({
         limits: {
           left: limits.left - itemSize.width * 2,
@@ -238,6 +251,7 @@ import Realm from "../../layouts/realms/Realm.astro";
           bottom: limits.bottom + itemSize.height * 2,
         },
       }),
+      // apply animations to each petal
       onElementCreated: ({ element }) => {
         for (const child of element.children[0].children) {
           const el = child as HTMLElement;
@@ -272,12 +286,14 @@ import Realm from "../../layouts/realms/Realm.astro";
           el.animate(rotationAnimations, genAnimoptions());
           el.animate(translationAnimations, genAnimoptions());
 
-          if (Math.random() * 10 < 6) el.style.visibility = "hidden";
+          // remove some petals to control density
+          if (Math.random() * 10 < 6) el.style.display = "none";
         }
         return { element };
       },
     });
 
+    // Changes the theme between dark and light
     themeBtnElement.addEventListener("click", () => {
       if (prefersDarkScheme.matches) {
         // ...then apply the .light-theme class to override those styles
