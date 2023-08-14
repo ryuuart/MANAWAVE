@@ -1,14 +1,14 @@
 ---
-import Realm from "../../layouts/realms/Realm.astro";
+import Realm, { RealmLayoutConfig } from "../../layouts/realms/Realm.astro";
+
+const config: RealmLayoutConfig = {
+  colors: {
+    fg: "white",
+    bg: "black",
+  },
+};
 ---
 
-<Realm pageTitle="sebonzakura" realm="sebonzakura">
+<Realm pageTitle="sebonzakura" realm="sebonzakura" config={config}>
   <manawave-ticker><div>sebonzakura</div></manawave-ticker>
 </Realm>
-
-<style>
-  :root {
-    --color-realm-fg: white;
-    --color-realm-bg: black;
-  }
-</style>
