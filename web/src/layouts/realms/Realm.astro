@@ -34,17 +34,15 @@ const { title, tagline, story, song } = realmData[realm];
 </Layout>
 
 <style>
-  :global(:root) {
+  :global(.wrapper) {
     --color-realm-fg: black;
     --color-realm-bg: white;
   }
 
-  body {
+  .wrapper {
     background: var(--color-realm-bg);
     color: var(--color-realm-fg);
-  }
 
-  .wrapper {
     margin: auto;
 
     display: flex;
