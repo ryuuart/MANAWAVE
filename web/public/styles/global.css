@@ -1,0 +1,52 @@
+@font-face {
+  font-family: "PP Migra";
+  src: url("/fonts/PPMigra-Italic.woff2") format("woff2");
+  font-weight: 400;
+  font-style: italic;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "PP Migra";
+  src: url("/fonts/PPMigra-ExtraboldItalic.woff2") format("woff2");
+  font-weight: 800;
+  font-style: italic;
+  font-display: swap;
+}
+
+:root {
+  /* Colors */
+  --color-bg: black;
+  --color-fg: white;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  background: var(--color-bg);
+  color: var(--color-fg);
+
+  margin: 0;
+
+  font-family: "Crimson Pro", serif;
+}
+
+h1,
+h2 {
+  font-family: "PP Migra", serif;
+  font-style: italic;
+  font-weight: 800;
+}
+
+a {
+  color: unset;
+
+  text-transform: uppercase;
+  text-decoration: none;
+}
+
+a:visited {
+  color: unset;
+}
