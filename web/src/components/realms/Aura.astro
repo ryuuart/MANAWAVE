@@ -1,13 +1,18 @@
+---
+const { color } = Astro.props;
+---
+
 <div class="aura">
   <div class="wrapper">
     <div class="img-container">
-      <div class="img"></div>
+      <div class="img-overlay"></div>
+      <img src="/assets/img/aura_portal.webp" />
     </div>
     <div class="left-vertical-line"></div>
   </div>
 </div>
 
-<style>
+<style define:vars={{ "color-aura": color }}>
   .aura {
     grid-area: 2 / 1 / 3 / 2;
 
@@ -29,16 +34,30 @@
     border-top: 1px solid var(--color-fg);
     border-left: 1px solid var(--color-fg);
 
-    padding: 0.5rem;
-  }
-
-  .img {
-    background: var(--color-fg);
+    padding: 1.5rem;
 
     width: 2rem;
     height: 2rem;
+  }
 
-    position: relative;
+  .img-container > * {
+    width: inherit;
+    height: inherit;
+
+    position: absolute;
+    inset: 0.5rem;
+  }
+
+  .img-container > img {
+    border: 1px solid var(--color-fg);
+  }
+
+  .img-overlay {
+    z-index: 1;
+
+    background: radial-gradient(var(--color-aura) 0, transparent 75%);
+    border-radius: 50%;
+    mix-blend-mode: overlay;
   }
 
   .left-vertical-line {

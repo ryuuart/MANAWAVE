@@ -1,9 +1,12 @@
 ---
-const { title, tagline, url } = Astro.props;
+const { title, tagline, url, color } = Astro.props;
 ---
 
 <div class="container">
-  <div class="aura"></div>
+  <div class="aura">
+    <div class="aura-overlay"></div>
+    <img src="/assets/img/aura_portal.webp" />
+  </div>
   <div class="content">
     <div class="title">
       <a href={url}>{title}</a>
@@ -12,21 +15,45 @@ const { title, tagline, url } = Astro.props;
   </div>
 </div>
 
-<style>
+<style define:vars={{ "color-aura": color }}>
   .container {
     display: flex;
     flex-flow: row nowrap;
 
-    gap: 0.5rem;
+    gap: 1rem;
   }
 
   .aura {
     flex: 0;
     flex-basis: 2rem;
-
     height: 2rem;
 
-    background: white;
+    position: relative;
+    border: 1px solid var(--color-fg);
+  }
+
+  .aura > * {
+    position: absolute;
+    inset: 0;
+
+    width: 100%;
+    height: 100%;
+
+    transform: scale(2.75);
+  }
+
+  .aura > img {
+    object-fit: cover;
+
+    z-index: 0;
+  }
+
+  .aura-overlay {
+    z-index: 1;
+
+    background: radial-gradient(var(--color-aura) 0, transparent 75%);
+    border-radius: 50%;
+    mix-blend-mode: overlay;
   }
 
   .content {
