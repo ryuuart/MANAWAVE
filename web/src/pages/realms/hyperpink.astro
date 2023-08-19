@@ -3,7 +3,15 @@ import Realm from "../../layouts/realms/Realm.astro";
 import realmData from "../../../data/realms.json";
 ---
 
-<Realm pageTitle="hyperpink" realm="hyperpink">
+<Realm
+  pageTitle="hyperpink"
+  realm="hyperpink"
+  config={{
+    colors: {
+      tab: "#ffa8cc",
+    },
+  }}
+>
   <div id="ticker-container" class="wrapper">
     <div class="container-content">
       <article class="container">
@@ -162,7 +170,6 @@ import realmData from "../../../data/realms.json";
     --padding: 1rem;
 
     margin-top: 0;
-    margin-bottom: 0;
 
     background: rgba(255, 88, 158, 0.5);
 
@@ -181,7 +188,10 @@ import realmData from "../../../data/realms.json";
     margin-top: auto;
 
     background: rgba(255, 255, 255, 0.25);
-    backdrop-filter: blur(0.5rem);
+
+    --backdrop-filter: blur(0.5rem);
+    backdrop-filter: var(--backdrop-filter);
+    -webkit-backdrop-filter: var(--backdrop-filter);
 
     border: 1px solid var(--color-fg);
   }
