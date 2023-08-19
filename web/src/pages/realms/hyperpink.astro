@@ -4,7 +4,7 @@ import realmData from "../../../data/realms.json";
 ---
 
 <Realm pageTitle="hyperpink" realm="hyperpink">
-  <div class="wrapper">
+  <div id="ticker-container" class="wrapper">
     <div class="container-content">
       <article class="container">
         <div class="border">
@@ -95,11 +95,22 @@ import realmData from "../../../data/realms.json";
 
     display: flex;
     flex-direction: column;
+
+    transition: background 1s ease-in-out;
   }
 
   .wrapper > * {
     position: relative;
     z-index: 1;
+  }
+
+  .wrapper.glow {
+    background: radial-gradient(
+      50% 50% at 50% 50%,
+      rgba(255, 168, 204, 0) 0%,
+      #ffa8cc 100%
+    );
+    mix-blend-mode: overlay;
   }
 
   .container-content {
@@ -186,8 +197,15 @@ import realmData from "../../../data/realms.json";
   const keyboardBtnElement = document.getElementById("keyboard-btn")!;
   const mouseBtnElement = document.getElementById("mouse-btn")!;
   const sensorBtnElement = document.getElementById("sensor-btn")!;
+  const tickerContainerElement = document.getElementById("ticker-container")!;
+
+  function resetContext() {
+    tickerContainerElement.classList.remove("glow");
+    mw.speed = 1;
+  }
 
   keyboardBtnElement.addEventListener("click", (ev) => {
+    resetContext();
     mode = "keyboard";
   });
   document.addEventListener("keydown", (ev: KeyboardEvent) => {
@@ -210,9 +228,34 @@ import realmData from "../../../data/realms.json";
   });
 
   mouseBtnElement.addEventListener("click", (ev) => {
+    resetContext();
     mode = "mouse";
+    tickerContainerElement.dispatchEvent(new MouseEvent("mouseenter"));
   });
+  tickerContainerElement.addEventListener("mouseenter", () => {
+    if (mode === "mouse") {
+      mw.speed = 2;
+      tickerContainerElement.classList.add("glow");
+    }
+  });
+  tickerContainerElement.addEventListener("mouseleave", () => {
+    if (mode === "mouse") {
+      mw.speed = 1;
+      tickerContainerElement.classList.remove("glow");
+    }
+  });
+  tickerContainerElement.addEventListener("mousemove", (ev: MouseEvent) => {
+    if (mode === "mouse") {
+      let mouseAngle =
+        -(Math.atan2(ev.y - innerHeight / 2, ev.x - innerWidth / 2) * 180) /
+        Math.PI;
+
+      mw.direction = mouseAngle;
+    }
+  });
+
   sensorBtnElement.addEventListener("click", (ev) => {
+    resetContext();
     mode = "sensor";
   });
 </script>
