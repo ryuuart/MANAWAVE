@@ -1,13 +1,41 @@
 ---
 import Realm from "../../layouts/realms/Realm.astro";
+import realmData from "../../../data/realms.json";
 ---
 
-<Realm
-  pageTitle="hyperpink"
-  realm="hyperpink"
-  config={{ colors: { tab: "hyperpink" } }}
->
-  <manawave-ticker><div>hyperpink</div></manawave-ticker>
+<Realm pageTitle="hyperpink" realm="hyperpink">
+  <div class="wrapper">
+    <div class="container-content">
+      <article class="container">
+        <div class="border">
+          <h2>Heyyy 😘</h2>
+          <p>Use your arrow keys sweetie ✨</p>
+        </div>
+      </article>
+      <div class="container container-controls">
+        <h3>Controls</h3>
+        <button type="button">Keyboard</button>
+        <button type="button">Mouse</button>
+        <button type="button">Sensor</button>
+      </div>
+      <div class="container container-credits">
+        <p>
+          <small>
+            <a
+              href="https://sketchfab.com/3d-models/love-heart-8ed3b61a67b741d798f6d842390e984e"
+              >Love Heart</a
+            > by <a href="https://sketchfab.com/Aricode">Aricode</a> /
+            <a href="https://creativecommons.org/licenses/by/4.0/">CC BY 4.0</a>
+          </small>
+        </p>
+      </div>
+    </div>
+    <manawave-ticker autoplay direction="30">
+      <img src="/assets/img/hyperfemme/sparkle.webp" />
+      <img src="/assets/img/hyperfemme/diamond.webp" />
+      <img src="/assets/img/hyperfemme/heart.webp" />
+    </manawave-ticker>
+  </div>
 </Realm>
 
 <style is:global>
@@ -18,5 +46,131 @@ import Realm from "../../layouts/realms/Realm.astro";
       rgba(255, 168, 204, 0) 0%,
       #ffa8cc 100%
     );
+  }
+</style>
+
+<style define:vars={{ "color-aura": realmData["hyperpink"].color.portal }}>
+  h2,
+  h3 {
+    margin: 0;
+
+    font-family: Arial, Helvetica, sans-serif;
+    font-style: normal;
+    text-transform: uppercase;
+  }
+
+  h3 {
+    font-size: 0.75rem;
+    font-weight: 400;
+
+    margin-bottom: 0.5rem;
+    margin-left: var(--padding);
+  }
+
+  button {
+    background: var(--color-aura);
+    border: 0;
+
+    color: var(--color-fg);
+
+    border-radius: inherit;
+    padding: 0.5rem 1rem;
+
+    font-size: inherit;
+  }
+
+  button:hover {
+    cursor: pointer;
+  }
+
+  .wrapper {
+    --color-fg: white;
+
+    width: 100%;
+    height: 100%;
+
+    color: var(--color-fg);
+    font-family: sans-serif;
+
+    display: flex;
+    flex-direction: column;
+  }
+
+  .wrapper > * {
+    position: relative;
+    z-index: 1;
+  }
+
+  .container-content {
+    height: inherit;
+
+    display: flex;
+    flex-direction: column;
+  }
+
+  .container {
+    --margin: 0rem;
+    --padding: 0.5rem;
+    --innerBR: 0.5rem;
+    --outerBR: calc(var(--padding) + var(--innerBR));
+
+    padding: var(--padding);
+    margin: 1rem;
+
+    max-width: max-content;
+
+    border-radius: var(--outerBR);
+
+    background: var(--color-aura);
+  }
+
+  .container > .border {
+    border-radius: var(--innerBR);
+    border: 1px solid var(--color-fg);
+
+    padding: var(--padding);
+  }
+
+  .wrapper > manawave-ticker {
+    width: 100%;
+    height: 100%;
+
+    position: absolute;
+    inset: 0;
+
+    z-index: 0;
+  }
+
+  img {
+    width: 8rem;
+    height: 8rem;
+  }
+
+  .container-controls {
+    --padding: 1rem;
+
+    margin-top: 0;
+    margin-bottom: 0;
+
+    background: rgba(255, 88, 158, 0.5);
+
+    display: flex;
+    flex-flow: column nowrap;
+  }
+
+  .container-controls button:not(:last-child) {
+    margin-bottom: 0.5rem;
+  }
+
+  .container-credits {
+    padding-left: 1rem;
+    padding-right: 1rem;
+
+    margin-top: auto;
+
+    background: rgba(255, 255, 255, 0.25);
+    backdrop-filter: blur(0.5rem);
+
+    border: 1px solid var(--color-fg);
   }
 </style>
