@@ -14,9 +14,10 @@ import realmData from "../../../data/realms.json";
       </article>
       <div class="container container-controls">
         <h3>Controls</h3>
-        <button type="button">Keyboard</button>
-        <button type="button">Mouse</button>
-        <button type="button">Sensor</button>
+        <button name="keyboard" id="keyboard-btn" type="button">Keyboard</button
+        >
+        <button name="mouse" id="mouse-btn" type="button">Mouse</button>
+        <button name="sensors" id="sensor-btn" type="button">Sensor</button>
       </div>
       <div class="container container-credits">
         <p>
@@ -30,7 +31,7 @@ import realmData from "../../../data/realms.json";
         </p>
       </div>
     </div>
-    <manawave-ticker autoplay direction="30">
+    <manawave-ticker id="ticker" autoplay direction="30">
       <img src="/assets/img/hyperfemme/sparkle.webp" />
       <img src="/assets/img/hyperfemme/diamond.webp" />
       <img src="/assets/img/hyperfemme/heart.webp" />
@@ -174,3 +175,37 @@ import realmData from "../../../data/realms.json";
     border: 1px solid var(--color-fg);
   }
 </style>
+
+<script>
+  import { getMW } from "manawave";
+
+  const tickerElement = document.getElementById("ticker")!;
+  const mw = getMW(tickerElement)!;
+
+  let mode = "";
+  const keyboardBtnElement = document.getElementById("keyboard-btn")!;
+  const mouseBtnElement = document.getElementById("mouse-btn")!;
+  const sensorBtnElement = document.getElementById("sensor-btn")!;
+
+  keyboardBtnElement.addEventListener("click", (ev) => {
+    mode = "keyboard";
+  });
+  document.addEventListener("keydown", (ev: KeyboardEvent) => {
+    if (mode === "keyboard") {
+      switch (ev.key) {
+        case "ArrowUp":
+          mw.direction = 90;
+          break;
+        case "ArrowRight":
+          mw.direction = 360;
+          break;
+        case "ArrowDown":
+          mw.direction = 270;
+          break;
+        case "ArrowLeft":
+          mw.direction = 180;
+          break;
+      }
+    }
+  });
+</script>
