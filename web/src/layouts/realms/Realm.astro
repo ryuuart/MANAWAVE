@@ -19,7 +19,7 @@ interface Props {
 }
 
 const { pageTitle, realm, config } = Astro.props;
-const { title, tagline, story, song } = realmData[realm];
+const { title, tagline, story, song, color } = realmData[realm];
 ---
 
 <Layout title={pageTitle} tabcolor={config?.colors?.tab ?? "black"}>
@@ -35,7 +35,7 @@ const { title, tagline, story, song } = realmData[realm];
           <slot />
         </div>
       </section>
-      <Aura />
+      <Aura color={color.portal} />
     </main>
   </div>
 </Layout>

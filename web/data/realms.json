@@ -7,6 +7,9 @@
     "song": {
       "name": "感情の魔天楼　～ World's End",
       "link": "https://www.youtube.com/watch?v=N1w4T9G9g7M"
+    },
+    "color": {
+      "portal": "deeppink"
     }
   },
   "hyperpink": {
@@ -17,6 +20,9 @@
     "song": {
       "name": "",
       "link": ""
+    },
+    "color": {
+      "portal": "hotpink"
     }
   },
   "hero": {
@@ -27,6 +33,9 @@
     "song": {
       "name": "",
       "link": ""
+    },
+    "color": {
+      "portal": "gold"
     }
   },
   "hypertrance": {
@@ -37,6 +46,9 @@
     "song": {
       "name": "",
       "link": ""
+    },
+    "color": {
+      "portal": "royalblue"
     }
   },
   "flarewater": {
@@ -47,6 +59,9 @@
     "song": {
       "name": "",
       "link": ""
+    },
+    "color": {
+      "portal": "firebrick"
     }
   }
 }
