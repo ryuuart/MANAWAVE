@@ -24,8 +24,7 @@ import realmData from "../../../data/realms.json";
         <h3>Controls</h3>
         <button name="keyboard" id="keyboard-btn" type="button">Keyboard</button
         >
-        <button name="mouse" id="mouse-btn" type="button">Mouse</button>
-        <button name="sensors" id="sensor-btn" type="button">Sensor</button>
+        <button name="pointer" id="pointer-btn" type="button">pointer</button>
       </div>
       <div class="container container-credits">
         <p>
@@ -205,8 +204,7 @@ import realmData from "../../../data/realms.json";
 
   let mode = "";
   const keyboardBtnElement = document.getElementById("keyboard-btn")!;
-  const mouseBtnElement = document.getElementById("mouse-btn")!;
-  const sensorBtnElement = document.getElementById("sensor-btn")!;
+  const mouseBtnElement = document.getElementById("pointer-btn")!;
   const tickerContainerElement = document.getElementById("ticker-container")!;
 
   function resetContext() {
@@ -239,33 +237,28 @@ import realmData from "../../../data/realms.json";
 
   mouseBtnElement.addEventListener("click", (ev) => {
     resetContext();
-    mode = "mouse";
+    mode = "pointer";
     tickerContainerElement.dispatchEvent(new MouseEvent("mouseenter"));
   });
   tickerContainerElement.addEventListener("mouseenter", () => {
-    if (mode === "mouse") {
+    if (mode === "pointer") {
       mw.speed = 2;
       tickerContainerElement.classList.add("glow");
     }
   });
   tickerContainerElement.addEventListener("mouseleave", () => {
-    if (mode === "mouse") {
+    if (mode === "pointer") {
       mw.speed = 1;
       tickerContainerElement.classList.remove("glow");
     }
   });
   tickerContainerElement.addEventListener("mousemove", (ev: MouseEvent) => {
-    if (mode === "mouse") {
+    if (mode === "pointer") {
       let mouseAngle =
         -(Math.atan2(ev.y - innerHeight / 2, ev.x - innerWidth / 2) * 180) /
         Math.PI;
 
       mw.direction = mouseAngle;
     }
-  });
-
-  sensorBtnElement.addEventListener("click", (ev) => {
-    resetContext();
-    mode = "sensor";
   });
 </script>
