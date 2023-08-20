@@ -17,14 +17,16 @@ import realmData from "../../../data/realms.json";
       <article class="container">
         <div class="border">
           <h2>Heyyy 😘</h2>
-          <p>Use your arrow keys sweetie ✨</p>
+          <p id="instructions">
+            Girl, you need to press a button to do anything
+          </p>
         </div>
       </article>
       <div class="container container-controls">
         <h3>Controls</h3>
         <button name="keyboard" id="keyboard-btn" type="button">Keyboard</button
         >
-        <button name="pointer" id="pointer-btn" type="button">pointer</button>
+        <button name="pointer" id="pointer-btn" type="button">Pointer</button>
       </div>
       <div class="container container-credits">
         <p>
@@ -64,12 +66,12 @@ import realmData from "../../../data/realms.json";
 
     font-family: Arial, Helvetica, sans-serif;
     font-style: normal;
+    font-weight: 400;
     text-transform: uppercase;
   }
 
   h3 {
     font-size: 0.75rem;
-    font-weight: 400;
 
     margin-bottom: 0.5rem;
     margin-left: var(--padding);
@@ -206,6 +208,7 @@ import realmData from "../../../data/realms.json";
   const keyboardBtnElement = document.getElementById("keyboard-btn")!;
   const mouseBtnElement = document.getElementById("pointer-btn")!;
   const tickerContainerElement = document.getElementById("ticker-container")!;
+  const instructionsElement = document.getElementById("instructions")!;
 
   function resetContext() {
     tickerContainerElement.classList.remove("glow");
@@ -215,6 +218,7 @@ import realmData from "../../../data/realms.json";
   keyboardBtnElement.addEventListener("click", (ev) => {
     resetContext();
     mode = "keyboard";
+    instructionsElement.textContent = "Use your arrow keys sweetie ✨";
   });
   document.addEventListener("keydown", (ev: KeyboardEvent) => {
     if (mode === "keyboard") {
@@ -238,6 +242,8 @@ import realmData from "../../../data/realms.json";
   mouseBtnElement.addEventListener("click", (ev) => {
     resetContext();
     mode = "pointer";
+    instructionsElement.textContent =
+      "Sis, tap or move your cursor around around where it SHINES ✨";
     tickerContainerElement.dispatchEvent(new MouseEvent("mouseenter"));
   });
   tickerContainerElement.addEventListener("mouseenter", () => {
