@@ -1,17 +1,270 @@
 ---
 import Realm from "../../layouts/realms/Realm.astro";
+import realmData from "../../../data/realms.json";
 ---
 
 <Realm
   pageTitle="hyperpink"
   realm="hyperpink"
-  config={{ colors: { tab: "hyperpink" } }}
+  config={{
+    colors: {
+      tab: "#ffa8cc",
+    },
+  }}
 >
-  <manawave-ticker><div>hyperpink</div></manawave-ticker>
+  <div id="ticker-container" class="wrapper">
+    <div class="container-content">
+      <article class="container">
+        <div class="border">
+          <h2>Heyyy 😘</h2>
+          <p id="instructions">
+            Girl, you need to press a button to do anything
+          </p>
+        </div>
+      </article>
+      <div class="container container-controls">
+        <h3>Controls</h3>
+        <button name="keyboard" id="keyboard-btn" type="button">Keyboard</button
+        >
+        <button name="pointer" id="pointer-btn" type="button">Pointer</button>
+      </div>
+      <div class="container container-credits">
+        <p>
+          <small>
+            <a
+              href="https://sketchfab.com/3d-models/love-heart-8ed3b61a67b741d798f6d842390e984e"
+              >Love Heart</a
+            > by <a href="https://sketchfab.com/Aricode">Aricode</a> /
+            <a href="https://creativecommons.org/licenses/by/4.0/">CC BY 4.0</a>
+          </small>
+        </p>
+      </div>
+    </div>
+    <manawave-ticker id="ticker" autoplay direction="30">
+      <img src="/assets/img/hyperfemme/sparkle.webp" />
+      <img src="/assets/img/hyperfemme/diamond.webp" />
+      <img src="/assets/img/hyperfemme/heart.webp" />
+    </manawave-ticker>
+  </div>
 </Realm>
 
 <style is:global>
   :root {
-    --color-bg: hotpink;
+    --color-fg: rgb(125, 0, 69);
+    --color-bg: radial-gradient(
+      50% 50% at 50% 50%,
+      rgba(255, 168, 204, 0) 0%,
+      #ffa8cc 100%
+    );
   }
 </style>
+
+<style define:vars={{ "color-aura": realmData["hyperpink"].color.portal }}>
+  h2,
+  h3 {
+    margin: 0;
+
+    font-family: Arial, Helvetica, sans-serif;
+    font-style: normal;
+    font-weight: 400;
+    text-transform: uppercase;
+  }
+
+  h3 {
+    font-size: 0.75rem;
+
+    margin-bottom: 0.5rem;
+    margin-left: var(--padding);
+  }
+
+  button {
+    background: var(--color-aura);
+    border: 0;
+
+    color: var(--color-fg);
+
+    border-radius: inherit;
+    padding: 0.5rem 1rem;
+
+    font-size: inherit;
+  }
+
+  button:hover {
+    cursor: pointer;
+  }
+
+  .wrapper {
+    --color-fg: white;
+
+    width: 100%;
+    height: 100%;
+
+    color: var(--color-fg);
+    font-family: sans-serif;
+
+    display: flex;
+    flex-direction: column;
+
+    transition: background 1s ease-in-out;
+  }
+
+  .wrapper > * {
+    position: relative;
+    z-index: 1;
+  }
+
+  .wrapper.glow {
+    background: radial-gradient(
+      50% 50% at 50% 50%,
+      rgba(255, 168, 204, 0) 0%,
+      #ffa8cc 100%
+    );
+    mix-blend-mode: overlay;
+  }
+
+  .container-content {
+    height: inherit;
+
+    display: flex;
+    flex-direction: column;
+  }
+
+  .container {
+    --margin: 0rem;
+    --padding: 0.5rem;
+    --innerBR: 0.5rem;
+    --outerBR: calc(var(--padding) + var(--innerBR));
+
+    padding: var(--padding);
+    margin: 1rem;
+
+    max-width: max-content;
+
+    border-radius: var(--outerBR);
+
+    background: var(--color-aura);
+  }
+
+  .container > .border {
+    border-radius: var(--innerBR);
+    border: 1px solid var(--color-fg);
+
+    padding: var(--padding);
+  }
+
+  .wrapper > manawave-ticker {
+    width: 100%;
+    height: 100%;
+
+    position: absolute;
+    inset: 0;
+
+    z-index: 0;
+  }
+
+  img {
+    width: 8rem;
+    height: 8rem;
+  }
+
+  .container-controls {
+    --padding: 1rem;
+
+    margin-top: 0;
+
+    background: rgba(255, 88, 158, 0.5);
+
+    display: flex;
+    flex-flow: column nowrap;
+  }
+
+  .container-controls button:not(:last-child) {
+    margin-bottom: 0.5rem;
+  }
+
+  .container-credits {
+    padding-left: 1rem;
+    padding-right: 1rem;
+
+    margin-top: auto;
+
+    background: rgba(255, 255, 255, 0.25);
+
+    --backdrop-filter: blur(0.5rem);
+    backdrop-filter: var(--backdrop-filter);
+    -webkit-backdrop-filter: var(--backdrop-filter);
+
+    border: 1px solid var(--color-fg);
+  }
+</style>
+
+<script>
+  import { getMW } from "manawave";
+
+  const tickerElement = document.getElementById("ticker")!;
+  const mw = getMW(tickerElement)!;
+
+  let mode = "";
+  const keyboardBtnElement = document.getElementById("keyboard-btn")!;
+  const mouseBtnElement = document.getElementById("pointer-btn")!;
+  const tickerContainerElement = document.getElementById("ticker-container")!;
+  const instructionsElement = document.getElementById("instructions")!;
+
+  function resetContext() {
+    tickerContainerElement.classList.remove("glow");
+    mw.speed = 1;
+  }
+
+  keyboardBtnElement.addEventListener("click", (ev) => {
+    resetContext();
+    mode = "keyboard";
+    instructionsElement.textContent = "Use your arrow keys sweetie ✨";
+  });
+  document.addEventListener("keydown", (ev: KeyboardEvent) => {
+    if (mode === "keyboard") {
+      switch (ev.key) {
+        case "ArrowUp":
+          mw.direction = 90;
+          break;
+        case "ArrowRight":
+          mw.direction = 360;
+          break;
+        case "ArrowDown":
+          mw.direction = 270;
+          break;
+        case "ArrowLeft":
+          mw.direction = 180;
+          break;
+      }
+    }
+  });
+
+  mouseBtnElement.addEventListener("click", (ev) => {
+    resetContext();
+    mode = "pointer";
+    instructionsElement.textContent =
+      "Sis, tap or move your cursor around around where it SHINES ✨";
+    tickerContainerElement.dispatchEvent(new MouseEvent("mouseenter"));
+  });
+  tickerContainerElement.addEventListener("mouseenter", () => {
+    if (mode === "pointer") {
+      mw.speed = 2;
+      tickerContainerElement.classList.add("glow");
+    }
+  });
+  tickerContainerElement.addEventListener("mouseleave", () => {
+    if (mode === "pointer") {
+      mw.speed = 1;
+      tickerContainerElement.classList.remove("glow");
+    }
+  });
+  tickerContainerElement.addEventListener("mousemove", (ev: MouseEvent) => {
+    if (mode === "pointer") {
+      let mouseAngle =
+        -(Math.atan2(ev.y - innerHeight / 2, ev.x - innerWidth / 2) * 180) /
+        Math.PI;
+
+      mw.direction = mouseAngle;
+    }
+  });
+</script>
