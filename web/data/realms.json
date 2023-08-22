@@ -10,7 +10,8 @@
     },
     "color": {
       "portal": "deeppink"
-    }
+    },
+    "draft": false
   },
   "hyperpink": {
     "title": "hyperpink",
@@ -23,7 +24,8 @@
     },
     "color": {
       "portal": "hotpink"
-    }
+    },
+    "draft": false
   },
   "hero": {
     "title": "Hero",
@@ -36,7 +38,8 @@
     },
     "color": {
       "portal": "gold"
-    }
+    },
+    "draft": true
   },
   "hypertrance": {
     "title": "#HYPERTRANCE",
@@ -49,7 +52,8 @@
     },
     "color": {
       "portal": "royalblue"
-    }
+    },
+    "draft": false
   },
   "flarewater": {
     "title": "flarewater",
@@ -62,6 +66,7 @@
     },
     "color": {
       "portal": "firebrick"
-    }
+    },
+    "draft": true
   }
 }

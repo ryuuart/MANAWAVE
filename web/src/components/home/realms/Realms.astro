@@ -14,16 +14,19 @@ import RealmItem from "./RealmItem.astro";
   </header>
   <ul>
     {
-      Object.values(realmsData).map((i) => (
-        <li>
-          <RealmItem
-            title={i.title}
-            tagline={i.tagline}
-            url={i.url}
-            color={i.color.portal}
-          />
-        </li>
-      ))
+      Object.values(realmsData).map(
+        (i) =>
+          !i.draft && (
+            <li>
+              <RealmItem
+                title={i.title}
+                tagline={i.tagline}
+                url={i.url}
+                color={i.color.portal}
+              />
+            </li>
+          )
+      )
     }
   </ul>
 </Section>
