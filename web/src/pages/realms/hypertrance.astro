@@ -2,6 +2,237 @@
 import Realm from "../../layouts/realms/Realm.astro";
 ---
 
-<Realm pageTitle="hypertrance" realm="hypertrance">
-  <manawave-ticker><div>hypertrance</div></manawave-ticker>
+<Realm
+  pageTitle="hypertrance"
+  realm="hypertrance"
+  config={{
+    colors: {
+      tab: "#1c1e2b",
+    },
+  }}
+>
+  <div class="wrapper">
+    <div class="ticker ticker-code-bg">
+      <manawave-ticker autoplay direction="350" speed="0.5"
+        ><div>
+          Embrace the abstract mind, ride the astral waves, and find your soul's
+          vision. Within the ethereal, search for the elusive mana, guided by
+          astral guides. Let your heart explore the infinite realm, finding self
+          through abstract visions. The astral guides lead you to discover your
+          soul's essence amidst ethereal waves. In the search for mana, embrace
+          abstract visions to unlock your inner self. Your heart's journey takes
+          flight on astral waves, seeking the infinite soul. Guided by ethereal
+          visions, your mind delves into the realm of abstract mana. Embrace the
+          astral guides, find your soul's vision, and ride the waves of mana.
+          Amidst ethereal waves, your heart seeks the abstract essence of self.
+          Journey through the infinite realm, guided by astral guides, and find
+          your soul's vision in the ethereal. Embrace the abstract mind, ride
+          the astral waves, and find your soul's vision. Within the ethereal,
+          search for the elusive mana, guided by astral guides. Let your heart
+          explore the infinite realm, finding self through abstract visions. The
+          astral guides lead you to discover your soul's essence amidst ethereal
+          waves. In the search for mana, embrace abstract visions to unlock your
+          inner self. Your heart's journey takes flight on astral waves, seeking
+          the infinite soul. Guided by ethereal visions, your mind delves into
+          the realm of abstract mana. Embrace the astral guides, find your
+          soul's vision, and ride the waves of mana. Amidst ethereal waves, your
+          heart seeks the abstract essence of self. Journey through the infinite
+          realm, guided by astral guides, and find your soul's vision in the
+          ethereal.
+        </div>
+      </manawave-ticker>
+    </div>
+    <div class="ticker ticker-characteristics">
+      <manawave-ticker autoplay direction="left" speed="1.5"
+        ><div class="ticker-characteristics--content">
+          dream • soul • belief • self • potential •
+        </div></manawave-ticker
+      >
+    </div>
+    <div class="ticker ticker-hypertrance-text">
+      <manawave-ticker autoplay direction="right" speed="1"
+        ><div class="ticker-hypertrance-text--content">
+          hypertrance cyberdream virtualself depthcore metalheart y2k etherwave
+        </div></manawave-ticker
+      >
+    </div>
+    <div class="ticker ticker-self-text">
+      <manawave-ticker autoplay direction="90" speed="0.85"
+        ><div class="ticker-self-text--content">
+          Infinite evolution comes from transcending our mortal frame. It is
+          time to become pure spirit energy and become one with the abstract
+          mind. Do you see the vision? Are you energy itself, dancing waves
+          across the planes?
+        </div></manawave-ticker
+      >
+    </div>
+    <div class="character">
+      <img src="/assets/img/hypertrance/self.webp" />
+    </div>
+  </div>
 </Realm>
+
+<style is:global>
+  :root {
+    --color-bg: radial-gradient(
+      333.36% 100% at 50% 100%,
+      #fff 14.58%,
+      #aab8ff 28.65%,
+      #0927c2 52.08%,
+      #1c1e2b 78.65%
+    );
+  }
+</style>
+
+<style>
+  .wrapper {
+    width: 100%;
+    height: 100%;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    font-family: sans-serif;
+    font-style: normal;
+
+    overflow: hidden;
+
+    position: relative;
+
+    transform-style: preserve-3d;
+  }
+
+  .wrapper > * {
+    position: relative;
+
+    transform-style: preserve-3d;
+  }
+
+  .character {
+    width: 300px;
+    height: 300px;
+
+    z-index: 0;
+
+    animation: 5s infinite normal float;
+    animation-composition: add;
+    animation-timing-function: ease-in-out;
+  }
+
+  .character > img {
+    width: inherit;
+    height: inherit;
+
+    filter: blur(0.5px) brightness(1.25);
+    opacity: 0.85;
+  }
+
+  .ticker {
+    font-weight: 800;
+    font-size: 3rem;
+
+    white-space: nowrap;
+
+    position: absolute;
+
+    opacity: 0.75;
+  }
+
+  .ticker-characteristics {
+    font-weight: 800;
+    font-size: 3rem;
+
+    white-space: nowrap;
+
+    transform: rotateZ(95deg) translateY(-4rem);
+
+    animation: 15s infinite normal rotate360;
+    animation-composition: add;
+    animation-timing-function: linear;
+    animation-delay: 1s;
+
+    z-index: 1;
+  }
+
+  .ticker-characteristics--content,
+  .ticker-hypertrance-text--content {
+    margin-right: 1ch;
+  }
+
+  .ticker-hypertrance-text {
+    font-size: 5rem;
+
+    transform: rotateZ(-95deg) rotateY(50deg) translateY(-5rem);
+    animation: 15s infinite normal rotate360;
+    animation-composition: add;
+    animation-timing-function: linear;
+
+    z-index: -1;
+  }
+
+  .ticker-self-text {
+    font-size: 0.75rem;
+    font-weight: 400;
+    text-align: center;
+
+    white-space: initial;
+    max-width: 14ch;
+
+    height: 100%;
+
+    /* perspective-origin: top center; */
+    transform-origin: -1000% center;
+    transform: skew(0deg, 10deg) rotateX(-5deg) rotateY(-65deg) rotateZ(5deg)
+      perspective(5rem) translateZ(3rem) translateX(-1rem) translateY(-10rem);
+
+    z-index: 1;
+  }
+
+  .ticker-self-text > manawave-ticker {
+    height: 100%;
+  }
+
+  .ticker-code-bg {
+    width: 100%;
+    height: 100%;
+
+    mix-blend-mode: overlay;
+    opacity: 0.35;
+
+    font-family: monospace;
+    font-weight: 400;
+    font-size: 0.75rem;
+    white-space: initial;
+
+    text-align: justify;
+  }
+
+  .ticker-code-bg > manawave-ticker {
+    width: 100%;
+    height: 100%;
+  }
+
+  @keyframes rotate360 {
+    from {
+      transform: rotateX(0turn);
+    }
+
+    to {
+      transform: rotateX(1turn);
+    }
+  }
+
+  @keyframes float {
+    from {
+      transform: translateY(0rem);
+    }
+    50% {
+      transform: translateY(2rem);
+    }
+
+    to {
+      transform: translateY(0rem);
+    }
+  }
+</style>
