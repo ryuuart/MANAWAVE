@@ -13,7 +13,7 @@ import Realm from "../../layouts/realms/Realm.astro";
 >
   <div class="wrapper">
     <div class="ticker ticker-code-bg">
-      <manawave-ticker autoplay direction="350"
+      <manawave-ticker autoplay direction="350" speed="0.5"
         ><div>
           Embrace the abstract mind, ride the astral waves, and find your soul's
           vision. Within the ethereal, search for the elusive mana, guided by
@@ -115,7 +115,7 @@ import Realm from "../../layouts/realms/Realm.astro";
 
     z-index: 0;
 
-    animation: 3s infinite normal float;
+    animation: 5s infinite normal float;
     animation-composition: add;
     animation-timing-function: ease-in-out;
   }
@@ -167,22 +167,24 @@ import Realm from "../../layouts/realms/Realm.astro";
     animation: 15s infinite normal rotate360;
     animation-composition: add;
     animation-timing-function: linear;
+
+    z-index: -1;
   }
 
   .ticker-self-text {
-    font-size: 1rem;
+    font-size: 0.75rem;
     font-weight: 400;
     text-align: center;
 
     white-space: initial;
-    max-width: 10ch;
+    max-width: 14ch;
 
     height: 100%;
 
     /* perspective-origin: top center; */
     transform-origin: -1000% center;
     transform: skew(0deg, 10deg) rotateX(-5deg) rotateY(-65deg) rotateZ(5deg)
-      perspective(5rem) translateZ(3rem) translateX(-1rem) translateY(-8rem);
+      perspective(5rem) translateZ(3rem) translateX(-1rem) translateY(-10rem);
 
     z-index: 1;
   }
