@@ -45,6 +45,42 @@ describe("dom", () => {
 
                 await expect(await $(ctx.root)).toHaveChildren(4);
             });
+
+            it("should override the attributes actively", async () => {
+                Basic.loadContent();
+
+                // run through a set of starting values
+                for (let i = 0; i <= 10; i++) {
+                    Basic.ticker!.setAttribute("direction", "999");
+                    Basic.ticker!.setAttribute("speed", "999");
+                    Basic.ticker!.setAttribute("autoplay", "true");
+                    await $(Basic.ticker!).waitUntil(async function () {
+                        return (
+                            //@ts-ignore
+                            (await this.getAttribute("direction")) === "999" &&
+                            //@ts-ignore
+                            (await this.getAttribute("speed")) === "999" &&
+                            //@ts-ignore
+                            (await this.getAttribute("autoplay")) === "true"
+                        );
+                    });
+
+                    const ctx = Context.setup(Basic.ticker!);
+
+                    // change from the default through another comprehensive set of values
+                    for (let j = 0; j <= 360; j++) {
+                        ctx.attributes = {
+                            direction: j,
+                            speed: j,
+                            autoplay: false,
+                        };
+
+                        expect(ctx.attributes.direction).toEqual(j);
+                        expect(ctx.attributes.speed).toEqual(j);
+                        expect(ctx.attributes.autoplay).toEqual(false);
+                    }
+                }
+            });
         });
 
         describe("measurement", () => {
