@@ -260,7 +260,7 @@ export class LiveAttributes {
         const { autoplay, speed, direction } = payload;
         if (autoplay) this._autoplay = autoplay;
         if (speed) this._speed = speed;
-        if (direction) this._direction = direction;
+        if (direction !== undefined) this._direction = direction;
     }
 
     get autoplay(): boolean {
