@@ -87,7 +87,7 @@ declare namespace manawave {
         autoplay: boolean;
         direction: "up" | "right" | "down" | "left" | string | number;
         speed: number;
-    } & Omit<PipelineHooksMap, "eachElement">;
+    } & Omit<Partial<PipelineHooksMap>, "eachElement">;
 }
 
 declare namespace Ticker {
