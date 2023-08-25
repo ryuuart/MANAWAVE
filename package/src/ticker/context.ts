@@ -241,9 +241,9 @@ export class LiveAttributes {
 
         // override if needed
         const { autoplay, speed, direction } = initial;
-        if (autoplay) this._autoplay = autoplay;
-        if (speed) this._speed = speed;
-        if (direction) this._direction = direction;
+        if (autoplay !== undefined) this._autoplay = autoplay;
+        if (speed !== undefined) this._speed = speed;
+        if (direction !== undefined) this._direction = direction;
     }
 
     /**
@@ -258,9 +258,9 @@ export class LiveAttributes {
         }>
     ) {
         const { autoplay, speed, direction } = payload;
-        if (autoplay) this._autoplay = autoplay;
-        if (speed) this._speed = speed;
-        if (direction) this._direction = direction;
+        if (autoplay !== undefined) this._autoplay = autoplay;
+        if (speed !== undefined) this._speed = speed;
+        if (direction !== undefined) this._direction = direction;
     }
 
     get autoplay(): boolean {
