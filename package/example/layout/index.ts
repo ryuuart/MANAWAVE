@@ -6,6 +6,8 @@ const ob = new MW("#dom-base", {
     speed: 2,
 });
 
+const noAttr = new MW("#dom-no-attr");
+
 const mousePos = {
     x: 0,
     y: 0,
