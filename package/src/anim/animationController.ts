@@ -21,6 +21,17 @@ class AnimationController extends PlaybackObject {
         this._totalTime = 0;
         this._currentTime = window.performance.now();
 
+        // for updating current time when going off the page
+        // also don't run when off the page
+        document.addEventListener("visibilitychange", () => {
+            if (document.visibilityState === "visible") {
+                this._currentTime = window.performance.now();
+                this.play();
+            } else {
+                this.pause();
+            }
+        });
+
         this._renderID = window.requestAnimationFrame(this.render.bind(this));
     }
 
@@ -56,11 +67,11 @@ class AnimationController extends PlaybackObject {
      * @param timestamp current time from the clock
      */
     render(timestamp: DOMHighResTimeStamp) {
-        let newTime = timestamp;
-        let frameTime = newTime - this._currentTime;
-        this._currentTime = newTime;
-
         if (this.status.started && !this.status.paused) {
+            let newTime = timestamp;
+            let frameTime = newTime - this._currentTime;
+            this._currentTime = newTime;
+
             // if time has progressed
             while (frameTime > 0.0) {
                 // if you're lagging, use the frame time
