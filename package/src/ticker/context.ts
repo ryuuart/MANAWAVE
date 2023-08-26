@@ -54,6 +54,15 @@ export default class Context {
             if (!(selected instanceof WebComponent))
                 selected.classList.add(styles.manawaveRoot);
 
+            // add a11y labeling
+            selected.role = "marquee";
+            if (
+                !selected.ariaLabel &&
+                !selected.hasAttribute("aria-labelledby")
+            ) {
+                selected.ariaLabel = "marquee";
+            }
+
             // WARNING IT HAS TO BE IN THIS SPECIFIC ORDER DO NOT CHANGE
             // basically, it first boxes the repeating items to be measured over time
             // then it removes them from the dom and places it inside a template to clone from
