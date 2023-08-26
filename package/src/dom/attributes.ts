@@ -1,3 +1,5 @@
+import WebComponent from "./element";
+
 /**
  * Takes an element with Ticker attributes and extracts its
  * values into a formatted object.
@@ -10,16 +12,37 @@ export function extractOAttributes(
 ): Partial<manawave.Options> {
     const result: Partial<manawave.Options> = {};
 
-    const autoplay = element.getAttribute("autoplay");
-    if (autoplay) result.autoplay = autoplay.toLowerCase() === "true";
-    else result.autoplay = element.hasAttribute("autoplay");
+    let autoplay, speed, direction;
 
-    // check speed
-    const speed = element.getAttribute("speed");
+    // follow web standards if the marquee is a regular element, not custom
+    // as in, use data attributes if it's not a custom element
+    if (element instanceof WebComponent) {
+        autoplay = element.getAttribute("autoplay");
+        if (autoplay !== null)
+            result.autoplay =
+                autoplay.toLowerCase() === "true" || autoplay === "";
+        else result.autoplay = element.hasAttribute("autoplay");
+
+        // check speed
+        speed = element.getAttribute("speed");
+
+        // check direction
+        direction = element.getAttribute("direction");
+    } else {
+        const autoplay = element.dataset.autoplay;
+        if (autoplay !== undefined)
+            result.autoplay =
+                autoplay.toLowerCase() === "true" || autoplay === "";
+
+        // check speed
+        speed = element.dataset.speed;
+
+        // check direction
+        direction = element.dataset.direction;
+    }
+
+    // shared logic
     if (speed) result.speed = parseFloat(speed);
-
-    // check direction
-    const direction = element.getAttribute("direction");
     if (direction) {
         result.direction = direction;
     }
@@ -119,7 +142,14 @@ export class Attributes {
         this.observer = new MutationObserver(this.onElementMutate.bind(this));
         this.observer.observe(target, {
             attributes: true,
-            attributeFilter: ["speed", "direction", "autoplay"],
+            attributeFilter: [
+                "speed",
+                "direction",
+                "autoplay",
+                "data-speed",
+                "data-direction",
+                "data-autoplay",
+            ],
         });
     }
 
