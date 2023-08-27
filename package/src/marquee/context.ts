@@ -45,10 +45,33 @@ export default class Context {
         else selected = document.querySelector<HTMLElement>(selector);
 
         if (selected) {
-            if (selected.childElementCount <= 0)
-                throw new Error(
-                    "It looks like there is nothing inside the marquee. A marquee needs at least one element inside to do anything."
-                );
+            // text nodes don't have measurements by default so it's necessary to wrap them
+            // pre-process child elements by wrapping any text nodes into a div
+            for (const child of selected.childNodes) {
+                if (
+                    child.nodeType === Node.TEXT_NODE &&
+                    child.nodeValue &&
+                    child.nodeValue.trim().length > 0
+                ) {
+                    // prepare
+                    const wrapperElement = document.createElement("div");
+                    wrapperElement.style.display = "inline-block";
+                    const nextSibling = child.nextSibling;
+
+                    // wrap it
+                    wrapperElement.append(child);
+
+                    // append
+                    if (nextSibling) {
+                        selected.insertBefore(wrapperElement, nextSibling);
+                    } else {
+                        selected.insertAdjacentElement(
+                            "beforeend",
+                            wrapperElement
+                        );
+                    }
+                }
+            }
 
             // if it's not a web component, then it needs some basic styling
             if (!(selected instanceof WebComponent))

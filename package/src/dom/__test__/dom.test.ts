@@ -84,6 +84,47 @@ describe("dom", () => {
                     }
                 }
             });
+
+            it("should pre-process marquees that have raw text content", async () => {
+                // testing equality in content because the references to the original nodes
+                // aren't going to be the same as things get processed
+                // elements with only text nodes, nothing else
+                const onlyTextElement = document.createElement("div");
+                const onlyTextNodes = [
+                    document.createTextNode("first line"),
+                    document.createTextNode("second line"),
+                ];
+                onlyTextElement.append(...onlyTextNodes);
+
+                // we test position directly because the node order MUST be maintained
+                const onlyTextContext = Context.setup(onlyTextElement);
+                expect(
+                    onlyTextContext.template.children[0].textContent
+                ).toEqual(onlyTextNodes[0].textContent);
+                expect(
+                    onlyTextContext.template.children[1].textContent
+                ).toEqual(onlyTextNodes[1].textContent);
+
+                // elements with a mixture of text nodes and element nodes
+                const mixedTextElement = document.createElement("div");
+                const mixedTextNodes = [
+                    document.createTextNode("first line"),
+                    document.createElement("div"),
+                    document.createTextNode("second line"),
+                ];
+                mixedTextElement.append(...mixedTextNodes);
+
+                const mixedTextContext = Context.setup(mixedTextElement);
+                expect(
+                    mixedTextContext.template.children[0].textContent
+                ).toEqual(mixedTextNodes[0].textContent);
+                expect(mixedTextContext.template.children[1]).toBeInstanceOf(
+                    HTMLDivElement
+                );
+                expect(
+                    mixedTextContext.template.children[2].textContent
+                ).toEqual(mixedTextNodes[2].textContent);
+            });
         });
 
         describe("measurement", () => {
