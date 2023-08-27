@@ -12,10 +12,7 @@ import realmData from "../../../data/realms.json";
     },
   }}
 >
-  <div
-    id="marquee-container"
-    class="global z-stack resize--parent flex--column animated-background"
-  >
+  <div id="root" class="global z-stack resize--parent flex--column">
     <div class="container-content flex--column">
       <article class="container flex--column">
         <div class="border">
@@ -48,6 +45,7 @@ import realmData from "../../../data/realms.json";
       <img class="marquee-img" src="/assets/img/hyperfemme/diamond.webp" />
       <img class="marquee-img" src="/assets/img/hyperfemme/heart.webp" />
     </manawave-marquee>
+    <div id="background-overlay" class="background--overlay"></div>
   </div>
 </Realm>
 
@@ -107,10 +105,9 @@ import realmData from "../../../data/realms.json";
   .z-stack > * {
     position: relative;
     z-index: 1;
-  }
 
-  .container-content {
-    height: inherit;
+    width: 100%;
+    height: 100%;
   }
 
   .container {
@@ -137,6 +134,10 @@ import realmData from "../../../data/realms.json";
   }
 
   /* Specific Elements*/
+  .container-content {
+    z-index: 2;
+  }
+
   .marquee-img {
     width: 8rem;
     height: 8rem;
@@ -187,11 +188,14 @@ import realmData from "../../../data/realms.json";
     flex-direction: column;
   }
 
-  .animated-background {
-    transition: background 1s ease-in-out;
+  .background--overlay {
+    position: absolute;
+    inset: 0;
+
+    z-index: 1;
   }
 
-  .animated-background--glow {
+  .background--glow {
     background: radial-gradient(
       50% 50% at 50% 50%,
       rgba(255, 168, 204, 0) 0%,
@@ -209,10 +213,9 @@ import realmData from "../../../data/realms.json";
     const mw = getMW(marqueeElement)!;
 
     // find and read in elements to interact with
-    const keyboardBtnElement = document.getElementById("keyboard-btn")!;
-    const pointerBtnElement = document.getElementById("pointer-btn")!;
-    const marqueeContainerElement =
-      document.getElementById("marquee-container")!;
+    const marqueeContainerElement = document.getElementById("root")!;
+    const backgroundOverlayElement =
+      document.getElementById("background-overlay")!;
     const instructionsElement = document.getElementById("instructions")!;
 
     // keep track of current mode
@@ -220,11 +223,12 @@ import realmData from "../../../data/realms.json";
 
     // resets the state of the page
     function resetContext() {
-      marqueeContainerElement.classList.remove("animated-background--glow");
+      backgroundOverlayElement.classList.remove("background--glow");
       mw.speed = 1;
     }
 
     // keyboard mode
+    const keyboardBtnElement = document.getElementById("keyboard-btn")!;
     keyboardBtnElement.addEventListener("click", (ev) => {
       resetContext();
       mode = "keyboard";
@@ -250,6 +254,7 @@ import realmData from "../../../data/realms.json";
     });
 
     // pointer mode
+    const pointerBtnElement = document.getElementById("pointer-btn")!;
     pointerBtnElement.addEventListener("click", (ev) => {
       resetContext();
       mode = "pointer";
@@ -262,13 +267,13 @@ import realmData from "../../../data/realms.json";
     marqueeContainerElement.addEventListener("mouseenter", () => {
       if (mode === "pointer") {
         mw.speed = 2;
-        marqueeContainerElement.classList.add("animated-background--glow");
+        backgroundOverlayElement.classList.add("background--glow");
       }
     });
     marqueeContainerElement.addEventListener("mouseleave", () => {
       if (mode === "pointer") {
         mw.speed = 1;
-        marqueeContainerElement.classList.remove("animated-background--glow");
+        backgroundOverlayElement.classList.remove("background--glow");
       }
     });
     marqueeContainerElement.addEventListener("mousemove", (ev: MouseEvent) => {
