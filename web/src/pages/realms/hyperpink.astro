@@ -203,71 +203,82 @@ import realmData from "../../../data/realms.json";
 
 <script>
   import { getMW } from "manawave";
+  window.addEventListener("load", () => {
+    // read in marquee
+    const marqueeElement = document.getElementById("marquee")!;
+    const mw = getMW(marqueeElement)!;
 
-  const marqueeElement = document.getElementById("marquee")!;
-  const mw = getMW(marqueeElement)!;
+    // find and read in elements to interact with
+    const keyboardBtnElement = document.getElementById("keyboard-btn")!;
+    const pointerBtnElement = document.getElementById("pointer-btn")!;
+    const marqueeContainerElement =
+      document.getElementById("marquee-container")!;
+    const instructionsElement = document.getElementById("instructions")!;
 
-  let mode = "";
-  const keyboardBtnElement = document.getElementById("keyboard-btn")!;
-  const mouseBtnElement = document.getElementById("pointer-btn")!;
-  const marqueeContainerElement = document.getElementById("marquee-container")!;
-  const instructionsElement = document.getElementById("instructions")!;
+    // keep track of current mode
+    let mode = "";
 
-  function resetContext() {
-    marqueeContainerElement.classList.remove("animated-background--glow");
-    mw.speed = 1;
-  }
-
-  keyboardBtnElement.addEventListener("click", (ev) => {
-    resetContext();
-    mode = "keyboard";
-    instructionsElement.textContent = "Use your arrow keys sweetie ✨";
-  });
-  document.addEventListener("keydown", (ev: KeyboardEvent) => {
-    if (mode === "keyboard") {
-      switch (ev.key) {
-        case "ArrowUp":
-          mw.direction = 90;
-          break;
-        case "ArrowRight":
-          mw.direction = 360;
-          break;
-        case "ArrowDown":
-          mw.direction = 270;
-          break;
-        case "ArrowLeft":
-          mw.direction = 180;
-          break;
-      }
-    }
-  });
-
-  mouseBtnElement.addEventListener("click", (ev) => {
-    resetContext();
-    mode = "pointer";
-    instructionsElement.textContent =
-      "Sis, tap or move your cursor around around where it SHINES ✨";
-    marqueeContainerElement.dispatchEvent(new MouseEvent("mouseenter"));
-  });
-  marqueeContainerElement.addEventListener("mouseenter", () => {
-    if (mode === "pointer") {
-      mw.speed = 2;
-      marqueeContainerElement.classList.add("animated-background--glow");
-    }
-  });
-  marqueeContainerElement.addEventListener("mouseleave", () => {
-    if (mode === "pointer") {
-      mw.speed = 1;
+    // resets the state of the page
+    function resetContext() {
       marqueeContainerElement.classList.remove("animated-background--glow");
+      mw.speed = 1;
     }
-  });
-  marqueeContainerElement.addEventListener("mousemove", (ev: MouseEvent) => {
-    if (mode === "pointer") {
-      let mouseAngle =
-        -(Math.atan2(ev.y - innerHeight / 2, ev.x - innerWidth / 2) * 180) /
-        Math.PI;
 
-      mw.direction = mouseAngle;
-    }
+    // keyboard mode
+    keyboardBtnElement.addEventListener("click", (ev) => {
+      resetContext();
+      mode = "keyboard";
+      instructionsElement.textContent = "Use your arrow keys sweetie ✨";
+    });
+    document.addEventListener("keydown", (ev: KeyboardEvent) => {
+      if (mode === "keyboard") {
+        switch (ev.key) {
+          case "ArrowUp":
+            mw.direction = 90;
+            break;
+          case "ArrowRight":
+            mw.direction = 360;
+            break;
+          case "ArrowDown":
+            mw.direction = 270;
+            break;
+          case "ArrowLeft":
+            mw.direction = 180;
+            break;
+        }
+      }
+    });
+
+    // pointer mode
+    pointerBtnElement.addEventListener("click", (ev) => {
+      resetContext();
+      mode = "pointer";
+      instructionsElement.textContent =
+        "Sis, tap or move your cursor around around where it SHINES ✨";
+      marqueeContainerElement.dispatchEvent(new MouseEvent("mouseenter"));
+    });
+
+    // animated background glow effect
+    marqueeContainerElement.addEventListener("mouseenter", () => {
+      if (mode === "pointer") {
+        mw.speed = 2;
+        marqueeContainerElement.classList.add("animated-background--glow");
+      }
+    });
+    marqueeContainerElement.addEventListener("mouseleave", () => {
+      if (mode === "pointer") {
+        mw.speed = 1;
+        marqueeContainerElement.classList.remove("animated-background--glow");
+      }
+    });
+    marqueeContainerElement.addEventListener("mousemove", (ev: MouseEvent) => {
+      if (mode === "pointer") {
+        let mouseAngle =
+          -(Math.atan2(ev.y - innerHeight / 2, ev.x - innerWidth / 2) * 180) /
+          Math.PI;
+
+        mw.direction = mouseAngle;
+      }
+    });
   });
 </script>
