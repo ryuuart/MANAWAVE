@@ -1,6 +1,6 @@
 /**
  * Represents the series of hooks and user-provided transformations
- * on the default data / configuration of the Ticker
+ * on the default data / configuration of the Marquee
  */
 export class Pipeline {
     onLayout: PipelineHooksMap["onLayout"];

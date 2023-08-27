@@ -1,10 +1,10 @@
 import { Component } from "../component";
-import styles from "../styles/ticker.module.css";
+import styles from "../styles/marquee.module.css";
 
 /**
- * Represents a Ticker that would repeat ItemComponent across it
+ * Represents a Marquee that would repeat ItemComponent across it
  */
-export default class TickerComponent extends Component {
+export default class MarqueeComponent extends Component {
     constructor() {
         const element = document.createElement("div");
         element.classList.add(styles.container);

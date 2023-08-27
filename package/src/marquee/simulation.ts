@@ -6,8 +6,8 @@ import { Scene } from "./scene";
 import { Pipeline } from "./pipeline";
 
 /**
- * Calculates the total repetitions required vertically and horizontally for a ticker. The repetitions are
- * padded by 2 or 1 to account for ticker items that need to loop offscreen.
+ * Calculates the total repetitions required vertically and horizontally for a marquee. The repetitions are
+ * padded by 2 or 1 to account for marquee items that need to loop offscreen.
  *
  * @see {@link getRepetitions } in DOM/measure
  * @param container size of a container of repeatable items
@@ -25,11 +25,11 @@ function getTRepetitions(container: Rect, repeatable: Rect): DirectionalCount {
 }
 
 /**
- * Get the limits of a ticker aligned to the size of individual items.
+ * Get the limits of a marquee aligned to the size of individual items.
  *
- * @param container size of ticker
+ * @param container size of marquee
  * @param repeatable size of individual item
- * @returns the outer boundaries or edge of the ticker aligned to item sizes
+ * @returns the outer boundaries or edge of the marquee aligned to item sizes
  */
 function calcRectLimits(container: Rect, repeatable: Rect): BoundingBox {
     const limits = getRepetitions(container, repeatable);
@@ -125,7 +125,7 @@ export class Simulation {
             this._repetitions.vertical * this._repetitions.horizontal;
         if (isItemSync)
             throw new Error(
-                "The Ticker Simulation is out-of-sync with its size."
+                "The Marquee Simulation is out-of-sync with its size."
             );
 
         // needs an offset to account for blank space at beginning
@@ -168,16 +168,16 @@ export class Simulation {
      * Updates the current simulation attribute
      * @param properties any attribute
      */
-    updateAttribute(properties: Partial<Ticker.Attributes>) {
+    updateAttribute(properties: Partial<Marquee.Attributes>) {
         this._attributes.update(properties);
         this._intendedDirection = angleToDirection(this._attributes.direction);
     }
 
     /**
      * Updates the current size the simulation
-     * @param size new ticker or item size
+     * @param size new marquee or item size
      */
-    updateSize(size: Partial<Ticker.Sizes>) {
+    updateSize(size: Partial<Marquee.Sizes>) {
         const prev = structuredClone(this._repetitions);
 
         // propagate the new size
@@ -233,7 +233,7 @@ export class Simulation {
             let userOverrideLoop = this._pipeline.onLoop({
                 limits: structuredClone(this._limits),
                 itemSize: this._sizes.item,
-                tickerSize: this._sizes.root,
+                marqueeSize: this._sizes.root,
                 direction: structuredClone(this._intendedDirection),
             });
             // there is so use the override

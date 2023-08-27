@@ -1,11 +1,11 @@
 import WebComponent from "./element";
 
 /**
- * Takes an element with Ticker attributes and extracts its
+ * Takes an element with Marquee attributes and extracts its
  * values into a formatted object.
  *
- * @param element element with Ticker attributes
- * @returns Ticker parameters extracted and formatted into an object
+ * @param element element with Marquee attributes
+ * @returns Marquee parameters extracted and formatted into an object
  */
 export function extractOAttributes(
     element: HTMLElement
@@ -86,9 +86,9 @@ export function convertDirection(
 
 /**
  * Takes options from HTML and JS sources to merge them together. JS sources take precedence.
- * @param element element with possible ticker attributes
+ * @param element element with possible marquee attributes
  * @param options options that would override parameters defined by the attributes
- * @returns formatted ticker options
+ * @returns formatted marquee options
  */
 export function mergeOOptions(
     element: HTMLElement,

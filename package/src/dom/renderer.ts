@@ -1,15 +1,15 @@
-import { Scene } from "@manawave/ticker/scene";
-import TickerComponent from "./components/ticker";
+import { Scene } from "@manawave/marquee/scene";
+import MarqueeComponent from "./components/marquee";
 import { Canvas } from "./canvas";
-import Context from "@manawave/ticker/context";
+import Context from "@manawave/marquee/context";
 import ItemComponent from "./components/item";
 
 /**
  * Takes in some contexts and provides an environment to
- * continually render a Ticker onto the DOM.
+ * continually render a Marquee onto the DOM.
  *
- * @remark {@link Canvas} is here to represent the "pixels" of the Ticker.
- * It represents the live visual state of the Ticker.
+ * @remark {@link Canvas} is here to represent the "pixels" of the Marquee.
+ * It represents the live visual state of the Marquee.
  * @see {@link Canvas} for more context on how the actual drawing works.
  */
 export class Renderer {
@@ -17,7 +17,7 @@ export class Renderer {
 
     constructor(context: Context) {
         const template = context.template;
-        const root = new TickerComponent();
+        const root = new MarqueeComponent();
         root.setSize(context.sizes.root);
         root.appendToDOM(context.root);
 

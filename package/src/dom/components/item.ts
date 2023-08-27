@@ -1,9 +1,9 @@
-import { Item } from "@manawave/ticker/item";
+import { Item } from "@manawave/marquee/item";
 import { Component } from "../component";
 import styles from "../styles/item.module.css";
 
 /**
- * An positioned object within a Ticker
+ * An positioned object within a Marquee
  */
 export default class ItemComponent extends Component {
     private _position: vec2;

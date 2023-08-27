@@ -42,22 +42,22 @@ export default class MWSystem extends System {
      * Updates the attributes of the system
      * @param attr new attributes for the system
      */
-    updateAttributes(attr: Partial<Ticker.Attributes>) {
+    updateAttributes(attr: Partial<Marquee.Attributes>) {
         this._simulation.updateAttribute(attr);
     }
 
     /**
-     * Updates the size of the ticker and items for future update.
+     * Updates the size of the marquee and items for future update.
      * @remark This will also add and remove items as needed
-     * @param size new size of the Ticker and its Items
+     * @param size new size of the Marquee and its Items
      */
-    updateSize(size: Partial<Ticker.Sizes>) {
+    updateSize(size: Partial<Marquee.Sizes>) {
         this._simulation.updateSize(size);
         this.onDraw();
     }
 
     /**
-     * Views current items in ticker
+     * Views current items in marquee
      * @see {@link Renderer} view
      */
     viewItems(callback: (item: ItemComponent) => void) {

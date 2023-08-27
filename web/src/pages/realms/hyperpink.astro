@@ -12,7 +12,7 @@ import realmData from "../../../data/realms.json";
     },
   }}
 >
-  <div id="ticker-container" class="wrapper">
+  <div id="marquee-container" class="wrapper">
     <div class="container-content">
       <article class="container">
         <div class="border">
@@ -40,11 +40,11 @@ import realmData from "../../../data/realms.json";
         </p>
       </div>
     </div>
-    <manawave-ticker id="ticker" autoplay direction="30">
+    <manawave-marquee id="marquee" autoplay direction="30">
       <img src="/assets/img/hyperfemme/sparkle.webp" />
       <img src="/assets/img/hyperfemme/diamond.webp" />
       <img src="/assets/img/hyperfemme/heart.webp" />
-    </manawave-ticker>
+    </manawave-marquee>
   </div>
 </Realm>
 
@@ -152,7 +152,7 @@ import realmData from "../../../data/realms.json";
     padding: var(--padding);
   }
 
-  .wrapper > manawave-ticker {
+  .wrapper > manawave-marquee {
     width: 100%;
     height: 100%;
 
@@ -201,17 +201,17 @@ import realmData from "../../../data/realms.json";
 <script>
   import { getMW } from "manawave";
 
-  const tickerElement = document.getElementById("ticker")!;
-  const mw = getMW(tickerElement)!;
+  const marqueeElement = document.getElementById("marquee")!;
+  const mw = getMW(marqueeElement)!;
 
   let mode = "";
   const keyboardBtnElement = document.getElementById("keyboard-btn")!;
   const mouseBtnElement = document.getElementById("pointer-btn")!;
-  const tickerContainerElement = document.getElementById("ticker-container")!;
+  const marqueeContainerElement = document.getElementById("marquee-container")!;
   const instructionsElement = document.getElementById("instructions")!;
 
   function resetContext() {
-    tickerContainerElement.classList.remove("glow");
+    marqueeContainerElement.classList.remove("glow");
     mw.speed = 1;
   }
 
@@ -244,21 +244,21 @@ import realmData from "../../../data/realms.json";
     mode = "pointer";
     instructionsElement.textContent =
       "Sis, tap or move your cursor around around where it SHINES ✨";
-    tickerContainerElement.dispatchEvent(new MouseEvent("mouseenter"));
+    marqueeContainerElement.dispatchEvent(new MouseEvent("mouseenter"));
   });
-  tickerContainerElement.addEventListener("mouseenter", () => {
+  marqueeContainerElement.addEventListener("mouseenter", () => {
     if (mode === "pointer") {
       mw.speed = 2;
-      tickerContainerElement.classList.add("glow");
+      marqueeContainerElement.classList.add("glow");
     }
   });
-  tickerContainerElement.addEventListener("mouseleave", () => {
+  marqueeContainerElement.addEventListener("mouseleave", () => {
     if (mode === "pointer") {
       mw.speed = 1;
-      tickerContainerElement.classList.remove("glow");
+      marqueeContainerElement.classList.remove("glow");
     }
   });
-  tickerContainerElement.addEventListener("mousemove", (ev: MouseEvent) => {
+  marqueeContainerElement.addEventListener("mousemove", (ev: MouseEvent) => {
     if (mode === "pointer") {
       let mouseAngle =
         -(Math.atan2(ev.y - innerHeight / 2, ev.x - innerWidth / 2) * 180) /

@@ -12,8 +12,8 @@ import Realm from "../../layouts/realms/Realm.astro";
   }}
 >
   <div class="wrapper">
-    <div class="ticker ticker-code-bg">
-      <manawave-ticker autoplay direction="350" speed="0.5"
+    <div class="marquee marquee-code-bg">
+      <manawave-marquee autoplay direction="350" speed="0.5"
         ><div>
           Embrace the abstract mind, ride the astral waves, and find your soul's
           vision. Within the ethereal, search for the elusive mana, guided by
@@ -40,30 +40,30 @@ import Realm from "../../layouts/realms/Realm.astro";
           realm, guided by astral guides, and find your soul's vision in the
           ethereal.
         </div>
-      </manawave-ticker>
+      </manawave-marquee>
     </div>
-    <div class="ticker ticker-characteristics">
-      <manawave-ticker autoplay direction="left" speed="1.5"
-        ><div class="ticker-characteristics--content">
+    <div class="marquee marquee-characteristics">
+      <manawave-marquee autoplay direction="left" speed="1.5"
+        ><div class="marquee-characteristics--content">
           dream • soul • belief • self • potential •
-        </div></manawave-ticker
+        </div></manawave-marquee
       >
     </div>
-    <div class="ticker ticker-hypertrance-text">
-      <manawave-ticker autoplay direction="right" speed="1"
-        ><div class="ticker-hypertrance-text--content">
+    <div class="marquee marquee-hypertrance-text">
+      <manawave-marquee autoplay direction="right" speed="1"
+        ><div class="marquee-hypertrance-text--content">
           hypertrance cyberdream virtualself depthcore metalheart y2k etherwave
-        </div></manawave-ticker
+        </div></manawave-marquee
       >
     </div>
-    <div class="ticker ticker-self-text">
-      <manawave-ticker autoplay direction="90" speed="0.85"
-        ><div class="ticker-self-text--content">
+    <div class="marquee marquee-self-text">
+      <manawave-marquee autoplay direction="90" speed="0.85"
+        ><div class="marquee-self-text--content">
           Infinite evolution comes from transcending our mortal frame. It is
           time to become pure spirit energy and become one with the abstract
           mind. Do you see the vision? Are you energy itself, dancing waves
           across the planes?
-        </div></manawave-ticker
+        </div></manawave-marquee
       >
     </div>
     <div class="character">
@@ -128,7 +128,7 @@ import Realm from "../../layouts/realms/Realm.astro";
     opacity: 0.85;
   }
 
-  .ticker {
+  .marquee {
     font-weight: 800;
     font-size: 3rem;
 
@@ -139,7 +139,7 @@ import Realm from "../../layouts/realms/Realm.astro";
     opacity: 0.75;
   }
 
-  .ticker-characteristics {
+  .marquee-characteristics {
     font-weight: 800;
     font-size: 3rem;
 
@@ -155,12 +155,12 @@ import Realm from "../../layouts/realms/Realm.astro";
     z-index: 1;
   }
 
-  .ticker-characteristics--content,
-  .ticker-hypertrance-text--content {
+  .marquee-characteristics--content,
+  .marquee-hypertrance-text--content {
     margin-right: 1ch;
   }
 
-  .ticker-hypertrance-text {
+  .marquee-hypertrance-text {
     font-size: 5rem;
 
     transform: rotateZ(-95deg) rotateY(50deg) translateY(-5rem);
@@ -171,7 +171,7 @@ import Realm from "../../layouts/realms/Realm.astro";
     z-index: -1;
   }
 
-  .ticker-self-text {
+  .marquee-self-text {
     font-size: 0.75rem;
     font-weight: 400;
     text-align: center;
@@ -189,11 +189,11 @@ import Realm from "../../layouts/realms/Realm.astro";
     z-index: 1;
   }
 
-  .ticker-self-text > manawave-ticker {
+  .marquee-self-text > manawave-marquee {
     height: 100%;
   }
 
-  .ticker-code-bg {
+  .marquee-code-bg {
     width: 100%;
     height: 100%;
 
@@ -208,7 +208,7 @@ import Realm from "../../layouts/realms/Realm.astro";
     text-align: justify;
   }
 
-  .ticker-code-bg > manawave-ticker {
+  .marquee-code-bg > manawave-marquee {
     width: 100%;
     height: 100%;
   }

@@ -45,7 +45,7 @@ type MoveHook = (data: {
 type LoopHook = (data: {
     limits: BoundingBox;
     itemSize: Rect;
-    tickerSize: Rect;
+    marqueeSize: Rect;
     direction: vec2;
 }) => Partial<{ limits: BoundingBox }> | void;
 
@@ -90,9 +90,9 @@ declare namespace manawave {
     } & Omit<Partial<PipelineHooksMap>, "eachElement">;
 }
 
-declare namespace Ticker {
+declare namespace Marquee {
     type Sizes = {
-        ticker: Rect;
+        marquee: Rect;
         item: Rect;
     };
 

@@ -3,13 +3,13 @@ import godText from "../god.txt?raw";
 ---
 
 <div class="god-text behind-1">
-  <div class="manawave-ticker-container">
-    <manawave-ticker autoplay direction="down" speed="0.15" class="text-1">
+  <div class="manawave-marquee-container">
+    <manawave-marquee autoplay direction="down" speed="0.15" class="text-1">
       <p>{godText}</p>
-    </manawave-ticker>
-    <manawave-ticker autoplay direction="up" speed="0.05" class="text-2">
+    </manawave-marquee>
+    <manawave-marquee autoplay direction="up" speed="0.05" class="text-2">
       <p>{godText}</p>
-    </manawave-ticker>
+    </manawave-marquee>
   </div>
 </div>
 
@@ -30,7 +30,7 @@ import godText from "../god.txt?raw";
     font-size: 1.5rem;
   }
 
-  .manawave-ticker-container {
+  .manawave-marquee-container {
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 0.5rem;
