@@ -231,11 +231,12 @@ import Realm from "../../layouts/realms/Realm.astro";
         circlePos += 10;
         return {
           position: {
-            x: position.x + Math.cos(toRadians(circlePos)) * limits.width * 0.5,
+            x:
+              position.x + Math.cos(toRadians(circlePos)) * limits.width * 0.01,
             y:
               limits.height +
               position.y +
-              Math.sin(toRadians(circlePos)) * limits.height * 0.5,
+              Math.sin(toRadians(circlePos)) * limits.height * 1.5,
           },
         };
       },
@@ -246,10 +247,10 @@ import Realm from "../../layouts/realms/Realm.astro";
       // add some space before wrapping around so petals don't teleport as much
       onLoop: ({ limits, itemSize }) => ({
         limits: {
-          left: limits.left - itemSize.width * 2,
-          right: limits.right + itemSize.width * 2,
-          top: limits.top - itemSize.height * 2,
-          bottom: limits.bottom + itemSize.height * 2,
+          left: limits.left - 256,
+          right: limits.right + 256,
+          top: limits.top - 256,
+          bottom: limits.bottom + 256,
         },
       }),
       // apply animations to each petal
