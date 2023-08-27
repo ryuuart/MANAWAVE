@@ -7,7 +7,7 @@ import { LiveAttributes, LiveSize } from "../context";
 import { angleToDirection } from "../math";
 import { Pipeline } from "../pipeline";
 
-describe("ticker", () => {
+describe("marquee", () => {
     describe("scene", () => {
         it("should find and remove a given item condition", async () => {
             const scene = new Scene();
@@ -200,7 +200,7 @@ describe("ticker", () => {
         it("should update a simulation deterministically over time", async () => {
             // we create a repeating pattern over a small box
             const sizes = new LiveSize({
-                root: allDirectionsSnapshot.setup.tickerSize,
+                root: allDirectionsSnapshot.setup.marqueeSize,
                 item: allDirectionsSnapshot.setup.itemSize,
             });
             const attr = new LiveAttributes({ speed: 1, direction: 0 });
@@ -266,7 +266,7 @@ describe("ticker", () => {
             // initial test
             expect(scene.length).toEqual(4);
 
-            // update ticker
+            // update marquee
             sizes.update({ root: { width: 20, height: 20 } });
             simulation.updateSize(sizes);
             await browser.pause(300);
@@ -284,7 +284,7 @@ describe("ticker", () => {
             await browser.pause(300);
             expect(scene.length).toEqual(9);
 
-            // update ticker on top of item
+            // update marquee on top of item
             sizes.update({ root: { width: 20, height: 20 } });
             simulation.updateSize(sizes);
             await browser.pause(300);

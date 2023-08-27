@@ -2,7 +2,7 @@ import { uid } from "@manawave/utils/uid";
 import { normalize } from "./math";
 
 /**
- * A positionable object within some ticker
+ * A positionable object within some marquee
  */
 export class Item implements Positionable {
     id: string;

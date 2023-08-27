@@ -152,10 +152,10 @@ describe("animation", () => {
                 Square.loadContent();
                 Basic.loadContent();
                 setTranslate(Square.square!, [0, 0]);
-                setTranslate(Basic.ticker!, [0, 0]);
+                setTranslate(Basic.marquee!, [0, 0]);
 
                 squareSystem = new TestSystem(Square.square!);
-                basicSystem = new TestSystem(Basic.ticker!);
+                basicSystem = new TestSystem(Basic.marquee!);
 
                 squareSystem.start();
                 basicSystem.start();
@@ -199,7 +199,7 @@ describe("animation", () => {
                     }
                 );
 
-                const basicElement = await $("#ticker");
+                const basicElement = await $("#marquee");
                 const basicResult = await getPositionUntil(
                     basicElement,
                     (position) => {
@@ -280,7 +280,7 @@ describe("animation", () => {
                 Basic.loadContent();
 
                 squareSystem = new TestContinuousSystem(Square.square!, 100);
-                basicSystem = new TestContinuousSystem(Basic.ticker!, 200);
+                basicSystem = new TestContinuousSystem(Basic.marquee!, 200);
 
                 AnimationController.registerSystem(squareSystem);
                 AnimationController.registerSystem(basicSystem);

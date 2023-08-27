@@ -1,10 +1,10 @@
 import PlaybackObject from "./anim/playbackObject";
-import Controller from "./ticker/controller";
-import Context from "./ticker/context";
+import Controller from "./marquee/controller";
+import Context from "./marquee/context";
 import MWM from "./MWM";
 
 /**
- * Main manawave object used to control the behavior of the ticker
+ * Main manawave object used to control the behavior of the marquee
  */
 export class MW extends PlaybackObject {
     private _controller: Controller;
@@ -28,7 +28,7 @@ export class MW extends PlaybackObject {
     }
 
     /**
-     * View or operate all elements in the ticker that is currently on screen.
+     * View or operate all elements in the marquee that is currently on screen.
      * @param callback hook invoked on each observed element
      */
     eachElement(callback: PipelineHooksMap["eachElement"]) {
@@ -78,21 +78,21 @@ export class MW extends PlaybackObject {
     }
 
     /**
-     * Current speed of the ticker
+     * Current speed of the marquee
      */
     get speed(): number {
         return this._context.attributes.speed;
     }
 
     /**
-     * Current direction of the ticker
+     * Current direction of the marquee
      */
     get direction(): number {
         return this._context.attributes.direction;
     }
 
     /**
-     * Overrides the global speed of the ticker
+     * Overrides the global speed of the marquee
      *
      * @remark the hooks will override this
      */
@@ -101,7 +101,7 @@ export class MW extends PlaybackObject {
     }
 
     /**
-     * Overrides the global direction of the ticker
+     * Overrides the global direction of the marquee
      *
      * @remark the hooks will override this
      */
@@ -110,7 +110,7 @@ export class MW extends PlaybackObject {
     }
 
     /**
-     * Overrides the global autoplay setting of the ticker
+     * Overrides the global autoplay setting of the marquee
      */
     set autoplay(state: boolean) {
         this._controller.updateAttribute({ autoplay: state });

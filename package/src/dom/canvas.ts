@@ -1,12 +1,12 @@
-import { Pipeline } from "../ticker/pipeline";
+import { Pipeline } from "../marquee/pipeline";
 import { isRectEqual } from "@manawave/utils/rect";
 import ItemComponent from "./components/item";
-import TickerComponent from "./components/ticker";
-import { Item } from "@manawave/ticker/item";
-import { Scene } from "@manawave/ticker/scene";
+import MarqueeComponent from "./components/marquee";
+import { Item } from "@manawave/marquee/item";
+import { Scene } from "@manawave/marquee/scene";
 
 /**
- * Contains all logic for displaying visual data for a Ticker
+ * Contains all logic for displaying visual data for a Marquee
  * {@link Scene}. Anything specifically relating to the DOM is managed
  * and stored here.
  *
@@ -32,12 +32,12 @@ export class Canvas {
 
     private createBuffer: DocumentFragment;
     private template: DocumentFragment;
-    private root: TickerComponent;
+    private root: MarqueeComponent;
 
     private _pipeline: Pipeline;
 
     constructor(
-        canvas: TickerComponent,
+        canvas: MarqueeComponent,
         initialTemplate: DocumentFragment,
         pipeline?: Pipeline
     ) {
@@ -125,12 +125,12 @@ export class Canvas {
     }
 
     /**
-     * Updates the root component or Ticker with new data.
+     * Updates the root component or Marquee with new data.
      * For now, this is only the size.
-     * @param size new size of the root (Ticker)
+     * @param size new size of the root (Marquee)
      */
     updateRootComponent(size: Rect) {
-        // update ticker size if we need to
+        // update marquee size if we need to
         if (!isRectEqual(size, this.root.size)) {
             this.root.setSize(size);
         }

@@ -11,17 +11,17 @@ import {
     extractOAttributes,
     mergeOOptions,
 } from "../attributes";
-import TickerComponent from "../components/ticker";
+import MarqueeComponent from "../components/marquee";
 import ItemComponent from "../components/item";
-import tickerStyles from "../styles/ticker.module.css";
+import marqueeStyles from "../styles/marquee.module.css";
 import itemStyles from "../styles/item.module.css";
 import Basic from "test/pages/basic/Basic";
-import { Item } from "@manawave/ticker/item";
+import { Item } from "@manawave/marquee/item";
 import { Canvas } from "../canvas";
-import { Scene } from "@manawave/ticker/scene";
-import Context from "@manawave/ticker/context";
-import { Pipeline } from "@manawave/ticker/pipeline";
-import Controller from "@manawave/ticker/controller";
+import { Scene } from "@manawave/marquee/scene";
+import Context from "@manawave/marquee/context";
+import { Pipeline } from "@manawave/marquee/pipeline";
+import Controller from "@manawave/marquee/controller";
 
 describe("dom", () => {
     before(async () => {
@@ -34,10 +34,10 @@ describe("dom", () => {
 
     describe("unit", () => {
         describe("context", () => {
-            it("should initialize a ticker for setup and modification", async () => {
+            it("should initialize a marquee for setup and modification", async () => {
                 Basic.loadContent();
 
-                const ctx = Context.setup(Basic.ticker!);
+                const ctx = Context.setup(Basic.marquee!);
 
                 expect(ctx.root.children).toContain(ctx.itemMBox.element);
 
@@ -51,10 +51,10 @@ describe("dom", () => {
 
                 // run through a set of starting values
                 for (let i = 0; i <= 10; i++) {
-                    Basic.ticker!.setAttribute("direction", "999");
-                    Basic.ticker!.setAttribute("speed", "999");
-                    Basic.ticker!.setAttribute("autoplay", "true");
-                    await $(Basic.ticker!).waitUntil(async function () {
+                    Basic.marquee!.setAttribute("direction", "999");
+                    Basic.marquee!.setAttribute("speed", "999");
+                    Basic.marquee!.setAttribute("autoplay", "true");
+                    await $(Basic.marquee!).waitUntil(async function () {
                         return (
                             //@ts-ignore
                             (await this.getAttribute("direction")) === "999" &&
@@ -65,7 +65,7 @@ describe("dom", () => {
                         );
                     });
 
-                    const ctx = Context.setup(Basic.ticker!);
+                    const ctx = Context.setup(Basic.marquee!);
 
                     // change from the default through another comprehensive set of values
                     for (let j = 0; j <= 360; j++) {
@@ -122,7 +122,7 @@ describe("dom", () => {
             it("should measure a collection of dom elements", async () => {
                 Basic.loadContent();
 
-                const box = new MeasurementBox(...Basic.ticker!.children);
+                const box = new MeasurementBox(...Basic.marquee!.children);
 
                 box.startMeasuringFrom(document.body);
                 expect(box.measurement).toEqual({
@@ -178,8 +178,8 @@ describe("dom", () => {
                     height: 100,
                 });
 
-                dimensions.setEntry("ticker", Basic.ticker!);
-                expect(dimensions.get("ticker")).toEqual({
+                dimensions.setEntry("marquee", Basic.marquee!);
+                expect(dimensions.get("marquee")).toEqual({
                     width: 1188,
                     height: 600,
                 });
@@ -212,11 +212,11 @@ describe("dom", () => {
                 dimensions.setEntry("square", Square.square!, (rect) => {
                     squareLog.push(rect);
                 });
-                dimensions.setEntry("ticker", Basic.ticker!);
+                dimensions.setEntry("marquee", Basic.marquee!);
 
-                // square's size should remain the same even though ticker's size changed
-                Basic.ticker!.style.width = "100px";
-                await $(Basic.ticker!).waitUntil(async function () {
+                // square's size should remain the same even though marquee's size changed
+                Basic.marquee!.style.width = "100px";
+                await $(Basic.marquee!).waitUntil(async function () {
                     return (
                         // @ts-ignore
                         (await this.getSize("width")) === 100 &&
@@ -262,7 +262,7 @@ describe("dom", () => {
                 expect(convertDirection(direction6)).toEqual(0);
             });
 
-            it("should extract ticker options from html element atttributes", async () => {
+            it("should extract marquee options from html element atttributes", async () => {
                 Square.loadContent();
 
                 const element = Square.square;
@@ -401,28 +401,28 @@ describe("dom", () => {
 
                 const fragment = new DocumentFragment();
 
-                const component = new TickerComponent();
+                const component = new MarqueeComponent();
 
                 // can it append to an element and render it?
                 component.appendToDOM(element1);
                 document.getElementById("test-root")!.append(element1);
 
                 await expect(
-                    await $(`#${element1.id}`).$(`.${tickerStyles.container}`)
+                    await $(`#${element1.id}`).$(`.${marqueeStyles.container}`)
                 ).toExist();
 
                 // can it append to a fragment and render it?
                 component.appendToDOM(fragment);
                 document.getElementById("test-root")!.append(fragment);
 
-                await expect(await $(`.${tickerStyles.container}`)).toExist();
+                await expect(await $(`.${marqueeStyles.container}`)).toExist();
             });
         });
 
         describe("canvas", () => {
             it("should create new item components", async () => {
                 const testParent = document.createElement("div");
-                const root = new TickerComponent();
+                const root = new MarqueeComponent();
                 root.appendToDOM(testParent);
                 const template = new DocumentFragment();
                 const canvas = new Canvas(root, template);
@@ -441,7 +441,7 @@ describe("dom", () => {
             });
 
             it("should update root component size", async () => {
-                const root = new TickerComponent();
+                const root = new MarqueeComponent();
                 const template = new DocumentFragment();
                 const canvas = new Canvas(root, template);
 
@@ -451,7 +451,7 @@ describe("dom", () => {
             });
 
             it("should update a given ItemComponent with new data", async () => {
-                const root = new TickerComponent();
+                const root = new MarqueeComponent();
                 const template = new DocumentFragment();
                 const canvas = new Canvas(root, template);
 
@@ -476,13 +476,13 @@ describe("dom", () => {
                     element.style.backgroundColor = "red";
                 };
 
-                // set up a naive ticker
-                const ticker = new TickerComponent();
-                ticker.setSize({ width: 999, height: 999 });
-                ticker.appendToDOM(document.getElementById("test-root")!);
+                // set up a naive marquee
+                const marquee = new MarqueeComponent();
+                marquee.setSize({ width: 999, height: 999 });
+                marquee.appendToDOM(document.getElementById("test-root")!);
                 const template = new DocumentFragment();
                 template.append(Square.square!);
-                const canvas = new Canvas(ticker, template, pipeline);
+                const canvas = new Canvas(marquee, template, pipeline);
 
                 // create and render the item with override
                 canvas.createItemComponents([new Item()]);
@@ -514,13 +514,13 @@ describe("dom", () => {
                     element.style.opacity = `${Math.cos(t * 0.001)}`;
                 };
 
-                // set up a naive ticker
-                const ticker = new TickerComponent();
-                ticker.setSize({ width: 999, height: 999 });
-                ticker.appendToDOM(document.getElementById("test-root")!);
+                // set up a naive marquee
+                const marquee = new MarqueeComponent();
+                marquee.setSize({ width: 999, height: 999 });
+                marquee.appendToDOM(document.getElementById("test-root")!);
                 const template = new DocumentFragment();
                 template.append(Square.square!);
-                const canvas = new Canvas(ticker, template, pipeline);
+                const canvas = new Canvas(marquee, template, pipeline);
 
                 // need a basic scene
                 const scene = new Scene();
@@ -570,13 +570,13 @@ describe("dom", () => {
                     initialRef = id;
                 };
 
-                // set up a naive ticker
-                const ticker = new TickerComponent();
-                ticker.setSize({ width: 999, height: 999 });
-                ticker.appendToDOM(document.getElementById("test-root")!);
+                // set up a naive marquee
+                const marquee = new MarqueeComponent();
+                marquee.setSize({ width: 999, height: 999 });
+                marquee.appendToDOM(document.getElementById("test-root")!);
                 const template = new DocumentFragment();
                 template.append(Square.square!);
-                const canvas = new Canvas(ticker, template, pipeline);
+                const canvas = new Canvas(marquee, template, pipeline);
 
                 // create and render the item with override
                 canvas.createItemComponents([new Item()]);
@@ -599,15 +599,15 @@ describe("dom", () => {
             it("should update its root size", async () => {
                 Basic.loadContent();
 
-                const ctx = Context.setup(Basic.ticker!);
+                const ctx = Context.setup(Basic.marquee!);
                 const sizes = ctx.sizes;
 
                 // initial size is right
                 expect(sizes.root).toEqual({ height: 600, width: 1188 });
 
                 // trigger a change
-                Basic.ticker!.style.width = "600px";
-                await $(Basic.ticker!).waitUntil(async function () {
+                Basic.marquee!.style.width = "600px";
+                await $(Basic.marquee!).waitUntil(async function () {
                     //@ts-ignore
                     return (await this.getSize("width")) === 600;
                 });
@@ -622,13 +622,13 @@ describe("dom", () => {
             it("should update its attributes", async () => {
                 Basic.loadContent();
 
-                const ctx = Context.setup(Basic.ticker!);
+                const ctx = Context.setup(Basic.marquee!);
                 const attr = ctx.attributes;
 
                 expect(attr.direction).toEqual(0);
 
-                Basic.ticker!.setAttribute("direction", "left");
-                await $(Basic.ticker!).waitUntil(async function () {
+                Basic.marquee!.setAttribute("direction", "left");
+                await $(Basic.marquee!).waitUntil(async function () {
                     //@ts-ignore
                     return (await this.getAttribute("direction")) === "left";
                 });
@@ -638,12 +638,12 @@ describe("dom", () => {
 
         describe("component", () => {
             it("should update its size on the page given new data", async () => {
-                const ticker = new TickerComponent();
-                ticker.appendToDOM(document.getElementById("test-root")!);
+                const marquee = new MarqueeComponent();
+                marquee.appendToDOM(document.getElementById("test-root")!);
 
                 // set its size once
-                ticker.setSize({ width: 999, height: 999 });
-                await $(`.${tickerStyles.container}`).waitUntil(
+                marquee.setSize({ width: 999, height: 999 });
+                await $(`.${marqueeStyles.container}`).waitUntil(
                     async function () {
                         // @ts-ignore
                         const size = await this.getSize();
@@ -653,15 +653,15 @@ describe("dom", () => {
                 );
 
                 await expect(
-                    await $(`.${tickerStyles.container}`).getSize("width")
+                    await $(`.${marqueeStyles.container}`).getSize("width")
                 ).toEqual(999);
                 await expect(
-                    await $(`.${tickerStyles.container}`).getSize("height")
+                    await $(`.${marqueeStyles.container}`).getSize("height")
                 ).toEqual(999);
 
                 // do it again
-                ticker.setSize({ width: 100, height: 100 });
-                await $(`.${tickerStyles.container}`).waitUntil(
+                marquee.setSize({ width: 100, height: 100 });
+                await $(`.${marqueeStyles.container}`).waitUntil(
                     async function () {
                         // @ts-ignore
                         const size = await this.getSize();
@@ -671,10 +671,10 @@ describe("dom", () => {
                 );
 
                 await expect(
-                    await $(`.${tickerStyles.container}`).getSize("width")
+                    await $(`.${marqueeStyles.container}`).getSize("width")
                 ).toEqual(100);
                 await expect(
-                    await $(`.${tickerStyles.container}`).getSize("height")
+                    await $(`.${marqueeStyles.container}`).getSize("height")
                 ).toEqual(100);
             });
 
@@ -704,16 +704,16 @@ describe("dom", () => {
                 ).toEqual("matrix(1, 0, 0, 1, 100, 100)");
             });
 
-            it("should render new items on a TickerComponent", async () => {
+            it("should render new items on a MarqueeComponent", async () => {
                 // setup
                 Square.loadContent();
 
-                const component = new TickerComponent();
+                const component = new MarqueeComponent();
                 component.appendToDOM(document.getElementById("test-root")!);
 
                 // it shouldn't have anything initially
                 await expect(
-                    await $(`.${tickerStyles.container}`)
+                    await $(`.${marqueeStyles.container}`)
                 ).not.toHaveChildren();
 
                 // create the "payload"
@@ -731,7 +731,7 @@ describe("dom", () => {
 
                 // did the new items render?
                 await expect(
-                    await $(`.${tickerStyles.container}`)
+                    await $(`.${marqueeStyles.container}`)
                 ).toHaveChildren();
             });
         });
@@ -739,7 +739,7 @@ describe("dom", () => {
         describe("canvas", () => {
             it("should clean buffers when swapping", async () => {
                 const testParent = document.createElement("div");
-                const root = new TickerComponent();
+                const root = new MarqueeComponent();
                 root.appendToDOM(testParent);
                 const template = new DocumentFragment();
                 const canvas = new Canvas(root, template);
@@ -762,7 +762,7 @@ describe("dom", () => {
 
             it("should remove dead components", async () => {
                 const testParent = document.createElement("div");
-                const root = new TickerComponent();
+                const root = new MarqueeComponent();
                 root.appendToDOM(testParent);
                 const template = new DocumentFragment();
                 const canvas = new Canvas(root, template);
@@ -787,11 +787,11 @@ describe("dom", () => {
             it("should draw a scene and update it", async () => {
                 Basic.loadContent();
 
-                const domRoot = Basic.ticker!;
+                const domRoot = Basic.marquee!;
                 const template = new DocumentFragment();
                 template.append(...domRoot.children);
 
-                const root = new TickerComponent();
+                const root = new MarqueeComponent();
                 root.appendToDOM(domRoot);
 
                 const canvas = new Canvas(root, template);
@@ -865,10 +865,10 @@ describe("dom", () => {
         });
 
         describe("pipeline", () => {
-            it("should arbitrarily operate on all item elements in the ticker", async () => {
+            it("should arbitrarily operate on all item elements in the marquee", async () => {
                 // make square red
                 Basic.loadContent();
-                const ctx = Context.setup(Basic.ticker!);
+                const ctx = Context.setup(Basic.marquee!);
                 const controller = new Controller(ctx);
                 controller.eachElement(async ({ element }) => {
                     element.style.backgroundColor = "red";

@@ -3,7 +3,7 @@ import basicHTML from "./index.html?raw";
 import basicCSS from "./style.css?raw";
 
 class Basic extends Base {
-    get ticker() {
+    get marquee() {
         return this.testContent;
     }
 

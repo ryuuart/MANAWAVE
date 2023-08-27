@@ -7,7 +7,7 @@ import { Pipeline } from "./pipeline";
 
 /**
  * Represents the current external, browser-facing state
- * of the internal ticker.
+ * of the internal marquee.
  */
 export default class Context {
     // stuff in the dom to keep on using
@@ -31,9 +31,9 @@ export default class Context {
      * to match what a {@link Context} would represent. In other words,
      * it sets up a selected {@link HTMLElement} with its {@link Context}.
      *
-     * @param selector selected ticker element to modify
-     * @param options options for the ticker
-     * @returns a {@link Context} representing this ticker element
+     * @param selector selected marquee element to modify
+     * @param options options for the marquee
+     * @returns a {@link Context} representing this marquee element
      */
     static setup(
         selector: Parameters<Document["querySelector"]>[0] | HTMLElement,
@@ -47,7 +47,7 @@ export default class Context {
         if (selected) {
             if (selected.childElementCount <= 0)
                 throw new Error(
-                    "It looks like there is nothing inside the ticker. A ticker needs at least one element inside to do anything."
+                    "It looks like there is nothing inside the marquee. A marquee needs at least one element inside to do anything."
                 );
 
             // if it's not a web component, then it needs some basic styling
@@ -143,7 +143,7 @@ export default class Context {
     }
 
     /**
-     * @returns the containing DOM element for the entire ticker
+     * @returns the containing DOM element for the entire marquee
      */
     get root(): HTMLElement {
         return this._root;

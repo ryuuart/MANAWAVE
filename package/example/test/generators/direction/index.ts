@@ -1,7 +1,7 @@
 import { download, jsonToBinary } from "../download";
-import { LiveAttributes, LiveSize } from "@manawave/ticker/context";
-import { Simulation } from "@manawave/ticker/simulation";
-import { Scene } from "@manawave/ticker/scene";
+import { LiveAttributes, LiveSize } from "@manawave/marquee/context";
+import { Simulation } from "@manawave/marquee/simulation";
+import { Scene } from "@manawave/marquee/scene";
 
 type Frame = {
     x: string;
@@ -12,7 +12,7 @@ type SnapshotData = {
     setup: {
         numMotions: number;
         dt: DOMHighResTimeStamp;
-        tickerSize: { width: number; height: number };
+        marqueeSize: { width: number; height: number };
         itemSize: { width: number; height: number };
     };
     data: {
@@ -26,14 +26,14 @@ const snapshot: SnapshotData = {
     setup: {
         numMotions: 10,
         dt: 10,
-        tickerSize: { width: 10, height: 10 },
+        marqueeSize: { width: 10, height: 10 },
         itemSize: { width: 10, height: 10 },
     },
     data: {},
 };
 
 const sizes = new LiveSize({
-    root: snapshot.setup.tickerSize,
+    root: snapshot.setup.marqueeSize,
     item: snapshot.setup.itemSize,
 });
 const attr = new LiveAttributes({ direction: 0, speed: 1 });

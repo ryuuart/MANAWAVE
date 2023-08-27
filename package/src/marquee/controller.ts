@@ -25,7 +25,7 @@ export default class Controller extends PlaybackObject {
     }
 
     /**
-     * Peeks or views each element in the ticker for operation or observation.
+     * Peeks or views each element in the marquee for operation or observation.
      *
      * @param callback hook that operates on each observed elements
      */
