@@ -11,35 +11,37 @@ import Realm from "../../layouts/realms/Realm.astro";
     },
   }}
 >
-  <div class="wrapper">
-    <div class="marquee marquee-code-bg">
-      <manawave-marquee autoplay direction="350" speed="0.5"
-        ><div>
-          Embrace the abstract mind, ride the astral waves, and find your soul's
-          vision. Within the ethereal, search for the elusive mana, guided by
-          astral guides. Let your heart explore the infinite realm, finding self
-          through abstract visions. The astral guides lead you to discover your
-          soul's essence amidst ethereal waves. In the search for mana, embrace
-          abstract visions to unlock your inner self. Your heart's journey takes
-          flight on astral waves, seeking the infinite soul. Guided by ethereal
-          visions, your mind delves into the realm of abstract mana. Embrace the
-          astral guides, find your soul's vision, and ride the waves of mana.
-          Amidst ethereal waves, your heart seeks the abstract essence of self.
-          Journey through the infinite realm, guided by astral guides, and find
-          your soul's vision in the ethereal. Embrace the abstract mind, ride
-          the astral waves, and find your soul's vision. Within the ethereal,
-          search for the elusive mana, guided by astral guides. Let your heart
-          explore the infinite realm, finding self through abstract visions. The
-          astral guides lead you to discover your soul's essence amidst ethereal
-          waves. In the search for mana, embrace abstract visions to unlock your
-          inner self. Your heart's journey takes flight on astral waves, seeking
-          the infinite soul. Guided by ethereal visions, your mind delves into
-          the realm of abstract mana. Embrace the astral guides, find your
-          soul's vision, and ride the waves of mana. Amidst ethereal waves, your
-          heart seeks the abstract essence of self. Journey through the infinite
-          realm, guided by astral guides, and find your soul's vision in the
-          ethereal.
-        </div>
+  <div id="root" class="global root resize--parent flex flex--center-content">
+    <div class="marquee marquee-code-bg resize--parent">
+      <manawave-marquee
+        class="resize--parent"
+        autoplay
+        direction="350"
+        speed="0.5"
+      >
+        Embrace the abstract mind, ride the astral waves, and find your soul's
+        vision. Within the ethereal, search for the elusive mana, guided by
+        astral guides. Let your heart explore the infinite realm, finding self
+        through abstract visions. The astral guides lead you to discover your
+        soul's essence amidst ethereal waves. In the search for mana, embrace
+        abstract visions to unlock your inner self. Your heart's journey takes
+        flight on astral waves, seeking the infinite soul. Guided by ethereal
+        visions, your mind delves into the realm of abstract mana. Embrace the
+        astral guides, find your soul's vision, and ride the waves of mana.
+        Amidst ethereal waves, your heart seeks the abstract essence of self.
+        Journey through the infinite realm, guided by astral guides, and find
+        your soul's vision in the ethereal. Embrace the abstract mind, ride the
+        astral waves, and find your soul's vision. Within the ethereal, search
+        for the elusive mana, guided by astral guides. Let your heart explore
+        the infinite realm, finding self through abstract visions. The astral
+        guides lead you to discover your soul's essence amidst ethereal waves.
+        In the search for mana, embrace abstract visions to unlock your inner
+        self. Your heart's journey takes flight on astral waves, seeking the
+        infinite soul. Guided by ethereal visions, your mind delves into the
+        realm of abstract mana. Embrace the astral guides, find your soul's
+        vision, and ride the waves of mana. Amidst ethereal waves, your heart
+        seeks the abstract essence of self. Journey through the infinite realm,
+        guided by astral guides, and find your soul's vision in the ethereal.
       </manawave-marquee>
     </div>
     <div class="marquee marquee-characteristics">
@@ -85,25 +87,18 @@ import Realm from "../../layouts/realms/Realm.astro";
 </style>
 
 <style>
-  .wrapper {
-    width: 100%;
-    height: 100%;
-
-    display: flex;
-    justify-content: center;
-    align-items: center;
-
+  .global {
     font-family: sans-serif;
     font-style: normal;
+  }
 
+  .root {
     overflow: hidden;
-
-    position: relative;
 
     transform-style: preserve-3d;
   }
 
-  .wrapper > * {
+  .root > * {
     position: relative;
 
     transform-style: preserve-3d;
@@ -137,6 +132,10 @@ import Realm from "../../layouts/realms/Realm.astro";
     position: absolute;
 
     opacity: 0.75;
+  }
+
+  .marquee > manawave-marquee {
+    height: 100%;
   }
 
   .marquee-characteristics {
@@ -189,14 +188,7 @@ import Realm from "../../layouts/realms/Realm.astro";
     z-index: 1;
   }
 
-  .marquee-self-text > manawave-marquee {
-    height: 100%;
-  }
-
   .marquee-code-bg {
-    width: 100%;
-    height: 100%;
-
     mix-blend-mode: overlay;
     opacity: 0.35;
 
@@ -208,9 +200,19 @@ import Realm from "../../layouts/realms/Realm.astro";
     text-align: justify;
   }
 
-  .marquee-code-bg > manawave-marquee {
+  /* Utilities */
+  .resize--parent {
     width: 100%;
     height: 100%;
+  }
+
+  .flex {
+    display: flex;
+  }
+
+  .flex--center-content {
+    justify-content: center;
+    align-items: center;
   }
 
   @keyframes rotate360 {
