@@ -22,6 +22,7 @@ import { Scene } from "@manawave/marquee/scene";
 import Context from "@manawave/marquee/context";
 import { Pipeline } from "@manawave/marquee/pipeline";
 import Controller from "@manawave/marquee/controller";
+import WebComponent from "../element";
 
 describe("dom", () => {
     before(async () => {
@@ -51,17 +52,19 @@ describe("dom", () => {
 
                 // run through a set of starting values
                 for (let i = 0; i <= 10; i++) {
-                    Basic.marquee!.setAttribute("direction", "999");
-                    Basic.marquee!.setAttribute("speed", "999");
-                    Basic.marquee!.setAttribute("autoplay", "true");
+                    Basic.marquee!.dataset.direction = "999";
+                    Basic.marquee!.dataset.speed = "999";
+                    Basic.marquee!.dataset.autoplay = "true";
                     await $(Basic.marquee!).waitUntil(async function () {
                         return (
                             //@ts-ignore
-                            (await this.getAttribute("direction")) === "999" &&
+                            (await this.getAttribute("data-direction")) ===
+                                "999" &&
                             //@ts-ignore
-                            (await this.getAttribute("speed")) === "999" &&
+                            (await this.getAttribute("data-speed")) === "999" &&
                             //@ts-ignore
-                            (await this.getAttribute("autoplay")) === "true"
+                            (await this.getAttribute("data-autoplay")) ===
+                                "true"
                         );
                     });
 
@@ -265,12 +268,29 @@ describe("dom", () => {
             it("should extract marquee options from html element atttributes", async () => {
                 Square.loadContent();
 
-                const element = Square.square;
-                element?.setAttribute("speed", "123");
-                element?.setAttribute("direction", "up");
-                element?.setAttribute("autoplay", "");
+                // for regular element
+                const regularElement = Square.square!;
+                regularElement.dataset.speed = "123";
+                regularElement.dataset.direction = "up";
+                regularElement.dataset.autoplay = "";
 
-                expect(extractOAttributes(element!)).toEqual({
+                expect(extractOAttributes(regularElement!)).toEqual({
+                    autoplay: true,
+                    speed: 123,
+                    direction: "up",
+                });
+
+                // for custom element
+                // have to define it first
+                if (!customElements.get("manawave-ticker")) {
+                    customElements.define("manawave-ticker", WebComponent);
+                }
+                const customElement = document.createElement("manawave-ticker");
+                customElement.setAttribute("speed", "123");
+                customElement.setAttribute("direction", "up");
+                customElement.setAttribute("autoplay", "");
+
+                expect(extractOAttributes(customElement!)).toEqual({
                     autoplay: true,
                     speed: 123,
                     direction: "up",
@@ -280,10 +300,10 @@ describe("dom", () => {
             it("should merge options provided by html attributes or javascript", async () => {
                 Square.loadContent();
 
-                const element = Square.square;
-                element?.setAttribute("speed", "123");
-                element?.setAttribute("direction", "down");
-                element?.setAttribute("autoplay", "false");
+                const element = Square.square!;
+                element.dataset.speed = "123";
+                element.dataset.direction = "down";
+                element.dataset.autoplay = "false";
 
                 expect(mergeOOptions(element!)).toEqual({
                     autoplay: false,
@@ -320,24 +340,28 @@ describe("dom", () => {
                 expect(attr.direction).toEqual(0);
 
                 // does changing attributes work?
-                Square.square!.setAttribute("autoplay", "true");
+                Square.square!.dataset.autoplay = "true";
                 await $(Square.square!).waitUntil(async function () {
-                    //@ts-ignore
-                    return (await this.getAttribute("autoplay")) === "true";
+                    return (
+                        //@ts-ignore
+                        (await this.getAttribute("data-autoplay")) === "true"
+                    );
                 });
                 expect(attr.autoplay).toEqual(true);
 
-                Square.square!.setAttribute("speed", "999");
+                Square.square!.dataset.speed = "999";
                 await $(Square.square!).waitUntil(async function () {
                     //@ts-ignore
-                    return (await this.getAttribute("speed")) === "999";
+                    return (await this.getAttribute("data-speed")) === "999";
                 });
                 expect(attr.speed).toEqual(999);
 
-                Square.square!.setAttribute("direction", "999");
+                Square.square!.dataset.direction = "999";
                 await $(Square.square!).waitUntil(async function () {
-                    //@ts-ignore
-                    return (await this.getAttribute("direction")) === "999";
+                    return (
+                        //@ts-ignore
+                        (await this.getAttribute("data-direction")) === "999"
+                    );
                 });
                 expect(attr.direction).toEqual(999);
             });
@@ -351,26 +375,30 @@ describe("dom", () => {
                 });
 
                 // does override work?
-                Square.square!.setAttribute("speed", "999");
+                Square.square!.dataset.speed = "999";
                 await $(Square.square!).waitUntil(async function () {
                     //@ts-ignore
-                    return (await this.getAttribute("speed")) === "999";
+                    return (await this.getAttribute("data-speed")) === "999";
                 });
                 expect(attr.speed).toEqual(123);
 
-                Square.square!.setAttribute("direction", "999");
+                Square.square!.dataset.direction = "999";
                 await $(Square.square!).waitUntil(async function () {
-                    //@ts-ignore
-                    return (await this.getAttribute("direction")) === "999";
+                    return (
+                        //@ts-ignore
+                        (await this.getAttribute("data-direction")) === "999"
+                    );
                 });
                 expect(attr.direction).toEqual(123);
 
                 // updated options should override element attributes
                 attr.update({ direction: "up" });
-                Square.square!.setAttribute("direction", "360");
+                Square.square!.dataset.direction = "360";
                 await $(Square.square!).waitUntil(async function () {
-                    //@ts-ignore
-                    return (await this.getAttribute("direction")) === "360";
+                    return (
+                        //@ts-ignore
+                        (await this.getAttribute("data-direction")) === "360"
+                    );
                 });
                 expect(attr.direction).toEqual(90);
             });
@@ -384,10 +412,12 @@ describe("dom", () => {
                     testDirection = direction;
                 };
 
-                Square.square!.setAttribute("direction", "left");
+                Square.square!.dataset.direction = "left";
                 await $(Square.square!).waitUntil(async function () {
-                    //@ts-ignore
-                    return (await this.getAttribute("direction")) === "left";
+                    return (
+                        //@ts-ignore
+                        (await this.getAttribute("data-direction")) === "left"
+                    );
                 });
                 expect(testDirection).toEqual(180);
             });
@@ -627,10 +657,12 @@ describe("dom", () => {
 
                 expect(attr.direction).toEqual(0);
 
-                Basic.marquee!.setAttribute("direction", "left");
+                Basic.marquee!.dataset.direction = "left";
                 await $(Basic.marquee!).waitUntil(async function () {
-                    //@ts-ignore
-                    return (await this.getAttribute("direction")) === "left";
+                    return (
+                        //@ts-ignore
+                        (await this.getAttribute("data-direction")) === "left"
+                    );
                 });
                 expect(attr.direction).toEqual(180);
             });
