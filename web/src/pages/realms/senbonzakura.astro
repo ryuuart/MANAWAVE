@@ -10,9 +10,9 @@ import Realm from "../../layouts/realms/Realm.astro";
     </header>
     <div
       id="petal-field"
-      autoplay
-      direction="280"
-      speed="1"
+      data-autoplay
+      data-direction="280"
+      data-speed="1"
       class="petal-field--container"
     >
       <div lang="ja" class="petal-field--petal">
@@ -228,15 +228,14 @@ import Realm from "../../layouts/realms/Realm.astro";
     const mw = new MW(petalFieldElement, {
       // change the default starting position to that circle per element
       onLayout: ({ position, limits }) => {
-        circlePos += 20;
+        circlePos += 10;
         return {
           position: {
-            x:
-              position.x + Math.cos(toRadians(circlePos)) * limits.width * 0.04,
+            x: position.x + Math.cos(toRadians(circlePos)) * limits.width * 0.5,
             y:
               limits.height +
               position.y +
-              Math.sin(toRadians(circlePos)) * limits.height * 0.08,
+              Math.sin(toRadians(circlePos)) * limits.height * 0.5,
           },
         };
       },
