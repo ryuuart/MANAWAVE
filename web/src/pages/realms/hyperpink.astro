@@ -12,9 +12,12 @@ import realmData from "../../../data/realms.json";
     },
   }}
 >
-  <div id="marquee-container" class="wrapper">
-    <div class="container-content">
-      <article class="container">
+  <div
+    id="marquee-container"
+    class="global z-stack resize--parent flex--column animated-background"
+  >
+    <div class="container-content flex--column">
+      <article class="container flex--column">
         <div class="border">
           <h2>Heyyy 😘</h2>
           <p id="instructions">
@@ -22,7 +25,7 @@ import realmData from "../../../data/realms.json";
           </p>
         </div>
       </article>
-      <div class="container container-controls">
+      <div class="container container-controls flex--column">
         <h3>Controls</h3>
         <button name="keyboard" id="keyboard-btn" type="button">Keyboard</button
         >
@@ -40,10 +43,10 @@ import realmData from "../../../data/realms.json";
         </p>
       </div>
     </div>
-    <manawave-marquee id="marquee" autoplay direction="30">
-      <img src="/assets/img/hyperfemme/sparkle.webp" />
-      <img src="/assets/img/hyperfemme/diamond.webp" />
-      <img src="/assets/img/hyperfemme/heart.webp" />
+    <manawave-marquee class="marquee-main" id="marquee" autoplay direction="30">
+      <img class="marquee-img" src="/assets/img/hyperfemme/sparkle.webp" />
+      <img class="marquee-img" src="/assets/img/hyperfemme/diamond.webp" />
+      <img class="marquee-img" src="/assets/img/hyperfemme/heart.webp" />
     </manawave-marquee>
   </div>
 </Realm>
@@ -60,6 +63,7 @@ import realmData from "../../../data/realms.json";
 </style>
 
 <style define:vars={{ "color-aura": realmData["hyperpink"].color.portal }}>
+  /* Element, general styles*/
   h2,
   h3 {
     margin: 0;
@@ -93,40 +97,20 @@ import realmData from "../../../data/realms.json";
     cursor: pointer;
   }
 
-  .wrapper {
+  /* General styles*/
+  .global {
     --color-fg: white;
-
-    width: 100%;
-    height: 100%;
-
     color: var(--color-fg);
     font-family: sans-serif;
-
-    display: flex;
-    flex-direction: column;
-
-    transition: background 1s ease-in-out;
   }
 
-  .wrapper > * {
+  .z-stack > * {
     position: relative;
     z-index: 1;
   }
 
-  .wrapper.glow {
-    background: radial-gradient(
-      50% 50% at 50% 50%,
-      rgba(255, 168, 204, 0) 0%,
-      #ffa8cc 100%
-    );
-    mix-blend-mode: overlay;
-  }
-
   .container-content {
     height: inherit;
-
-    display: flex;
-    flex-direction: column;
   }
 
   .container {
@@ -152,17 +136,8 @@ import realmData from "../../../data/realms.json";
     padding: var(--padding);
   }
 
-  .wrapper > manawave-marquee {
-    width: 100%;
-    height: 100%;
-
-    position: absolute;
-    inset: 0;
-
-    z-index: 0;
-  }
-
-  img {
+  /* Specific Elements*/
+  .marquee-img {
     width: 8rem;
     height: 8rem;
   }
@@ -173,9 +148,6 @@ import realmData from "../../../data/realms.json";
     margin-top: 0;
 
     background: rgba(255, 88, 158, 0.5);
-
-    display: flex;
-    flex-flow: column nowrap;
   }
 
   .container-controls button:not(:last-child) {
@@ -196,6 +168,37 @@ import realmData from "../../../data/realms.json";
 
     border: 1px solid var(--color-fg);
   }
+
+  .marquee-main {
+    position: absolute;
+    inset: 0;
+
+    z-index: 0;
+  }
+
+  /* Utilities */
+  .resize--parent {
+    width: 100%;
+    height: 100%;
+  }
+
+  .flex--column {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .animated-background {
+    transition: background 1s ease-in-out;
+  }
+
+  .animated-background--glow {
+    background: radial-gradient(
+      50% 50% at 50% 50%,
+      rgba(255, 168, 204, 0) 0%,
+      #ffa8cc 100%
+    );
+    mix-blend-mode: overlay;
+  }
 </style>
 
 <script>
@@ -211,7 +214,7 @@ import realmData from "../../../data/realms.json";
   const instructionsElement = document.getElementById("instructions")!;
 
   function resetContext() {
-    marqueeContainerElement.classList.remove("glow");
+    marqueeContainerElement.classList.remove("animated-background--glow");
     mw.speed = 1;
   }
 
@@ -249,13 +252,13 @@ import realmData from "../../../data/realms.json";
   marqueeContainerElement.addEventListener("mouseenter", () => {
     if (mode === "pointer") {
       mw.speed = 2;
-      marqueeContainerElement.classList.add("glow");
+      marqueeContainerElement.classList.add("animated-background--glow");
     }
   });
   marqueeContainerElement.addEventListener("mouseleave", () => {
     if (mode === "pointer") {
       mw.speed = 1;
-      marqueeContainerElement.classList.remove("glow");
+      marqueeContainerElement.classList.remove("animated-background--glow");
     }
   });
   marqueeContainerElement.addEventListener("mousemove", (ev: MouseEvent) => {
