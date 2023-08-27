@@ -1,7 +1,7 @@
 {
   "name": "manawave-demo",
   "type": "module",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "license": "MIT",
   "author": "Long Nguyen",
   "private": "true",
@@ -15,7 +15,7 @@
   "dependencies": {
     "@fontsource/crimson-pro": "^5.0.8",
     "astro": "^2.10.7",
-    "manawave": "^0.10.1"
+    "manawave": "^0.11.0"
   },
   "nx": {
     "targets": {
