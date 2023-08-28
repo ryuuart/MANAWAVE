@@ -1,5 +1,5 @@
 ---
-const { title, tagline, url, color } = Astro.props;
+const { title, tagline, url, color, author } = Astro.props;
 ---
 
 <div class="container">
@@ -12,6 +12,11 @@ const { title, tagline, url, color } = Astro.props;
       <a href={url}>{title}</a>
     </div>
     <p class="tagline">{tagline}</p>
+    <p class="author">
+      <span aria-hidden="true">//&nbsp;</span><a href={author.link}
+        >{author.name}</a
+      >
+    </p>
   </div>
 </div>
 
@@ -69,9 +74,20 @@ const { title, tagline, url, color } = Astro.props;
     margin-bottom: -0.5rem;
   }
 
-  .tagline {
+  .tagline,
+  .author {
     font-size: 0.75rem;
 
     margin: 0;
+  }
+
+  .author {
+    opacity: 0.5;
+    transition: opacity 0.3s ease-in-out;
+  }
+
+  .author:hover,
+  .author:focus {
+    opacity: 1;
   }
 </style>

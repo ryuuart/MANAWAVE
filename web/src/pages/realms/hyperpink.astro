@@ -12,9 +12,9 @@ import realmData from "../../../data/realms.json";
     },
   }}
 >
-  <div id="marquee-container" class="wrapper">
-    <div class="container-content">
-      <article class="container">
+  <div id="root" class="global z-stack resize--parent flex--column">
+    <div class="container-content flex--column">
+      <article class="container flex--column">
         <div class="border">
           <h2>Heyyy 😘</h2>
           <p id="instructions">
@@ -22,7 +22,7 @@ import realmData from "../../../data/realms.json";
           </p>
         </div>
       </article>
-      <div class="container container-controls">
+      <div class="container container-controls flex--column">
         <h3>Controls</h3>
         <button name="keyboard" id="keyboard-btn" type="button">Keyboard</button
         >
@@ -40,11 +40,12 @@ import realmData from "../../../data/realms.json";
         </p>
       </div>
     </div>
-    <manawave-marquee id="marquee" autoplay direction="30">
-      <img src="/assets/img/hyperfemme/sparkle.webp" />
-      <img src="/assets/img/hyperfemme/diamond.webp" />
-      <img src="/assets/img/hyperfemme/heart.webp" />
+    <manawave-marquee class="marquee-main" id="marquee" autoplay direction="30">
+      <img class="marquee-img" src="/assets/img/hyperfemme/sparkle.webp" />
+      <img class="marquee-img" src="/assets/img/hyperfemme/diamond.webp" />
+      <img class="marquee-img" src="/assets/img/hyperfemme/heart.webp" />
     </manawave-marquee>
+    <div id="background-overlay" class="background--overlay"></div>
   </div>
 </Realm>
 
@@ -60,6 +61,7 @@ import realmData from "../../../data/realms.json";
 </style>
 
 <style define:vars={{ "color-aura": realmData["hyperpink"].color.portal }}>
+  /* Element, general styles*/
   h2,
   h3 {
     margin: 0;
@@ -93,40 +95,19 @@ import realmData from "../../../data/realms.json";
     cursor: pointer;
   }
 
-  .wrapper {
+  /* General styles*/
+  .global {
     --color-fg: white;
+    color: var(--color-fg);
+    font-family: sans-serif;
+  }
+
+  .z-stack > * {
+    position: relative;
+    z-index: 1;
 
     width: 100%;
     height: 100%;
-
-    color: var(--color-fg);
-    font-family: sans-serif;
-
-    display: flex;
-    flex-direction: column;
-
-    transition: background 1s ease-in-out;
-  }
-
-  .wrapper > * {
-    position: relative;
-    z-index: 1;
-  }
-
-  .wrapper.glow {
-    background: radial-gradient(
-      50% 50% at 50% 50%,
-      rgba(255, 168, 204, 0) 0%,
-      #ffa8cc 100%
-    );
-    mix-blend-mode: overlay;
-  }
-
-  .container-content {
-    height: inherit;
-
-    display: flex;
-    flex-direction: column;
   }
 
   .container {
@@ -152,17 +133,12 @@ import realmData from "../../../data/realms.json";
     padding: var(--padding);
   }
 
-  .wrapper > manawave-marquee {
-    width: 100%;
-    height: 100%;
-
-    position: absolute;
-    inset: 0;
-
-    z-index: 0;
+  /* Specific Elements*/
+  .container-content {
+    z-index: 2;
   }
 
-  img {
+  .marquee-img {
     width: 8rem;
     height: 8rem;
   }
@@ -173,9 +149,6 @@ import realmData from "../../../data/realms.json";
     margin-top: 0;
 
     background: rgba(255, 88, 158, 0.5);
-
-    display: flex;
-    flex-flow: column nowrap;
   }
 
   .container-controls button:not(:last-child) {
@@ -196,75 +169,121 @@ import realmData from "../../../data/realms.json";
 
     border: 1px solid var(--color-fg);
   }
+
+  .marquee-main {
+    position: absolute;
+    inset: 0;
+
+    z-index: 0;
+  }
+
+  /* Utilities */
+  .resize--parent {
+    width: 100%;
+    height: 100%;
+  }
+
+  .flex--column {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .background--overlay {
+    position: absolute;
+    inset: 0;
+
+    z-index: 1;
+  }
+
+  .background--glow {
+    background: radial-gradient(
+      50% 50% at 50% 50%,
+      rgba(255, 168, 204, 0) 0%,
+      #ffa8cc 100%
+    );
+    mix-blend-mode: overlay;
+  }
 </style>
 
 <script>
   import { getMW } from "manawave";
+  window.addEventListener("load", () => {
+    // read in marquee
+    const marqueeElement = document.getElementById("marquee")!;
+    const mw = getMW(marqueeElement)!;
 
-  const marqueeElement = document.getElementById("marquee")!;
-  const mw = getMW(marqueeElement)!;
+    // find and read in elements to interact with
+    const marqueeContainerElement = document.getElementById("root")!;
+    const backgroundOverlayElement =
+      document.getElementById("background-overlay")!;
+    const instructionsElement = document.getElementById("instructions")!;
 
-  let mode = "";
-  const keyboardBtnElement = document.getElementById("keyboard-btn")!;
-  const mouseBtnElement = document.getElementById("pointer-btn")!;
-  const marqueeContainerElement = document.getElementById("marquee-container")!;
-  const instructionsElement = document.getElementById("instructions")!;
+    // keep track of current mode
+    let mode = "";
 
-  function resetContext() {
-    marqueeContainerElement.classList.remove("glow");
-    mw.speed = 1;
-  }
-
-  keyboardBtnElement.addEventListener("click", (ev) => {
-    resetContext();
-    mode = "keyboard";
-    instructionsElement.textContent = "Use your arrow keys sweetie ✨";
-  });
-  document.addEventListener("keydown", (ev: KeyboardEvent) => {
-    if (mode === "keyboard") {
-      switch (ev.key) {
-        case "ArrowUp":
-          mw.direction = 90;
-          break;
-        case "ArrowRight":
-          mw.direction = 360;
-          break;
-        case "ArrowDown":
-          mw.direction = 270;
-          break;
-        case "ArrowLeft":
-          mw.direction = 180;
-          break;
-      }
-    }
-  });
-
-  mouseBtnElement.addEventListener("click", (ev) => {
-    resetContext();
-    mode = "pointer";
-    instructionsElement.textContent =
-      "Sis, tap or move your cursor around around where it SHINES ✨";
-    marqueeContainerElement.dispatchEvent(new MouseEvent("mouseenter"));
-  });
-  marqueeContainerElement.addEventListener("mouseenter", () => {
-    if (mode === "pointer") {
-      mw.speed = 2;
-      marqueeContainerElement.classList.add("glow");
-    }
-  });
-  marqueeContainerElement.addEventListener("mouseleave", () => {
-    if (mode === "pointer") {
+    // resets the state of the page
+    function resetContext() {
+      backgroundOverlayElement.classList.remove("background--glow");
       mw.speed = 1;
-      marqueeContainerElement.classList.remove("glow");
     }
-  });
-  marqueeContainerElement.addEventListener("mousemove", (ev: MouseEvent) => {
-    if (mode === "pointer") {
-      let mouseAngle =
-        -(Math.atan2(ev.y - innerHeight / 2, ev.x - innerWidth / 2) * 180) /
-        Math.PI;
 
-      mw.direction = mouseAngle;
-    }
+    // keyboard mode
+    const keyboardBtnElement = document.getElementById("keyboard-btn")!;
+    keyboardBtnElement.addEventListener("click", (ev) => {
+      resetContext();
+      mode = "keyboard";
+      instructionsElement.textContent = "Use your arrow keys sweetie ✨";
+    });
+    document.addEventListener("keydown", (ev: KeyboardEvent) => {
+      if (mode === "keyboard") {
+        switch (ev.key) {
+          case "ArrowUp":
+            mw.direction = 90;
+            break;
+          case "ArrowRight":
+            mw.direction = 360;
+            break;
+          case "ArrowDown":
+            mw.direction = 270;
+            break;
+          case "ArrowLeft":
+            mw.direction = 180;
+            break;
+        }
+      }
+    });
+
+    // pointer mode
+    const pointerBtnElement = document.getElementById("pointer-btn")!;
+    pointerBtnElement.addEventListener("click", (ev) => {
+      resetContext();
+      mode = "pointer";
+      instructionsElement.textContent =
+        "Sis, tap or move your cursor around around where it SHINES ✨";
+      marqueeContainerElement.dispatchEvent(new MouseEvent("mouseenter"));
+    });
+
+    // animated background glow effect
+    marqueeContainerElement.addEventListener("mouseenter", () => {
+      if (mode === "pointer") {
+        mw.speed = 2;
+        backgroundOverlayElement.classList.add("background--glow");
+      }
+    });
+    marqueeContainerElement.addEventListener("mouseleave", () => {
+      if (mode === "pointer") {
+        mw.speed = 1;
+        backgroundOverlayElement.classList.remove("background--glow");
+      }
+    });
+    marqueeContainerElement.addEventListener("mousemove", (ev: MouseEvent) => {
+      if (mode === "pointer") {
+        let mouseAngle =
+          -(Math.atan2(ev.y - innerHeight / 2, ev.x - innerWidth / 2) * 180) /
+          Math.PI;
+
+        mw.direction = mouseAngle;
+      }
+    });
   });
 </script>
