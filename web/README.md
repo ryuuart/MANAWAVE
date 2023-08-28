@@ -1,54 +1,25 @@
-# Astro Starter Kit: Basics
+# Manawave Demo
 
-```
-npm create astro@latest -- --template basics
-```
+An artistic, flairy homepage to describe, explain, and show what manawave is and what it can do.
 
-[![Open in StackBlitz](https://developer.stackblitz.com/img/open_in_stackblitz.svg)](https://stackblitz.com/github/withastro/astro/tree/latest/examples/basics)
-[![Open with CodeSandbox](https://assets.codesandbox.io/github/button-edit-lime.svg)](https://codesandbox.io/p/sandbox/github/withastro/astro/tree/latest/examples/basics)
-[![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://codespaces.new/withastro/astro?devcontainer_path=.devcontainer/basics/devcontainer.json)
+It is organized into 2 parts: homepage and realm. The homepage should lead users to the realms, docs, or github.
 
-> 🧑‍🚀 **Seasoned astronaut?** Delete this file. Have fun!
+> A _realm_ is an artistic demonstration or idea of what manawave can do. It should be inspired from personal experiences that helped evolve their sense of self (infinite evolution). It should also reveal an aspect or creative usage of manawave's omnidirectional or customizable capabilities.
 
-![basics](https://user-images.githubusercontent.com/4677417/186188965-73453154-fdec-4d6b-9c34-cb35c248ae5b.png)
+## Getting Started
 
-## 🚀 Project Structure
+From the root of the repo (`cd ../` this directory)
 
-Inside of your Astro project, you'll see the following folders and files:
-
-```
-/
-├── public/
-│   └── favicon.svg
-├── src/
-│   ├── components/
-│   │   └── Card.astro
-│   ├── layouts/
-│   │   └── Layout.astro
-│   └── pages/
-│       └── index.astro
-└── package.json
+```shell
+pnpm nx dev manawave-demo
 ```
 
-Astro looks for `.astro` or `.md` files in the `src/pages/` directory. Each page is exposed as a route based on its file name.
+This will build and load `manawave` onto this project as a dependency.
 
-There's nothing special about `src/components/`, but that's where we like to put any Astro/React/Vue/Svelte/Preact components.
+## General Notes
 
-Any static assets, like images, can be placed in the `public/` directory.
+A lot of effects for the demos make use of CSS `mix-blending-mode: overlay` and `webm` video or `webp` animation.
 
-## 🧞 Commands
+## License
 
-All commands are run from the root of the project, from a terminal:
-
-| Command                   | Action                                           |
-| :------------------------ | :----------------------------------------------- |
-| `npm install`             | Installs dependencies                            |
-| `npm run dev`             | Starts local dev server at `localhost:3000`      |
-| `npm run build`           | Build your production site to `./dist/`          |
-| `npm run preview`         | Preview your build locally, before deploying     |
-| `npm run astro ...`       | Run CLI commands like `astro add`, `astro check` |
-| `npm run astro -- --help` | Get help using the Astro CLI                     |
-
-## 👀 Want to learn more?
-
-Feel free to check [our documentation](https://docs.astro.build) or jump into our [Discord server](https://astro.build/chat).
+This is licensed under the attached MIT License.
