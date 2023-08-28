@@ -18,6 +18,8 @@ This will build and load `manawave` onto this project as a dependency.
 
 ## General Notes
 
+This demo makes use of the [astro framework](https://astro.build)
+
 A lot of effects for the demos make use of CSS `mix-blending-mode: overlay` and `webm` video or `webp` animation.
 
 ## License
