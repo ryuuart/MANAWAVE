@@ -19,7 +19,7 @@ interface Props {
 }
 
 const { pageTitle, realm, config } = Astro.props;
-const { title, tagline, story, song, color } = realmData[realm];
+const { title, tagline, story, song, color, author } = realmData[realm];
 ---
 
 <Layout title={pageTitle} tabcolor={config?.colors?.tab ?? "black"}>
@@ -29,7 +29,7 @@ const { title, tagline, story, song, color } = realmData[realm];
         <a href="/">return</a>
       </div>
       <Header title={title} tagline={tagline} />
-      <Story story={story} song={song} />
+      <Story story={story} song={song} author={author} />
       <section>
         <div>
           <slot />

@@ -5,9 +5,13 @@ interface Props {
     link: string;
     name: string;
   };
+  author: {
+    name: string;
+    link: string;
+  };
 }
 
-const { story, song } = Astro.props;
+const { story, song, author } = Astro.props;
 ---
 
 <article>
@@ -17,10 +21,16 @@ const { story, song } = Astro.props;
       {story}
     </p>
   </div>
-  <div class="song-container">
-    <h2>Chosen Song</h2>
-    <div>
-      <a href={song.link}>{song.name}</a>
+  <div class="metadata-container">
+    <div class="author-container">
+      <h2>Author</h2>
+      <a href={author.link}>{author.name}</a>
+    </div>
+    <div class="song-container">
+      <h2>Chosen Song</h2>
+      <div>
+        <a href={song.link}>{song.name}</a>
+      </div>
     </div>
   </div>
 </article>
@@ -54,10 +64,34 @@ const { story, song } = Astro.props;
     font-style: italic;
   }
 
+  .metadata-container {
+    display: flex;
+    flex-wrap: wrap;
+
+    align-content: flex-start;
+
+    row-gap: 0.5rem;
+    column-gap: 2rem;
+  }
+
+  .metadata-container > .author-container {
+    flex: 1;
+  }
+
+  .metadata-container > .song-container {
+    flex: 1 0 auto;
+  }
+
   @media screen and (min-width: 768px) {
     article {
       grid-template-columns: auto auto;
       gap: 1.5rem;
+    }
+
+    .metadata-container {
+      min-width: 20ch;
+
+      flex-direction: column;
     }
   }
 </style>
