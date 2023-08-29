@@ -1,0 +1,20 @@
+---
+import SandpackReactComponent from "./Sandpack.jsx";
+
+interface Props {
+  code?: string;
+  html?: string;
+}
+
+const { code, html } = Astro.props;
+---
+
+<div class="container-sandpack not-content">
+  <SandpackReactComponent client:load code={code} html={html} />
+</div>
+
+<style>
+  .container-sandpack {
+    margin: 1.5rem auto;
+  }
+</style>

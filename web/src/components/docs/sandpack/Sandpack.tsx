@@ -1,12 +1,17 @@
 import { Sandpack } from "@codesandbox/sandpack-react";
-import html from "./src/index.html?raw";
-import css from "./src/styles/style.css?raw";
-import js from "./src/js/index?raw";
 
-export default () => {
+import defaultHTML from "./src/index.html?raw";
+import defaultJS from "./src/js/index?raw";
+import css from "./src/styles/style.css?raw";
+
+interface Props {
+  code?: String;
+  html?: String;
+}
+
+export default ({ code, html }: Props) => {
   return (
     <Sandpack
-      className="not-content"
       customSetup={{
         environment: "parcel",
         devDependencies: {
@@ -18,10 +23,10 @@ export default () => {
         entry: "index.html",
       }}
       files={{
-        "/index.html": { code: html },
+        "/index.html": { code: html ?? defaultHTML },
         "/styles/style.css": { code: css, hidden: true },
         "/js/index.js": {
-          code: js,
+          code: code ?? defaultJS,
           active: true,
         },
       }}
