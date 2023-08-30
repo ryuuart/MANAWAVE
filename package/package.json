@@ -19,8 +19,8 @@
   "exports": {
     ".": {
       "import": "./dist/manawave.js",
-      "browser": "./dist/manawave.js",
-      "require": "./dist/manawave.umd.cjs"
+      "require": "./dist/manawave.umd.cjs",
+      "browser": "./dist/manawave.min.js"
     }
   },
   "scripts": {
