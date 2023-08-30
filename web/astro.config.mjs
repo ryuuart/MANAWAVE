@@ -1,4 +1,13 @@
 import { defineConfig } from 'astro/config';
+import starlight from "@astrojs/starlight";
+import react from "@astrojs/react";
 
-// https://astro.build/config
-export default defineConfig({});
+export default defineConfig({
+  integrations: [starlight({
+    title: "manawave docs",
+    head: [{
+      tag: 'script',
+      content: `window.addEventListener('load', () => document.querySelector('.site-title').href += 'docs')`
+    }],
+  }), react()]
+});

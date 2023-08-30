@@ -12,9 +12,18 @@
     "preview": "astro preview",
     "astro": "astro"
   },
-  "dependencies": {
+  "devDependencies": {
+    "@astrojs/react": "^2.3.2",
+    "@astrojs/starlight": "^0.7.3",
+    "@codesandbox/sandpack-react": "^2.6.9",
     "@fontsource/crimson-pro": "^5.0.8",
-    "astro": "^2.10.7",
+    "@types/react": "^18.2.21",
+    "@types/react-dom": "^18.2.7",
+    "astro": "^2.10.14",
+    "react": "^18.0.0",
+    "react-dom": "^18.0.0"
+  },
+  "dependencies": {
     "manawave": "^0.11.0"
   },
   "nx": {
