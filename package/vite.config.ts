@@ -21,7 +21,17 @@ export default defineConfig({
         lib: {
             entry: resolve(_dirname, "src/index.ts"),
             name: "manawave",
-            fileName: "manawave",
+            formats: ["es", "umd", "iife"],
+            fileName: (format) => {
+                switch (format) {
+                    case "iife":
+                        return "manawave" + ".min.js";
+                    case "umd":
+                        return "manawave" + ".umd.cjs";
+                    default:
+                        return "manawave" + ".js";
+                }
+            },
         },
     },
     plugins: [
