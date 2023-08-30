@@ -10,7 +10,7 @@ const { code, html } = Astro.props;
 ---
 
 <div class="container-sandpack not-content">
-  <SandpackReactComponent client:load code={code} html={html} />
+  <SandpackReactComponent client:load client:only code={code} html={html} />
 </div>
 
 <style>
