@@ -11,7 +11,10 @@ interface Props {
 }
 
 export default ({ code, html }: Props) => {
-  const [theme, setTheme] = useState<SandpackThemeProp>("auto");
+  const [theme, setTheme] = useState<SandpackThemeProp>(
+    (window.document.documentElement.dataset.theme as SandpackThemeProp) ??
+      "auto"
+  );
 
   useEffect(() => {
     const documentData = window.document.documentElement.dataset;
