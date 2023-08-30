@@ -1,7 +1,9 @@
 ---
+import { getCollection, getEntry } from "astro:content";
 import Section from "../../../layouts/home/Section.astro";
-import realmsData from "../../../../data/realms.json";
 import RealmItem from "./RealmItem.astro";
+
+let allRealms = await getCollection("realms");
 ---
 
 <Section class="realms">
@@ -20,20 +22,21 @@ import RealmItem from "./RealmItem.astro";
   </header>
   <ul>
     {
-      Object.values(realmsData).map(
-        (i) =>
-          !i.draft && (
-            <li>
-              <RealmItem
-                title={i.title}
-                tagline={i.tagline}
-                url={i.url}
-                color={i.color.portal}
-                author={i.author}
-              />
-            </li>
-          )
-      )
+      allRealms.map(async (realm) => {
+        const author = await getEntry(realm.data.author);
+
+        return (
+          <li>
+            <RealmItem
+              title={realm.data.title}
+              tagline={realm.data.tagline}
+              url={`/realms/${realm.slug}`}
+              color={realm.data.color.portal}
+              author={author.data}
+            />
+          </li>
+        );
+      })
     }
   </ul>
 </Section>
