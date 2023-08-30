@@ -9,4 +9,4 @@ color:
   portal: hotpink
 ---
 
-**HYPERPINK** is directly inspired by my queer friends and myself. They've suggested what if my marquee could be interactive, and so here it is. We are queening here rn!!
+**HYPERPINK** is inspired by my queer friends and myself. They thought it would be so cool if the marquee was interactive so here it is. We are queening here rn!!

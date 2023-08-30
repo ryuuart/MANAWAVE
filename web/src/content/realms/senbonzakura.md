@@ -9,4 +9,4 @@ color:
   portal: deeppink
 ---
 
-**SENBONZAKURA** (千本桜) came to me while listening to TOUHOU music at the gym. Feeling the passion, I suddenly saw a field of moonlit typographic cherry petals.
+**SENBONZAKURA** <span class="japanese">(千本桜)</span> came to me while listening to TOUHOU music at the gym. Feeling the passion, I suddenly saw a field of moonlit typographic cherry petals.

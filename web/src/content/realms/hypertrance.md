@@ -9,4 +9,4 @@ color:
   portal: royalblue
 ---
 
-**#HYPERTRANCE** is the sound and aesthetic of manawave. It’s directly inspired from the y2k cyber era of look and sound. I feel spiritually aligned to its feeling as someone nostalgic for more imaginative times.
+**#HYPERTRANCE** is the sound and aesthetic of **MANAWAVE**. It’s directly inspired from the y2k cyber era of look and sound. I feel spiritually aligned to its feeling as someone nostalgic for more imaginative times.

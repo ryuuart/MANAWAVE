@@ -2,9 +2,9 @@
 import Layout from "../Layout.astro";
 import Header from "../../components/realms/Header.astro";
 
-import realmData from "../../../data/realms.json";
 import Aura from "../../components/realms/Aura.astro";
 import Story from "../../components/realms/Story.astro";
+import { getEntry, type CollectionEntry } from "astro:content";
 
 export type RealmLayoutConfig = {
   colors?: {
@@ -14,12 +14,16 @@ export type RealmLayoutConfig = {
 
 interface Props {
   pageTitle: string;
-  realm: keyof typeof realmData;
+  realm: CollectionEntry<"realms">["slug"];
   config?: RealmLayoutConfig;
 }
 
 const { pageTitle, realm, config } = Astro.props;
-const { title, tagline, story, song, color, author } = realmData[realm];
+
+const realmData = await getEntry("realms", realm);
+const { title, tagline, song, color } = realmData.data;
+const author = (await getEntry(realmData.data.author)).data;
+const { Content } = await realmData.render();
 ---
 
 <Layout title={pageTitle} tabcolor={config?.colors?.tab ?? "black"}>
@@ -29,7 +33,9 @@ const { title, tagline, story, song, color, author } = realmData[realm];
         <a href="/">return</a>
       </div>
       <Header title={title} tagline={tagline} />
-      <Story story={story} song={song} author={author} />
+      <Story song={song} author={author}>
+        <Content />
+      </Story>
       <section>
         <div>
           <slot />

@@ -51,7 +51,8 @@ a:visited {
   color: unset;
 }
 
-span.japanese {
+span.japanese,
+[lang="ja"] {
   font-family: serif;
   font-style: normal;
 }

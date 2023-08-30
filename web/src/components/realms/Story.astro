@@ -1,6 +1,5 @@
 ---
 interface Props {
-  story: string;
   song: {
     link: string;
     name: string;
@@ -11,15 +10,13 @@ interface Props {
   };
 }
 
-const { story, song, author } = Astro.props;
+const { song, author } = Astro.props;
 ---
 
 <article>
   <div class="story-container">
     <h2>Story</h2>
-    <p>
-      {story}
-    </p>
+    <slot />
   </div>
   <div class="metadata-container">
     <div class="author-container">
@@ -58,7 +55,7 @@ const { story, song, author } = Astro.props;
     margin-bottom: 0.25rem;
   }
 
-  .story-container p {
+  .story-container :global(p) {
     margin-bottom: 1rem;
 
     font-family: "PP Migra", serif;
@@ -81,6 +78,10 @@ const { story, song, author } = Astro.props;
 
   .metadata-container > .song-container {
     flex: 1 0 auto;
+  }
+
+  .song-container {
+    font-family: "Crimson Pro", serif;
   }
 
   @media screen and (min-width: 768px) {

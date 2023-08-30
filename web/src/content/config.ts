@@ -12,7 +12,7 @@ export const collections = {
             author: reference("authors"),
             song: z.object({
                 name: z.string(),
-                link: z.string(),
+                link: z.string().url(),
             }),
             color: z.object({
                 portal: z.string(),
@@ -23,7 +23,7 @@ export const collections = {
         type: "data",
         schema: z.object({
             name: z.string(),
-            link: z.string(),
+            link: z.string().url(),
         }),
     }),
 };
