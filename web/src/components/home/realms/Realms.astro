@@ -11,13 +11,13 @@ let allRealms = await getCollection("realms");
     <p>ryuuart::</p>
   </div>
   <header id="realms">
-    <h2>3 Realms</h2>
+    <h2>{allRealms.length} Realms</h2>
     <p>visions&nbsp;•&nbsp;dreams&nbsp;•&nbsp;self</p>
     <p class="description">
       There are untold ways to use <span class="manawave-text">manawave</span>.
-      I offer to you 3 examples, 3 very different realms. See ways to wield <span
-        class="manawave-text">manawave</span
-      > by visiting each one.
+      I offer to you {allRealms.length} examples, {allRealms.length} very different
+      realms. See ways to wield <span class="manawave-text">manawave</span> by visiting
+      each one.
     </p>
   </header>
   <ul>
