@@ -1,6 +1,8 @@
 ---
+import { getEntry } from "astro:content";
 import Realm from "../../layouts/realms/Realm.astro";
-import realmData from "../../../data/realms.json";
+
+const realmData = await getEntry("realms", "hyperpink");
 ---
 
 <Realm
@@ -60,7 +62,7 @@ import realmData from "../../../data/realms.json";
   }
 </style>
 
-<style define:vars={{ "color-aura": realmData["hyperpink"].color.portal }}>
+<style define:vars={{ "color-aura": realmData.data.color.portal }}>
   /* Element, general styles*/
   h2,
   h3 {
