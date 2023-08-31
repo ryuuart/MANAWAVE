@@ -1,4 +1,7 @@
 ---
+import sparkleImage from "@assets/img/hyperpink/sparkle.webp";
+import diamondImage from "@assets/img/hyperpink/diamond.webp";
+import heartImage from "@assets/img/hyperpink/heart.webp";
 import { getEntry } from "astro:content";
 import Realm from "../../layouts/realms/Realm.astro";
 
@@ -43,9 +46,9 @@ const realmData = await getEntry("realms", "hyperpink");
       </div>
     </div>
     <manawave-marquee class="marquee-main" id="marquee" autoplay direction="30">
-      <img class="marquee-img" src="/assets/img/hyperfemme/sparkle.webp" />
-      <img class="marquee-img" src="/assets/img/hyperfemme/diamond.webp" />
-      <img class="marquee-img" src="/assets/img/hyperfemme/heart.webp" />
+      <img class="marquee-img" src={sparkleImage.src} />
+      <img class="marquee-img" src={diamondImage.src} />
+      <img class="marquee-img" src={heartImage.src} />
     </manawave-marquee>
     <div id="background-overlay" class="background--overlay"></div>
   </div>

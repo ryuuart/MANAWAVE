@@ -9,6 +9,7 @@
     "paths": {
       "@components/*": ["src/components/*"],
       "@layouts/*": ["src/layouts/*"],
+      "@assets/*": ["src/assets/*"],
 
       // special paths for convenience
       "@components/sandpack": ["src/components/docs/sandpack/Sandpack.astro"]
