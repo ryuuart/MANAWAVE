@@ -1,4 +1,5 @@
 ---
+import selfImage from "@assets/img/self.webp";
 import Section from "../../../layouts/home/Section.astro";
 ---
 
@@ -12,7 +13,7 @@ import Section from "../../../layouts/home/Section.astro";
     </p>
   </div>
   <figure>
-    <div class="placeholder-img"></div>
+    <img src={selfImage.src} />
   </figure>
 </Section>
 
@@ -75,10 +76,26 @@ import Section from "../../../layouts/home/Section.astro";
     background: var(--color-fg);
   }
 
-  .placeholder-img {
+  figure > img {
     width: 100%;
     height: 100%;
 
-    background-color: blue;
+    filter: brightness(2);
+    animation: glow 20s ease-in-out;
+    animation-iteration-count: infinite;
+  }
+
+  @keyframes glow {
+    from {
+      filter: brightness(1);
+    }
+
+    50% {
+      filter: brightness(2);
+    }
+
+    to {
+      filter: brightness(1);
+    }
   }
 </style>
