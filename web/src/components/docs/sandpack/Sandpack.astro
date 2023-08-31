@@ -4,13 +4,20 @@ import SandpackReactComponent from "./Sandpack.jsx";
 interface Props {
   code?: string;
   html?: string;
+  activeFile?: string;
 }
 
-const { code, html } = Astro.props;
+const { code, html, activeFile } = Astro.props;
 ---
 
 <div class="container-sandpack not-content">
-  <SandpackReactComponent client:load client:only code={code} html={html} />
+  <SandpackReactComponent
+    client:load
+    client:only
+    code={code}
+    html={html}
+    activeFile={activeFile}
+  />
 </div>
 
 <style>

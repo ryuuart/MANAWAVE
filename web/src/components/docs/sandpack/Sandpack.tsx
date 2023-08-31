@@ -1,5 +1,9 @@
 import { useEffect, useState } from "react";
-import { Sandpack, SandpackThemeProp } from "@codesandbox/sandpack-react";
+import {
+  Sandpack,
+  SandpackInternalOptions,
+  SandpackThemeProp,
+} from "@codesandbox/sandpack-react";
 
 import defaultHTML from "./src/index.html?raw";
 import defaultJS from "./src/js/index?raw";
@@ -8,9 +12,10 @@ import css from "./src/styles/style.css?raw";
 interface Props {
   code?: string;
   html?: string;
+  activeFile?: string;
 }
 
-export default ({ code, html }: Props) => {
+export default ({ code, html, activeFile }: Props) => {
   const [theme, setTheme] = useState<SandpackThemeProp>(
     (window.document.documentElement.dataset.theme as SandpackThemeProp) ??
       "auto"
@@ -51,11 +56,14 @@ export default ({ code, html }: Props) => {
       }}
       files={{
         "/index.html": { code: html ?? defaultHTML },
-        "/styles/style.css": { code: css, hidden: true },
+        "/styles/style.css": { code: css },
         "/js/index.js": {
           code: code ?? defaultJS,
-          active: true,
         },
+      }}
+      options={{
+        //@ts-ignore
+        activeFile: activeFile ?? "/js/index.js",
       }}
       theme={theme}
     />
