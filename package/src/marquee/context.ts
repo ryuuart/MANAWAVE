@@ -45,14 +45,21 @@ export default class Context {
         else selected = document.querySelector<HTMLElement>(selector);
 
         if (selected) {
+            // count renderable nodes to see if it's possible to build a marquee context
+            let nodeCount = 0;
+
             // text nodes don't have measurements by default so it's necessary to wrap them
             // pre-process child elements by wrapping any text nodes into a div
             for (const child of selected.childNodes) {
-                if (
+                if (child.nodeType === Node.ELEMENT_NODE) nodeCount++;
+                else if (
                     child.nodeType === Node.TEXT_NODE &&
                     child.nodeValue &&
                     child.nodeValue.trim().length > 0
                 ) {
+                    // it's renderable
+                    nodeCount++;
+
                     // prepare
                     const wrapperElement = document.createElement("div");
                     wrapperElement.style.display = "inline-block";
@@ -71,6 +78,12 @@ export default class Context {
                         );
                     }
                 }
+            }
+
+            if (nodeCount <= 0) {
+                throw new Error(
+                    "[MANAWAVE]: No renderable content in marquee. In other words, it's considered empty."
+                );
             }
 
             // if it's not a web component, then it needs some basic styling
@@ -97,7 +110,8 @@ export default class Context {
 
             // store results to use and propagate
             return new Context(selected, mBox, template, options);
-        } else throw new Error("Selected manawave Element not found.");
+        } else
+            throw new Error("[MANAWAVE] Selected manawave Element not found.");
     }
 
     constructor(
