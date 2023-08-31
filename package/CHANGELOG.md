@@ -1,5 +1,13 @@
 # manawave
 
+## 0.11.1
+
+### Patch Changes
+
+- [#216](https://github.com/ryuuart/manawave/pull/216) [`2cf5895`](https://github.com/ryuuart/manawave/commit/2cf58951c2e1d778ae24118ed501b28c605d2d8e) Thanks [@ryuuart](https://github.com/ryuuart)! - Add browser cdn target by building for IIFE
+
+- [`65184b1`](https://github.com/ryuuart/manawave/commit/65184b1598f3e413656fe753155246a023bf8202) Thanks [@ryuuart](https://github.com/ryuuart)! - Prevent initializing empty marquees
+
 ## 0.11.0
 
 ### Minor Changes
