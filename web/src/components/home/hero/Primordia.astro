@@ -3,12 +3,12 @@ import holotapeSVG from "@assets/img/holotape.svg";
 const { class: className } = Astro.props;
 ---
 
-<div class:list={[className, "primordia", "sideways-lr"]}>
+<div aria-hidden="true" class:list={[className, "primordia", "sideways-lr"]}>
   <div>
     <div class="title">Primordia</div>
     <div class="description">08.10.23</div>
   </div>
-  <img class="holotape" src={holotapeSVG.src} />
+  <img class="holotape" src={holotapeSVG.src} alt="" />
 </div>
 
 <style>

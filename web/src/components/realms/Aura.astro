@@ -3,11 +3,14 @@ import portalImage from "@assets/img/aura_portal.webp";
 const { color } = Astro.props;
 ---
 
-<div class="aura">
+<div aria-hidden="true" class="aura">
   <div class="wrapper">
     <div class="img-container">
       <div class="img-overlay"></div>
-      <img src={portalImage.src} />
+      <img
+        src={portalImage.src}
+        alt="An animated loop of many small star particles swirling around"
+      />
     </div>
     <div class="left-vertical-line"></div>
   </div>

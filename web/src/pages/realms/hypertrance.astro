@@ -12,8 +12,12 @@ import Realm from "../../layouts/realms/Realm.astro";
     },
   }}
 >
-  <div id="root" class="global root resize--parent flex flex--center-content">
-    <div class="marquee marquee-code-bg resize--parent">
+  <div
+    id="root"
+    aria-label="animated scene of a man falling towards light, surrounded by ethereal sentences and paragraphs"
+    class="global root resize--parent flex flex--center-content"
+  >
+    <div aria-hidden="true" class="marquee marquee-code-bg resize--parent">
       <manawave-marquee
         class="resize--parent"
         autoplay
@@ -46,21 +50,21 @@ import Realm from "../../layouts/realms/Realm.astro";
         ethereal.&nbsp;
       </manawave-marquee>
     </div>
-    <div class="marquee marquee-characteristics">
+    <div aria-hidden="true" class="marquee marquee-characteristics">
       <manawave-marquee autoplay direction="left" speed="1.5"
         ><div class="marquee-characteristics--content">
           dream • soul • belief • self • potential •
         </div></manawave-marquee
       >
     </div>
-    <div class="marquee marquee-hypertrance-text">
+    <div aria-hidden="true" class="marquee marquee-hypertrance-text">
       <manawave-marquee autoplay direction="right" speed="1"
         ><div class="marquee-hypertrance-text--content">
           hypertrance cyberdream virtualself depthcore metalheart y2k etherwave
         </div></manawave-marquee
       >
     </div>
-    <div class="marquee marquee-self-text">
+    <div aria-hidden="true" class="marquee marquee-self-text">
       <manawave-marquee autoplay direction="90" speed="0.85"
         ><div class="marquee-self-text--content">
           Infinite evolution comes from transcending our mortal frame. It is
@@ -71,7 +75,10 @@ import Realm from "../../layouts/realms/Realm.astro";
       >
     </div>
     <div class="character">
-      <img src={selfImage.src} />
+      <img
+        src={selfImage.src}
+        alt="a pencil sketch muscular man that's half transparent and falling towards light"
+      />
     </div>
   </div>
 </Realm>
