@@ -1,4 +1,5 @@
 ---
+import holotapeSVG from "@assets/img/holotape.svg";
 const { class: className } = Astro.props;
 ---
 
@@ -7,7 +8,7 @@ const { class: className } = Astro.props;
     <div class="title">Primordia</div>
     <div class="description">08.10.23</div>
   </div>
-  <img class="holotape" src="/assets/img/holotape.svg" />
+  <img class="holotape" src={holotapeSVG.src} />
 </div>
 
 <style>
