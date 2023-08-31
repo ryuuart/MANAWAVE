@@ -125,6 +125,33 @@ describe("dom", () => {
                     mixedTextContext.template.children[2].textContent
                 ).toEqual(mixedTextNodes[2].textContent);
             });
+
+            it("should not initialize empty containers", async () => {
+                // should prevent an empty marquee in general
+                const emptyElement = document.createElement("div");
+                const createEmptyContext = () => {
+                    const context = Context.setup(emptyElement);
+                };
+                expect(createEmptyContext).toThrow(/empty/);
+
+                // should prevent whitespace
+                const whitespaceElement = document.createElement("div");
+                whitespaceElement.append(document.createTextNode(" "));
+                whitespaceElement.append(document.createTextNode(" "));
+                whitespaceElement.append(document.createTextNode(" "));
+                const createWhiteSpaceContext = () => {
+                    const context = Context.setup(whitespaceElement);
+                };
+                expect(createWhiteSpaceContext).toThrow(/empty/);
+
+                // should prevent special whitespace characters too
+                const specialWhitespaceElement = document.createElement("div");
+                specialWhitespaceElement.innerHTML = "&nbsp;";
+                const createSpecialWhitespaceContext = () => {
+                    const context = Context.setup(specialWhitespaceElement);
+                };
+                expect(createSpecialWhitespaceContext).toThrow(/empty/);
+            });
         });
 
         describe("measurement", () => {
