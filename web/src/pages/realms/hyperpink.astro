@@ -29,9 +29,18 @@ const realmData = await getEntry("realms", "hyperpink");
       </article>
       <div class="container container-controls flex--column">
         <h3>Controls</h3>
-        <button name="keyboard" id="keyboard-btn" type="button">Keyboard</button
+        <button
+          name="keyboard"
+          id="keyboard-btn"
+          type="button"
+          aria-describedby="instructions">Keyboard</button
         >
-        <button name="pointer" id="pointer-btn" type="button">Pointer</button>
+        <button
+          name="pointer"
+          id="pointer-btn"
+          type="button"
+          aria-describedby="instructions">Pointer</button
+        >
       </div>
       <div class="container container-credits">
         <p>
@@ -45,10 +54,28 @@ const realmData = await getEntry("realms", "hyperpink");
         </p>
       </div>
     </div>
-    <manawave-marquee class="marquee-main" id="marquee" autoplay direction="30">
-      <img class="marquee-img" src={sparkleImage.src} />
-      <img class="marquee-img" src={diamondImage.src} />
-      <img class="marquee-img" src={heartImage.src} />
+    <manawave-marquee
+      aria-label="marquee of animated jewelry"
+      class="marquee-main"
+      id="marquee"
+      autoplay
+      direction="30"
+    >
+      <img
+        class="marquee-img"
+        src={sparkleImage.src}
+        alt="a rotating metallic gray starry sparkle"
+      />
+      <img
+        class="marquee-img"
+        src={diamondImage.src}
+        alt="a rotating gray diamond with speckles of rainbow in its refractions"
+      />
+      <img
+        class="marquee-img"
+        src={heartImage.src}
+        alt="a rotating metallic gray love heart"
+      />
     </manawave-marquee>
     <div id="background-overlay" class="background--overlay"></div>
   </div>
