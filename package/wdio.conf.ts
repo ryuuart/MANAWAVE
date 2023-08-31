@@ -73,6 +73,7 @@ export const config: Options.Testrunner = {
             maxInstances: 3,
             //
             browserName: "chrome",
+            browserVersion: "116",
             acceptInsecureCerts: true,
             // If outputDir is provided WebdriverIO can capture driver session logs
             // it is possible to configure which logTypes to include/exclude.
@@ -81,12 +82,13 @@ export const config: Options.Testrunner = {
         },
         {
             maxInstances: 1,
-            browserName: "safari",
+            browserName: "safari technology preview",
             acceptInsecureCerts: true,
         },
         {
             maxInstances: 3,
             browserName: "firefox",
+            // browserVersion: "118.0a1",
             acceptInsecureCerts: true,
         },
     ],
@@ -140,10 +142,10 @@ export const config: Options.Testrunner = {
     // your test setup with almost no effort. Unlike plugins, they don't add new
     // commands. Instead, they hook themselves up into the test process.
     services: [
-        "chromedriver",
+        // "chromedriver",
         "geckodriver",
-        "edgedriver",
-        "safaridriver",
+        // "edgedriver",
+        // "safaridriver",
         // "appium",
     ],
 
