@@ -1,2 +1,1 @@
-import { MW } from "manawave";
-MW;
+import "manawave";
