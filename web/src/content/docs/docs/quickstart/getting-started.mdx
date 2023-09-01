@@ -1,0 +1,77 @@
+---
+title: Getting Started
+description: Learn how to get manawave on your website
+---
+
+import { Tabs, TabItem } from "@astrojs/starlight/components";
+import Sandpack from "@components/sandpack";
+import webcomponentHTML from "@assets/docs/quickstart/getting-started/src/webcomponent/index.html?raw";
+import javascriptHTML from "@assets/docs/quickstart/getting-started/src/javascript/index.html?raw";
+import javascriptJS from "@assets/docs/quickstart/getting-started/src/javascript/index.js?raw";
+
+## Installing MANAWAVE
+
+You can install MANAWAVE by a CDN `<script>` tag or with any `npm` utility.
+
+<Tabs>
+<TabItem label="npm">
+
+```sh
+# you can use `yarn` or `pnpm` too if you want
+npm install manawave
+```
+
+</TabItem>
+<TabItem label="cdn">
+
+**Classic Script (IIFE)**
+
+```html
+<!-- Add this to your HTML head  -->
+<script
+  defer
+  src="https://cdn.jsdelivr.net/npm/manawave@0.11.1/dist/manawave.min.js"
+></script>
+```
+
+**Module Script (ESM)**
+
+```html
+<!-- Add this to your HTML head -->
+<script
+  type="module"
+  src="https://unpkg.com/manawave@0.11.1/dist/manawave.js"
+></script>
+```
+
+:::note
+If you would like to use a different version, change the
+version after the `@`. You can see the available versions on
+[Github Releases](https://github.com/ryuuart/manawave/releases).
+:::
+
+:::tip[See an example]
+You can see an example on [Glitch](https://glitch.com/edit/#!/manawave-cdn-example)
+:::
+
+</TabItem>
+</Tabs>
+
+## Basic Usage
+
+You can get a basic marquee with just web components.
+
+<Sandpack activeFile="index.html" html={webcomponentHTML} />
+
+If you plan on having a lot more customization, then you should make a new `MW` object.
+
+<Sandpack html={javascriptHTML} js={javascriptJS} />
+
+## Basic Customization
+
+You can configure these marquess by supplying different [attributes](/docs/reference/attributes/).
+There are three: `autoplay`, `speed`, and `direction`.
+
+:::note
+The attribute names are different to comply with web standards
+:::
