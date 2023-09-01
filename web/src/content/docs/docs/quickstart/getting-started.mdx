@@ -59,19 +59,46 @@ You can see an example on [Glitch](https://glitch.com/edit/#!/manawave-cdn-examp
 
 ## Basic Usage
 
-You can get a basic marquee with just web components.
+There are two main ways to initialize and use MANAWAVE: using the `<manawave-marquee>` web component or `MW` object.
+
+Generally for both approaches, MANAWAVE will take whatever is in the element (the children) and repeat them across its allocated space.
+
+### Web Component
+
+You can get a basic marquee with just MANAWAVE's web component: `<manawave-marquee>`.
 
 <Sandpack activeFile="index.html" html={webcomponentHTML} />
 
 If you plan on having a lot more customization, then you should make a new `MW` object.
 
+### Classic DOM Element
+
+You can also initialize MANAWAVE using an existing element.
+
 <Sandpack html={javascriptHTML} js={javascriptJS} />
 
 ## Basic Customization
 
-You can configure these marquess by supplying different [attributes](/docs/reference/attributes/).
-There are three: `autoplay`, `speed`, and `direction`.
+You can configure these marquees by supplying different [attributes](/docs/reference/attributes/).
+For web components, there are three: `autoplay`, `speed`, and `direction`. There are a [limited set of allowed values](/docs/reference/attributes/) for these attributes, but
+they enable the basic configurable and omnidirectional elements of MANAWAVE.
+
+:::caution
+[There are caveats](/docs/reference/attributes) for attributes if you don't use the `<manawave-marquee>` web component.
+:::
+
+<Sandpack activeFile="index.html" />
 
 :::note
-The attribute names are different to comply with web standards
+MANAWAVE has a design principle of using minimal JavaScript if customization is basic. You only import the library or include the script tag and that's it. That's why the web component (`<manawave-marquee>`) was included.
 :::
+
+## Next Steps
+
+While MANAWAVE's basic features should be sufficient for most _basic_ use cases, you can configure it more deeply.
+To see what's possible, you should look into the [Realms](/#realms).
+
+A good place to start understanding MANAWAVE is by looking through the guides.
+You can start by learning how to work with [DOM element marquees](/docs/guides/dom) or configuring [an existing marquee](/docs/guides/reusing).
+
+It may also be a good idea to see what MANAWAVE [won't be able to do](/docs/reference/limits) for you.
