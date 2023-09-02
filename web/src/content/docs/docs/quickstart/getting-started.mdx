@@ -6,8 +6,6 @@ description: Learn how to get manawave on your website
 import { Tabs, TabItem } from "@astrojs/starlight/components";
 import Sandpack from "@components/sandpack";
 import webcomponentHTML from "./_src/getting-started/webcomponent/index.html?raw";
-import domHTML from "./_src/getting-started/dom/index.html?raw";
-import domJS from "./_src/getting-started/dom/index.js?raw";
 
 ## Installing MANAWAVE
 
@@ -59,23 +57,16 @@ You can see an example on [Glitch](https://glitch.com/edit/#!/manawave-cdn-examp
 
 ## Basic Usage
 
-There are two main ways to initialize and use MANAWAVE: using the `<manawave-marquee>` web component or `MW` object.
-
-Generally for both approaches, MANAWAVE will take whatever is in the element (the children) and repeat them across its allocated space.
-
-### Web Component
-
 You can get a basic marquee with just MANAWAVE's web component: `<manawave-marquee>`.
+There are more ways to [initialize MANAWAVE](/docs/guides/initialization).
+
+```html
+<manawave-marquee>
+  <div class="text-manawave">web</div>
+</manawave-marquee>
+```
 
 <Sandpack activeFile="index.html" html={webcomponentHTML} />
-
-If you plan on having a lot more customization, then you should make a new `MW` object.
-
-### Classic DOM Element
-
-You can also initialize MANAWAVE using an existing element.
-
-<Sandpack html={domHTML} js={domJS} />
 
 ## Basic Customization
 
@@ -90,7 +81,7 @@ they enable the basic configurable and omnidirectional elements of MANAWAVE.
 <Sandpack activeFile="index.html" />
 
 :::note
-MANAWAVE has a design principle of using minimal JavaScript if customization is basic. You only import the library or include the script tag and that's it. That's why the web component (`<manawave-marquee>`) was included.
+MANAWAVE has a [design principle of using minimal JavaScript](/docs/quickstart/principles#customizable) if customization is basic. You only import the library or include the script tag and that's it. That's why the web component (`<manawave-marquee>`) was included.
 :::
 
 ## Next Steps
@@ -99,6 +90,6 @@ While MANAWAVE's basic features should be sufficient for most _basic_ use cases,
 To see what's possible, you should look into the [Realms](/#realms).
 
 A good place to start understanding MANAWAVE is by looking through the guides.
-You can start by learning how to work with [DOM element marquees](/docs/guides/dom) or configuring [an existing marquee](/docs/guides/reusing).
+You can start by learning how to more deeply [initialize marquees](/docs/guides/initialization) or configure [an existing marquee](/docs/guides/reusing).
 
 It may also be a good idea to see what MANAWAVE [won't be able to do](/docs/reference/limits) for you.
