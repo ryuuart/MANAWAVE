@@ -1,0 +1,56 @@
+* {
+  box-sizing: border-box;
+}
+
+h1 {
+  font-size: 0.75rem;
+  font-weight: normal;
+  text-transform: uppercase;
+}
+
+.content {
+  font-family: sans-serif;
+  font-weight: bold;
+
+  margin: 0.5rem;
+}
+
+.inline-block {
+  display: inline-block;
+}
+
+.grid {
+  display: grid;
+}
+
+.grid-col--2 {
+  grid-template-columns: auto auto;
+}
+
+.grid-row--2 {
+  grid-template-rows: auto auto;
+}
+
+.border {
+  border: 1px solid black;
+}
+
+.bg--pink {
+  background: pink;
+}
+
+.w--50 {
+  width: 50px;
+}
+
+.h--50 {
+  height: 50px;
+}
+
+.m--small {
+  margin: 0.5rem;
+}
+
+#special {
+  color: blue;
+}
