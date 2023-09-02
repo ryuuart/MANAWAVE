@@ -5,9 +5,9 @@ description: Learn how to get manawave on your website
 
 import { Tabs, TabItem } from "@astrojs/starlight/components";
 import Sandpack from "@components/sandpack";
-import webcomponentHTML from "@assets/docs/quickstart/getting-started/src/webcomponent/index.html?raw";
-import javascriptHTML from "@assets/docs/quickstart/getting-started/src/javascript/index.html?raw";
-import javascriptJS from "@assets/docs/quickstart/getting-started/src/javascript/index.js?raw";
+import webcomponentHTML from "./_src/getting-started/webcomponent/index.html?raw";
+import domHTML from "./_src/getting-started/dom/index.html?raw";
+import domJS from "./_src/getting-started/dom/index.js?raw";
 
 ## Installing MANAWAVE
 
@@ -75,7 +75,7 @@ If you plan on having a lot more customization, then you should make a new `MW` 
 
 You can also initialize MANAWAVE using an existing element.
 
-<Sandpack html={javascriptHTML} js={javascriptJS} />
+<Sandpack html={domHTML} js={domJS} />
 
 ## Basic Customization
 
