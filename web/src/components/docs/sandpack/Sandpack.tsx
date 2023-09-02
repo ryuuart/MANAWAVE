@@ -7,15 +7,16 @@ import {
 
 import defaultHTML from "./src/index.html?raw";
 import defaultJS from "./src/index?raw";
-import css from "./src/style.css?raw";
+import defaultCSS from "./src/style.css?raw";
 
 interface Props {
   js?: string;
   html?: string;
+  css?: string;
   activeFile?: string;
 }
 
-export default ({ js: code, html, activeFile }: Props) => {
+export default ({ js: code, html, css, activeFile }: Props) => {
   const [theme, setTheme] = useState<SandpackThemeProp>(
     (window.document.documentElement.dataset.theme as SandpackThemeProp) ??
       "auto"
@@ -53,7 +54,7 @@ export default ({ js: code, html, activeFile }: Props) => {
       }}
       files={{
         "/index.html": { code: html ?? defaultHTML },
-        "/style.css": { code: css },
+        "/style.css": { code: css ?? defaultCSS },
         "/index.js": {
           code: code ?? defaultJS,
         },
