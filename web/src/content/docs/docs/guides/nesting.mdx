@@ -11,7 +11,7 @@ You can nest a marquee within each other and it will work the same.
 :::danger[Don't overdo it]
 Nesting is a _very expensive thing to do_.
 Nesting can expontentially increase the amount of DOM nodes on the document. It also deepens the
-DOM depth too. [High DOM size](https://developer.chrome.com/en/docs/lighthouse/performance/dom-size/) with deep DOM depth could have _very_ negative performance impact.
+DOM depth too. High DOM size with deep DOM depth could have _very_ [negative performance impact](https://developer.chrome.com/en/docs/lighthouse/performance/dom-size/).
 
 > I've even tested around 15,000 to 20,000 DOM nodes generated. You won't even be able to select text 😅.
 >

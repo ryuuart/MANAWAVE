@@ -2,3 +2,23 @@
 title: Reusing Marquees
 description: Learn how to configure existing marquees
 ---
+
+import Sandpack from "@components/sandpack";
+import reusingHTML from "./_src/reusing/index.html?raw";
+import reusingJS from "./_src/reusing/index.js?raw";
+
+MANAWAVE lets you take an existing marquee and control it in JavaScript.
+If you need to get an existing MANAWAVE marquee, you should use `getMW()`.
+`getMW` takes an existing [initialized marquee](/docs/guides/initialization) and gives you the attached `MW` instance.
+
+For this example, notice how there's no `autoplay` nor `direction` [attribute](/docs/reference/attributes), but we set it anyways.
+That's because we fetched the `MW` instance and applied these attributes there.
+
+<Sandpack html={reusingHTML} js={reusingJS} />
+
+:::caution[You might get FOUC if you use overrides]
+If you use [overrides](/docs/reference/overrides), you might get [FOUC](https://en.wikipedia.org/wiki/Flash_of_unstyled_content).
+That's because first, the document (web page content) has to load, then the marquees you initialized.
+After the marquee initializes (repeats content across space), you can finally use `getMW()`. This multi-load step gives a lot of opportunity for
+content to flash in and out as they're getting laid out across the page. Overrides makes this very visible.
+:::
