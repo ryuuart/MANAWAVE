@@ -8,6 +8,7 @@ import {
 import defaultHTML from "./src/index.html?raw";
 import defaultJS from "./src/index?raw";
 import defaultCSS from "./src/style.css?raw";
+import manawaveRaw from "../../../../node_modules/manawave/dist/manawave.js?raw";
 
 interface Props {
   js?: string;
@@ -47,12 +48,21 @@ export default ({ js: code, html, css, activeFile }: Props) => {
     <Sandpack
       template="vite"
       customSetup={{
-        dependencies: {
-          manawave: "^0.11.1",
-        },
         entry: "index.html",
       }}
       files={{
+        "node_modules/manawave/package.json": {
+          code: JSON.stringify({
+            name: "manawave",
+            main: "./index.js",
+            type: "module",
+          }),
+          hidden: true,
+        },
+        "node_modules/manawave/index.js": {
+          code: manawaveRaw,
+          hidden: true,
+        },
         "/index.html": { code: html ?? defaultHTML },
         "/style.css": { code: css ?? defaultCSS },
         "/index.js": {
