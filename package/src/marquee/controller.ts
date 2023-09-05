@@ -20,8 +20,6 @@ export default class Controller extends PlaybackObject {
         this._context.onAttrUpdate = this.onAttrUpdate.bind(this);
 
         this._system = new System(this._context);
-
-        this.start();
     }
 
     /**
@@ -80,7 +78,6 @@ export default class Controller extends PlaybackObject {
      */
     forceUpdate() {
         this._system.onStart();
-        if (!this._context.attributes.autoplay) this.pause();
     }
 
     /**
@@ -121,13 +118,13 @@ export default class Controller extends PlaybackObject {
 
     protected onStart() {
         this._system.start();
-        if (!this._context.attributes.autoplay) this.pause();
 
         AnimationController.registerSystem(this._system);
     }
 
     protected onStop() {
         this._system.stop();
+
         AnimationController.deregisterSystem(this._system);
     }
 }
