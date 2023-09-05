@@ -25,6 +25,7 @@ export class MW extends PlaybackObject {
 
         // start this individual animation
         this.start();
+        if (!this._context.attributes.autoplay) this.pause();
     }
 
     /**

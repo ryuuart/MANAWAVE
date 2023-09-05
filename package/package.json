@@ -29,24 +29,19 @@
     "lint": "tsc",
     "build": "vite build",
     "test": "run-p test:*",
-    "test:run": "wdio run wdio.conf.ts"
+    "test:universal": "wdio run universal.wdio.conf.ts",
+    "test:macos": "wdio run mac.wdio.conf.ts"
   },
   "keywords": [],
   "devDependencies": {
-    "@wdio/browser-runner": "^8.15.10",
-    "@wdio/cli": "^8.15.10",
-    "@wdio/mocha-framework": "^8.15.10",
-    "@wdio/spec-reporter": "^8.15.10",
-    "@wdio/utils": "^8.15.10",
-    "appium": "^1.22.3",
-    "chromedriver": "^116.0.0",
-    "edgedriver": "5.0.0",
-    "geckodriver": "^3.2.0",
+    "@wdio/browser-runner": "^8.16.3",
+    "@wdio/cli": "^8.16.3",
+    "@wdio/mocha-framework": "^8.16.3",
+    "@wdio/spec-reporter": "^8.16.3",
     "mocha": "^10.2.0",
     "npm-run-all": "^4.1.5",
     "rimraf": "^3.0.2",
     "rollup-plugin-typescript2": "^0.35.0",
-    "safaridriver": "^0.1.0",
     "ts-node": "^10.9.1",
     "tsconfig-paths": "^4.2.0",
     "tslib": "^2.6.2",
@@ -55,7 +50,6 @@
     "vite-plugin-css-injected-by-js": "^3.3.0",
     "vite-plugin-dts": "^3.5.3",
     "vite-tsconfig-paths": "^4.2.0",
-    "wdio-geckodriver-service": "^4.1.2",
-    "webdriverio": "^8.15.10"
+    "webdriverio": "^8.16.3"
   }
 }
