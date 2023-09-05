@@ -11,14 +11,27 @@ MANAWAVE lets you take an existing marquee and control it in JavaScript.
 If you need to get an existing MANAWAVE marquee, you should use `getMW()`.
 `getMW` takes an existing [initialized marquee](/docs/guides/initialization) and gives you the attached `MW` instance.
 
+:::tip[This is a good way extend a MANAWAVE web component]
+`getMW` is designed for folks who want to extend the provided web component, `<manawave-marquee>`.
+If you plan on doing any [override](/docs/guides/overrides), you should [avoid using the web component](/docs/guides/initialization/#dom)
+and do everything in javascript. It has to do with [FOUC issues](#fouc).
+:::
+
 For this example, notice how there's no `autoplay` nor `direction` [attribute](/docs/reference/attributes), but we set it anyways.
 That's because we fetched the `MW` instance and applied these attributes there.
 
 <Sandpack html={reusingHTML} js={reusingJS} />
 
 :::caution[You might get FOUC if you use overrides]
-If you use [overrides](/docs/reference/overrides), you might get [FOUC](https://en.wikipedia.org/wiki/Flash_of_unstyled_content).
-That's because first, the document (web page content) has to load, then the marquees you initialized.
-After the marquee initializes (repeats content across space), you can finally use `getMW()`. This multi-load step gives a lot of opportunity for
-content to flash in and out as they're getting laid out across the page. Overrides makes this very visible.
+
+<a id="fouc"></a>
+
+If you use [overrides](/docs/reference/overrides), you might get
+[FOUC](https://en.wikipedia.org/wiki/Flash_of_unstyled_content). That's because
+first, the document (web page content) has to load, then the marquees you
+initialized. After the marquee initializes (repeats content across space), you
+can finally use `getMW()`. This multi-load step gives a lot of opportunity for
+content to flash in and out as they're getting laid out across the page.
+Overrides makes this very visible.
+
 :::

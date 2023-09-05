@@ -7,7 +7,7 @@ import Sandpack from "@components/sandpack";
 import domHTML from "./_src/initialization/dom/index.html?raw";
 import domJS from "./_src/initialization/dom/index.js?raw";
 
-There are two main ways to initialize and use MANAWAVE: using the `<manawave-marquee>` web component or `MW` object.
+There are two main ways to initialize and use MANAWAVE: using the `<manawave-marquee>` web component or `MW` [object](#dom).
 
 Generally for both approaches, MANAWAVE will take whatever is in the element (the children) and repeat them across its allocated space.
 
@@ -22,6 +22,8 @@ You can use the `<manawave-marquee>` web component to initialize MANAWAVE withou
 <Sandpack activeFile="index.html" />
 
 ## Classic DOM Element
+
+<a id="dom"></a>
 
 You can also initialize MANAWAVE using an existing element. You can pass in an element or CSS selector query to initialize.
 
