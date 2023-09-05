@@ -2,7 +2,7 @@
   description = "This is a template to make amazing projects or other templates.";
 
   inputs = {
-    nixpkgs.url = "github:NixOs/nixpkgs";
+    nixpkgs.url = "github:NixOs/nixpkgs/release-23.05";
     flake-utils.url = "github:numtide/flake-utils";
   };
 
@@ -10,12 +10,13 @@
     flake-utils.lib.eachDefaultSystem (system:
       let
         pkgs = import nixpkgs { inherit system; };
+        nodePkgs = pkgs.nodePackages;
       in
       rec {
         devShells.default = pkgs.mkShell {
           packages = [
             pkgs.nodejs_18
-            pkgs.act
+            nodePkgs.pnpm
           ];
 
           shellHook = ''
