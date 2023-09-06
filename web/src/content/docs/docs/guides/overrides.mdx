@@ -2,3 +2,70 @@
 title: Overriding Default Behavior
 description: Learn how to override default marquee behavior
 ---
+
+import Sandpack from "@components/sandpack";
+
+:::caution
+Overriding is intended for folks more familiar with angles, javascript, and MANAWAVE
+:::
+
+If you would like to create highly customized motion in MANAWAVE, you can override the defaults.
+Overrides are here to give you control to pretty much all of MANAWAVE (or as much as what's sensible).
+A good example of this is the realm, [Senbonzakura](/realms/senbonzakura).
+
+This guide is more of a general introduction or starter to using overrides. If you want deeper understanding, you should read the [overrides reference page](/docs/reference/overrides).
+
+## Overriding Overall Marquee
+
+### onLayout
+
+Invoked each time the marquee has to lay its entire grid of repeated content out again.
+This usually happens when the marquee is initialized, and when the viewport is substantially resized.
+
+<Sandpack />
+
+### onMove
+
+Invoked each time all the marquee content move.
+
+<Sandpack />
+
+### onLoop
+
+Invoked each time marquee content moves from one end of the marquee to the other.
+
+<Sandpack />
+
+## Overriding Content Lifecycle
+
+These methods give you direct access to each rendered DOM element of all marquee content.
+
+:::danger[Never assume marquee elements last long]
+These elements get _created and destroyed frequently_, so if you plan on keeping any references to it,
+be very careful of memory leakage. These lifecycle hooks are here for you to _safely_ setup or destroy any
+customized behavior.
+:::
+
+### onElementCreated
+
+Invoked when an element is created. This happens when a layout occurs (marquee initialized or website resized).
+
+<Sandpack />
+
+### onElementDraw
+
+Invoked when an element is rendered or updated. This happens when the element moves.
+
+<Sandpack />
+
+### onElementDestroyed
+
+Invoked when an element is destroyed. This happens when a layout occurs (marquee initialized or website resized).
+You'll notice this is exactly what happens in `onElementCreated`. Basically, when a layout occurs,
+all the old elements are destroyed and replaced by completely new ones.
+
+<Sandpack />
+
+:::tip[These methods could be overriden during runtime]
+This means you can swap out what happens (the implementation) for these methods dynamically.
+:::

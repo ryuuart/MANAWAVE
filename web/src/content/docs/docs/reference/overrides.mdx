@@ -2,3 +2,31 @@
 title: Overrides
 description: A list of available override hooks to override and customize MANAWAVE motion and defaults
 ---
+
+import Sandpack from "@components/sandpack";
+
+## Items
+
+A marquee has a _grid_ of _items_ repeating across it. An item is an instance of repeatable content.
+
+<Sandpack />
+
+## Pipeline
+
+Before starting, you need to know that MANAWAVE has two pipelines split into multiple phases to get all marquee functionality working.
+The phases written here are **ordered from start to finish**.
+
+### Marquee Pipeline
+
+This pipeline controls how _all_ items
+
+#### 1. Layout
+
+#### 2. Movement
+
+#### 3. Loop
+
+### DOM Pipeline
+
+You can basically treat this pipeline as a "lifecycle" structure. Each item in the marquee is represented in the DOM
+that gets destroyed and created over time.
