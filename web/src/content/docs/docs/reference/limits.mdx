@@ -2,3 +2,24 @@
 title: Limitations
 description: A list of limitations for MANAWAVE
 ---
+
+While MANAWAVE can be customized thoroughly, there are a couple things that may be deal-breakers.
+
+## No frameworks
+
+MANAWAVE is NOT associated with any web framework (React, Vue, Svelte, etc.) nor is there an API for it.
+This is because MANAWAVE is part challenge to create something that should work out-of-box for **any** HTML & CSS website.
+
+## No de-initialization nor destruction
+
+MANAWAVE is not destructable. It stays in memory the moment it's initialized.
+
+## Does not keep track its position
+
+When a resize or relayout occurs, MANAWAVE does not keep track of its current "position" or where items should be synced to.
+It instead, layouts everything again, fresh.
+
+## Not fully behaving like native HTML & CSS
+
+Margin collapsing between [items](/docs/reference/behavior) do not happen.
+[Blocks](https://developer.mozilla.org/en-US/docs/Glossary/Block/CSS) do not span the width of its parent container.
