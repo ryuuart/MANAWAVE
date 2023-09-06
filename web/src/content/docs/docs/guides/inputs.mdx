@@ -1,0 +1,51 @@
+---
+title: Using User Input
+description: Learn how to have MANAWAVE marquee respond to user input
+---
+
+import Sandpack from "@components/sandpack";
+
+MANAWAVE can take advantage of user inputs by applying browser events. This builds on [overriding default behaviors](/docs/guides/overrides),
+so if you want to find out more, read there. A more artistic example can be found visiting the [HYPERPINK Realm](/realms/hyperpink).
+
+## Controlling direction with keyboard
+
+For this example, you're going to use your keys to control the direction of the marquee.
+It should feel like eight-direction movement in old-school JRPGs.
+
+### Step 1: Setup
+
+Generally, if you're going to start working with more customized behavior, you should
+initialize a [DOM element marquee](/docs/guides/initialization/#dom). It should have some
+[attributes](/docs/reference/attributes) to define the initial state.
+
+<Sandpack />
+
+### Step 2: Listen
+
+Now, you need to gather data for the `MW` instance. `MW` is just a controller for the MANAWAVE marquee.
+It just needs data to act upon. For our example, we'll go with keyboard data.
+
+<Sandpack />
+
+### Step 3: Apply
+
+Now you can perform changes to `MW` given data. This will let you create a marquee that reacts with
+what users do interactively.
+
+<Sandpack />
+
+:::tip[What's lerp?]
+The `lerp` function is the [linear interpolation](https://en.wikipedia.org/wiki/Linear_interpolation) function. It's commonly used in anything animated.
+:::
+
+## Controlling direction with mouse
+
+Here's another completed example, but for mouse movements.
+
+<Sandpack />
+
+:::tip[What's atan2?]
+`atan2` is a two-parameter [arctangent function](https://en.wikipedia.org/wiki/Atan2). It's used in this example to accurately
+get the angle or direction of a coordinate.
+:::

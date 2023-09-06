@@ -1,0 +1,68 @@
+---
+title: Attributes
+description: A list of available attributes to customize or configure
+---
+
+import { Tabs, TabItem } from "@astrojs/starlight/components";
+
+MANAWAVE **attributes** are similar to [HTML attributes](https://developer.mozilla.org/en-US/docs/Web/HTML/Attributes).
+They are descriptions to give you control over behaviors in the MANAWAVE marquee.
+
+There are three and they look like this:
+
+<Tabs>
+  <TabItem label="Web Component">
+
+    ```html
+    <manawave-marquee direction="122.5" speed="2" autoplay>content</manawave-marquee>
+    <manawave-marquee direction="up" speed="0.5">content</manawave-marquee>
+    ```
+
+  </TabItem>
+  <TabItem label="DOM Element">
+
+    ```html
+    <div data-direction="122.5" data-speed="2" data-autoplay>content</div>
+    <article data-direction="up" data-speed="0.5">content</article>
+    ```
+
+  </TabItem>
+</Tabs>
+
+:::note
+The attribute names between classic HTML elements and web components (custom elements) are different to [comply with web standards](https://developer.mozilla.org/en-US/docs/Learn/HTML/Howto/Use_data_attributes)
+:::
+
+## Values
+
+Possible values for each attribute.
+
+| Attribute                    | Type                      | Example                 |
+| ---------------------------- | ------------------------- | ----------------------- |
+| `direction`,`data-direction` | `number` or a `Direction` | 10, 123.5, 534, -10.382 |
+| `speed`, `data-speed`        | `number`                  | 10, 12.127              |
+| `autoplay`, `data-autoplay`  | `boolean`                 | true, false             |
+
+:::note
+Like in HTML, [boolean attributes](https://developer.mozilla.org/en-US/docs/Glossary/Boolean/HTML) can denote `true` by presence.
+:::
+
+:::danger[Speed has some caveats]
+Speed **cannot** be less than 0. Also, there is a [bug in Firefox](https://bugzilla.mozilla.org/show_bug.cgi?id=739176) with subpixel rendering and animation.
+You will basically get a stutter for low speed values on Firefox. You can [see it for yourself](https://jsfiddle.net/r4qrnL0z/4/) and in the realm, [Senbonzakura](/realms/senbonzakura).
+:::
+
+## Types
+
+For any named value that should map to a more literal value.
+
+### Direction
+
+Used in directional attributes
+
+| Direction | Value |
+| --------- | ----- |
+| up        | 90    |
+| right     | 0     |
+| down      | 270   |
+| left      | 180   |

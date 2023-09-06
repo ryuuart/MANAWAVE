@@ -1,0 +1,89 @@
+---
+title: Design Principles
+description: Principles that define the advantages of using MANAWAVE
+---
+
+Generally, all design principles really boil down to MANAWAVE marquee behaving like a
+native HTML element.
+
+## Familiar
+
+MANAWAVE is familiar for anyone who codes in HTML or CSS, even beginners. Remember the [marquee](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/marquee) element?
+It's very easy to get a basic marquee working.
+
+```html
+<marquee>content</marquee>
+```
+
+<marquee scrollamount="2">content</marquee>
+
+A marquee would work on anything that would be looped across the screen.
+
+<marquee direction="up" scrollamount="2">
+  <pre>This will loop even though it's not just text</pre>
+</marquee>
+
+The reason why a traditional `<marquee>` is used as example is because
+using MANAWAVE should be as easy as using a `<marquee>`. You only
+need to put content in the tag and it should work. If you want to
+configure its behavior, you can pass in [attributes](/docs/reference/attributes).
+
+:::caution[MANAWAVE is not a \<marquee\>]
+You'll notice that MANAWAVE does not share attributes and behavior with `<marquee>` 1-to-1.
+This is intentional to align MANAWAVE towards simpler and more common usages of marquees.
+Reading about [MANAWAVE's behavior](/docs/reference/behavior) will point out to you these differences.
+:::
+
+## Standard
+
+To put it shortly, using HTML & CSS in MANAWAVE just works. You don't have to account for
+weirdness on MANAWAVE's end [most of the time](/docs/reference/limits).
+
+Using MANAWAVE should feel like authoring HTML & CSS content regularly.
+Special cases or exceptions are minimal. There's nothing special about
+using MANAWAVE. It's just a marquee. It does everything you expect should happen.
+
+This means any existing style or content you have can be used in MANAWAVE without too much hassle.
+If the content is responsive, MANAWAVE accomodates for that too.
+
+## <a id="customizable"></a> Customizable
+
+As a start, MANAWAVE can be decently customized through its attributes.
+This makes it low-friction for simple use cases, and even more smooth for web dev beginners.
+MANAWAVE doesn't need that much JavaScript configuration to do stuff any marquee should do.
+
+For more advanced developers, MANAWAVE considers wacky use cases beyond what's expected for a traditional marquee. You can see a bunch of these in the [Realms](/#realms).
+
+Because a marquee shouldn't just move things across a screen and could be interactive,
+customizability is something baked in. You can [override default behaviors](/docs/guides/overrides)
+to make MANAWAVE fit more to what you think a marquee should do.
+
+:::tip[From Ryuuart]
+Personally, I even think it's not customizable enough. When I set out to make MANAWAVE,
+I envisioned a marquee being more than a marquee. It should move in circles, dance across space,
+express any infinite motion across a space. I kinda realized that it's not a marquee anymore —
+that's like some wacky DOM particle system. This is something I wish for MANAWAVE in some future.
+
+I envision really wild use cases for "marquees", like masonry grids that pull in data
+and load different, dynamic formats over time. Or if you want to completely shift layouts.
+Or if you want elements flying across a given space, even in 3D (with z-coordinate) in random motion paths.
+
+MANAWAVE can't do what I mentioned perfectly, but it should give you a taste of it.
+:::
+
+## Performant
+
+MANAWAVE should be like using a `<marquee>`. A `<marquee>` loads everything near
+instantaneously and you don't even have to think about loading states. It doesn't
+intrude on your website. It shouldn't overwhelm nor break your website (for [regular cases](/docs/reference/limits)). When the viewport resizes,
+it doesn't nuke the website. A MANAWAVE marquee should feel invisible and a natural part of a website.
+
+## Isolated
+
+Using MANAWAVE should not leak any effects onto other HTML elements or CSS styles.
+Anything relating to a given MANAWAVE marquee only affects its children. This makes
+MANAWAVE a [progressive enhancement](https://developer.mozilla.org/en-US/docs/Glossary/Progressive_Enhancement) on vanilla HTML & CSS websites.
+Your existing content does not need to adapt for MANAWAVE. You can wrap it on existing content and it'll work out fine.
+
+If you choose to [not use MANAWAVE](/docs/reference/limits), removing it will not break your website.
+Removing MANAWAVE will [gracefully degrade](https://developer.mozilla.org/en-US/docs/Glossary/Graceful_degradation) and you'll just have your marquee children.

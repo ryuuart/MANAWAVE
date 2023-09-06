@@ -1,0 +1,58 @@
+---
+title: Behavior
+description: A description of how MANAWAVE works under the hood
+---
+
+import Sandpack from "@components/sandpack";
+
+This will give you a more detailed look at how MANAWAVE works. It's mostly for you to more
+predictably use MANAWAVE.
+
+## Items
+
+Each piece of repeatable content in MANAWAVE is called an **item**.
+The most important aspect of an **item** is its _measurement_.
+
+<Sandpack />
+
+### Measurements
+
+A _measurement_ is the _width_ and _height_ of an **item**. Measurements are calculated on layout.
+
+The way an item is measured is by boxing the DOM content into an `inline-block` wrapper.
+This creates a new [block formatting context](https://developer.mozilla.org/en-US/docs/Web/Guide/CSS/Block_formatting_context), which
+allows us to capture the total [margin](https://developer.mozilla.org/en-US/docs/Web/CSS/margin) + content of the content.
+
+This means measurements respect the [new line behavior](https://developer.mozilla.org/en-US/docs/Glossary/Block/CSS) of block elements.
+It **does not respect** block elements stretching their width.
+
+### Grid
+
+Items are laid out across a grid sized according to the marquee container width and height. This means
+there are a limited set of items that depend on the size of the marquee.
+
+## Pipeline
+
+MANAWAVE has two pipelines split into multiple phases to get all marquee functionality working.
+The phases written here are **ordered from start to finish**.
+
+### Marquee Pipeline
+
+This pipeline controls how _all_ items
+
+#### 1. Layout
+
+#### 2. Movement
+
+#### 3. Loop
+
+### DOM Pipeline
+
+You can basically treat this pipeline as a "lifecycle" structure. Each item in the marquee is represented in the DOM
+that gets destroyed and created over time.
+
+#### 1. Element Created
+
+#### 2. Element Drawn
+
+#### 3. Element Destroyed

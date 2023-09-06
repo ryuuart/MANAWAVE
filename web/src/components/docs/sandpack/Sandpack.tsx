@@ -1,16 +1,23 @@
 import { useEffect, useState } from "react";
-import { Sandpack, SandpackThemeProp } from "@codesandbox/sandpack-react";
+import {
+  Sandpack,
+  SandpackInternalOptions,
+  SandpackThemeProp,
+} from "@codesandbox/sandpack-react";
 
 import defaultHTML from "./src/index.html?raw";
-import defaultJS from "./src/js/index?raw";
-import css from "./src/styles/style.css?raw";
+import defaultJS from "./src/index?raw";
+import defaultCSS from "./src/style.css?raw";
+import manawaveRaw from "../../../../node_modules/manawave/dist/manawave.js?raw";
 
 interface Props {
-  code?: string;
+  js?: string;
   html?: string;
+  css?: string;
+  activeFile?: string;
 }
 
-export default ({ code, html }: Props) => {
+export default ({ js: code, html, css, activeFile }: Props) => {
   const [theme, setTheme] = useState<SandpackThemeProp>(
     (window.document.documentElement.dataset.theme as SandpackThemeProp) ??
       "auto"
@@ -39,23 +46,33 @@ export default ({ code, html }: Props) => {
 
   return (
     <Sandpack
+      template="vite"
       customSetup={{
-        environment: "parcel",
-        devDependencies: {
-          "@babel/core": "7.2.0",
-        },
-        dependencies: {
-          manawave: "^0.11.0",
-        },
         entry: "index.html",
       }}
       files={{
-        "/index.html": { code: html ?? defaultHTML },
-        "/styles/style.css": { code: css, hidden: true },
-        "/js/index.js": {
-          code: code ?? defaultJS,
-          active: true,
+        "node_modules/manawave/package.json": {
+          code: JSON.stringify({
+            name: "manawave",
+            main: "./index.js",
+            type: "module",
+          }),
+          hidden: true,
         },
+        "node_modules/manawave/index.js": {
+          code: manawaveRaw,
+          hidden: true,
+        },
+        "/index.html": { code: html ?? defaultHTML },
+        "/style.css": { code: css ?? defaultCSS },
+        "/index.js": {
+          code: code ?? defaultJS,
+        },
+      }}
+      options={{
+        //@ts-ignore
+        activeFile: activeFile ?? "/index.js",
+        showConsoleButton: true,
       }}
       theme={theme}
     />

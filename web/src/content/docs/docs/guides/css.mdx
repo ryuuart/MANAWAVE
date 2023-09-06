@@ -1,0 +1,53 @@
+---
+title: CSS & Styling
+description: Learn how to style a MANAWAVE marquee
+---
+
+import Sandpack from "@components/sandpack";
+import marqueeHTML from "./_src/css/marquee/index.html?raw";
+import marqueeCSS from "./_src/css/marquee/style.css?raw";
+import contentHTML from "./_src/css/content/index.html?raw";
+import contentCSS from "./_src/css/content/style.css?raw";
+
+Styling MANAWAVE should be the same experience styling HTML regularly.
+
+## Styling the marquee
+
+You can style the marquee in any way you're familiar with it. Just make sure you
+apply any relevant attributes (`class`, `id`, or `style`) to the marquee element itself.
+If you use web components, you can style the marquee by using `manawave-marquee` as the selector.
+
+Here are some basic examples of things you could do to style the marquee container.
+{/* TODO: include link to page with more complicated examples */}
+
+<Sandpack activeFile="style.css" html={marqueeHTML} css={marqueeCSS} />
+
+:::danger[flex, grid, and inline display types don't work on marquees]
+By design, MANAWAVE doesn't interfere with your page's layout. It takes whatever is inside a designated space
+and repeats it across a space.
+
+If you want this functionality, you should make the [layout a child element of the marquee](#styling-content).
+:::
+
+## <a id="styling-content"></a>Styling the content
+
+Like styling the marquee container, you don't have to adjust how you regularly apply CSS to elements on a page.
+Also, content that would be responsive without the marquee
+_is still responsive_. You can think of anything that appears inside a marquee, even if content wraps, to repeat across that space.
+
+It's easier to show by example, so here is one. All of what CSS would normally do still applies.
+
+<Sandpack activeFile="style.css" html={contentHTML} css={contentCSS} />
+
+:::tip[Do you use Flexbox or CSS Grid?]
+If you plan on styling grids or flexboxes, you should make a wrapper element.
+:::
+
+### Caveats
+
+One thing you'll have to consider is that [margin collapsing](https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_box_model/Mastering_margin_collapsing) between repeated content **doesn't happen**.
+[This is by design](/docs/reference/behavior) to give you more control while balancing with [technical limitations](/docs/reference/limits).
+
+Also, MANAWAVE measures content by its explicit dimensions ([box](https://developer.mozilla.org/en-US/docs/Learn/CSS/Building_blocks/The_box_model)) including `padding` and `margin`.
+Because of this, `display: block` won't have the rest of its width if there's extra. Content will, however, still break onto the next line.
+To see how MANAWAVE does this more specifically, you should read on MANAWAVE's [behavior](/docs/reference/behavior).

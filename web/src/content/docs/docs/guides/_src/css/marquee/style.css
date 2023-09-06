@@ -1,0 +1,34 @@
+* {
+  box-sizing: border-box;
+}
+
+h1 {
+  font-size: 0.75rem;
+  font-weight: normal;
+  text-transform: uppercase;
+}
+
+manawave-marquee {
+  font-family: sans-serif;
+}
+
+.marquee {
+  padding: 1rem;
+  margin: 1rem;
+
+  border: 1px solid black;
+}
+
+.marquee--small {
+  width: 100px;
+  height: 100px;
+}
+
+.marquee--fill {
+  height: 200px;
+}
+
+#selected {
+  border-radius: 1rem;
+  background: bisque;
+}

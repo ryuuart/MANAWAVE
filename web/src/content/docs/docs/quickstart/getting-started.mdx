@@ -1,0 +1,95 @@
+---
+title: Getting Started
+description: Learn how to get manawave on your website
+---
+
+import { Tabs, TabItem } from "@astrojs/starlight/components";
+import Sandpack from "@components/sandpack";
+import webcomponentHTML from "./_src/getting-started/webcomponent/index.html?raw";
+
+## Installing MANAWAVE
+
+You can install MANAWAVE by a CDN `<script>` tag or with any `npm` utility.
+
+<Tabs>
+<TabItem label="npm">
+
+```sh
+# you can use `yarn` or `pnpm` too if you want
+npm install manawave
+```
+
+</TabItem>
+<TabItem label="cdn">
+
+**Classic Script (IIFE)**
+
+```html
+<!-- Add this to your HTML head  -->
+<script
+  defer
+  src="https://cdn.jsdelivr.net/npm/manawave@0.11.1/dist/manawave.min.js"
+></script>
+```
+
+**Module Script (ESM)**
+
+```html
+<!-- Add this to your HTML head -->
+<script
+  type="module"
+  src="https://unpkg.com/manawave@0.11.1/dist/manawave.js"
+></script>
+```
+
+:::note
+If you would like to use a different version, change the
+version after the `@`. You can see the available versions on
+[Github Releases](https://github.com/ryuuart/manawave/releases).
+:::
+
+:::tip[See an example]
+You can see an example on [Glitch](https://glitch.com/edit/#!/manawave-cdn-example)
+:::
+
+</TabItem>
+</Tabs>
+
+## Basic Usage
+
+You can get a basic marquee with just MANAWAVE's web component: `<manawave-marquee>`.
+There are more ways to [initialize MANAWAVE](/docs/guides/initialization).
+
+```html
+<manawave-marquee>
+  <div class="text-manawave">web</div>
+</manawave-marquee>
+```
+
+<Sandpack activeFile="index.html" html={webcomponentHTML} />
+
+## Basic Customization
+
+You can configure these marquees by supplying different [attributes](/docs/reference/attributes/).
+For web components, there are three: `autoplay`, `speed`, and `direction`. There are a [limited set of allowed values](/docs/reference/attributes/) for these attributes, but
+they enable the basic configurable and omnidirectional elements of MANAWAVE.
+
+:::caution
+[There are caveats](/docs/reference/attributes) for attributes if you don't use the `<manawave-marquee>` web component.
+:::
+
+<Sandpack activeFile="index.html" />
+
+:::note
+MANAWAVE has a [design principle of using minimal JavaScript](/docs/quickstart/principles#customizable) if customization is basic. You only import the library or include the script tag and that's it. That's why the web component (`<manawave-marquee>`) was included.
+:::
+
+## Next Steps
+
+While MANAWAVE's basic features should be sufficient for most _basic_ use cases, you can configure it more deeply.
+To see what's possible, you should look into the [Realms](/#realms).
+
+A good place to start understanding MANAWAVE is by looking through the guides.
+You can start by learning how to more deeply [initialize marquees](/docs/guides/initialization) or configure [an existing marquee](/docs/guides/reusing).
+
+It may also be a good idea to see what MANAWAVE [won't be able to do](/docs/reference/limits) for you.

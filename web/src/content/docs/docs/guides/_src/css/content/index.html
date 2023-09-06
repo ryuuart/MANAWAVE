@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="./style.css">
+    <script type="module" src="./index.js"></script>
+</head>
+
+<body>
+    <main>
+        <h1>Styling your marquee content</h1>
+        <h2>Applying CSS</h2>
+        <h3>Using different selectors</h3>
+        <manawave-marquee>
+            <div class="content">content</div>
+            <div id="special" class="content">content</div>
+            <div id="special" class="content" style="color: hotpink">content</div>
+        </manawave-marquee>
+        <h2>Different layouts</h2>
+        <h3>Grid</h3>
+        <manawave-marquee>
+            <div class="grid grid-col--2 grid-row--2">
+                <div class="content">1</div>
+                <div class="content">2</div>
+                <div class="content">3</div>
+                <div class="content">4</div>
+            </div>
+        </manawave-marquee>
+        <h3>Inline block wrapping</h3>
+        <p>If you have a really big monitor and browser window, you can still see this by resizing your browser around.
+        </p>
+        <manawave-marquee autoplay>
+            <div class="inline-block border bg--pink w--50 h--50 m--small"></div>
+            <div class="inline-block border bg--pink w--50 h--50 m--small"></div>
+            <div class="inline-block border bg--pink w--50 h--50 m--small"></div>
+            <div class="inline-block border bg--pink w--50 h--50 m--small"></div>
+            <div class="inline-block border bg--pink w--50 h--50 m--small"></div>
+            <div class="inline-block border bg--pink w--50 h--50 m--small"></div>
+            <div class="inline-block border bg--pink w--50 h--50 m--small"></div>
+            <div class="inline-block border bg--pink w--50 h--50 m--small"></div>
+        </manawave-marquee>
+    </main>
+</body>
+
+</html>
