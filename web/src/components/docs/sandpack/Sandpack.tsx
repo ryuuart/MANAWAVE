@@ -50,7 +50,7 @@ export default ({ js: code, html, css, activeFile }: Props) => {
           "@babel/core": "^7.2.0",
         },
         dependencies: {
-          manawave: "^0.11.1",
+          manawave: "^0.11.2",
         },
       }}
       files={{
