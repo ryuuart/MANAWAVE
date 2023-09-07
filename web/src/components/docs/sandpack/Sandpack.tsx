@@ -1,9 +1,7 @@
 import { useEffect, useState } from "react";
-import {
-  Sandpack,
-  SandpackInternalOptions,
-  SandpackThemeProp,
-} from "@codesandbox/sandpack-react";
+import { Sandpack } from "@codesandbox/sandpack-react";
+import { SandpackLogLevel } from "@codesandbox/sandpack-client";
+import type { SandpackThemeProp } from "@codesandbox/sandpack-react";
 
 import defaultHTML from "./src/index.html?raw";
 import defaultJS from "./src/index?raw";
@@ -18,13 +16,13 @@ interface Props {
 }
 
 export default ({ js: code, html, css, activeFile }: Props) => {
-  const [theme, setTheme] = useState<SandpackThemeProp>(
-    (window.document.documentElement.dataset.theme as SandpackThemeProp) ??
-      "auto"
-  );
+  const [theme, setTheme] = useState<SandpackThemeProp>("auto");
 
   useEffect(() => {
     const documentData = window.document.documentElement.dataset;
+
+    setTheme(documentData.theme as SandpackThemeProp);
+
     const mutationObserver = new MutationObserver(
       (mutations: MutationRecord[]) => {
         for (const mutation of mutations) {
@@ -42,13 +40,16 @@ export default ({ js: code, html, css, activeFile }: Props) => {
     return () => {
       mutationObserver.disconnect();
     };
-  }, []);
+  }, [theme]);
 
   return (
     <Sandpack
-      template="vite"
+      template="vanilla"
       customSetup={{
         entry: "index.html",
+        devDependencies: {
+          "@babel/core": "^7.2.0",
+        },
       }}
       files={{
         "node_modules/manawave/package.json": {
@@ -72,7 +73,7 @@ export default ({ js: code, html, css, activeFile }: Props) => {
       options={{
         //@ts-ignore
         activeFile: activeFile ?? "/index.js",
-        showConsoleButton: true,
+        logLevel: SandpackLogLevel.None,
       }}
       theme={theme}
     />
