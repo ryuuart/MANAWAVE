@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { Sandpack } from "@codesandbox/sandpack-react";
 import { SandpackLogLevel } from "@codesandbox/sandpack-client";
+import type { SandpackThemeProp } from "@codesandbox/sandpack-react";
 
 import defaultHTML from "./src/index.html?raw";
 import defaultJS from "./src/index?raw";
@@ -43,26 +44,26 @@ export default ({ js: code, html, css, activeFile }: Props) => {
 
   return (
     <Sandpack
-      template="vite"
+      template="vanilla"
       customSetup={{
         entry: "index.html",
-        dependencies: {
-          manawave: "^0.11.1",
+        devDependencies: {
+          "@babel/core": "^7.2.0",
         },
       }}
       files={{
-        // "node_modules/manawave/package.json": {
-        //   code: JSON.stringify({
-        //     name: "manawave",
-        //     main: "./index.js",
-        //     type: "module",
-        //   }),
-        //   hidden: true,
-        // },
-        // "node_modules/manawave/index.js": {
-        //   code: manawaveRaw,
-        //   hidden: true,
-        // },
+        "node_modules/manawave/package.json": {
+          code: JSON.stringify({
+            name: "manawave",
+            main: "./index.js",
+            type: "module",
+          }),
+          hidden: true,
+        },
+        "node_modules/manawave/index.js": {
+          code: manawaveRaw,
+          hidden: true,
+        },
         "/index.html": { code: html ?? defaultHTML },
         "/style.css": { code: css ?? defaultCSS },
         "/index.js": {
