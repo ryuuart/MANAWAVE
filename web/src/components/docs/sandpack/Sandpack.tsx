@@ -69,8 +69,6 @@ export default ({ js: code, html, css, activeFile }: Props) => {
       options={{
         //@ts-ignore
         activeFile: activeFile ?? "/index.js",
-        initMode: "user-visible",
-        initModeObserverOptions: { rootMargin: "1000px 0px" },
         logLevel: SandpackLogLevel.None,
       }}
       theme={theme}
