@@ -6,6 +6,7 @@ import type { SandpackThemeProp } from "@codesandbox/sandpack-react";
 import defaultHTML from "./src/index.html?raw";
 import defaultJS from "./src/index?raw";
 import defaultCSS from "./src/styles.css?raw";
+import manawaveRaw from "../../../../node_modules/manawave/dist/manawave.js?raw";
 
 interface Props {
   js?: string;
@@ -54,6 +55,18 @@ export default ({ js: code, html, css, activeFile }: Props) => {
         },
       }}
       files={{
+        "node_modules/manawave/package.json": {
+          code: JSON.stringify({
+            name: "manawave",
+            main: "./index.js",
+            type: "module",
+          }),
+          hidden: true,
+        },
+        "node_modules/manawave/index.js": {
+          code: manawaveRaw,
+          hidden: true,
+        },
         "/sandbox.config.json": {
           code: JSON.stringify({
             infiniteLoopProtection: false,
@@ -70,6 +83,7 @@ export default ({ js: code, html, css, activeFile }: Props) => {
         //@ts-ignore
         activeFile: activeFile ?? "/index.js",
         logLevel: SandpackLogLevel.None,
+        showConsoleButton: true,
       }}
       theme={theme}
     />
