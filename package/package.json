@@ -13,16 +13,20 @@
   "files": [
     "dist"
   ],
-  "types": "./dist/index.d.ts",
-  "main": "./dist/manawave.umd.cjs",
-  "module": "./dist/manawave.js",
   "exports": {
     ".": {
-      "import": "./dist/manawave.js",
+      "import": {
+        "types": "./dist/index.d.ts",
+        "default": "./dist/manawave.js"
+      },
       "require": "./dist/manawave.umd.cjs",
       "browser": "./dist/manawave.min.js"
     }
   },
+  "types": "./dist/index.d.ts",
+  "main": "./dist/manawave.umd.cjs",
+  "module": "./dist/manawave.js",
+  "browser": "./dist/manawave.min.js",
   "scripts": {
     "dev": "vite",
     "preview": "vite preview",
