@@ -1,9 +1,6 @@
 import { useEffect, useState } from "react";
-import {
-  Sandpack,
-  SandpackInternalOptions,
-  SandpackThemeProp,
-} from "@codesandbox/sandpack-react";
+import { Sandpack, SandpackThemeProp } from "@codesandbox/sandpack-react";
+import { SandpackLogLevel } from "@codesandbox/sandpack-client";
 
 import defaultHTML from "./src/index.html?raw";
 import defaultJS from "./src/index?raw";
@@ -18,13 +15,13 @@ interface Props {
 }
 
 export default ({ js: code, html, css, activeFile }: Props) => {
-  const [theme, setTheme] = useState<SandpackThemeProp>(
-    (window.document.documentElement.dataset.theme as SandpackThemeProp) ??
-      "auto"
-  );
+  const [theme, setTheme] = useState<SandpackThemeProp>("auto");
 
   useEffect(() => {
     const documentData = window.document.documentElement.dataset;
+
+    setTheme(documentData.theme as SandpackThemeProp);
+
     const mutationObserver = new MutationObserver(
       (mutations: MutationRecord[]) => {
         for (const mutation of mutations) {
@@ -42,7 +39,7 @@ export default ({ js: code, html, css, activeFile }: Props) => {
     return () => {
       mutationObserver.disconnect();
     };
-  }, []);
+  }, [theme]);
 
   return (
     <Sandpack
@@ -72,7 +69,9 @@ export default ({ js: code, html, css, activeFile }: Props) => {
       options={{
         //@ts-ignore
         activeFile: activeFile ?? "/index.js",
-        showConsoleButton: true,
+        initMode: "user-visible",
+        initModeObserverOptions: { rootMargin: "1000px 0px" },
+        logLevel: SandpackLogLevel.None,
       }}
       theme={theme}
     />
