@@ -1,5 +1,11 @@
 # manawave
 
+## 0.11.2
+
+### Patch Changes
+
+- [#228](https://github.com/ryuuart/manawave/pull/228) [`01ec9ca`](https://github.com/ryuuart/manawave/commit/01ec9ca8a5442f792b61191441ce8cd0269009e2) Thanks [@ryuuart](https://github.com/ryuuart)! - Fix playstate desync when not using autoplay
+
 ## 0.11.1
 
 ### Patch Changes
