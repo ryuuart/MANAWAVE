@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Sandpack, SandpackThemeProp } from "@codesandbox/sandpack-react";
+import { Sandpack } from "@codesandbox/sandpack-react";
 import { SandpackLogLevel } from "@codesandbox/sandpack-client";
 
 import defaultHTML from "./src/index.html?raw";
@@ -46,20 +46,23 @@ export default ({ js: code, html, css, activeFile }: Props) => {
       template="vite"
       customSetup={{
         entry: "index.html",
+        dependencies: {
+          manawave: "^0.11.1",
+        },
       }}
       files={{
-        "node_modules/manawave/package.json": {
-          code: JSON.stringify({
-            name: "manawave",
-            main: "./index.js",
-            type: "module",
-          }),
-          hidden: true,
-        },
-        "node_modules/manawave/index.js": {
-          code: manawaveRaw,
-          hidden: true,
-        },
+        // "node_modules/manawave/package.json": {
+        //   code: JSON.stringify({
+        //     name: "manawave",
+        //     main: "./index.js",
+        //     type: "module",
+        //   }),
+        //   hidden: true,
+        // },
+        // "node_modules/manawave/index.js": {
+        //   code: manawaveRaw,
+        //   hidden: true,
+        // },
         "/index.html": { code: html ?? defaultHTML },
         "/style.css": { code: css ?? defaultCSS },
         "/index.js": {
