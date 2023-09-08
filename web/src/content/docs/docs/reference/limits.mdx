@@ -10,6 +10,10 @@ While MANAWAVE can be customized thoroughly, there are a couple things that may 
 MANAWAVE is NOT associated with any web framework (React, Vue, Svelte, etc.) nor is there an API for it.
 This is because MANAWAVE is part challenge to create something that should work out-of-box for **any** HTML & CSS website.
 
+> It's something I'm thinking about for a future major version though.
+>
+> — Ryuuart
+
 ## No de-initialization nor destruction
 
 MANAWAVE is not destructable. It stays in memory the moment it's initialized.
@@ -21,5 +25,49 @@ It instead, layouts everything again, fresh.
 
 ## Not fully behaving like native HTML & CSS
 
+As much as MANAWAVE _should_ be invisible and behave just like any other HTML element that's styled, it doesn't
+escape the limitations of DOM manipulations with CSS. To keep things simple and performant, some things have to be given up,
+luckily with workarounds.
+
+### Margin collapsing between items does not happen
+
 Margin collapsing between [items](/docs/reference/behavior) do not happen.
 [Blocks](https://developer.mozilla.org/en-US/docs/Glossary/Block/CSS) do not span the width of its parent container.
+It's because how items are [measured](/docs/reference/behavior). There's a [workaround](/docs/guides/css), however.
+
+### Not all styles on the marquee work
+
+While most _should_, it hasn't been tested which ones don't. As long as it doesn't change the layout or content too much,
+it should work out ok.
+
+#### Flex and grid doesn't work
+
+That's based on the behavior of the marquee itself. After all, flex and grid lay their children out and MANAWAVE has
+its own method of laying stuff out. It won't be compatible with flex and grid. There's a [workaround](/docs/guides/css) for what you may be trying to do.
+
+#### Padding doesn't behave as expected
+
+MANAWAVE does not apply padding traditionally; it allocates extra space, but does not inset or "pad" the content with spacing.
+This is to maintain better performance, which MANAWAVE does by avoiding reflows. MANAWAVE uses a `ResizeObserver` internally
+to sync size changes and updates. "Listening" to changes in `padding` would mean reading these values and applying them in the system.
+This is [reflow-prone](https://gist.github.com/paulirish/5d52fb081b3570c81e3a), which makes it a risky choice.
+
+> From my testing, reflows are the number 1 performance slog for MANAWAVE. I try my hardest to avoid them.
+>
+> — Ryuuart
+
+:::tip[You can get around this]
+You can create a wrapper element and give margin to the marquee as a workaround.
+Here's a light example.
+
+```css
+.marquee {
+  margin: 1rem;
+}
+```
+
+```html
+<div class="container">
+  <manawave-marquee class="marquee"> content </manawave-marquee>
+</div>
+```
