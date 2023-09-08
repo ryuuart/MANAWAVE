@@ -3,8 +3,194 @@ title: Instance
 description: Reference on the MW object or getMW function
 ---
 
-There are two ways you receive a MANAWAVE instance to work with.
+There are two ways you receive a MANAWAVE instance to work with. A MANAWAVE instance is an
+object that lets you [configure](/docs/reference/attributes), [override](/docs/guides/overrides), or control the marquee.
 
 ## MW
 
+MW constructs and [initializes](/docs/guides/initialization) a marquee given a DOM element.
+
+```javascript
+// queried from the page
+const element = document.querySelector("#element");
+const mw = new MW(element);
+```
+
+## MW Options
+
+```javascript
+// selector with options
+const mw = new MW("#element", {
+  direction: "up",
+  speed: 2.1,
+  autoplay: true,
+});
+```
+
+Here are all the options you can use:
+
+### `speed`
+
+See [attributes](/docs/reference/attributes).
+
+### `direction`
+
+See [attributes](/docs/reference/attributes).
+
+### `autoplay`
+
+See [attributes](/docs/reference/attributes).
+
+### `onLayout`
+
+See [overrides](/docs/reference/overrides).
+
+### `onMove`
+
+See [overrides](/docs/reference/overrides).
+
+### `onLoop`
+
+See [overrides](/docs/reference/overrides).
+
+### `onElementCreated`
+
+See [overrides](/docs/reference/overrides).
+
+### `onElementDrawn`
+
+See [overrides](/docs/reference/overrides).
+
+### `onElementDestroyed`
+
+See [overrides](/docs/reference/overrides).
+
+## MW Methods
+
+### `eachElement`
+
+View or operate on each element in the marquee.
+
+```javascript
+mw.eachElement(({ element, id }) => {
+  element.style.background = "red";
+});
+```
+
+Takes a callback with two parameters:
+
+#### `element`
+
+**type**: `HTMLElement`
+
+The current [item](/docs/behavior/item) represented as an element on the marquee grid.
+
+#### `id`
+
+**type**: `string`
+
+An ID that uniquely identifies the current [item](/docs/behavior/item).
+
+### `speed`
+
+You can use this to read and write the value.
+
+```javascript
+mw.speed = 1.5;
+console.log(mw.speed); // 1.5
+```
+
+See [attributes](/docs/reference/attributes).
+
+### `direction`
+
+You can use this to read and write the value.
+
+```javascript
+mw.direction = 20;
+console.log(mw.direction); // 20
+```
+
+See [attributes](/docs/reference/attributes).
+
+### `autoplay`
+
+You can use this to write the value.
+
+See [attributes](/docs/reference/attributes).
+
+```javascript
+mw.autoplay = true;
+```
+
+### `onLayout`
+
+TODO: need to clarify its behavior
+
+```javascript
+mw.onLayout = ({ position, limits }) => {};
+```
+
+Triggers [relayout](/docs/reference/behavior).
+
+See [overrides](/docs/reference/overrides).
+
+### `onMove`
+
+TODO: need to clarify its behavior
+
+```javascript
+mw.onMove = ({ direction, speed, dt, t }) => {};
+```
+
+See [overrides](/docs/reference/overrides).
+
+### `onLoop`
+
+See [overrides](/docs/reference/overrides).
+
+### `onElementCreated`
+
+```javascript
+mw.onElementCreated = ({ element, id }) => {
+  element.style.background = "red";
+};
+```
+
+Triggers [relayout](/docs/reference/behavior).
+
+See [overrides](/docs/reference/overrides).
+
+### `onElementDrawn`
+
+```javascript
+mw.onElementCreated = ({ element, id, dt, t }) => {
+  element.textContent = t;
+};
+```
+
+Triggers [relayout](/docs/reference/behavior).
+
+See [overrides](/docs/reference/overrides).
+
+### `onElementDestroyed`
+
+```javascript
+mw.onElementCreated = ({ element, id }) => {
+  element.style.background = "initial";
+};
+```
+
+See [overrides](/docs/reference/overrides).
+
 ## getMW
+
+Given an `Element`, get an `MW` instance. You can use all the `MW` methods described above.
+
+```javascript
+const element = document.querySelector("#element");
+
+const mw = getMW(element);
+mw.play();
+mw.direction = 30;
+```
