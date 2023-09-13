@@ -151,6 +151,7 @@ export class Simulation {
                 // allow users to customize default behavior
                 let userOverride = this._pipeline.onLayout({
                     position: structuredClone(currObject.position),
+                    initialSize: this._sizes.item,
                     limits: this._sizes.root,
                 });
                 if (userOverride) {

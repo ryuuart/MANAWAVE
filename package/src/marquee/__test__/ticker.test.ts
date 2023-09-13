@@ -312,22 +312,47 @@ describe("marquee", () => {
                 const simulation = new Simulation(sizes, attr, scene, pipeline);
 
                 const testCase = [
-                    { position: { x: -2, y: 0 } },
-                    { position: { x: -1, y: 0 } },
-                    { position: { x: -2, y: 1 } },
-                    { position: { x: -1, y: 1 } },
+                    {
+                        position: { x: -2, y: 0 },
+                        size: { width: 2, height: 1 },
+                    },
+                    {
+                        position: { x: -1, y: 0 },
+                        size: { width: 1, height: 1 },
+                    },
+                    {
+                        position: { x: -2, y: 1 },
+                        size: { width: 2, height: 2 },
+                    },
+                    {
+                        position: { x: -1, y: 1 },
+                        size: { width: 1, height: 2 },
+                    },
                 ];
 
-                pipeline.onLayout = ({ position }) => {
+                pipeline.onLayout = ({ position, initialSize }) => {
                     position.x -= 1;
                     position.y += 1;
 
-                    return { position };
+                    return {
+                        position,
+                        size: {
+                            width:
+                                position.x < -1
+                                    ? initialSize.width + 1
+                                    : initialSize.width,
+                            height:
+                                position.y > 0
+                                    ? initialSize.height + 1
+                                    : initialSize.height,
+                        },
+                    };
                 };
 
                 simulation.setup();
 
                 Array.from(scene.contents).forEach((item, i) => {
+                    expect(item.size).toEqual(testCase[i].size);
                     expect(item.position).toEqual(testCase[i].position);
                 });
             });

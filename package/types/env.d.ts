@@ -29,6 +29,7 @@ type BoundingBox = {
 type LayoutHook = (data: {
     position: vec2;
     limits: Rect;
+    initialSize: Rect;
 }) => Partial<{ size: Rect; position: vec2 }> | void;
 
 // invoked when the logical item moves
