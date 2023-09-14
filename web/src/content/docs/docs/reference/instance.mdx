@@ -3,6 +3,8 @@ title: Instance
 description: Reference on the MW object or getMW function
 ---
 
+import { LinkCard } from "@astrojs/starlight/components";
+
 There are two ways you receive a MANAWAVE instance to work with. A MANAWAVE instance is an
 object that lets you [configure](/docs/reference/attributes), [override](/docs/guides/overrides), or control the marquee.
 
@@ -16,58 +18,156 @@ const element = document.querySelector("#element");
 const mw = new MW(element);
 ```
 
-## MW Options
+## <a id="options"></a> MW Options
 
 ```javascript
 // selector with options
-const mw = new MW("#element", {
+const MWOptions = {
   direction: "up",
   speed: 2.1,
   autoplay: true,
-});
+};
+
+const mw = new MW("#element", MWOptions);
 ```
 
 Here are all the options you can use:
 
-### `speed`
+### Attributes
 
-See [attributes](/docs/reference/attributes).
+Attributes have [specific values and formats](/docs/reference/attributes) to be followed.
 
-### `direction`
+```json
+{
+  "speed": 2.1,
+  "direction": 190.5,
+  "autoplay": true
+}
+```
 
-See [attributes](/docs/reference/attributes).
+#### `speed`
 
-### `autoplay`
+**type**: `number`
 
-See [attributes](/docs/reference/attributes).
+```json
+{
+  "speed": 2.1
+}
+```
 
-### `onLayout`
+#### `direction`
 
-See [overrides](/docs/reference/overrides).
+**type**: `number`
 
-### `onMove`
+```json
+{
+  "direction": 195.5
+}
+```
 
-See [overrides](/docs/reference/overrides).
+#### `autoplay`
 
-### `onLoop`
+**type**: `boolean`
 
-See [overrides](/docs/reference/overrides).
+```json
+{
+  "autoplay": true
+}
+```
 
-### `onElementCreated`
+### Marquee Pipeline
 
-See [overrides](/docs/reference/overrides).
+These are the properties:
 
-### `onElementDrawn`
+- `onLayout`
+- `onMove`
+- `onLoop`
 
-See [overrides](/docs/reference/overrides).
+You should refer to the [methods](#methods) section below for details. Instead of being assigned to a constant,
+you would use the callback in the options object.
 
-### `onElementDestroyed`
+<details>
+  <summary>Example</summary>
 
-See [overrides](/docs/reference/overrides).
+```javascript
+const mw = new MW("...", {
+  onLayout: ({ initialSize, position, limits}) => { ... }
+})
+```
+
+</details>
+
+<LinkCard title="Marquee Pipeline Methods" href="#methods-marquee" />
+
+### DOM Pipeline
+
+These are the properties:
+
+- `onElementCreated`
+- `onElementDrawn`
+- `onElementDestroyed`
+
+You should refer to the [methods](#methods) section below for details. Instead of being assigned to a constant,
+you would use the callback in the options object.
+
+<details>
+  <summary>Example</summary>
+
+```javascript
+const mw = new MW("...", {
+  onElementCreated: ({ element, id }) => { ... }
+})
+```
+
+</details>
+
+<LinkCard title="DOM Pipeline Methods" href="#methods-dom" />
 
 ## MW Methods
 
-### `eachElement`
+These may look similar to the options because they are.
+These methods are intended to dynamically update the marquee during runtime.
+
+:::caution[Don't initialize the marquee with these methods]
+While it may be tempting to [initialize](/docs/guides/initialization) by only using
+these methods, it could cause [FOUC]() because of [relayout](/docs/reference/behavior).
+If you're planning to initialize the state of a marquee, you should use the [options object](#options).
+
+<details>
+<summary>Example</summary>
+
+```html
+<div id="manawave-marquee">Content</div>
+```
+
+**DON'T**
+
+```js
+const mw = new MW("#manawave-marquee");
+mw.autoplay = true;
+mw.speed = 2;
+mw.direction = 12;
+mw.onLayout = ({ position, limits }) => { ... };
+```
+
+**DO**
+
+```js
+const mw = new MW("#manawave-marquee", {
+  autoplay: true,
+  speed: 2,
+  direction: 12,
+  onLayout: ({ position, limits}) => { ... }
+});
+```
+
+</details>
+
+:::
+
+### <a id="methods"></a> General Methods
+
+#### `eachElement`
 
 View or operate on each element in the marquee.
 
@@ -79,19 +179,24 @@ mw.eachElement(({ element, id }) => {
 
 Takes a callback with two parameters:
 
-#### `element`
+##### `element`
 
 **type**: `HTMLElement`
 
 The current [item](/docs/behavior/item) represented as an element on the marquee grid.
 
-#### `id`
+##### `id`
 
 **type**: `string`
 
 An ID that uniquely identifies the current [item](/docs/behavior/item).
 
-### `speed`
+### Attributes
+
+These are designated differently from the attributes found in the options. You use these methods
+to read and write changes to the attribute (except autoplay) over time (during runtime).
+
+#### `speed`
 
 You can use this to read and write the value.
 
@@ -100,9 +205,7 @@ mw.speed = 1.5;
 console.log(mw.speed); // 1.5
 ```
 
-See [attributes](/docs/reference/attributes).
-
-### `direction`
+#### `direction`
 
 You can use this to read and write the value.
 
@@ -111,45 +214,57 @@ mw.direction = 20;
 console.log(mw.direction); // 20
 ```
 
-See [attributes](/docs/reference/attributes).
-
-### `autoplay`
+#### `autoplay`
 
 You can use this to write the value.
-
-See [attributes](/docs/reference/attributes).
 
 ```javascript
 mw.autoplay = true;
 ```
 
-### `onLayout`
+### <a id="methods-marquee"></a> Marquee Pipeline
 
-TODO: need to clarify its behavior
+These are just like the [MW Options](#options) except they are invoked during runtime.
+
+#### `onLayout`
 
 ```javascript
-mw.onLayout = ({ position, limits }) => {};
+mw.onLayout = ({ position, limits, initialSize }) => {
+  return {
+    size: { width: initialSize.width + 10, height: initialSize.height + 10 },
+    position,
+  };
+};
 ```
 
 Triggers [relayout](/docs/reference/behavior).
 
-See [overrides](/docs/reference/overrides).
-
-### `onMove`
-
-TODO: need to clarify its behavior
+#### `onMove`
 
 ```javascript
-mw.onMove = ({ direction, speed, dt, t }) => {};
+mw.onMove = ({ direction, speed, dt, t }) => {
+  return { direction: 999 };
+};
 ```
 
-See [overrides](/docs/reference/overrides).
+#### `onLoop`
 
-### `onLoop`
+```javascript
+mw.onLoop = ({ limits, itemSize, marqueeSize, direction }) => {
+  return {
+    limits: {
+      up: limits.up + 1,
+      right: limits.right + 1,
+      left: limits.left - 1,
+      down: limits.down - 1,
+    },
+  };
+};
+```
 
-See [overrides](/docs/reference/overrides).
+### <a id="methods-dom"></a> DOM Pipeline
 
-### `onElementCreated`
+#### `onElementCreated`
 
 ```javascript
 mw.onElementCreated = ({ element, id }) => {
@@ -159,9 +274,7 @@ mw.onElementCreated = ({ element, id }) => {
 
 Triggers [relayout](/docs/reference/behavior).
 
-See [overrides](/docs/reference/overrides).
-
-### `onElementDrawn`
+#### `onElementDrawn`
 
 ```javascript
 mw.onElementCreated = ({ element, id, dt, t }) => {
@@ -171,17 +284,13 @@ mw.onElementCreated = ({ element, id, dt, t }) => {
 
 Triggers [relayout](/docs/reference/behavior).
 
-See [overrides](/docs/reference/overrides).
-
-### `onElementDestroyed`
+#### `onElementDestroyed`
 
 ```javascript
 mw.onElementCreated = ({ element, id }) => {
   element.style.background = "initial";
 };
 ```
-
-See [overrides](/docs/reference/overrides).
 
 ## getMW
 
