@@ -140,7 +140,7 @@ These methods are intended to dynamically update the marquee during runtime.
 
 :::caution[Don't initialize the marquee with these methods]
 While it may be tempting to [initialize](/docs/guides/initialization) by only using
-these methods, it could cause [FOUC](https://en.wikipedia.org/wiki/Flash_of_unstyled_content) because of [relayout](/docs/reference/behavior).
+these methods, it could cause [FOUC](https://en.wikipedia.org/wiki/Flash_of_unstyled_content) because of [relayout](/docs/reference/behavior/#relayout).
 If you're planning to initialize the state of a marquee, you should use the [options object](#options).
 
 <details>
@@ -190,7 +190,7 @@ mw.eachElement(({ element, id }) => {
 });
 ```
 
-See also: [behavior of rendering marquee logic](/docs/reference/behavior)
+See also: [behavior of rendering marquee logic](/docs/reference/behavior/#dom-pipeline)
 
 ### Attributes
 
@@ -247,15 +247,15 @@ reference about overrides](/docs/reference/overrides).
     limits: Rect;
 }) => Partial<{ size: Rect; position: vec2 }> | void;`
 
-Invoked when a layout or relayout occurs. This can override the final logical `size` and rendered `position` of
-each [item](/docs/reference/behavior). For logical size, the DOM element still renders its original content and size.
+Invoked when a layout or [relayout](/docs/reference/behavior/#relayout) occurs. This can override the final logical `size` and rendered `position` of
+each [item](/docs/reference/behavior/#items). For logical size, the DOM element still renders its original content and size.
 The final `size` refers to artificially adding or removing space for items. You can either add more spacing or squish items, in other words.
 
 You're given the `initialSize` and `position` to reuse original values if you wish. You're also given the `limits` or bounding box of the marquee
 for your utility. None of these are needed to use `onLayout`, but they're given if you want em'.
 
-Triggers [relayout](/docs/reference/behavior) \
-See also: [behavior of layout](/docs/reference/behavior)
+Triggers [relayout](/docs/reference/behavior#relayout) \
+See also: [behavior of layout](/docs/reference/behavior/#1-layout)
 
 ```javascript
 mw.onLayout = ({ position, limits, initialSize }) => {
@@ -298,7 +298,7 @@ mw.onMove = ({ direction, speed, dt, t }) => {
     direction: vec2;
 }) => Partial<{ limits: BoundingBox }> | void;`
 
-`onLoop` is invoked when an [item](/docs/reference/behavior) moves (wraps around) from one end or side of the marquee to the opposite.
+`onLoop` is invoked when an [item](/docs/reference/behavior/#items) moves (wraps around) from one end or side of the marquee to the opposite.
 You get the `limits`, the bounding box of the marquee. You also get some original values like the original `itemSize`, `marqueeSize`, and `direction`.
 The `marqueeSize` refers to the pixel width and height of the MANAWAVE marquee DOM element.
 
@@ -330,14 +330,14 @@ reference about overrides](/docs/reference/overrides).
     id: string;
 }) => Partial<{ element: HTMLElement }> | void`
 
-`onElementCreated` is invoked when a marquee [item](/docs/reference/behavior) is rendered onto the marquee. You receive
+`onElementCreated` is invoked when a marquee [item](/docs/reference/behavior/#items) is rendered onto the marquee. You receive
 an `element` which is the original rendered HTML element. You can modify it just like any other HTML element. You also get the item's unique `id`
 to reference this specific item.
 
 You can _maybe_ replace the rendered HTML element with your own by returning it, but this hasn't been tested.
 This might be removed in the future.
 
-Triggers [relayout](/docs/reference/behavior).
+Triggers [relayout](/docs/reference/behavior/#relayout).
 
 ```javascript
 mw.onElementCreated = ({ element, id }) => {
@@ -354,14 +354,14 @@ mw.onElementCreated = ({ element, id }) => {
     t: DOMHighResTimeStamp;
 }) => void`
 
-`onElementDrawn` is invoked when a rendered marquee [item](/docs/reference/behavior) is re-rendered or updated. You receive an `element`
+`onElementDrawn` is invoked when a rendered marquee [item](/docs/reference/behavior/#items) is re-rendered or updated. You receive an `element`
 representing the element that just updated. You can modify it just like any other HTML element. You also get the item's unique `id`
 to reference this specific item.
 
 You also get the animation delta time (difference in time) `dt` between frames and `t` the total animation time. This is useful for syncing
 external animations to MANAWAVE's animation timeline.
 
-Triggers [relayout](/docs/reference/behavior).
+Triggers [relayout](/docs/reference/behavior/#relayout).
 
 ```javascript
 mw.onElementCreated = ({ element, id, dt, t }) => {
@@ -376,7 +376,7 @@ mw.onElementCreated = ({ element, id, dt, t }) => {
     id: string;
 }) => void`
 
-`onElementDestroyed` is invoked when a [relayout](/docs/reference/behavior) occurs. A relayout would basically cause the marquee to reset,
+`onElementDestroyed` is invoked when a [relayout](/docs/reference/behavior/#relayout) occurs. A relayout would basically cause the marquee to reset,
 flushing all items and IDs. You receive the `element` that will be deleted with its unique `id`. This may be useful for any cleanup operations you should perform before
 the marquee gets reset.
 

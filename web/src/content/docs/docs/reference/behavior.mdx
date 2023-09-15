@@ -38,21 +38,53 @@ The phases written here are **ordered from start to finish**.
 
 ### Marquee Pipeline
 
-This pipeline controls how _all_ items
+This pipeline controls how _all_ items get positioned. Before anything goes through the pipeline, they're all measured.
 
 #### 1. Layout
 
+First, fit and repeat all the items across a grid spanning the width and height of the marquee. The only thing that's accounted here are the
+_current_ measurements.
+
 #### 2. Movement
 
+Second, move all the items. You can think of things as "everything is already set in place so we can move it now". By default,
+it moves `1px` to the right (0 degrees).The `speed` and `direction` attribute multiply the motion vector at this point.
+
 #### 3. Loop
+
+Third, if the item is outside the marquee bounding box, move the item to the "other" or opposite side. You can think of this as
+wrapping an item from one end to the other. For example, an item moved far left off the screen so it appears again on the right side.
 
 ### DOM Pipeline
 
 You can basically treat this pipeline as a "lifecycle" structure. Each item in the marquee is represented in the DOM
-that gets destroyed and created over time.
+that gets destroyed and created over time. This pipeline gets evaluated cooperatively with the **marquee pipeline**.
 
 #### 1. Element Created
 
+After all the items move (which means they're properly laid out), they're ready to be rendered. Rendering starts with
+creating a DOM element clone of the original content. The number of elements cloned depend on what's required for the grid.
+
+**As of this step, the item is not on the DOM**. This is very important for any pre-rendering / DOM tasks off page / document.
+
+This only happens **once per layout**. You can think of this as an initialization step.
+
 #### 2. Element Drawn
 
+The element is repeatedly updated and drawn onto the DOM. Usually, this is seen as items moving across the marquee.
+
 #### 3. Element Destroyed
+
+The element and item is destroyed during this step. It only happens during a [relayout](#relayout).
+The old element and item are destroyed and replaced by a new one.
+
+### Relayout
+
+In short, all the pipeline steps get done again.
+
+You may see the term "relayout" in the docs. This basically means the entire marquee gets reset.
+Every single item and its position gets recalculated, re-evaluated, and redrawn as completely new versions of itself.
+Anything old gets discarded, including old items, data, and elements.
+
+Any unique ID gets refreshed and any DOM element is replaced with a new one. This is important if you have any
+[override](/docs/reference/overrides) that leave _references_ to this code (from a [memory management](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Memory_management) perspective).
