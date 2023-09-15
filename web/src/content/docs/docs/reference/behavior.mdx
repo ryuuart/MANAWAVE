@@ -72,6 +72,7 @@ This only happens **once per layout**. You can think of this as an initializatio
 #### 2. Element Drawn
 
 The element is repeatedly updated and drawn onto the DOM. Usually, this is seen as items moving across the marquee.
+This is when an item is "rendered".
 
 #### 3. Element Destroyed
 
@@ -88,3 +89,7 @@ Anything old gets discarded, including old items, data, and elements.
 
 Any unique ID gets refreshed and any DOM element is replaced with a new one. This is important if you have any
 [override](/docs/reference/overrides) that leave _references_ to this code (from a [memory management](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Memory_management) perspective).
+
+### Render
+
+When you see the term "render", it refers to the [DOM pipeline](#dom-pipeline).

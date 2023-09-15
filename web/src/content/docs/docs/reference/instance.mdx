@@ -20,7 +20,7 @@ const element = document.querySelector("#element");
 const mw = new MW(element);
 ```
 
-## <a id="options"></a> MW Options
+## MW Options
 
 ```javascript
 // selector with options
@@ -35,7 +35,7 @@ const mw = new MW("#element", MWOptions);
 
 Here are all the options you can use:
 
-### <a id="options-attributes"></a> Attributes
+### Attributes
 
 Attributes have [specific values and formats](/docs/reference/attributes) to be followed.
 
@@ -93,7 +93,7 @@ These are the properties:
 - `onMove`
 - `onLoop`
 
-You should refer to the [methods](#methods) section below for details. Instead of being assigned to a constant,
+You should refer to the [methods](#general-methods) section below for details. Instead of being assigned to a constant,
 you would use the callback in the options object.
 
 <details>
@@ -107,7 +107,7 @@ const mw = new MW("...", {
 
 </details>
 
-<LinkCard title="Marquee Pipeline Methods" href="#methods-marquee" />
+<LinkCard title="Marquee Pipeline Methods" href="#marquee-pipeline-1" />
 
 ### DOM Pipeline
 
@@ -117,7 +117,7 @@ These are the properties:
 - `onElementDrawn`
 - `onElementDestroyed`
 
-You should refer to the [methods](#methods) section below for details. Instead of being assigned to a constant,
+You should refer to the [methods](#general-methods) section below for details. Instead of being assigned to a constant,
 you would use the callback in the options object.
 
 <details>
@@ -131,7 +131,7 @@ const mw = new MW("...", {
 
 </details>
 
-<LinkCard title="DOM Pipeline Methods" href="#methods-dom" />
+<LinkCard title="DOM Pipeline Methods" href="#dom-pipeline-1" />
 
 ## MW Methods
 
@@ -141,7 +141,7 @@ These methods are intended to dynamically update the marquee during runtime.
 :::caution[Don't initialize the marquee with these methods]
 While it may be tempting to [initialize](/docs/guides/initialization) by only using
 these methods, it could cause [FOUC](https://en.wikipedia.org/wiki/Flash_of_unstyled_content) because of [relayout](/docs/reference/behavior/#relayout).
-If you're planning to initialize the state of a marquee, you should use the [options object](#options).
+If you're planning to initialize the state of a marquee, you should use the [options object](#mw-options).
 
 <details>
 <summary>Example</summary>
@@ -175,7 +175,7 @@ const mw = new MW("#manawave-marquee", {
 
 :::
 
-### <a id="methods"></a> General Methods
+### General Methods
 
 #### `eachElement`
 
@@ -200,7 +200,7 @@ to read and write changes to the attribute (except autoplay) over time (during r
 You might notice a "read" and "write" clause in the description. This means you can
 get the current value (read) or set it to some other value during runtime (write).
 
-See also: [MW Options Attributes](#options-attributes)
+See also: [MW Options Attributes](#attributes)
 
 <LinkCard
   title="Attribute Values and Formats"
@@ -233,9 +233,9 @@ You can use this to **write** the value.
 mw.autoplay = true;
 ```
 
-### <a id="methods-marquee"></a> Marquee Pipeline
+### Marquee Pipeline
 
-These are just like the [MW Options](#options) except they are invoked during runtime.
+These are just like the [MW Options](#mw-options) except they are invoked during runtime.
 These methods allow you to dynamically update the marquee during runtime. If you want to read more in-depth, there's [a
 reference about overrides](/docs/reference/overrides).
 
@@ -317,9 +317,9 @@ mw.onLoop = ({ limits, itemSize, marqueeSize, direction }) => {
 };
 ```
 
-### <a id="methods-dom"></a> DOM Pipeline
+### DOM Pipeline
 
-These are just like the [MW Options](#options) except they are invoked during runtime.
+These are just like the [MW Options](#mw-options) except they are invoked during runtime.
 These methods allow you to interact with each marquee DOM element during runtime. If you want to read more in-depth, there's [a
 reference about overrides](/docs/reference/overrides).
 
