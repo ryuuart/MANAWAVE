@@ -1,43 +1,65 @@
-# Billboard
+# MANAWAVE
 
-I've seen plent of marquees out there but we ain't out here just to make a simple marquee... We're always living in NYC Times Square online and people deserve to see that energy and vibe on the web more. That's why I'm making Billboard, the next generation _not-a-marquee_.
+MANAWAVE is a zero-dependency, customizable, and omnidirectional marquee library for vanilla javascript.
+
+Artistically, it's the website [manawave.art](https://manawave.art) that uses the MANAWAVE library. The website contains a lot of artistic and visual experimentation by @ryuuart.
 
 ## Getting Started
 
-```shell
-npm install billboard
+### Documentation
+
+You can take a deep dive into using MANAWAVE on the [documentation site](https://manawave.art/docs/quickstart).
+
+### Installation
+
+You can install in two ways: using a CDN script or using `npm`.
+
+#### CDN
+
+Include this in the `<head>` portion of your HTML.
+
+```html
+<script
+  defer
+  src="https://cdn.jsdelivr.net/npm/manawave@0.11.1/dist/manawave.min.js"
+></script>
 ```
 
-## Features
+#### npm
 
-You can configure it go in 4 directions at differing speeds.
+You can use `pnpm`, `yarn`, or the others instead of `npm` if you want.
 
-### Quick Example
-
-Should show you how to get by at a glance ;). There are two properties that you can configure the behavior of the `billboard-ticker`: direction and speed. These are self-explanatory. You can style the inner content of the `billboard-ticker` any way you'd like using good ol' CSS.
-
-```HTML
-<billboard-ticker direction="up" speed="2">
-    <!-- will repeat everything here even if there are multiple children under the ticker-->
-    <div class="content">
-        <p>Content 1</p>
-        <p>Content 2</p>
-    </div>
-    <div class="content">
-        <p>Content 1</p>
-        <p>Content 2</p>
-    </div>
-</billboard-ticker>
+```sh
+npm install manawave
 ```
 
-### Directions
+### Basic Example
 
-- up
-- down
-- left
-- right
-- angle (in degrees)
+```html
+<manawave-marquee speed="1.5" direction="35.5" autoplay>
+  Content&nbsp;
+</manawave-marquee>
+```
 
-## Todo
+## Developing
 
-- [ ] Responsiveness
+This repo is an [NX](https://nx.dev) monorepo using [pnpm workspaces](https://pnpm.io) with two packages:
+
+- [manawave](./package/)
+- [manawave-demo](./web/)
+
+You can find out more in those repos. There's also a Nix flake devshell if you want to use the included development configuration.
+
+You can use it like this:
+
+```sh
+nix develop
+```
+
+## Contributing
+
+MANAWAVE started as a solo hobby project so there's definitely something that could be improved. Don't be afraid to [create issues](https://github.com/ryuuart/manawave/issues/new) or PRs for the project. It's greatly appreciated!!
+
+## License
+
+[MIT License](./LICENSE) for everything!
