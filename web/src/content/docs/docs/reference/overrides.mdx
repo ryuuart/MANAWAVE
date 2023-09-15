@@ -1,22 +1,21 @@
 ---
 title: Overrides
-description: A list of available override hooks to override and customize MANAWAVE motion and defaults
+description: Technical explanation on overrides
 ---
 
-This is a reference for each [override](/docs/guides/overrides). Overrides are split by [pipeline](/docs/reference/behavior).
+import { LinkCard } from "@astrojs/starlight/components";
 
-## Marquee Pipeline
+Overrides give you the ability to "override" a default value or control of MANAWAVE.
+You usually do this by invoking or configuring [pipeline hooks](/docs/reference/instance/#mw-methods).
 
-### Layout
+These methods follow a uniform format: you get a set of inputs and you output the override.
+The inputs are generally good-to-haves, but you really don't need them at all. They're just utility.
 
-### Movement
+The override is in the output. For some hooks, you could return a value, and this value will be used
+_instead_ of what is default. **This does not mean internal state _understand_ this**. Again,
+you're just intercepting and overriding what would've been used.
 
-### Loop
-
-## DOM Pipeline
-
-### Element Created
-
-### Element Drawn
-
-### Element Destroyed
+<LinkCard
+  title="Get Started Overriding MANAWAVE"
+  href="/docs/guides/overrides"
+/>

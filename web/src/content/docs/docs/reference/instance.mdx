@@ -3,8 +3,397 @@ title: Instance
 description: Reference on the MW object or getMW function
 ---
 
-There are two ways you receive a MANAWAVE instance to work with.
+import { LinkCard } from "@astrojs/starlight/components";
+
+There are two ways you receive a MANAWAVE _instance_ to work with. A MANAWAVE instance is an
+object that lets you [configure](/docs/reference/attributes), [override](/docs/guides/overrides), or control the marquee.
+Also, an instance refers to the code that's managing and updating the marquee both in logic and on the DOM.
 
 ## MW
 
+MW constructs and [initializes](/docs/guides/initialization) a marquee given a DOM element.
+This will return you an instance.
+
+```javascript
+// queried from the page
+const element = document.querySelector("#element");
+const mw = new MW(element);
+```
+
+## MW Options
+
+```javascript
+// selector with options
+const MWOptions = {
+  direction: "up",
+  speed: 2.1,
+  autoplay: true,
+};
+
+const mw = new MW("#element", MWOptions);
+```
+
+Here are all the options you can use:
+
+### Attributes
+
+Attributes have [specific values and formats](/docs/reference/attributes) to be followed.
+
+```json
+{
+  "speed": 2.1,
+  "direction": 190.5,
+  "autoplay": true
+}
+```
+
+<LinkCard
+  title="Attribute Values and Formats"
+  href="/docs/reference/attributes"
+/>
+
+#### `speed`
+
+**type**: `number` \
+**default**: `1`
+
+```json
+{
+  "speed": 2.1
+}
+```
+
+#### `direction`
+
+**type**: `number` \
+**default**: `0`
+
+```json
+{
+  "direction": 195.5
+}
+```
+
+#### `autoplay`
+
+**type**: `boolean` \
+**default**: `false`
+
+```json
+{
+  "autoplay": true
+}
+```
+
+### Marquee Pipeline
+
+These are the properties:
+
+- `onLayout`
+- `onMove`
+- `onLoop`
+
+You should refer to the [methods](#general-methods) section below for details. Instead of being assigned to a constant,
+you would use the callback in the options object.
+
+<details>
+  <summary>Example</summary>
+
+```javascript
+const mw = new MW("...", {
+  onLayout: ({ initialSize, position, limits}) => { ... }
+})
+```
+
+</details>
+
+<LinkCard title="Marquee Pipeline Methods" href="#marquee-pipeline-1" />
+
+### DOM Pipeline
+
+These are the properties:
+
+- `onElementCreated`
+- `onElementDrawn`
+- `onElementDestroyed`
+
+You should refer to the [methods](#general-methods) section below for details. Instead of being assigned to a constant,
+you would use the callback in the options object.
+
+<details>
+  <summary>Example</summary>
+
+```javascript
+const mw = new MW("...", {
+  onElementCreated: ({ element, id }) => { ... }
+})
+```
+
+</details>
+
+<LinkCard title="DOM Pipeline Methods" href="#dom-pipeline-1" />
+
+## MW Methods
+
+These may look similar to the options because they are.
+These methods are intended to dynamically update the marquee during runtime.
+
+:::caution[Don't initialize the marquee with these methods]
+While it may be tempting to [initialize](/docs/guides/initialization) by only using
+these methods, it could cause [FOUC](https://en.wikipedia.org/wiki/Flash_of_unstyled_content) because of [relayout](/docs/reference/behavior/#relayout).
+If you're planning to initialize the state of a marquee, you should use the [options object](#mw-options).
+
+<details>
+<summary>Example</summary>
+
+```html
+<div id="manawave-marquee">Content</div>
+```
+
+**DON'T**
+
+```js
+const mw = new MW("#manawave-marquee");
+mw.autoplay = true;
+mw.speed = 2;
+mw.direction = 12;
+mw.onLayout = ({ position, limits }) => { ... };
+```
+
+**DO**
+
+```js
+const mw = new MW("#manawave-marquee", {
+  autoplay: true,
+  speed: 2,
+  direction: 12,
+  onLayout: ({ position, limits}) => { ... }
+});
+```
+
+</details>
+
+:::
+
+### General Methods
+
+#### `eachElement`
+
+**type**: `(data: { element: HTMLElement; id: string }) => void;`
+
+Iterate through each element in the marquee and gives you the rendered `element` for manipulation.
+You also get its current unique `id`.
+
+```javascript
+mw.eachElement(({ element, id }) => {
+  element.style.background = "red";
+});
+```
+
+See also: [behavior of rendering marquee logic](/docs/reference/behavior/#dom-pipeline)
+
+### Attributes
+
+These are designated differently from the attributes found in the options. You use these methods
+to read and write changes to the attribute (except autoplay) over time (during runtime).
+
+You might notice a "read" and "write" clause in the description. This means you can
+get the current value (read) or set it to some other value during runtime (write).
+
+See also: [MW Options Attributes](#attributes)
+
+<LinkCard
+  title="Attribute Values and Formats"
+  href="/docs/reference/attributes"
+/>
+
+#### `speed`
+
+You can use this to **read** and **write** the value.
+
+```javascript
+mw.speed = 1.5;
+console.log(mw.speed); // 1.5
+```
+
+#### `direction`
+
+You can use this to **read** and **write** the value.
+
+```javascript
+mw.direction = 20;
+console.log(mw.direction); // 20
+```
+
+#### `autoplay`
+
+You can use this to **write** the value.
+
+```javascript
+mw.autoplay = true;
+```
+
+### Marquee Pipeline
+
+These are just like the [MW Options](#mw-options) except they are invoked during runtime.
+These methods allow you to dynamically update the marquee during runtime. If you want to read more in-depth, there's [a
+reference about overrides](/docs/reference/overrides).
+
+#### `onLayout`
+
+**type**: `(data: {
+    initialSize: Rect;
+    position: vec2;
+    limits: Rect;
+}) => Partial<{ size: Rect; position: vec2 }> | void;`
+
+Invoked when a layout or [relayout](/docs/reference/behavior/#relayout) occurs. This can override the final logical `size` and rendered `position` of
+each [item](/docs/reference/behavior/#items). For logical size, the DOM element still renders its original content and size.
+The final `size` refers to artificially adding or removing space for items. You can either add more spacing or squish items, in other words.
+
+You're given the `initialSize` and `position` to reuse original values if you wish. You're also given the `limits` or bounding box of the marquee
+for your utility. None of these are needed to use `onLayout`, but they're given if you want em'.
+
+Triggers [relayout](/docs/reference/behavior#relayout) \
+See also: [behavior of layout](/docs/reference/behavior/#1-layout)
+
+```javascript
+mw.onLayout = ({ position, limits, initialSize }) => {
+  return {
+    size: { width: initialSize.width + 10, height: initialSize.height + 10 },
+    position: { x: position.x + 1, y: position.y + 1 },
+  };
+};
+```
+
+#### `onMove`
+
+**type**: `(data: {
+    direction: number;
+    speed: number;
+    dt: DOMHighResTimeStamp;
+    t: DOMHighResTimeStamp;
+}) => Partial<{
+    direction: number;
+}> | void;`
+
+`onMove` is invoked when all the items in the marquee moves. Right now, the only [override](/docs/reference/overrides) is `direction`, which allows you to
+programmatically or dynamically manipulate the resulting direction of all items. You're given some contextual data like the original `direction` or `speed` values.
+
+You also get the delta time (time difference), `dt`, between marquee animation frames and total time, `t`. This is useful for syncing external animations to
+the marquee's animation system.
+
+```javascript
+mw.onMove = ({ direction, speed, dt, t }) => {
+  return { direction: 999 };
+};
+```
+
+#### `onLoop`
+
+**type**: `(data: {
+    limits: BoundingBox;
+    itemSize: Rect;
+    marqueeSize: Rect;
+    direction: vec2;
+}) => Partial<{ limits: BoundingBox }> | void;`
+
+`onLoop` is invoked when an [item](/docs/reference/behavior/#items) moves (wraps around) from one end or side of the marquee to the opposite.
+You get the `limits`, the bounding box of the marquee. You also get some original values like the original `itemSize`, `marqueeSize`, and `direction`.
+The `marqueeSize` refers to the pixel width and height of the MANAWAVE marquee DOM element.
+
+Right now, you get to override the default `limits` to change _where_ an item should "loop" or wrap around the marquee.
+
+```javascript
+mw.onLoop = ({ limits, itemSize, marqueeSize, direction }) => {
+  return {
+    limits: {
+      up: limits.up + 1,
+      right: limits.right + 1,
+      left: limits.left - 1,
+      down: limits.down - 1,
+    },
+  };
+};
+```
+
+### DOM Pipeline
+
+These are just like the [MW Options](#mw-options) except they are invoked during runtime.
+These methods allow you to interact with each marquee DOM element during runtime. If you want to read more in-depth, there's [a
+reference about overrides](/docs/reference/overrides).
+
+#### `onElementCreated`
+
+**type**: `(data: {
+    element: HTMLElement;
+    id: string;
+}) => Partial<{ element: HTMLElement }> | void`
+
+`onElementCreated` is invoked when a marquee [item](/docs/reference/behavior/#items) is rendered onto the marquee. You receive
+an `element` which is the original rendered HTML element. You can modify it just like any other HTML element. You also get the item's unique `id`
+to reference this specific item.
+
+You can _maybe_ replace the rendered HTML element with your own by returning it, but this hasn't been tested.
+This might be removed in the future.
+
+Triggers [relayout](/docs/reference/behavior/#relayout).
+
+```javascript
+mw.onElementCreated = ({ element, id }) => {
+  element.style.background = "red";
+};
+```
+
+#### `onElementDrawn`
+
+**type**: `(data: {
+    element: HTMLElement;
+    id: string;
+    dt: DOMHighResTimeStamp;
+    t: DOMHighResTimeStamp;
+}) => void`
+
+`onElementDrawn` is invoked when a rendered marquee [item](/docs/reference/behavior/#items) is re-rendered or updated. You receive an `element`
+representing the element that just updated. You can modify it just like any other HTML element. You also get the item's unique `id`
+to reference this specific item.
+
+You also get the animation delta time (difference in time) `dt` between frames and `t` the total animation time. This is useful for syncing
+external animations to MANAWAVE's animation timeline.
+
+Triggers [relayout](/docs/reference/behavior/#relayout).
+
+```javascript
+mw.onElementCreated = ({ element, id, dt, t }) => {
+  element.textContent = t;
+};
+```
+
+#### `onElementDestroyed`
+
+**type**: `(data: {
+    element: HTMLElement;
+    id: string;
+}) => void`
+
+`onElementDestroyed` is invoked when a [relayout](/docs/reference/behavior/#relayout) occurs. A relayout would basically cause the marquee to reset,
+flushing all items and IDs. You receive the `element` that will be deleted with its unique `id`. This may be useful for any cleanup operations you should perform before
+the marquee gets reset.
+
+```javascript
+mw.onElementCreated = ({ element, id }) => {
+  element.style.background = "initial";
+};
+```
+
 ## getMW
+
+Given an `Element`, get an `MW` instance. You can use all the `MW` methods described above.
+
+```javascript
+const element = document.querySelector("#element");
+
+const mw = getMW(element);
+mw.play();
+mw.direction = 30;
+```
