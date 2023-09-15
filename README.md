@@ -6,6 +6,8 @@ Artistically, it's the website [manawave.art](https://manawave.art) that uses th
 
 ## Getting Started
 
+[![Edit MANAWAVE STARTER](https://codesandbox.io/static/img/play-codesandbox.svg)]
+
 ### Documentation
 
 You can take a deep dive into using MANAWAVE on the [documentation site](https://manawave.art/docs/quickstart).
