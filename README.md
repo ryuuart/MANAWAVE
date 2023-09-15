@@ -6,7 +6,7 @@ Artistically, it's the website [manawave.art](https://manawave.art) that uses th
 
 ## Getting Started
 
-[![Edit MANAWAVE STARTER](https://codesandbox.io/static/img/play-codesandbox.svg)]
+[![Edit MANAWAVE STARTER](https://codesandbox.io/static/img/play-codesandbox.svg)](https://codesandbox.io/s/manawave-starter-gj9x2k?file=/src/index.html)
 
 ### Documentation
 
