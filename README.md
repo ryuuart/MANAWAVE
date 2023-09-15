@@ -2,7 +2,7 @@
 
 MANAWAVE is a zero-dependency, customizable, and omnidirectional marquee library for vanilla javascript.
 
-Artistically, it's the website [manawave.art](https://manawave.art) that uses the MANAWAVE library. The website contains a lot of artistic and visual experimentation by @ryuuart.
+Artistically, it's the website [manawave.art](https://manawave.art) that uses the MANAWAVE library. The website contains a lot of artistic and visual experimentation by [ryuuart](https://github.com/ryuuart).
 
 ## Getting Started
 
