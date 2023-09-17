@@ -4,6 +4,7 @@ description: Learn how to override default marquee behavior
 ---
 
 import Sandpack from "@components/sandpack";
+import SandpackSource from "./_src/overrides/source";
 
 :::caution
 Overriding is intended for folks more familiar with angles, javascript, and MANAWAVE
@@ -22,19 +23,19 @@ This guide is more of a general introduction or starter to using overrides. If y
 Invoked each time the marquee has to lay its entire grid of repeated content out again.
 This usually happens when the marquee is initialized, and when the viewport is substantially resized.
 
-<Sandpack />
+<Sandpack html={SandpackSource.html} js={SandpackSource.js.layout} />
 
 ### onMove
 
 Invoked each time all the marquee content move.
 
-<Sandpack />
+<Sandpack html={SandpackSource.html} js={SandpackSource.js.move} />
 
 ### onLoop
 
 Invoked each time marquee content moves from one end of the marquee to the other.
 
-<Sandpack />
+<Sandpack html={SandpackSource.html} js={SandpackSource.js.loop} />
 
 ## Overriding Content Lifecycle
 
@@ -50,13 +51,13 @@ customized behavior.
 
 Invoked when an element is created. This happens when a layout occurs (marquee initialized or website resized).
 
-<Sandpack />
+<Sandpack html={SandpackSource.html} js={SandpackSource.js.elementCreated} />
 
 ### onElementDraw
 
 Invoked when an element is rendered or updated. This happens when the element moves.
 
-<Sandpack />
+<Sandpack html={SandpackSource.html} js={SandpackSource.js.elementDrawn} />
 
 ### onElementDestroyed
 
@@ -64,7 +65,7 @@ Invoked when an element is destroyed. This happens when a layout occurs (marquee
 You'll notice this is exactly what happens in `onElementCreated`. Basically, when a layout occurs,
 all the old elements are destroyed and replaced by completely new ones.
 
-<Sandpack />
+<Sandpack html={SandpackSource.html} js={SandpackSource.js.elementDeleted} />
 
 :::tip[These methods could be overriden during runtime]
 This means you can swap out what happens (the implementation) for these methods dynamically.
