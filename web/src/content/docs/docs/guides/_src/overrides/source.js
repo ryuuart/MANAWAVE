@@ -4,7 +4,7 @@ import moveJS from "./move.js?raw";
 import loopJS from "./loop.js?raw";
 import elementCreatedJS from "./elementCreated.js?raw";
 import elementDrawnJS from "./elementDrawn.js?raw";
-import elementDeletedJS from "./elementDeleted.js?raw";
+import elementDestroyedJS from "./elementDestroyed.js?raw";
 
 export default {
     html,
@@ -14,6 +14,6 @@ export default {
         loop: loopJS,
         elementCreated: elementCreatedJS,
         elementDrawn: elementDrawnJS,
-        elementDeleted: elementDeletedJS
+        elementDeleted: elementDestroyedJS
     }
 }
