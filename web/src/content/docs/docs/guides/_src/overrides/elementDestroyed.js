@@ -4,9 +4,9 @@ let currentText = "MANAWAVE";
 
 const mw = new MW("#manawave-marquee", {
     onElementCreated: ({ element }) => {
-        element.textContent = currentText;
+        element.firstChild.innerHTML = currentText + "&nbsp;";
     },
     onElementDestroyed: ({ element }) => {
-        currentText = "DESTROYED"
+        currentText = "DESTROYED";
     }
 })
