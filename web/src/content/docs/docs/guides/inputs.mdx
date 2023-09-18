@@ -4,6 +4,7 @@ description: Learn how to have MANAWAVE marquee respond to user input
 ---
 
 import Sandpack from "@components/sandpack";
+import SandpackSource from "./_src/inputs/source.js";
 
 MANAWAVE can take advantage of user inputs by applying browser events. This builds on [overriding default behaviors](/docs/guides/overrides),
 so if you want to find out more, read there. A more artistic example can be found visiting the [HYPERPINK Realm](/realms/hyperpink).
@@ -19,31 +20,73 @@ Generally, if you're going to start working with more customized behavior, you s
 initialize a [DOM element marquee](/docs/guides/initialization/#dom). It should have some
 [attributes](/docs/reference/attributes) to define the initial state.
 
-<Sandpack />
+```html
+<div id="manawave-marquee" data-autoplay data-direction="15" data-speed="1.5">
+  <div class="text-manawave">MANAWAVE&nbsp;</div>
+</div>
+```
+
+```js
+import { MW } from "manawave";
+
+const mw = new MW("#manawave-marquee");
+```
 
 ### Step 2: Listen
 
 Now, you need to gather data for the `MW` instance. `MW` is just a controller for the MANAWAVE marquee.
 It just needs data to act upon. For our example, we'll go with keyboard data.
 
-<Sandpack />
+```js
+document.addEventListener("keydown", (ev) => {
+  ev.preventDefault();
+
+  switch (ev.key) {
+    case "ArrowUp":
+      break;
+    case "ArrowRight":
+      break;
+    case "ArrowDown":
+      break;
+    case "ArrowLeft":
+      break;
+  }
+});
+```
 
 ### Step 3: Apply
 
 Now you can perform changes to `MW` given data. This will let you create a marquee that reacts with
 what users do interactively.
 
-<Sandpack />
+```js
+document.addEventListener("keydown", (ev) => {
+  ev.preventDefault();
 
-:::tip[What's lerp?]
-The `lerp` function is the [linear interpolation](https://en.wikipedia.org/wiki/Linear_interpolation) function. It's commonly used in anything animated.
-:::
+  switch (ev.key) {
+    case "ArrowUp":
+      mw.direction = 90;
+      break;
+    case "ArrowRight":
+      mw.direction = 0;
+      break;
+    case "ArrowDown":
+      mw.direction = 270;
+      break;
+    case "ArrowLeft":
+      mw.direction = 180;
+      break;
+  }
+});
+```
+
+<Sandpack html={SandpackSource.html} js={SandpackSource.js.keyboard} />
 
 ## Controlling direction with mouse
 
 Here's another completed example, but for mouse movements.
 
-<Sandpack />
+<Sandpack html={SandpackSource.html} js={SandpackSource.js.mouse} />
 
 :::tip[What's atan2?]
 `atan2` is a two-parameter [arctangent function](https://en.wikipedia.org/wiki/Atan2). It's used in this example to accurately
