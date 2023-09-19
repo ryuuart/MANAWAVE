@@ -33,3 +33,6 @@ output
 .hintrc
 .nx/installation
 .nx/cache
+
+# Code coverage
+coverage/

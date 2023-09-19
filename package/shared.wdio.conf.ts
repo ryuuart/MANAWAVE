@@ -11,7 +11,30 @@ export const config: Options.Testrunner = {
     // ====================
     // WebdriverIO supports running e2e tests as well as unit and component tests.
 
-    runner: ["browser", { viteConfig: "./vite.config.ts" }],
+    runner: [
+        "browser",
+        {
+            viteConfig: "./vite.config.ts",
+            coverage: {
+                enabled: true,
+                exclude: [
+                    "src/MW.ts",
+                    "coverage/**",
+                    "dist/**",
+                    "packages/*/test{,s}/**",
+                    "**/*.d.ts",
+                    "cypress/**",
+                    "test{,s}/**",
+                    "test{,-*}.{js,cjs,mjs,ts,tsx,jsx}",
+                    "**/*{.,-}test.{js,cjs,mjs,ts,tsx,jsx}",
+                    "**/*{.,-}spec.{js,cjs,mjs,ts,tsx,jsx}",
+                    "**/__tests__/**",
+                    "**/{karma,rollup,webpack,vite,vitest,jest,ava,babel,nyc,cypress,tsup,build}.config.*",
+                    "**/.{eslint,mocha,prettier}rc.{js,cjs,yml}",
+                ],
+            },
+        },
+    ],
     autoCompileOpts: {
         autoCompile: true,
         tsNodeOpts: {
