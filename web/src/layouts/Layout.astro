@@ -14,11 +14,33 @@ const { title, tabcolor = "black" } = Astro.props;
     <meta charset="UTF-8" />
     <meta name="description" content="ambient infinity" />
     <meta name="viewport" content="width=device-width" />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="theme-color" content={tabcolor} />
-    <link rel="stylesheet" href="/styles/global.css" />
     <meta name="generator" content={Astro.generator} />
+    <link rel="stylesheet" href="/styles/global.css" />
+
+    <!-- Favicon -->
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+    <link rel="manifest" href="/site.webmanifest">
+    <link rel="mask-icon" href="/safari-pinned-tab.svg" color="#0039c9">
+    <meta name="msapplication-TileColor" content="#2b5797">
+    <meta name="theme-color" content="#000000">
+
+    <!-- Open Graph -->
+    <meta property="og:title" content="MANAWAVE">
+    <meta property="og:type" content="website" />
+    <meta property="og:description" content="Controllable, configurable, and omnidirectional marquee defined with only HTML & CSS.">
+    <meta property="og:image" content="https://manawave.art/social-share.png">
+    <meta property="og:url" content="https://manawave.art/">
+    <meta name="twitter:card" content="summary_large_image">
+
+    <!-- Site Metadata -->
     <title>{title}</title>
+    <meta
+      name="description"
+      content="MANAWAVE is a controllable, configurable, and omnidirectional marquee defined with only HTML & CSS. It has zero dependencies and is built on vanilla JavaScript."
+    />
   </head>
   <body>
     <slot />
