@@ -1,5 +1,15 @@
 # manawave
 
+## 0.12.0
+
+### Minor Changes
+
+- [#239](https://github.com/ryuuart/MANAWAVE/pull/239) [`526f3c9`](https://github.com/ryuuart/MANAWAVE/commit/526f3c9a0fc6f0811bc6dbad970a71c00778e1a3) Thanks [@ryuuart](https://github.com/ryuuart)! - Add `initialSize` input for `onLayout` hook
+
+### Patch Changes
+
+- [#235](https://github.com/ryuuart/MANAWAVE/pull/235) [`5b44ba7`](https://github.com/ryuuart/MANAWAVE/commit/5b44ba70238ff90c21b61caec410c29bede8a7df) Thanks [@ryuuart](https://github.com/ryuuart)! - Improve module import / export behavior
+
 ## 0.11.2
 
 ### Patch Changes
