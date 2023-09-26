@@ -1,5 +1,12 @@
 # manawave-demo
 
+## 0.0.3
+
+### Patch Changes
+
+- Updated dependencies [[`526f3c9`](https://github.com/ryuuart/MANAWAVE/commit/526f3c9a0fc6f0811bc6dbad970a71c00778e1a3), [`5b44ba7`](https://github.com/ryuuart/MANAWAVE/commit/5b44ba70238ff90c21b61caec410c29bede8a7df)]:
+  - manawave@0.12.0
+
 ## 0.0.2
 
 ### Patch Changes
