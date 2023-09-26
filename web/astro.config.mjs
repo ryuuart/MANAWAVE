@@ -4,7 +4,8 @@ import react from "@astrojs/react";
 
 export default defineConfig({
   integrations: [starlight({
-    title: "manawave docs",
+    title: "MANAWAVE DOCS",
+    favicon: '/favicon-32x32.png',
     social: {
       github: "https://github.com/ryuuart/manawave",
     },
@@ -14,7 +15,16 @@ export default defineConfig({
     }, {
       tag: 'script',
       content: "console.info('If you see sandpack CORS error, it is a current issue in sandpack-react');"
-    }],
+    },
+    {
+      tag: 'link',
+      attrs: {
+        rel: 'icon',
+        href: 'favicon.ico',
+        sizes: '32x32',
+      },
+    },
+    ],
     sidebar: [
       { label: "Home", link: "/" },
       {
