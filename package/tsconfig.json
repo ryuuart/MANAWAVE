@@ -14,13 +14,7 @@
     "noEmit": true,
 
     /* Exposed Types */
-    "types": [
-      "node",
-      "@wdio/globals/types",
-      "@wdio/mocha-framework",
-      "expect-webdriverio",
-      "vite/client"
-    ],
+    "types": ["node", "vite/client"],
 
     /* Path setup */
     "baseUrl": ".",
