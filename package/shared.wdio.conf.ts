@@ -1,6 +1,7 @@
 import type { Options } from "@wdio/types";
 import * as url from "node:url";
 import * as path from "node:path";
+import viteConfig from "./vite.config.ts";
 
 const __dirname = url.fileURLToPath(new URL(".", import.meta.url));
 
@@ -14,7 +15,7 @@ export const config: Options.Testrunner = {
     runner: [
         "browser",
         {
-            viteConfig: "./vite.config.ts",
+            viteConfig,
             coverage: {
                 enabled: true,
                 exclude: [
