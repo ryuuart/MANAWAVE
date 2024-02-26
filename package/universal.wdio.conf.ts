@@ -22,5 +22,10 @@ export const config: Options.Testrunner = {
             maxInstances: 3,
             browserName: "firefox",
         },
+        {
+            maxInstances: 1,
+            browserName: "safari technology preview",
+            platformName: "macos",
+        },
     ],
 };
