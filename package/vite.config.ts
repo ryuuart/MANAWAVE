@@ -1,4 +1,3 @@
-/// <reference types="vitest" />
 import { resolve } from "path";
 import { defineConfig } from "vite";
 import { dirname } from "path";
@@ -18,9 +17,6 @@ const _dirname =
         : dirname(fileURLToPath(import.meta.url));
 
 export default defineConfig({
-    test: {
-        environment: "jsdom",
-    },
     build: {
         lib: {
             entry: resolve(_dirname, "src/index.ts"),
