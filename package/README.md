@@ -65,6 +65,11 @@ TODO: cleanup and organize
 ## Testing
 
 Tests should all be in one file. This is to make sure wdio doesn't launch too many browsers in parallel.
+You can enable code coverage by specifying `COVERAGE` environment variable to `true`.
+
+```sh
+COVERAGE=true pnpm nx test manawave
+```
 
 ## License
 
