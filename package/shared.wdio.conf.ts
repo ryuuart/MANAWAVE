@@ -5,6 +5,12 @@ import viteConfig from "./vite.config.ts";
 
 const __dirname = url.fileURLToPath(new URL(".", import.meta.url));
 
+// enable code coverage by environment variable
+const __coverage = process.env.COVERAGE?.toLowerCase();
+let __coverage_enabled = false;
+if (__coverage !== undefined && __coverage === "true")
+    __coverage_enabled = true;
+
 export const config: Options.Testrunner = {
     //
     // ====================
@@ -17,7 +23,7 @@ export const config: Options.Testrunner = {
         {
             viteConfig,
             coverage: {
-                enabled: true,
+                enabled: __coverage_enabled,
                 exclude: [
                     "src/MW.ts",
                     "coverage/**",
