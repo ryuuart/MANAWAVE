@@ -5,7 +5,7 @@ describe("observers", () => {
     describe("resize observer", () => {
         // needs delay sandwiching each change
         // so observer has time to report
-        const delay = 25;
+        const delay = 150;
         it("should observe 2 element border box size changes over time", async () => {
             const testCase = [
                 { w: 500, h: 500 },
@@ -40,9 +40,9 @@ describe("observers", () => {
             // change 2nd height
             await browser.pause(delay);
             elems[1].style.height = "130px";
+            await waitUntilStyle(elems[1], "height", "130px");
             await browser.pause(delay);
 
-            await waitUntilStyle(elems[1], "height", "130px");
             // change all at once
             await browser.pause(delay);
             elems[0].style.width = "100px";
@@ -105,6 +105,8 @@ describe("observers", () => {
             await waitUntilStyle(el, "width", "350px");
             await browser.pause(delay);
 
+            multiResizeObserver.destroy();
+
             for (let i = 0; i < testCase.length; i++) {
                 expect(results[i]).toEqual(testCase[i]);
             }
@@ -139,6 +141,8 @@ describe("observers", () => {
             el.style.width = "100px";
             await waitUntilStyle(el, "width", "100px");
             await browser.pause(delay);
+
+            multiResizeObserver.destroy();
 
             for (let i = 0; i < testCase.length; i++) {
                 expect(results[i]).toEqual(testCase[i]);
