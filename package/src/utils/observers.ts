@@ -2,14 +2,24 @@ export interface SizeListener {
     onSizeUpdate: (entry: ResizeObserverEntry) => void;
 }
 
-abstract class MultiObserver<Key, Listener> {
-    protected records: Map<Key, Set<Listener>>;
+/**
+ * Traditional observer that will be used to notify listeners. The multi-
+ * means that listeners are bundled into sets and associated with a target.
+ */
+abstract class MultiObserver<Target, Listener> {
+    protected records: Map<Target, Set<Listener>>;
 
     constructor() {
-        this.records = new Map<Key, Set<Listener>>();
+        this.records = new Map<Target, Set<Listener>>();
     }
 
-    connect(k: Key, l: Listener) {
+    /**
+     * Connect and add a listener to a given target. The listener
+     * will be notified of changes over time.
+     * @param k group to associate listeners with
+     * @param l object that will be notified to
+     */
+    connect(k: Target, l: Listener) {
         let r = this.records.get(k);
         if (r !== undefined) {
             r.add(l);
@@ -18,24 +28,35 @@ abstract class MultiObserver<Key, Listener> {
         }
     }
 
-    disconnect(k: Key, l: Listener) {
+    /**
+     * Disconnect a listener to a given target. The listener
+     * will **not** be notified of changes over time anymore.
+     * @param k group to associate listeners with
+     * @param l object that will be notified to
+     */
+    disconnect(k: Target, l: Listener) {
         const r = this.records.get(k);
         r?.delete(l);
         if (r?.size === 0) this.records.delete(k);
     }
 
+    /**
+     * Disconnect all listeners and targets from the observer.
+     */
     destroy() {
         for (const listeners of this.records.values()) {
             listeners.clear();
         }
         this.records.clear();
     }
-
-    takeRecords() {
-        return [...this.records];
-    }
 }
 
+/**
+ * Wrapped ResizeObserver that can notify listeners of Element size changes. Each Element
+ * has a set of listeners that are listening to the current size of the Element.
+ *
+ * This is a **singleton**.
+ */
 class MultiResizeObserver extends MultiObserver<Element, SizeListener> {
     #resizeObserver: ResizeObserver;
 
@@ -59,12 +80,24 @@ class MultiResizeObserver extends MultiObserver<Element, SizeListener> {
         );
     }
 
+    /**
+     * Connect a listener to a DOM element and observe size changes.
+     * @param k DOM Element to associate listeners to
+     * @param l listener that will receive Element size changes
+     */
     override connect(k: Element, l: SizeListener): void {
         super.connect(k, l);
 
         this.#resizeObserver.observe(k);
     }
 
+    /**
+     * Remove a listener from the DOM Element. The listener won't be notified
+     * of any more size changes. If there aren't any more listeners,
+     * the observer stops listening to the Element.
+     * @param k DOM Element that has listener to be removed
+     * @param l listener that received Element size changes
+     */
     override disconnect(k: Element, l: SizeListener): void {
         super.disconnect(k, l);
 
@@ -73,6 +106,9 @@ class MultiResizeObserver extends MultiObserver<Element, SizeListener> {
         }
     }
 
+    /**
+     * Remove all listeners and elements. Don't observe or notify anything anymore.
+     */
     override destroy(): void {
         super.destroy();
 
