@@ -2,6 +2,10 @@ export interface SizeListener {
     onSizeUpdate: (entry: ResizeObserverEntry) => void;
 }
 
+export interface DomNodeListener {
+    onDomNodeUpdate: (entry: MutationRecord) => void;
+}
+
 /**
  * Traditional observer that will be used to notify listeners. The multi-
  * means that listeners are bundled into sets and associated with a target.
@@ -116,4 +120,106 @@ class MappedResizeObserver extends MappedObserver<Element, SizeListener> {
     }
 }
 
+// https://github.com/whatwg/dom/issues/126#issuecomment-1049814948
+class UnobservableMutationObserver extends MutationObserver {
+    #observerTargets: Array<{
+        target: Node;
+        options?: MutationObserverInit;
+    }> = [];
+    #callback: MutationCallback;
+
+    constructor(callback: MutationCallback) {
+        super(callback);
+
+        this.#callback = callback;
+    }
+
+    override observe(target: Node, options?: MutationObserverInit): void {
+        this.#observerTargets.push({ target, options });
+
+        return super.observe(target, options);
+    }
+
+    unobserve(target: Node): void {
+        const newObserverTargets = this.#observerTargets.filter(
+            (ot) => ot.target !== target
+        );
+        this.#observerTargets = [];
+
+        const queuedEntries = this.takeRecords();
+        if (queuedEntries.length > 0) {
+            this.#callback(queuedEntries, this);
+        }
+
+        this.disconnect();
+
+        newObserverTargets.forEach((ot) => {
+            this.observe(ot.target, ot.options);
+        });
+    }
+}
+
+class MappedMutationObserver extends MappedObserver<Node, DomNodeListener> {
+    #mutationObserver: UnobservableMutationObserver;
+    #mutationCallback(entries: MutationRecord[]) {
+        for (const entry of entries) {
+            const el = entry.target;
+            const listeners = this.records.get(el);
+            if (listeners !== undefined) {
+                for (const l of listeners) {
+                    l.onDomNodeUpdate(entry);
+                }
+            }
+        }
+    }
+
+    constructor() {
+        super();
+
+        this.#mutationObserver = new UnobservableMutationObserver(
+            this.#mutationCallback.bind(this)
+        );
+    }
+
+    /**
+     * Connect a listener to a DOM element and observe node changes.
+     * @param k DOM Element to associate listeners to
+     * @param l listener that will receive Element node changes
+     */
+    override connect(
+        k: Element,
+        l: DomNodeListener,
+        options?: MutationObserverInit
+    ): void {
+        super.connect(k, l);
+
+        this.#mutationObserver.observe(k, options);
+    }
+
+    /**
+     * Remove a listener from the DOM Element. The listener won't be notified
+     * of any more node changes. If there aren't any more listeners,
+     * the observer stops listening to the Element.
+     * @param k DOM Element that has listener to be removed
+     * @param l listener that received Element node changes
+     */
+    override disconnect(k: Element, l: DomNodeListener): void {
+        super.disconnect(k, l);
+
+        if (!this.records.has(k)) {
+            this.#mutationObserver.unobserve(k);
+        }
+    }
+
+    /**
+     * Remove all listeners and elements. Don't observe or notify anything anymore.
+     */
+    override destroy(): void {
+        super.destroy();
+
+        this.#mutationObserver.disconnect();
+    }
+}
+
 export const multiResizeObserver = new MappedResizeObserver();
+export const mappedMutationObserver = new MappedMutationObserver();

@@ -1,11 +1,12 @@
-import { multiResizeObserver } from "../observers";
-import type { SizeListener } from "../observers";
+import { mappedMutationObserver, multiResizeObserver } from "../observers";
+import type { DomNodeListener, SizeListener } from "../observers";
 
 describe("observers", () => {
+    // needs delay sandwiching each change
+    // so observers have time to report
+    const delay = 150;
+
     describe("resize observer", () => {
-        // needs delay sandwiching each change
-        // so observer has time to report
-        const delay = 150;
         it("should observe 2 element border box size changes over time", async () => {
             const testCase = [
                 { w: 500, h: 500 },
@@ -146,6 +147,69 @@ describe("observers", () => {
 
             for (let i = 0; i < testCase.length; i++) {
                 expect(results[i]).toEqual(testCase[i]);
+            }
+        });
+    });
+
+    describe("mutation observer", () => {
+        type TestCase = {
+            attr: string;
+            value: string;
+        };
+        class TestMutationListener implements DomNodeListener {
+            #results: TestCase[];
+            constructor(results: TestCase[]) {
+                this.#results = results;
+            }
+            onDomNodeUpdate(entry: MutationRecord) {
+                if (entry.type === "attributes") {
+                    const attr = entry.attributeName;
+                    if (attr !== null) {
+                        const value = (entry.target as Element).getAttribute(
+                            attr
+                        );
+                        if (value !== null) {
+                            this.#results.push({
+                                attr,
+                                value,
+                            });
+                        }
+                    }
+                }
+            }
+        }
+
+        it("should report different node changes when 2 nodes change over time", async () => {
+            const testCase = [
+                { attr: "speed", value: "2" },
+                { attr: "color", value: "blue" },
+            ];
+            const results: TestCase[] = [];
+            const listener1 = new TestMutationListener(results);
+            const listener2 = new TestMutationListener(results);
+            const elems = await Promise.all(
+                createWdioElementList(50, 50, "red", 2)
+            );
+            mappedMutationObserver.connect(elems[0].dom, listener1, {
+                attributes: true,
+            });
+            mappedMutationObserver.connect(elems[1].dom, listener2, {
+                attributes: true,
+            });
+
+            await browser.pause(delay);
+            elems[0].dom.setAttribute("speed", "2");
+            await browser.pause(delay);
+
+            await browser.pause(delay);
+            elems[1].dom.setAttribute("color", "blue");
+            await browser.pause(delay);
+
+            for (let i = 0; i < results.length; i++) {
+                const r = results[i];
+                const tc = testCase[i];
+
+                expect(r).toEqual(tc);
             }
         });
     });
