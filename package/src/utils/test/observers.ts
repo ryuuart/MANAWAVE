@@ -1,5 +1,6 @@
 import { mappedMutationObserver, multiResizeObserver } from "../observers";
 import type { DomNodeListener, SizeListener } from "../observers";
+import { uid } from "../uid";
 
 describe("observers", () => {
     // needs delay sandwiching each change
@@ -16,9 +17,13 @@ describe("observers", () => {
                 { w: 100, h: 300 },
                 { w: 300, h: 200 },
             ];
-            const elems = await Promise.all(
-                createWdioElementList(500, 500, "red", 2)
-            );
+            const elems = await createTestElementList(2, () => ({
+                styles: {
+                    width: "500px",
+                    height: "500px",
+                    background: "red",
+                },
+            }));
             const results: { w: number; h: number }[] = [];
             const listener: SizeListener = {
                 onSizeUpdate: (entry) => {
@@ -69,7 +74,9 @@ describe("observers", () => {
                 { w: 100, h: 500 },
                 { w: 350, h: 500 },
             ];
-            const el = await createWdioElement(500, 500, "red");
+            const el = await createTestElement({
+                styles: { width: "500px", height: "500px", color: "red" },
+            });
             const results: { w: number; h: number }[] = [];
             const listener: SizeListener = {
                 onSizeUpdate: (entry) => {
@@ -118,7 +125,9 @@ describe("observers", () => {
                 { w: 500, h: 500 },
                 { w: 250, h: 500 },
             ];
-            const el = await createWdioElement(500, 500, "red");
+            const el = await createTestElement({
+                styles: { width: "500px", height: "500px", color: "red" },
+            });
             const results: { w: number; h: number }[] = [];
             const listener: SizeListener = {
                 onSizeUpdate: (entry) => {
@@ -187,9 +196,7 @@ describe("observers", () => {
             const results: TestCase[] = [];
             const listener1 = new TestMutationListener(results);
             const listener2 = new TestMutationListener(results);
-            const elems = await Promise.all(
-                createWdioElementList(50, 50, "red", 2)
-            );
+            const elems = await createTestElementList(2);
             mappedMutationObserver.connect(elems[0].dom, listener1, {
                 attributes: true,
             });
@@ -232,16 +239,46 @@ async function waitUntilStyle(
     return false;
 }
 
-async function createWdioElement(
-    w: number,
-    h: number,
-    color: string
+interface TestElementOptions {
+    styles: Partial<CSSStyleDeclaration>;
+    attributes: { name: string; value: string }[];
+    id: string;
+}
+
+async function createTestElement(
+    options?: Partial<TestElementOptions>
 ): Promise<TestElement> {
     const el = document.createElement("div");
-    el.id = "test-element";
-    el.style.width = `${w}px`;
-    el.style.height = `${h}px`;
-    el.style.background = color;
+
+    // set default styles
+    el.style.width = `${50}px`;
+    el.style.height = `${50}px`;
+    el.id = `test-element-${uid()}`;
+
+    if (options !== undefined) {
+        // set styles
+        if (options.styles !== undefined) {
+            for (const style in options.styles) {
+                const newStyle = options.styles[style];
+                if (newStyle !== undefined) {
+                    el.style[style] = newStyle;
+                }
+            }
+        }
+
+        // set attributes
+        if (options.attributes !== undefined) {
+            for (const attr of options.attributes) {
+                el.setAttribute(attr.name, attr.value);
+            }
+        }
+
+        // set id
+        if (options.id !== undefined) {
+            el.id = options.id;
+        }
+    }
+
     document.body.append(el);
     const wdioEl = $(`#${el.id}`);
     await wdioEl.waitForExist();
@@ -249,46 +286,19 @@ async function createWdioElement(
     return { dom: el, wdio: wdioEl, style: el.style };
 }
 
-function createWdioElementList(
-    w: ((n: number) => number) | number,
-    h: ((n: number) => number) | number,
-    color: ((n: number) => string) | string,
-    n: number
-): Promise<TestElement>[] {
+async function createTestElementList(
+    n: number,
+    callback?: (index: number) => Partial<TestElementOptions>
+): Promise<TestElement[]> {
     const result: Promise<TestElement>[] = [];
 
     for (let i = 0; i < n; i++) {
-        let pw = 0;
-        let ph = 0;
-        let pcolor = "none";
-
-        switch (typeof w) {
-            case "function":
-                pw = w(n);
-                break;
-            case "number":
-                pw = w;
-                break;
+        if (callback !== undefined) {
+            result.push(createTestElement(callback(i)));
+        } else {
+            result.push(createTestElement());
         }
-        switch (typeof h) {
-            case "function":
-                ph = h(n);
-                break;
-            case "number":
-                ph = h;
-                break;
-        }
-        switch (typeof color) {
-            case "function":
-                pcolor = color(n);
-                break;
-            case "number":
-                pcolor = color;
-                break;
-        }
-
-        result.push(createWdioElement(pw, ph, pcolor));
     }
 
-    return result;
+    return await Promise.all(result);
 }
