@@ -192,11 +192,24 @@ describe("observers", () => {
             const testCase = [
                 { attr: "speed", value: "2" },
                 { attr: "color", value: "blue" },
+                { attr: "speed", value: "2" },
+                { attr: "color", value: "blue" },
+                { attr: "speed", value: "3" },
+                { attr: "color", value: "pink" },
+                { attr: "color", value: "orange" },
+                { attr: "speed", value: "3" },
+                { attr: "direction", value: "20.272" },
             ];
             const results: TestCase[] = [];
             const listener1 = new TestMutationListener(results);
             const listener2 = new TestMutationListener(results);
-            const elems = await createTestElementList(2);
+            const elems = await createTestElementList(2, () => ({
+                attributes: [
+                    { name: "speed", value: "1" },
+                    { name: "color", value: "red" },
+                    { name: "direction", value: "0" },
+                ],
+            }));
             mappedMutationObserver.connect(elems[0].dom, listener1, {
                 attributes: true,
             });
@@ -212,11 +225,21 @@ describe("observers", () => {
             elems[1].dom.setAttribute("color", "blue");
             await browser.pause(delay);
 
-            for (let i = 0; i < results.length; i++) {
-                const r = results[i];
-                const tc = testCase[i];
+            await browser.pause(delay);
+            elems[0].dom.setAttribute("speed", "2");
+            elems[1].dom.setAttribute("color", "blue");
+            await browser.pause(delay);
 
-                expect(r).toEqual(tc);
+            await browser.pause(delay);
+            elems[0].dom.setAttribute("speed", "3");
+            elems[0].dom.setAttribute("color", "pink");
+            elems[1].dom.setAttribute("color", "orange");
+            elems[1].dom.setAttribute("speed", "3");
+            elems[1].dom.setAttribute("direction", "20.272");
+            await browser.pause(delay + 100);
+
+            for (let i = 0; i < results.length; i++) {
+                expect(results[i]).toEqual(testCase[i]);
             }
         });
     });
