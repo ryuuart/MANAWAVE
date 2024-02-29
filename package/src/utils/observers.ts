@@ -6,7 +6,7 @@ export interface SizeListener {
  * Traditional observer that will be used to notify listeners. The multi-
  * means that listeners are bundled into sets and associated with a target.
  */
-abstract class MultiObserver<Target, Listener> {
+abstract class MappedObserver<Target, Listener> {
     protected records: Map<Target, Set<Listener>>;
 
     constructor() {
@@ -57,7 +57,7 @@ abstract class MultiObserver<Target, Listener> {
  *
  * This is a **singleton**.
  */
-class MultiResizeObserver extends MultiObserver<Element, SizeListener> {
+class MappedResizeObserver extends MappedObserver<Element, SizeListener> {
     #resizeObserver: ResizeObserver;
 
     #resizeCallback(entries: ResizeObserverEntry[]) {
@@ -116,4 +116,4 @@ class MultiResizeObserver extends MultiObserver<Element, SizeListener> {
     }
 }
 
-export const multiResizeObserver = new MultiResizeObserver();
+export const multiResizeObserver = new MappedResizeObserver();
