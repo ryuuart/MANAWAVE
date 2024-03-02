@@ -240,7 +240,7 @@ describe("observers", () => {
             elems[1].dom.setAttribute("color", "orange");
             elems[1].dom.setAttribute("speed", "3");
             elems[1].dom.setAttribute("direction", "20.272");
-            await browser.pause(delay + 100);
+            await browser.pause(delay);
 
             for (let i = 0; i < results.length; i++) {
                 expect(results[i]).toEqual(testCase[i]);
