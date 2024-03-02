@@ -261,37 +261,45 @@ describe("observers", async () => {
         it("should report different node changes only when the observer is connected", async () => {
             const testCase = [
                 { attr: "speed", value: "2" },
+                { attr: "color", value: "green" },
                 { attr: "color", value: "blue" },
             ];
             const results: TestCase[] = [];
             const listener = new TestMutationListener(results);
-            const el = await createTestElement({
+            const elems = await createTestElementList(2, () => ({
                 attributes: [
                     { name: "speed", value: "1" },
                     { name: "color", value: "red" },
                     { name: "direction", value: "0" },
                 ],
+            }));
+            mappedMutationObserver.connect(elems[0].dom, listener, {
+                attributes: true,
             });
-            mappedMutationObserver.connect(el.dom, listener, {
+            mappedMutationObserver.connect(elems[1].dom, listener, {
                 attributes: true,
             });
 
             await browser.pause(delay);
-            el.dom.setAttribute("speed", "2");
+            elems[0].dom.setAttribute("speed", "2");
             await browser.pause(delay);
 
-            mappedMutationObserver.disconnect(el.dom, listener);
+            mappedMutationObserver.disconnect(elems[0].dom, listener);
 
             await browser.pause(delay);
-            el.dom.setAttribute("direction", "222.23");
+            elems[1].dom.setAttribute("color", "green");
             await browser.pause(delay);
 
-            mappedMutationObserver.connect(el.dom, listener, {
+            await browser.pause(delay);
+            elems[0].dom.setAttribute("direction", "222.23");
+            await browser.pause(delay);
+
+            mappedMutationObserver.connect(elems[0].dom, listener, {
                 attributes: true,
             });
 
             await browser.pause(delay);
-            el.dom.setAttribute("color", "blue");
+            elems[0].dom.setAttribute("color", "blue");
             await browser.pause(delay);
 
             for (let i = 0; i < results.length; i++) {
