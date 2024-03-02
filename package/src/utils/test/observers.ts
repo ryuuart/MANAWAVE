@@ -7,6 +7,10 @@ describe("observers", () => {
     // so observers have time to report
     const delay = 150;
 
+    // afterEach(() => {
+    //     document.body.replaceChildren();
+    // });
+
     describe("resize observer", () => {
         it("should observe 2 element border box size changes over time", async () => {
             const testCase = [
@@ -243,7 +247,46 @@ describe("observers", () => {
             }
         });
 
-        it("should");
+        it("should report different node changes only when the observer is connected", async () => {
+            const testCase = [
+                { attr: "speed", value: "2" },
+                { attr: "color", value: "blue" },
+            ];
+            const results: TestCase[] = [];
+            const listener = new TestMutationListener(results);
+            const el = await createTestElement({
+                attributes: [
+                    { name: "speed", value: "1" },
+                    { name: "color", value: "red" },
+                    { name: "direction", value: "0" },
+                ],
+            });
+            mappedMutationObserver.connect(el.dom, listener, {
+                attributes: true,
+            });
+
+            await browser.pause(delay);
+            el.dom.setAttribute("speed", "2");
+            await browser.pause(delay);
+
+            mappedMutationObserver.disconnect(el.dom, listener);
+
+            await browser.pause(delay);
+            el.dom.setAttribute("direction", "222.23");
+            await browser.pause(delay);
+
+            mappedMutationObserver.connect(el.dom, listener, {
+                attributes: true,
+            });
+
+            await browser.pause(delay);
+            el.dom.setAttribute("color", "blue");
+            await browser.pause(delay);
+
+            for (let i = 0; i < results.length; i++) {
+                expect(results[i]).toEqual(testCase[i]);
+            }
+        });
     });
 });
 
