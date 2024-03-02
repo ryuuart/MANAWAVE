@@ -1,17 +1,30 @@
-import { mappedMutationObserver, multiResizeObserver } from "../observers";
+import { mappedMutationObserver, mappedResizeObserver } from "../observers";
 import type { DomNodeListener, SizeListener } from "../observers";
 import { uid } from "../uid";
 
-describe("observers", () => {
+const domTestEnvironment = document.createElement("div");
+domTestEnvironment.id = "wdio-dom-test-environment";
+document.body.append(domTestEnvironment);
+
+describe("observers", async () => {
     // needs delay sandwiching each change
     // so observers have time to report
     const delay = 150;
 
-    // afterEach(() => {
-    //     document.body.replaceChildren();
-    // });
+    before(async () => {
+        await $(`#${domTestEnvironment.id}`).waitForExist();
+    });
+
+    afterEach(async () => {
+        domTestEnvironment.replaceChildren();
+        await $(`#${domTestEnvironment.id}`).waitForStable();
+    });
 
     describe("resize observer", () => {
+        afterEach(() => {
+            mappedResizeObserver.destroy();
+        });
+
         it("should observe 2 element border box size changes over time", async () => {
             const testCase = [
                 { w: 500, h: 500 },
@@ -38,8 +51,8 @@ describe("observers", () => {
                     results.push(r);
                 },
             };
-            multiResizeObserver.connect(elems[0].dom, listener);
-            multiResizeObserver.connect(elems[1].dom, listener);
+            mappedResizeObserver.connect(elems[0].dom, listener);
+            mappedResizeObserver.connect(elems[1].dom, listener);
 
             // change 1st width
             await browser.pause(delay);
@@ -65,8 +78,6 @@ describe("observers", () => {
             await waitUntilStyle(elems[1], "height", "200px");
             await browser.pause(delay);
 
-            multiResizeObserver.destroy();
-
             for (let i = 0; i < testCase.length; i++) {
                 expect(results[i]).toEqual(testCase[i]);
             }
@@ -91,14 +102,14 @@ describe("observers", () => {
                     results.push(r);
                 },
             };
-            multiResizeObserver.connect(el.dom, listener);
+            mappedResizeObserver.connect(el.dom, listener);
 
             await browser.pause(delay);
             el.style.width = "250px";
             await waitUntilStyle(el, "width", "250px");
             await browser.pause(delay);
 
-            multiResizeObserver.disconnect(el.dom, listener);
+            mappedResizeObserver.disconnect(el.dom, listener);
 
             await browser.pause(delay);
             el.style.width = "999px";
@@ -110,14 +121,12 @@ describe("observers", () => {
             await waitUntilStyle(el, "width", "100px");
             await browser.pause(delay);
 
-            multiResizeObserver.connect(el.dom, listener);
+            mappedResizeObserver.connect(el.dom, listener);
 
             await browser.pause(delay);
             el.style.width = "350px";
             await waitUntilStyle(el, "width", "350px");
             await browser.pause(delay);
-
-            multiResizeObserver.destroy();
 
             for (let i = 0; i < testCase.length; i++) {
                 expect(results[i]).toEqual(testCase[i]);
@@ -142,21 +151,19 @@ describe("observers", () => {
                     results.push(r);
                 },
             };
-            multiResizeObserver.connect(el.dom, listener);
+            mappedResizeObserver.connect(el.dom, listener);
 
             await browser.pause(delay);
             el.style.width = "250px";
             await waitUntilStyle(el, "width", "250px");
             await browser.pause(delay);
 
-            multiResizeObserver.destroy();
+            mappedResizeObserver.destroy();
 
             await browser.pause(delay);
             el.style.width = "100px";
             await waitUntilStyle(el, "width", "100px");
             await browser.pause(delay);
-
-            multiResizeObserver.destroy();
 
             for (let i = 0; i < testCase.length; i++) {
                 expect(results[i]).toEqual(testCase[i]);
@@ -191,6 +198,10 @@ describe("observers", () => {
                 }
             }
         }
+
+        afterEach(() => {
+            mappedMutationObserver.destroy();
+        });
 
         it("should report different node changes when 2 nodes change over time", async () => {
             const testCase = [
@@ -347,7 +358,7 @@ async function createTestElement(
         }
     }
 
-    document.body.append(el);
+    domTestEnvironment.append(el);
     const wdioEl = $(`#${el.id}`);
     await wdioEl.waitForExist();
 

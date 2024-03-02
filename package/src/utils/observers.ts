@@ -221,5 +221,5 @@ class MappedMutationObserver extends MappedObserver<Node, DomNodeListener> {
     }
 }
 
-export const multiResizeObserver = new MappedResizeObserver();
+export const mappedResizeObserver = new MappedResizeObserver();
 export const mappedMutationObserver = new MappedMutationObserver();
