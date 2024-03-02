@@ -306,6 +306,34 @@ describe("observers", async () => {
                 expect(results[i]).toEqual(testCase[i]);
             }
         });
+
+        it("should not observe any changes when the observer is destroyed", async () => {
+            const testCase = [{ attr: "speed", value: "2" }];
+            const results: TestCase[] = [];
+            const listener = new TestMutationListener(results);
+            const el = await createTestElement({
+                attributes: [
+                    { name: "speed", value: "1" },
+                    { name: "color", value: "red" },
+                    { name: "direction", value: "0" },
+                ],
+            });
+            mappedMutationObserver.connect(el.dom, listener, {
+                attributes: true,
+            });
+
+            await browser.pause(delay);
+            el.dom.setAttribute("speed", "2");
+            await browser.pause(delay);
+
+            mappedMutationObserver.destroy();
+
+            await browser.pause(delay);
+            el.dom.setAttribute("color", "blue");
+            await browser.pause(delay);
+
+            expect(results[0]).toEqual(testCase[0]);
+        });
     });
 });
 
