@@ -67,7 +67,7 @@ describe("observers", () => {
                 expect(results[i]).toEqual(testCase[i]);
             }
         });
-        it("should observe element only when the element is connected", async () => {
+        it("should observe element only when the observer is connected", async () => {
             const testCase = [
                 { w: 500, h: 500 },
                 { w: 250, h: 500 },
@@ -242,6 +242,8 @@ describe("observers", () => {
                 expect(results[i]).toEqual(testCase[i]);
             }
         });
+
+        it("should");
     });
 });
 
