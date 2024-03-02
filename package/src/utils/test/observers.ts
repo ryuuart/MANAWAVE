@@ -9,7 +9,7 @@ document.body.append(domTestEnvironment);
 describe("observers", async () => {
     // needs delay sandwiching each change
     // so observers have time to report
-    const delay = 150;
+    const DELAY = 150;
 
     before(async () => {
         await $(`#${domTestEnvironment.id}`).waitForExist();
@@ -55,19 +55,19 @@ describe("observers", async () => {
             mappedResizeObserver.connect(elems[1].dom, listener);
 
             // change 1st width
-            await browser.pause(delay);
+            await browser.pause(DELAY);
             elems[0].style.width = "250px";
             await waitUntilStyle(elems[0], "width", "250px");
-            await browser.pause(delay);
+            await browser.pause(DELAY);
 
             // change 2nd height
-            await browser.pause(delay);
+            await browser.pause(DELAY);
             elems[1].style.height = "130px";
             await waitUntilStyle(elems[1], "height", "130px");
-            await browser.pause(delay);
+            await browser.pause(DELAY);
 
             // change all at once
-            await browser.pause(delay);
+            await browser.pause(DELAY);
             elems[0].style.width = "100px";
             elems[1].style.width = "300px";
             elems[0].style.height = "300px";
@@ -76,7 +76,7 @@ describe("observers", async () => {
             await waitUntilStyle(elems[1], "width", "300px");
             await waitUntilStyle(elems[0], "height", "300px");
             await waitUntilStyle(elems[1], "height", "200px");
-            await browser.pause(delay);
+            await browser.pause(DELAY);
 
             for (let i = 0; i < testCase.length; i++) {
                 expect(results[i]).toEqual(testCase[i]);
@@ -104,29 +104,29 @@ describe("observers", async () => {
             };
             mappedResizeObserver.connect(el.dom, listener);
 
-            await browser.pause(delay);
+            await browser.pause(DELAY);
             el.style.width = "250px";
             await waitUntilStyle(el, "width", "250px");
-            await browser.pause(delay);
+            await browser.pause(DELAY);
 
             mappedResizeObserver.disconnect(el.dom, listener);
 
-            await browser.pause(delay);
+            await browser.pause(DELAY);
             el.style.width = "999px";
             await waitUntilStyle(el, "width", "999px");
-            await browser.pause(delay);
+            await browser.pause(DELAY);
 
-            await browser.pause(delay);
+            await browser.pause(DELAY);
             el.style.width = "100px";
             await waitUntilStyle(el, "width", "100px");
-            await browser.pause(delay);
+            await browser.pause(DELAY);
 
             mappedResizeObserver.connect(el.dom, listener);
 
-            await browser.pause(delay);
+            await browser.pause(DELAY);
             el.style.width = "350px";
             await waitUntilStyle(el, "width", "350px");
-            await browser.pause(delay);
+            await browser.pause(DELAY);
 
             for (let i = 0; i < testCase.length; i++) {
                 expect(results[i]).toEqual(testCase[i]);
@@ -153,17 +153,17 @@ describe("observers", async () => {
             };
             mappedResizeObserver.connect(el.dom, listener);
 
-            await browser.pause(delay);
+            await browser.pause(DELAY);
             el.style.width = "250px";
             await waitUntilStyle(el, "width", "250px");
-            await browser.pause(delay);
+            await browser.pause(DELAY);
 
             mappedResizeObserver.destroy();
 
-            await browser.pause(delay);
+            await browser.pause(DELAY);
             el.style.width = "100px";
             await waitUntilStyle(el, "width", "100px");
-            await browser.pause(delay);
+            await browser.pause(DELAY);
 
             for (let i = 0; i < testCase.length; i++) {
                 expect(results[i]).toEqual(testCase[i]);
@@ -232,26 +232,26 @@ describe("observers", async () => {
                 attributes: true,
             });
 
-            await browser.pause(delay);
+            await browser.pause(DELAY);
             elems[0].dom.setAttribute("speed", "2");
-            await browser.pause(delay);
+            await browser.pause(DELAY);
 
-            await browser.pause(delay);
+            await browser.pause(DELAY);
             elems[1].dom.setAttribute("color", "blue");
-            await browser.pause(delay);
+            await browser.pause(DELAY);
 
-            await browser.pause(delay);
+            await browser.pause(DELAY);
             elems[0].dom.setAttribute("speed", "2");
             elems[1].dom.setAttribute("color", "blue");
-            await browser.pause(delay);
+            await browser.pause(DELAY);
 
-            await browser.pause(delay);
+            await browser.pause(DELAY);
             elems[0].dom.setAttribute("speed", "3");
             elems[0].dom.setAttribute("color", "pink");
             elems[1].dom.setAttribute("color", "orange");
             elems[1].dom.setAttribute("speed", "3");
             elems[1].dom.setAttribute("direction", "20.272");
-            await browser.pause(delay);
+            await browser.pause(DELAY);
 
             for (let i = 0; i < results.length; i++) {
                 expect(results[i]).toEqual(testCase[i]);
@@ -280,27 +280,27 @@ describe("observers", async () => {
                 attributes: true,
             });
 
-            await browser.pause(delay);
+            await browser.pause(DELAY);
             elems[0].dom.setAttribute("speed", "2");
-            await browser.pause(delay);
+            await browser.pause(DELAY);
 
             mappedMutationObserver.disconnect(elems[0].dom, listener);
 
-            await browser.pause(delay);
+            await browser.pause(DELAY);
             elems[1].dom.setAttribute("color", "green");
-            await browser.pause(delay);
+            await browser.pause(DELAY);
 
-            await browser.pause(delay);
+            await browser.pause(DELAY);
             elems[0].dom.setAttribute("direction", "222.23");
-            await browser.pause(delay);
+            await browser.pause(DELAY);
 
             mappedMutationObserver.connect(elems[0].dom, listener, {
                 attributes: true,
             });
 
-            await browser.pause(delay);
+            await browser.pause(DELAY);
             elems[0].dom.setAttribute("color", "blue");
-            await browser.pause(delay);
+            await browser.pause(DELAY);
 
             for (let i = 0; i < results.length; i++) {
                 expect(results[i]).toEqual(testCase[i]);
@@ -322,15 +322,15 @@ describe("observers", async () => {
                 attributes: true,
             });
 
-            await browser.pause(delay);
+            await browser.pause(DELAY);
             el.dom.setAttribute("speed", "2");
-            await browser.pause(delay);
+            await browser.pause(DELAY);
 
             mappedMutationObserver.destroy();
 
-            await browser.pause(delay);
+            await browser.pause(DELAY);
             el.dom.setAttribute("color", "blue");
-            await browser.pause(delay);
+            await browser.pause(DELAY);
 
             expect(results[0]).toEqual(testCase[0]);
         });
