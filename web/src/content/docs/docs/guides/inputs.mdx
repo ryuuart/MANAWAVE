@@ -3,8 +3,8 @@ title: Using User Input
 description: Learn how to have MANAWAVE marquee respond to user input
 ---
 
-import Sandpack from "@components/sandpack";
-import SandpackSource from "./_src/inputs/source.js";
+import Playground from "@components/playground";
+import PlaygroundSource from "./_src/inputs/source.js";
 
 MANAWAVE can take advantage of user inputs by applying browser events. This builds on [overriding default behaviors](/docs/guides/overrides),
 so if you want to find out more, read there. A more artistic example can be found visiting the [HYPERPINK Realm](/realms/hyperpink).
@@ -80,13 +80,13 @@ document.addEventListener("keydown", (ev) => {
 });
 ```
 
-<Sandpack html={SandpackSource.html} js={SandpackSource.js.keyboard} />
+<Playground html={PlaygroundSource.html} js={PlaygroundSource.js.keyboard} />
 
 ## Controlling direction with mouse
 
 Here's another completed example, but for mouse movements.
 
-<Sandpack html={SandpackSource.html} js={SandpackSource.js.mouse} />
+<Playground html={PlaygroundSource.html} js={PlaygroundSource.js.mouse} />
 
 :::tip[What's atan2?]
 `atan2` is a two-parameter [arctangent function](https://en.wikipedia.org/wiki/Atan2). It's used in this example to accurately

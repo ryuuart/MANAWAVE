@@ -5,7 +5,7 @@ import heartImage from "@assets/img/hyperpink/heart.webp";
 import { getEntry } from "astro:content";
 import Realm from "../../layouts/realms/Realm.astro";
 
-const realmData = await getEntry("realms", "hyperpink");
+const realmData = (await getEntry("realms", "hyperpink"))!;
 ---
 
 <Realm
@@ -83,12 +83,21 @@ const realmData = await getEntry("realms", "hyperpink");
 
 <style is:global>
   :root {
+    /*
+     * The one light realm on an otherwise black site. The vignette is
+     * transparent at its centre, so it needs a white base painted underneath
+     * it — on the site's dark colour scheme the canvas is black and the glow
+     * (mix-blend-mode: overlay) darkens instead of lightens.
+     */
+    color-scheme: light;
+
     --color-fg: rgb(125, 0, 69);
     --color-bg: radial-gradient(
-      50% 50% at 50% 50%,
-      rgba(255, 168, 204, 0) 0%,
-      #ffa8cc 100%
-    );
+        50% 50% at 50% 50%,
+        rgba(255, 168, 204, 0) 0%,
+        #ffa8cc 100%
+      )
+      white;
   }
 </style>
 

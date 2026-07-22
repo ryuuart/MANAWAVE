@@ -1,32 +1,25 @@
 {
   "compilerOptions": {
-    "target": "es2020",
+    "target": "es2023",
     "useDefineForClassFields": true,
     "module": "ESNext",
-    "lib": ["ES2020", "DOM", "DOM.Iterable"],
+    "lib": ["ES2023", "DOM", "DOM.Iterable"],
     "skipLibCheck": true,
 
     /* Bundler mode */
     "moduleResolution": "bundler",
-    "allowImportingTsExtensions": true,
     "resolveJsonModule": true,
     "isolatedModules": true,
     "noEmit": true,
 
     /* Exposed Types */
-    "types": [
-      "node",
-      "@wdio/globals/types",
-      "@wdio/mocha-framework",
-      "expect-webdriverio",
-      "vite/client"
-    ],
+    "types": ["node", "vite/client"],
 
     /* Path setup */
-    "baseUrl": ".",
     "paths": {
-      "manawave": ["src/index"],
-      "@manawave/*": ["src/*"]
+      "manawave": ["./src/index.ts"],
+      "@manawave/*": ["./src/*"],
+      "test/*": ["./test/*"]
     },
 
     /* Linting */
@@ -36,6 +29,6 @@
     "noUnusedParameters": true,
     "noFallthroughCasesInSwitch": true
   },
-  "include": ["src", "test", "example", "anim", "types/*.d.ts"],
-  "exclude": ["node_modules"]
+  "include": ["src", "test", "example", "types/*.d.ts", "*.config.ts"],
+  "exclude": ["node_modules", "dist"]
 }

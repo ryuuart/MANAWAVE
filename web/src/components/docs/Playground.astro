@@ -1,0 +1,97 @@
+---
+import pkg from "manawave/package.json";
+import defaultHTML from "./playground/index.html?raw";
+import defaultCSS from "./playground/styles.css?raw";
+import defaultJS from "./playground/index.js?raw";
+
+interface Props {
+  html?: string;
+  css?: string;
+  js?: string;
+  /** Which editor the playground opens on. */
+  active?: "markup" | "style" | "script";
+}
+
+const { html, css, js, active = "script" } = Astro.props;
+
+const config = {
+  markup: { language: "html", content: html ?? defaultHTML },
+  style: { language: "css", content: css ?? defaultCSS },
+  script: { language: "javascript", content: js ?? defaultJS },
+  // bare `import ... from "manawave"` resolves against the published build
+  // these docs describe, rather than whatever esm.sh considers newest
+  imports: { manawave: `https://esm.sh/manawave@${pkg.version}` },
+  activeEditor: active,
+  view: "split",
+  tools: { enabled: ["console"], active: "console", status: "closed" },
+};
+---
+
+<div class="playground not-content" data-playground={JSON.stringify(config)}>
+</div>
+
+<script>
+  import { createPlayground, type Config } from "livecodes";
+
+  const currentTheme = () =>
+    document.documentElement.dataset.theme === "light" ? "light" : "dark";
+
+  const containers =
+    document.querySelectorAll<HTMLElement>("[data-playground]");
+
+  if (containers.length > 0) {
+    const playgrounds = await Promise.all(
+      Array.from(containers, async (container) => {
+        const playground = await createPlayground(container, {
+          config: {
+            ...(JSON.parse(container.dataset.playground!) as Partial<Config>),
+            theme: currentTheme(),
+          },
+          loading: "lazy",
+        });
+
+        // the SDK paints a fixed light-mode box onto the container inline;
+        // drop those so the stylesheet below can theme it with the docs
+        for (const property of [
+          "height",
+          "background-color",
+          "border",
+          "border-radius",
+        ]) {
+          container.style.removeProperty(property);
+        }
+
+        return playground;
+      })
+    );
+
+    // Starlight flips data-theme on <html>; keep every playground in step
+    new MutationObserver(() => {
+      const theme = currentTheme();
+      for (const playground of playgrounds) {
+        void playground.setConfig({ theme });
+      }
+    }).observe(document.documentElement, { attributeFilter: ["data-theme"] });
+  }
+</script>
+
+<style>
+  .playground {
+    margin: 1.5rem auto;
+    height: 25rem;
+
+    background: var(--sl-color-bg);
+    border: 1px solid var(--sl-color-gray-5);
+    border-radius: 0.5rem;
+    overflow: hidden;
+  }
+
+  .playground :global(iframe) {
+    display: block;
+
+    width: 100%;
+    height: 100%;
+
+    border: 0;
+  }
+</style>

@@ -2,13 +2,24 @@
   "name": "manawave-monorepo",
   "version": "0.0.0",
   "private": true,
+  "type": "module",
+  "packageManager": "pnpm@11.15.1",
+  "engines": {
+    "node": ">=24.0.0",
+    "pnpm": ">=11.0.0"
+  },
   "scripts": {
-    "version": "changeset version && pnpm install --no-frozen-lockfile"
+    "build": "pnpm --filter manawave build",
+    "dev": "pnpm --filter manawave dev",
+    "test": "pnpm --filter manawave test",
+    "lint": "pnpm --recursive --parallel lint",
+    "site": "pnpm --filter manawave-demo dev",
+    "site:build": "pnpm --filter manawave-demo build",
+    "version": "changeset version && pnpm install --no-frozen-lockfile",
+    "release": "pnpm build && changeset publish"
   },
   "devDependencies": {
-    "@changesets/changelog-github": "^0.4.8",
-    "@changesets/cli": "^2.26.2",
-    "nx": "16.5.3"
-  },
-  "nx": {}
+    "@changesets/changelog-github": "catalog:",
+    "@changesets/cli": "catalog:"
+  }
 }

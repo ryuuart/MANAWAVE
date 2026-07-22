@@ -1,64 +1,51 @@
-import { resolve } from "path";
+import { resolve } from "node:path";
+import { fileURLToPath } from "node:url";
 import { defineConfig } from "vite";
-import { dirname } from "path";
-import { fileURLToPath } from "url";
-import { copyFileSync } from "fs";
-import tsconfigPaths from "vite-tsconfig-paths";
-
-// needed because of https://github.com/vitejs/vite/issues/1579
-import cssInjectedByJsPlugin from "vite-plugin-css-injected-by-js";
-
-// generate declaration files
+import cssInjectedByJs from "vite-plugin-css-injected-by-js";
 import dts from "vite-plugin-dts";
 
-const _dirname =
-    typeof __dirname !== "undefined"
-        ? __dirname
-        : dirname(fileURLToPath(import.meta.url));
+const root = fileURLToPath(new URL(".", import.meta.url));
+
+const FILE_NAMES: Record<string, string> = {
+    es: "manawave.js",
+    umd: "manawave.umd.cjs",
+    iife: "manawave.min.js",
+};
 
 export default defineConfig({
+    resolve: {
+        tsconfigPaths: true,
+    },
     build: {
         lib: {
-            entry: resolve(_dirname, "src/index.ts"),
+            entry: resolve(root, "src/index.ts"),
             name: "manawave",
             formats: ["es", "umd", "iife"],
-            fileName: (format) => {
-                switch (format) {
-                    case "iife":
-                        return "manawave" + ".min.js";
-                    case "umd":
-                        return "manawave" + ".umd.cjs";
-                    default:
-                        return "manawave" + ".js";
-                }
-            },
+            fileName: (format) => FILE_NAMES[format] ?? `manawave.${format}.js`,
         },
     },
     plugins: [
-        tsconfigPaths(),
-        {
-            ...cssInjectedByJsPlugin(),
-            apply: "build",
-        },
+        // manawave ships as a single drop-in file, so its stylesheets ride
+        // along inside the bundle rather than as a separate dist/*.css
+        ...cssInjectedByJs(),
+
         {
             ...dts({
                 entryRoot: "src",
-                compilerOptions: {
-                    types: ["./types/env.d.ts"],
-                },
                 include: ["types", "src"],
                 exclude: ["example", "test", "**/__test__/**/*"],
-                rollupTypes: true,
-            }),
-            apply: "build",
-            enforce: "post",
-        },
-        {
-            ...dts({
-                entryRoot: "types",
                 copyDtsFiles: true,
-                outDir: "dist/types",
-                exclude: ["example", "test", "**/__test__/**/*"],
+
+                // manawave.Options, Rect and the hook signatures are ambient
+                // globals, so the entry declaration has to pull them in or a
+                // consumer only ever sees `any`
+                beforeWriteFile(filePath, content) {
+                    if (!filePath.endsWith("dist/index.d.ts")) return;
+
+                    return {
+                        content: `/// <reference path="./types/env.d.ts" />\n${content}`,
+                    };
+                },
             }),
             apply: "build",
             enforce: "post",

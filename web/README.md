@@ -9,7 +9,7 @@ It is organized into 2 parts: **homepage** and **realm**. The homepage should le
 From the root of the repo (`cd ../` this directory)
 
 ```shell
-pnpm nx dev manawave-demo
+mise run site
 ```
 
 This will build and load `manawave` onto this project as a dependency.
@@ -58,6 +58,23 @@ A `Realm` layout must include a `realm` prop which should match the `title` of t
 
 ### Styling
 
+Tailwind dresses the art side of the site only — the docs keep Starlight's own styling,
+so `@tailwindcss/vite` output never reaches them. Everything shared lives in
+[`src/styles/global.css`](./src/styles/global.css):
+
+- `@theme` holds the two colours and two typefaces, which makes them Tailwind
+  utilities (`text-fg`, `font-display`) *and* leaves the plain custom properties that
+  each realm overrides.
+- `@utility block-grid` / `block-subgrid` describe the five-column measure the home
+  page is built on. Sections **inherit** those tracks with `grid-template-columns:
+  subgrid` rather than redeclaring `repeat(5, 1fr)` at every level, so the column
+  numbers in each `grid-area` can only ever refer to one set of tracks.
+
+The one thing to know about `subgrid`: `-1` addresses the end of the *explicit* grid, so
+it collapses to a single row in a container that only has `grid-auto-rows`. The home
+page's backdrop layers (`GodText`, `Starlight`) rely on this — they share one explicit
+row with `.hero-content` instead of spanning a counted number of rows.
+
 One thing done for each realm is overriding the global color by overriding the global css variables.
 
 ```html
@@ -87,9 +104,22 @@ Inside of `/src/content/authors`, create a new json file titled your preferred n
 
 ## Documentation
 
-All of the docs are used as MDX in `/src/content/docs/docs`. The docs are built with [Astro Starlight](https://starlight.astro.build/) and demoed with [Sandpack](https://sandpack.codesandbox.io/).
+All of the docs are used as MDX in `/src/content/docs/docs`. The docs are built with [Astro Starlight](https://starlight.astro.build/) and demoed with [LiveCodes](https://livecodes.io/).
 
-Most of it follows the format and recommendations given by Starlight, but there is a [custom Sandpack component](./src/components/docs/sandpack/Sandpack.astro). If you do use it, make sure to provide a `_src/baseNameOfFileYouUsedSandpackIn/` folder next to the file you used. There's a [couple examples](./src/content/docs/docs/guides/) for this.
+Most of it follows the format and recommendations given by Starlight, but there is a [custom Playground component](./src/components/docs/Playground.astro). It takes `html`, `css`, and `js` strings plus an `active` editor, and it resolves a bare `import ... from "manawave"` inside the sandbox against the published build. If you do use it, make sure to provide a `_src/baseNameOfFileYouUsedThePlaygroundIn/` folder next to the file you used. There's a [couple examples](./src/content/docs/docs/guides/) for this.
+
+## Typechecking
+
+`pnpm lint` runs `astro sync && tsc --noEmit`.
+
+It is deliberately **not** `astro check`. That command drives
+`@astrojs/language-server`, which needs TypeScript's JS Compiler API — the native
+TypeScript 7 compiler does not ship it, and the checker refuses to start rather than
+crash. Tracking: [withastro/roadmap#1321](https://github.com/withastro/roadmap/discussions/1321).
+
+The practical consequence: `.ts` files are fully checked, `.astro` frontmatter is not.
+Swap the script back to `astro check` (and add `@astrojs/check` back) once Astro
+supports TypeScript 7.
 
 ## License
 

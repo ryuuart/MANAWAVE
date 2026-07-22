@@ -1,5 +1,7 @@
 ---
 import "@fontsource/crimson-pro";
+import "../styles/global.css";
+
 interface Props {
   title: string;
   tabcolor?: string;
@@ -16,7 +18,6 @@ const { title, tabcolor = "black" } = Astro.props;
     <meta name="viewport" content="width=device-width" />
     <meta name="theme-color" content={tabcolor} />
     <meta name="generator" content={Astro.generator} />
-    <link rel="stylesheet" href="/styles/global.css" />
 
     <!-- Favicon -->
     <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">

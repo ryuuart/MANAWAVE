@@ -5,7 +5,6 @@ npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 pnpm-debug.log*
-lerna-debug.log*
 
 node_modules
 dist
@@ -26,13 +25,11 @@ output
 *.sln
 *.sw?
 
-# NIX
-.direnv/
-
 # Per user
 .hintrc
-.nx/installation
-.nx/cache
+mise.local.toml
 
-# Code coverage
+# Test artifacts
 coverage/
+**/__screenshots__/
+.vitest-attachments/

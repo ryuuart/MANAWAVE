@@ -1,3 +1,45 @@
 packages:
-  - package/
-  - web/
+  - package
+  - web
+
+# every third-party version in this repo is pinned here and referenced as
+# `catalog:` from the individual package.json files
+catalog:
+  "@astrojs/markdown-remark": ^7.2.1
+  "@astrojs/starlight": ^0.41.3
+  "@changesets/changelog-github": ^0.7.0
+  "@changesets/cli": ^2.31.1
+  "@fontsource/crimson-pro": ^5.3.0
+  "@types/node": ^26.1.1
+  "@typescript/typescript6": ^6.0.2
+  "@vitest/browser-webdriverio": ^4.1.10
+  "@vitest/coverage-v8": ^4.1.10
+  astro: ^7.1.3
+  livecodes: ^0.14.1
+  sharp: ^0.35.3
+  tailwindcss: ^4.3.3
+  "@tailwindcss/vite": ^4.3.3
+  typescript: ^7.0.2
+  vite: ^8.1.5
+  vite-plugin-css-injected-by-js: ^5.0.2
+  vite-plugin-dts: ^5.0.3
+  vitest: ^4.1.10
+  webdriverio: ^9.30.0
+
+
+# postinstall scripts are opt-in. geckodriver fetches the Firefox driver the
+# browser tests need, sharp and esbuild unpack prebuilt binaries, and the Edge
+# driver is dead weight because nothing here targets Edge.
+allowBuilds:
+  edgedriver: false
+  esbuild: true
+  geckodriver: true
+  sharp: true
+
+# webdriverio ships fast enough to outrun pnpm's release-age quarantine
+minimumReleaseAgeExclude:
+  - "@wdio/config@9.30.0"
+  - "@wdio/protocols@9.30.0"
+  - "@wdio/utils@9.30.0"
+  - webdriver@9.30.0
+  - webdriverio@9.30.0

@@ -1,3 +1,4 @@
+import { describe, expect, it, vi } from "vitest";
 import allDirectionsSnapshot from "./data/all_direction.json";
 
 import { Scene } from "../scene";
@@ -261,6 +262,10 @@ describe("marquee", () => {
             });
             const simulation = new Simulation(sizes, attr, scene);
 
+            /** The scene refills itself in response to a resize. */
+            const refillsTo = (length: number) =>
+                vi.waitFor(() => expect(scene.length).toEqual(length));
+
             simulation.setup();
 
             // initial test
@@ -269,26 +274,22 @@ describe("marquee", () => {
             // update marquee
             sizes.update({ root: { width: 20, height: 20 } });
             simulation.updateSize(sizes);
-            await browser.pause(300);
-            expect(scene.length).toEqual(9);
+            await refillsTo(9);
 
             // return back
             sizes.update({ root: { width: 10, height: 10 } });
             simulation.updateSize(sizes);
-            await browser.pause(300);
-            expect(scene.length).toEqual(4);
+            await refillsTo(4);
 
             // update item
             sizes.update({ item: { width: 5, height: 5 } });
             simulation.updateSize(sizes);
-            await browser.pause(300);
-            expect(scene.length).toEqual(9);
+            await refillsTo(9);
 
             // update marquee on top of item
             sizes.update({ root: { width: 20, height: 20 } });
             simulation.updateSize(sizes);
-            await browser.pause(300);
-            expect(scene.length).toEqual(25);
+            await refillsTo(25);
 
             // return back to normal
             sizes.update({
@@ -296,8 +297,7 @@ describe("marquee", () => {
                 item: { width: 10, height: 10 },
             });
             simulation.updateSize(sizes);
-            await browser.pause(300);
-            expect(scene.length).toEqual(4);
+            await refillsTo(4);
         });
 
         describe("pipeline", () => {
@@ -384,7 +384,7 @@ describe("marquee", () => {
                     },
                 ];
 
-                pipeline.onMove = ({ direction, t }) => {
+                pipeline.onMove = ({ t }) => {
                     return { direction: Math.cos(t * 0.005) * 45 };
                 };
 

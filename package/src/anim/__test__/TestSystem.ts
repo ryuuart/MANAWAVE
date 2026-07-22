@@ -1,5 +1,5 @@
 import { System } from "..";
-import { Position, lerp, setTranslate } from "./Util";
+import { lerp, setTranslate, type Position } from "./Util";
 
 /**
  * A blank system that simulates a real system by modifying a string
@@ -28,6 +28,9 @@ export class BlankSystem extends System {
     }
 }
 
+/**
+ * {@link System} that eases an element towards a destination
+ */
 export class TestSystem extends System {
     destination: Position;
     position: Position;
@@ -41,7 +44,7 @@ export class TestSystem extends System {
         this.element = element;
     }
 
-    onUpdate(dt: DOMHighResTimeStamp, t: DOMHighResTimeStamp) {
+    onUpdate(dt: DOMHighResTimeStamp, _t: DOMHighResTimeStamp) {
         this.position[0] = lerp(
             this.position[0],
             this.destination[0],
@@ -84,7 +87,7 @@ export class TestContinuousSystem extends System {
      *
      * @see {@link System.onUpdate}
      */
-    onUpdate(dt: DOMHighResTimeStamp, t: DOMHighResTimeStamp): void {
+    onUpdate(_dt: DOMHighResTimeStamp, t: DOMHighResTimeStamp): void {
         this.position[0] = lerp(
             this.anchor[0],
             this.anchor[0] + this.radius,

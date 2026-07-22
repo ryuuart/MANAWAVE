@@ -8,8 +8,6 @@ Artistically, it's the website [manawave.art](https://manawave.art) that uses th
 
 ## Getting Started
 
-[![Edit MANAWAVE STARTER](https://codesandbox.io/static/img/play-codesandbox.svg)](https://codesandbox.io/s/manawave-starter-gj9x2k?file=/src/index.html)
-
 ### Documentation
 
 You can take a deep dive into using MANAWAVE on the [documentation site](https://manawave.art/docs/quickstart).
@@ -23,10 +21,7 @@ You can install in two ways: using a CDN script or using `npm`.
 Include this in the `<head>` portion of your HTML.
 
 ```html
-<script
-  defer
-  src="https://cdn.jsdelivr.net/npm/manawave@0.11.1/dist/manawave.min.js"
-></script>
+<script defer src="https://cdn.jsdelivr.net/npm/manawave/dist/manawave.min.js"></script>
 ```
 
 #### npm
@@ -47,17 +42,49 @@ npm install manawave
 
 ## Developing
 
-This repo is an [NX](https://nx.dev) monorepo using [pnpm workspaces](https://pnpm.io) with two packages:
+This repo is a [pnpm workspace](https://pnpm.io/workspaces) with two packages:
 
-- [manawave](./package/)
-- [manawave-demo](./web/)
+- [manawave](./package/) — the library itself
+- [manawave-demo](./web/) — manawave.art, the demo site and docs
 
-You can find out more in those repos. There's also a Nix flake devshell if you want to use the included development configuration.
-
-You can use it like this:
+[mise](https://mise.jdx.dev) pins the toolchain (Node and pnpm) and runs every task. Install it, then:
 
 ```sh
-nix develop
+mise trust
+mise run test
+```
+
+The first run installs Node, pnpm, and the workspace dependencies for you.
+
+| Task                | What it does                                            |
+| ------------------- | ------------------------------------------------------- |
+| `mise run build`    | Build the library into `package/dist`                   |
+| `mise run dev`      | Serve the library's example playground with hot reload  |
+| `mise run test`     | Run the browser unit tests across every browser         |
+| `mise run lint`     | Typecheck every package                                 |
+| `mise run site`     | Serve manawave.art locally                              |
+| `mise run changeset`| Record a changeset describing the next release          |
+
+Every third-party version lives in the [`catalog`](./pnpm-workspace.yaml) so the whole
+repo moves together; the individual `package.json` files just say `catalog:`.
+
+The library builds on Vite and ships as a single drop-in file. The site is Astro, with
+the docs on Starlight and the art pages styled with Tailwind — see the
+[site README](./web/README.md#styling) for how the two are kept apart.
+
+### Testing
+
+The unit tests are real browser tests — they run inside Chrome and Firefox against a real
+layout engine via [Vitest browser mode](https://vitest.dev/guide/browser/) with
+[WebdriverIO](https://webdriver.io) driving. There is no jsdom.
+
+You need Chrome and Firefox installed; WebdriverIO downloads the matching drivers itself.
+
+Safari is opt-in because it has no headless mode and needs a one-time setup:
+
+```sh
+safaridriver --enable
+MANAWAVE_SAFARI=1 mise run test
 ```
 
 ## Contributing

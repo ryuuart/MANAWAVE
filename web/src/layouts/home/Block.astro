@@ -2,8 +2,8 @@
 const { class: className } = Astro.props;
 ---
 
-<div class:list={[className, "container", "block"]}>
-  <div class="vr behind-1"></div>
+<div class:list={[className, "container", "block-grid"]}>
+  <div class="rule-y z-[-1]"></div>
   <slot />
 </div>
 
@@ -12,11 +12,5 @@ const { class: className } = Astro.props;
     max-width: 390px;
 
     grid-column: 2 / span 1;
-  }
-
-  :global(.block) {
-    display: grid;
-    gap: 0.5rem;
-    grid-template-columns: repeat(5, 1fr);
   }
 </style>

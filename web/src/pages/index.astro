@@ -12,16 +12,20 @@ import Starlight from "../components/home/hero/Starlight.astro";
 
 <Layout title="MANAWAVE">
   <main>
-    <Spacer size="4rem" />
-    <HR semantic={false} />
-    <HeroSection />
-    <Spacer size="7rem" />
-    <HR />
+    <div class="hero-stack">
+      <div class="hero-content">
+        <Spacer size="4rem" />
+        <HR semantic={false} />
+        <HeroSection />
+        <Spacer size="7rem" />
+        <HR />
+      </div>
+      <GodText />
+      <Starlight />
+    </div>
     <PoemSection />
     <RealmsSection />
     <Footer />
-    <GodText />
-    <Starlight />
   </main>
 </Layout>
 
@@ -34,70 +38,26 @@ import Starlight from "../components/home/hero/Starlight.astro";
     overflow-x: hidden;
   }
 
-  main > :global(:nth-child(1)) {
-    grid-row: 1 / span 1;
-  }
-  main > :global(:nth-child(2)) {
-    grid-row: 2 / span 1;
-  }
-  main > :global(:nth-child(3)) {
-    grid-row: 3 / span 1;
-  }
-  main > :global(:nth-child(4)) {
-    grid-row: 4 / span 1;
-  }
-  main > :global(:nth-child(5)) {
-    grid-row: 5 / span 1;
-  }
-  main > :global(:nth-child(6)) {
-    grid-row: 6 / span 1;
-  }
-  main > :global(:nth-child(7)) {
-    grid-row: 7 / span 1;
-  }
-  main > :global(:nth-child(8)) {
-    grid-row: 8 / span 1;
-  }
-  main > :global(:nth-child(9)) {
-    grid-row: 9 / span 1;
-  }
-  main > :global(:nth-child(10)) {
-    grid-row: 10 / span 1;
-  }
-</style>
-
-<style is:global>
-  :root {
-    color-scheme: dark;
-  }
-  
-  .vr {
-    border-left: 1px solid var(--color-fg);
-    grid-area: 1 / 2 / -1 / span 1;
+  /*
+   * The god-text and the starlight video sit behind everything down to the
+   * poem. This wrapper is a single explicit row: the sections stack inside
+   * `.hero-content`, and both backdrops occupy that same one cell, so they
+   * cover the run exactly without anybody counting row numbers. Two levels of
+   * subgrid carry `main`'s centring tracks all the way down, so the backdrops
+   * still land in the centre column.
+   */
+  .hero-stack {
+    display: grid;
+    grid-column: 1 / -1;
+    grid-template-columns: subgrid;
+    grid-template-rows: auto;
   }
 
-  .sideways-lr {
-    writing-mode: vertical-rl;
-    transform: rotate(180deg);
-  }
+  .hero-content {
+    grid-area: 1 / 1 / 2 / -1;
 
-  .behind-1 {
-    z-index: -1;
-  }
-
-  .behind-2 {
-    z-index: -2;
-  }
-
-  .front-1 {
-    z-index: 1;
-  }
-
-  span.manawave-text {
-    font-family: "PP Migra", serif;
-    font-weight: 800;
-    font-style: italic;
-
-    text-transform: uppercase;
+    display: grid;
+    grid-template-columns: subgrid;
+    grid-auto-rows: auto;
   }
 </style>

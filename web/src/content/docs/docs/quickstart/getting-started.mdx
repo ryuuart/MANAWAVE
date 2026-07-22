@@ -4,7 +4,7 @@ description: Learn how to get manawave on your website
 ---
 
 import { Tabs, TabItem } from "@astrojs/starlight/components";
-import Sandpack from "@components/sandpack";
+import Playground from "@components/playground";
 import webcomponentHTML from "./_src/getting-started/webcomponent/index.html?raw";
 
 ## Installing MANAWAVE
@@ -66,7 +66,7 @@ There are more ways to [initialize MANAWAVE](/docs/guides/initialization).
 </manawave-marquee>
 ```
 
-<Sandpack activeFile="index.html" html={webcomponentHTML} />
+<Playground active="markup" html={webcomponentHTML} />
 
 ## Basic Customization
 
@@ -78,7 +78,7 @@ they enable the basic configurable and omnidirectional elements of MANAWAVE.
 [There are caveats](/docs/reference/attributes) for attributes if you don't use the `<manawave-marquee>` web component.
 :::
 
-<Sandpack activeFile="index.html" />
+<Playground active="markup" />
 
 :::note
 MANAWAVE has a [design principle of using minimal JavaScript](/docs/quickstart/principles#customizable) if customization is basic. You only import the library or include the script tag and that's it. That's why the web component (`<manawave-marquee>`) was included.

@@ -7,7 +7,8 @@ const { semantic = true } = Astro.props;
 <>
   <div class="h-cybertick-container">
     <Block class="vr-container" />
-    <div class="tick-container">
+    <!-- the ticks measure the full viewport in fifths, not the centred block -->
+    <div class="tick-container block-grid">
       <div class="tick tick-1"></div>
       <div class="tick tick-2"></div>
     </div>
@@ -16,11 +17,12 @@ const { semantic = true } = Astro.props;
 </>
 
 <style>
+  /* adopts main's centring tracks so the block below stays lined up with it */
   .h-cybertick-container {
     grid-column: 1 / -1;
 
     display: grid;
-    grid-template-columns: 1fr auto 1fr;
+    grid-template-columns: subgrid;
   }
 
   .hr {
@@ -43,10 +45,6 @@ const { semantic = true } = Astro.props;
 
   .tick-container {
     grid-area: 1 / 1 / -1 / -1;
-
-    display: grid;
-    grid-template-columns: repeat(5, 1fr);
-    gap: 0.5rem;
   }
 
   .tick {

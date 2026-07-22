@@ -1,0 +1,66 @@
+#     [[[[[  WELCOME TO THE NEBULA  ]]]]]
+#     ᚤᛟᚢ ᚨᚱᛖ ᛒᛖᚲᛟᛗᛁᚾᚷ ᛟᚾᛖ ᚹᛁᛏᚺ ᛏᚺᛖ ᛋᛏᚨᚱᛋ
+#     [[[[[  •+-#—*#•-##++-*+-+••## ]]]]]
+
+[tools]
+node = "24"
+pnpm = "11"
+
+[env]
+# workspace binaries (astro, vite, vitest, changeset) without a `pnpm exec` prefix
+_.path = ["{{config_root}}/node_modules/.bin"]
+
+[tasks.install]
+description = "Install workspace dependencies"
+run = "pnpm install"
+sources = ["package.json", "pnpm-workspace.yaml", "pnpm-lock.yaml", "*/package.json"]
+outputs = { auto = true }
+
+[tasks.build]
+description = "Build the manawave library into package/dist"
+depends = ["install"]
+run = "pnpm --filter manawave build"
+sources = [
+  "package/src/**/*",
+  "package/types/**/*",
+  "package/vite.config.ts",
+  "package/tsconfig.json",
+]
+outputs = ["package/dist/**/*"]
+
+[tasks.dev]
+description = "Serve the library example playground with hot reload"
+depends = ["install"]
+run = "pnpm --filter manawave dev"
+
+[tasks.test]
+description = "Run the library's browser unit tests across every browser"
+depends = ["install"]
+run = "pnpm --filter manawave test"
+
+[tasks."test:watch"]
+description = "Run the library's browser unit tests in watch mode (Chrome only)"
+depends = ["install"]
+run = "pnpm --filter manawave test:watch"
+
+[tasks.lint]
+description = "Typecheck every workspace package"
+depends = ["install"]
+run = "pnpm --recursive --parallel lint"
+
+[tasks.site]
+description = "Serve manawave.art, the demo + docs site"
+depends = ["build"]
+run = "pnpm --filter manawave-demo dev"
+
+[tasks."site:build"]
+description = "Build manawave.art, the demo + docs site"
+depends = ["build"]
+run = "pnpm --filter manawave-demo build"
+sources = ["web/src/**/*", "web/public/**/*", "web/astro.config.ts", "package/dist/**/*"]
+outputs = ["web/dist/**/*"]
+
+[tasks.changeset]
+description = "Record a changeset describing the next release"
+depends = ["install"]
+run = "pnpm exec changeset"

@@ -5,13 +5,10 @@ const { class: className } = Astro.props;
 ---
 
 <Block>
-  <section class:list={[className, "block"]}>
+  <!-- spans the whole block so `block-subgrid` can adopt its five tracks -->
+  <section
+    class:list={[className, "block-subgrid", "col-span-full", "row-span-full"]}
+  >
     <slot />
   </section>
 </Block>
-
-<style>
-  section {
-    grid-area: 1 / 1 / -1 / -1;
-  }
-</style>

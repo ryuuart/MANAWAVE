@@ -3,7 +3,7 @@ title: Reusing Marquees
 description: Learn how to configure existing marquees
 ---
 
-import Sandpack from "@components/sandpack";
+import Playground from "@components/playground";
 import reusingHTML from "./_src/reusing/index.html?raw";
 import reusingJS from "./_src/reusing/index.js?raw";
 
@@ -20,7 +20,7 @@ and do everything in javascript. It has to do with [FOUC issues](#fouc).
 For this example, notice how there's no `autoplay` nor `direction` [attribute](/docs/reference/attributes), but we set it anyways.
 That's because we fetched the `MW` instance and applied these attributes there.
 
-<Sandpack html={reusingHTML} js={reusingJS} />
+<Playground html={reusingHTML} js={reusingJS} />
 
 :::caution[You might get FOUC if you use overrides]
 

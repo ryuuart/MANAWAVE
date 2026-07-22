@@ -4,7 +4,7 @@ import Header from "../../components/realms/Header.astro";
 
 import Aura from "../../components/realms/Aura.astro";
 import Story from "../../components/realms/Story.astro";
-import { getEntry, type CollectionEntry } from "astro:content";
+import { getEntry, render, type CollectionEntry } from "astro:content";
 
 export type RealmLayoutConfig = {
   colors?: {
@@ -14,16 +14,18 @@ export type RealmLayoutConfig = {
 
 interface Props {
   pageTitle: string;
-  realm: CollectionEntry<"realms">["slug"];
+  realm: CollectionEntry<"realms">["id"];
   config?: RealmLayoutConfig;
 }
 
 const { pageTitle, realm, config } = Astro.props;
 
 const realmData = await getEntry("realms", realm);
+if (!realmData) throw new Error(`[MANAWAVE] No realm named "${realm}".`);
+
 const { title, tagline, song, color } = realmData.data;
-const author = (await getEntry(realmData.data.author)).data;
-const { Content } = await realmData.render();
+const author = (await getEntry(realmData.data.author))!.data;
+const { Content } = await render(realmData);
 ---
 
 <Layout title={pageTitle} tabcolor={config?.colors?.tab ?? "black"}>

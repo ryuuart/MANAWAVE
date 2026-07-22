@@ -1,3 +1,5 @@
+import { expect, vi } from "vitest";
+
 export type Position = [number, number];
 
 /**
@@ -5,7 +7,7 @@ export type Position = [number, number];
  * @param element selected element
  * @param position desired position
  */
-export function setTranslate(element: Element, position: [number, number]) {
+export function setTranslate(element: Element, position: Position) {
     const htmlElement = element as HTMLElement;
     htmlElement.style.transform = `translate(${position[0]}px, ${position[1]}px)`;
 }
@@ -22,33 +24,36 @@ export function lerp(v0: number, v1: number, t: number) {
 }
 
 /**
- *  Extract a {@link Position} from a matrix string
- *
- * @param matrix a CSS computed transform represented as a matrix
- * @returns a resulting final {@link Position} from the matrix
+ * Reads the translation an element is currently rendered at
+ * @param element selected element
+ * @returns the rendered {@link Position}
  */
-export function getPositionFromMatrix(matrix: string): Position {
-    const parsed = matrix.match(/-?\d+/g)!;
+export function positionOf(element: Element): Position {
+    const { transform } = getComputedStyle(element);
+    const matrix = new DOMMatrixReadOnly(
+        transform === "none" ? "" : transform
+    );
 
-    return [parseFloat(parsed[4]), parseFloat(parsed[5])];
+    return [matrix.m41, matrix.m42];
 }
 
 /**
- *  Wait for an element to arrive to a position
- * @param element the observed {@link WebdriverIO.Element}
- * @param condition condition for element to arrive to
- * @returns the arrived {@link Position} or none if it never arrived
+ * Polls an element's rendered position until it satisfies a condition
+ * @param element the observed element
+ * @param condition condition the element has to arrive at
+ * @returns the arrived {@link Position}
  */
-export async function getPositionUntil(
-    element: WebdriverIO.Element,
+export function positionUntil(
+    element: Element,
     condition: (position: Position) => boolean
-): Promise<Position | undefined> {
-    const result = await browser.waitUntil(async () => {
-        const transform = await element.getCSSProperty("transform");
-        const position = getPositionFromMatrix(transform.value!);
+): Promise<Position> {
+    return vi.waitFor(
+        () => {
+            const position = positionOf(element);
+            expect(condition(position)).toBe(true);
 
-        if (condition(position)) return position;
-    });
-
-    return result;
+            return position;
+        },
+        { timeout: 5000, interval: 16 }
+    );
 }

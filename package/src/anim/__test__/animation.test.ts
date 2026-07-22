@@ -1,14 +1,17 @@
-import Square from "test/pages/square/Square";
+import { afterEach, beforeEach, describe, expect, it } from "vitest";
+import { mountBasic, mountSquare, unmountAll, wait } from "test/fixtures";
 import PlaybackObject from "../playbackObject";
-import { BlankSystem, TestContinuousSystem, TestSystem } from "./TestSystem";
-import Basic from "test/pages/basic/Basic";
-import { Position, getPositionUntil, setTranslate } from "./Util";
 import { AnimationController } from "..";
+import { BlankSystem, TestContinuousSystem, TestSystem } from "./TestSystem";
+import { positionUntil, setTranslate, type Position } from "./Util";
+
+/** How long an animation is allowed to run before a measurement is taken. */
+const ANIMATING = 500;
 
 describe("animation", () => {
     describe("unit", () => {
         describe("playback", () => {
-            it("should call the playback hooks", async () => {
+            it("should call the playback hooks", () => {
                 class TestPlaybackObject extends PlaybackObject {
                     testStatus: string = "";
 
@@ -32,23 +35,19 @@ describe("animation", () => {
                 const player = new TestPlaybackObject();
 
                 player.start();
-
                 expect(player.testStatus).toEqual("CUSTOM START LOGIC");
 
                 player.pause();
-
                 expect(player.testStatus).toEqual("CUSTOM PAUSE LOGIC");
 
                 player.play();
-
                 expect(player.testStatus).toEqual("CUSTOM PLAY LOGIC");
 
                 player.stop();
-
                 expect(player.testStatus).toEqual("CUSTOM STOP LOGIC");
             });
 
-            it("should have proper control state throughout animation", async () => {
+            it("should have proper control state throughout animation", () => {
                 class TestPlaybackObject extends PlaybackObject {}
 
                 const player = new TestPlaybackObject();
@@ -58,58 +57,40 @@ describe("animation", () => {
                     paused: false,
                 });
 
+                // pausing something that never started is a no-op
                 player.pause();
-
                 expect(player.status).toEqual({
                     started: false,
                     paused: false,
                 });
 
                 player.start();
-
-                expect(player.status).toEqual({
-                    started: true,
-                    paused: false,
-                });
+                expect(player.status).toEqual({ started: true, paused: false });
 
                 player.pause();
-
-                expect(player.status).toEqual({
-                    started: true,
-                    paused: true,
-                });
+                expect(player.status).toEqual({ started: true, paused: true });
 
                 player.play();
-
-                expect(player.status).toEqual({
-                    started: true,
-                    paused: false,
-                });
+                expect(player.status).toEqual({ started: true, paused: false });
 
                 player.stop();
-
                 expect(player.status).toEqual({
                     started: false,
                     paused: false,
                 });
 
                 player.pause();
-
                 expect(player.status).toEqual({
                     started: false,
                     paused: false,
                 });
 
                 player.start();
+                expect(player.status).toEqual({ started: true, paused: false });
 
-                expect(player.status).toEqual({
-                    started: true,
-                    paused: false,
-                });
-
+                // stopping clears a pause rather than remembering it
                 player.pause();
                 player.stop();
-
                 expect(player.status).toEqual({
                     started: false,
                     paused: false,
@@ -118,7 +99,7 @@ describe("animation", () => {
         });
 
         describe("system", () => {
-            it("should invoke onUpdate on update", async () => {
+            it("should invoke onUpdate on update", () => {
                 const system = new BlankSystem();
                 system.start();
 
@@ -130,7 +111,7 @@ describe("animation", () => {
                 system.stop();
             });
 
-            it("should invoke onDraw on draw", async () => {
+            it("should invoke onDraw on draw", () => {
                 const system = new BlankSystem();
                 system.start();
 
@@ -145,17 +126,20 @@ describe("animation", () => {
 
     describe("integration", () => {
         describe("system", () => {
+            let square: HTMLElement;
+            let marquee: HTMLElement;
             let squareSystem: TestSystem;
             let basicSystem: TestSystem;
 
             beforeEach(() => {
-                Square.loadContent();
-                Basic.loadContent();
-                setTranslate(Square.square!, [0, 0]);
-                setTranslate(Basic.marquee!, [0, 0]);
+                square = mountSquare();
+                marquee = mountBasic();
 
-                squareSystem = new TestSystem(Square.square!);
-                basicSystem = new TestSystem(Basic.marquee!);
+                setTranslate(square, [0, 0]);
+                setTranslate(marquee, [0, 0]);
+
+                squareSystem = new TestSystem(square);
+                basicSystem = new TestSystem(marquee);
 
                 squareSystem.start();
                 basicSystem.start();
@@ -166,48 +150,37 @@ describe("animation", () => {
                 AnimationController.registerSystem(squareSystem);
                 AnimationController.registerSystem(basicSystem);
             });
+
             afterEach(() => {
                 AnimationController.stop();
-
-                Square.clearContent();
-                Basic.clearContent();
 
                 squareSystem.stop();
                 basicSystem.stop();
 
                 AnimationController.deregisterSystem(squareSystem);
                 AnimationController.deregisterSystem(basicSystem);
+
+                unmountAll();
             });
 
             it("should animate independent of each system", async () => {
-                let SQUARE_DESTINATION: Position = [100, 100];
-                let BASIC_DESTINATION: Position = [300, 300];
+                const SQUARE_DESTINATION: Position = [100, 100];
+                const BASIC_DESTINATION: Position = [300, 300];
 
                 squareSystem.destination = SQUARE_DESTINATION;
                 basicSystem.destination = BASIC_DESTINATION;
 
                 AnimationController.start();
 
-                const squareElement = await $("#square");
-                const squareResult = await getPositionUntil(
-                    squareElement,
-                    (position) => {
-                        return (
-                            position[0] >= SQUARE_DESTINATION[0] &&
-                            position[1] >= SQUARE_DESTINATION[1]
-                        );
-                    }
+                const squareResult = await positionUntil(
+                    square,
+                    ([x, y]) =>
+                        x >= SQUARE_DESTINATION[0] && y >= SQUARE_DESTINATION[1]
                 );
-
-                const basicElement = await $("#marquee");
-                const basicResult = await getPositionUntil(
-                    basicElement,
-                    (position) => {
-                        return (
-                            position[0] >= BASIC_DESTINATION[0] &&
-                            position[1] >= BASIC_DESTINATION[1]
-                        );
-                    }
+                const basicResult = await positionUntil(
+                    marquee,
+                    ([x, y]) =>
+                        x >= BASIC_DESTINATION[0] && y >= BASIC_DESTINATION[1]
                 );
 
                 AnimationController.stop();
@@ -216,496 +189,249 @@ describe("animation", () => {
             });
 
             it("should animate horizontally", async () => {
-                let DESTINATION = 100;
-                const element = await $("#square");
-                let result;
-
-                squareSystem.destination[0] = DESTINATION;
+                squareSystem.destination[0] = 100;
                 AnimationController.start();
 
-                result = await getPositionUntil(element, (position) => {
-                    return position[0] >= DESTINATION;
-                });
-
-                expect(result![0]).toBeCloseTo(DESTINATION);
+                let result = await positionUntil(square, ([x]) => x >= 100);
+                expect(result[0]).toBeCloseTo(100);
 
                 AnimationController.stop();
 
-                DESTINATION = -100;
-                squareSystem.destination[0] = DESTINATION;
-
+                squareSystem.destination[0] = -100;
                 AnimationController.start();
 
-                result = await getPositionUntil(element, (position) => {
-                    return position[0] <= DESTINATION;
-                });
-
-                expect(result![0]).toBeCloseTo(DESTINATION, 0);
+                result = await positionUntil(square, ([x]) => x <= -100);
+                expect(result[0]).toBeCloseTo(-100, 0);
             });
 
             it("should animate vertically", async () => {
-                let DESTINATION = 100;
-                const element = await $("#square");
-                let result;
-
-                squareSystem.destination[1] = DESTINATION;
+                squareSystem.destination[1] = 100;
                 AnimationController.start();
 
-                result = await getPositionUntil(element, (position) => {
-                    return position[1] >= DESTINATION;
-                });
-
-                expect(result![1]).toBeCloseTo(DESTINATION);
+                let result = await positionUntil(square, ([, y]) => y >= 100);
+                expect(result[1]).toBeCloseTo(100);
 
                 AnimationController.stop();
 
-                DESTINATION = -100;
-                squareSystem.destination[1] = DESTINATION;
-
+                squareSystem.destination[1] = -100;
                 AnimationController.start();
 
-                result = await getPositionUntil(element, (position) => {
-                    return position[1] <= DESTINATION;
-                });
-
-                expect(result![1]).toBeCloseTo(DESTINATION, 0);
+                result = await positionUntil(square, ([, y]) => y <= -100);
+                expect(result[1]).toBeCloseTo(-100, 0);
             });
         });
 
         describe("playback", () => {
             let squareSystem: TestContinuousSystem;
             let basicSystem: TestContinuousSystem;
-            beforeEach(() => {
-                Square.loadContent();
-                Basic.loadContent();
 
-                squareSystem = new TestContinuousSystem(Square.square!, 100);
-                basicSystem = new TestContinuousSystem(Basic.marquee!, 200);
+            /** Snapshots where a system currently sits, detached from its live array. */
+            const snapshot = (system: TestContinuousSystem): Position => [
+                system.position[0],
+                system.position[1],
+            ];
+
+            const expectMoved = (
+                system: TestContinuousSystem,
+                from: Position
+            ) => {
+                expect(system.position[0]).not.toBeCloseTo(from[0], 0);
+                expect(system.position[1]).not.toBeCloseTo(from[1], 0);
+            };
+
+            const expectStill = (
+                system: TestContinuousSystem,
+                from: Position
+            ) => {
+                expect(system.position[0]).toBeCloseTo(from[0], 0);
+                expect(system.position[1]).toBeCloseTo(from[1], 0);
+            };
+
+            beforeEach(() => {
+                squareSystem = new TestContinuousSystem(mountSquare(), 100);
+                basicSystem = new TestContinuousSystem(mountBasic(), 200);
 
                 AnimationController.registerSystem(squareSystem);
                 AnimationController.registerSystem(basicSystem);
                 AnimationController.start();
             });
+
             afterEach(() => {
                 AnimationController.stop();
                 AnimationController.deregisterSystem(squareSystem);
                 AnimationController.deregisterSystem(basicSystem);
 
-                Square.clearContent();
-                Basic.clearContent();
+                unmountAll();
             });
 
             it("should start and stop an animation", async () => {
-                let reference: Position = [
-                    squareSystem.position[0],
-                    squareSystem.position[1],
-                ];
+                let reference = snapshot(squareSystem);
 
                 squareSystem.start();
+                await wait(ANIMATING);
+                expectMoved(squareSystem, reference);
 
-                await browser.pause(500);
+                await wait(ANIMATING);
 
-                expect(squareSystem.position[0]).not.toBeCloseTo(
-                    reference[0],
-                    0
-                );
-                expect(squareSystem.position[1]).not.toBeCloseTo(
-                    reference[1],
-                    0
-                );
-
-                await browser.pause(500);
-
-                reference = [
-                    squareSystem.position[0],
-                    squareSystem.position[1],
-                ];
+                reference = snapshot(squareSystem);
                 squareSystem.stop();
-
-                await browser.pause(500);
-
-                expect(squareSystem.position[0]).toBeCloseTo(reference[0], 0);
-                expect(squareSystem.position[1]).toBeCloseTo(reference[1], 0);
+                await wait(ANIMATING);
+                expectStill(squareSystem, reference);
             });
 
             it("should interrupt and continue an animation", async () => {
-                let reference: Position;
                 squareSystem.start();
-
-                await browser.pause(500);
+                await wait(ANIMATING);
 
                 squareSystem.pause();
-                reference = [
-                    squareSystem.position[0],
-                    squareSystem.position[1],
-                ];
+                const reference = snapshot(squareSystem);
 
-                await browser.pause(500);
-
-                expect(squareSystem.position[0]).toBeCloseTo(reference[0], 0);
-                expect(squareSystem.position[1]).toBeCloseTo(reference[1], 0);
+                await wait(ANIMATING);
+                expectStill(squareSystem, reference);
 
                 squareSystem.play();
-
-                await browser.pause(500);
-
-                expect(squareSystem.position[0]).not.toBeCloseTo(
-                    reference[0],
-                    0
-                );
-                expect(squareSystem.position[1]).not.toBeCloseTo(
-                    reference[1],
-                    0
-                );
+                await wait(ANIMATING);
+                expectMoved(squareSystem, reference);
 
                 squareSystem.stop();
             });
 
             it("should only control playback independently between systems", async () => {
-                let squareRef: Position = [
-                    squareSystem.position[0],
-                    squareSystem.position[1],
-                ];
-                let basicRef: Position = [
-                    basicSystem.position[0],
-                    basicSystem.position[1],
-                ];
+                const squareRef = snapshot(squareSystem);
+                let basicRef = snapshot(basicSystem);
 
-                // Start both at the same time
+                // start both at the same time
                 squareSystem.start();
                 basicSystem.start();
+                await wait(ANIMATING);
 
-                // animate for a bit...
-                await browser.pause(500);
-
-                // alright stop one while the other continues
+                // stop one while the other keeps going
                 basicSystem.stop();
+                expectMoved(basicSystem, basicRef);
+                basicRef = snapshot(basicSystem);
 
-                // while it did stop, it should have also animated a little
-                expect(basicSystem.position[0]).not.toBeCloseTo(basicRef[0], 0);
-                expect(basicSystem.position[1]).not.toBeCloseTo(basicRef[1], 0);
-                basicRef = [basicSystem.position[0], basicSystem.position[1]];
+                await wait(ANIMATING);
 
-                await browser.pause(500);
-
-                // Ok we're done
                 squareSystem.stop();
                 basicSystem.stop();
 
-                // one that is animating should have been animating
-                expect(squareSystem.position[0]).not.toBeCloseTo(
-                    squareRef[0],
-                    0
-                );
-                expect(squareSystem.position[1]).not.toBeCloseTo(
-                    squareRef[1],
-                    0
-                );
-
-                // one that stopped should have stopped
-                expect(basicSystem.position[0]).toBeCloseTo(basicRef[0], 0);
-                expect(basicSystem.position[1]).toBeCloseTo(basicRef[1], 0);
+                expectMoved(squareSystem, squareRef);
+                expectStill(basicSystem, basicRef);
             });
 
             it("should restart if previously stopped", async () => {
-                let reference: Position = [
-                    squareSystem.position[0],
-                    squareSystem.position[1],
-                ];
+                let reference = snapshot(squareSystem);
 
                 squareSystem.start();
+                await wait(ANIMATING);
+                expectMoved(squareSystem, reference);
 
-                await browser.pause(500);
-
-                // we animated
-                expect(squareSystem.position[0]).not.toBeCloseTo(
-                    reference[0],
-                    0
-                );
-                expect(squareSystem.position[1]).not.toBeCloseTo(
-                    reference[1],
-                    0
-                );
-
-                reference = [
-                    squareSystem.position[0],
-                    squareSystem.position[1],
-                ];
+                reference = snapshot(squareSystem);
                 squareSystem.stop();
+                await wait(ANIMATING);
+                expectStill(squareSystem, reference);
 
-                await browser.pause(500);
-
-                // we stopped
-                expect(squareSystem.position[0]).toBeCloseTo(reference[0], 0);
-                expect(squareSystem.position[1]).toBeCloseTo(reference[1], 0);
-
-                reference = [
-                    squareSystem.position[0],
-                    squareSystem.position[1],
-                ];
+                reference = snapshot(squareSystem);
                 squareSystem.start();
+                await wait(ANIMATING);
+                expectMoved(squareSystem, reference);
 
-                await browser.pause(500);
-
-                // we restarted
-                expect(squareSystem.position[0]).not.toBeCloseTo(
-                    reference[0],
-                    0
-                );
-                expect(squareSystem.position[1]).not.toBeCloseTo(
-                    reference[1],
-                    0
-                );
                 squareSystem.stop();
             });
 
             describe("controller", () => {
                 it("should start and stop all animations", async () => {
-                    let squareRef: Position = [
-                        squareSystem.position[0],
-                        squareSystem.position[1],
-                    ];
-                    let basicRef: Position = [
-                        basicSystem.position[0],
-                        basicSystem.position[1],
-                    ];
+                    let squareRef = snapshot(squareSystem);
+                    let basicRef = snapshot(basicSystem);
 
                     AnimationController.start();
                     squareSystem.start();
                     basicSystem.start();
 
-                    await browser.pause(500);
+                    await wait(ANIMATING);
+                    expectMoved(squareSystem, squareRef);
+                    expectMoved(basicSystem, basicRef);
 
-                    // all animations animated
-                    expect(squareSystem.position[0]).not.toBeCloseTo(
-                        squareRef[0],
-                        0
-                    );
-                    expect(squareSystem.position[1]).not.toBeCloseTo(
-                        squareRef[1],
-                        0
-                    );
-                    expect(basicSystem.position[0]).not.toBeCloseTo(
-                        basicRef[0],
-                        0
-                    );
-                    expect(basicSystem.position[1]).not.toBeCloseTo(
-                        basicRef[1],
-                        0
-                    );
+                    await wait(ANIMATING);
 
-                    await browser.pause(500);
-
-                    squareRef = [
-                        squareSystem.position[0],
-                        squareSystem.position[1],
-                    ];
-                    basicRef = [
-                        basicSystem.position[0],
-                        basicSystem.position[1],
-                    ];
+                    squareRef = snapshot(squareSystem);
+                    basicRef = snapshot(basicSystem);
                     AnimationController.stop();
 
-                    // all animation stopped
-                    expect(squareSystem.position[0]).toBeCloseTo(
-                        squareRef[0],
-                        0
-                    );
-                    expect(squareSystem.position[1]).toBeCloseTo(
-                        squareRef[1],
-                        0
-                    );
-                    expect(basicSystem.position[0]).toBeCloseTo(basicRef[0], 0);
-                    expect(basicSystem.position[1]).toBeCloseTo(basicRef[1], 0);
+                    expectStill(squareSystem, squareRef);
+                    expectStill(basicSystem, basicRef);
 
-                    await browser.pause(500);
+                    await wait(ANIMATING);
 
+                    // play cannot resurrect a stopped controller
                     AnimationController.play();
 
-                    // still stopped
-                    expect(squareSystem.position[0]).toBeCloseTo(
-                        squareRef[0],
-                        0
-                    );
-                    expect(squareSystem.position[1]).toBeCloseTo(
-                        squareRef[1],
-                        0
-                    );
-                    expect(basicSystem.position[0]).toBeCloseTo(basicRef[0], 0);
-                    expect(basicSystem.position[1]).toBeCloseTo(basicRef[1], 0);
+                    expectStill(squareSystem, squareRef);
+                    expectStill(basicSystem, basicRef);
                 });
 
                 it("should play and pause all animations", async () => {
-                    let squareRef: Position = [
-                        squareSystem.position[0],
-                        squareSystem.position[1],
-                    ];
-                    let basicRef: Position = [
-                        basicSystem.position[0],
-                        basicSystem.position[1],
-                    ];
+                    let squareRef = snapshot(squareSystem);
+                    let basicRef = snapshot(basicSystem);
 
                     AnimationController.start();
                     AnimationController.pause();
                     squareSystem.start();
                     basicSystem.start();
 
-                    await browser.pause(500);
-
-                    // all animations paused
-                    expect(squareSystem.position[0]).toBeCloseTo(
-                        squareRef[0],
-                        0
-                    );
-                    expect(squareSystem.position[1]).toBeCloseTo(
-                        squareRef[1],
-                        0
-                    );
-                    expect(basicSystem.position[0]).toBeCloseTo(basicRef[0], 0);
-                    expect(basicSystem.position[1]).toBeCloseTo(basicRef[1], 0);
+                    await wait(ANIMATING);
+                    expectStill(squareSystem, squareRef);
+                    expectStill(basicSystem, basicRef);
 
                     AnimationController.play();
 
-                    await browser.pause(500);
+                    await wait(ANIMATING);
+                    expectMoved(squareSystem, squareRef);
+                    expectMoved(basicSystem, basicRef);
 
-                    // all animations animated
-                    expect(squareSystem.position[0]).not.toBeCloseTo(
-                        squareRef[0],
-                        0
-                    );
-                    expect(squareSystem.position[1]).not.toBeCloseTo(
-                        squareRef[1],
-                        0
-                    );
-                    expect(basicSystem.position[0]).not.toBeCloseTo(
-                        basicRef[0],
-                        0
-                    );
-                    expect(basicSystem.position[1]).not.toBeCloseTo(
-                        basicRef[1],
-                        0
-                    );
+                    await wait(ANIMATING);
 
-                    await browser.pause(500);
-
-                    squareRef = [
-                        squareSystem.position[0],
-                        squareSystem.position[1],
-                    ];
-                    basicRef = [
-                        basicSystem.position[0],
-                        basicSystem.position[1],
-                    ];
+                    squareRef = snapshot(squareSystem);
+                    basicRef = snapshot(basicSystem);
                     AnimationController.pause();
 
-                    // all animation stopped
-                    expect(squareSystem.position[0]).toBeCloseTo(
-                        squareRef[0],
-                        0
-                    );
-                    expect(squareSystem.position[1]).toBeCloseTo(
-                        squareRef[1],
-                        0
-                    );
-                    expect(basicSystem.position[0]).toBeCloseTo(basicRef[0], 0);
-                    expect(basicSystem.position[1]).toBeCloseTo(basicRef[1], 0);
+                    expectStill(squareSystem, squareRef);
+                    expectStill(basicSystem, basicRef);
 
-                    await browser.pause(500);
+                    await wait(ANIMATING);
 
-                    // still stopped
-                    expect(squareSystem.position[0]).toBeCloseTo(
-                        squareRef[0],
-                        0
-                    );
-                    expect(squareSystem.position[1]).toBeCloseTo(
-                        squareRef[1],
-                        0
-                    );
-                    expect(basicSystem.position[0]).toBeCloseTo(basicRef[0], 0);
-                    expect(basicSystem.position[1]).toBeCloseTo(basicRef[1], 0);
+                    expectStill(squareSystem, squareRef);
+                    expectStill(basicSystem, basicRef);
                 });
 
                 it("should start an animation after stopping", async () => {
-                    let squareRef: Position = [
-                        squareSystem.position[0],
-                        squareSystem.position[1],
-                    ];
-                    let basicRef: Position = [
-                        basicSystem.position[0],
-                        basicSystem.position[1],
-                    ];
+                    let squareRef = snapshot(squareSystem);
+                    let basicRef = snapshot(basicSystem);
 
                     AnimationController.start();
                     squareSystem.start();
                     basicSystem.start();
 
-                    await browser.pause(500);
+                    await wait(ANIMATING);
+                    expectMoved(squareSystem, squareRef);
+                    expectMoved(basicSystem, basicRef);
 
-                    // all animations animated
-                    expect(squareSystem.position[0]).not.toBeCloseTo(
-                        squareRef[0],
-                        0
-                    );
-                    expect(squareSystem.position[1]).not.toBeCloseTo(
-                        squareRef[1],
-                        0
-                    );
-                    expect(basicSystem.position[0]).not.toBeCloseTo(
-                        basicRef[0],
-                        0
-                    );
-                    expect(basicSystem.position[1]).not.toBeCloseTo(
-                        basicRef[1],
-                        0
-                    );
+                    await wait(ANIMATING);
 
-                    await browser.pause(500);
-
-                    squareRef = [
-                        squareSystem.position[0],
-                        squareSystem.position[1],
-                    ];
-                    basicRef = [
-                        basicSystem.position[0],
-                        basicSystem.position[1],
-                    ];
+                    squareRef = snapshot(squareSystem);
+                    basicRef = snapshot(basicSystem);
                     AnimationController.stop();
 
-                    // all animation stopped
-                    expect(squareSystem.position[0]).toBeCloseTo(
-                        squareRef[0],
-                        0
-                    );
-                    expect(squareSystem.position[1]).toBeCloseTo(
-                        squareRef[1],
-                        0
-                    );
-                    expect(basicSystem.position[0]).toBeCloseTo(basicRef[0], 0);
-                    expect(basicSystem.position[1]).toBeCloseTo(basicRef[1], 0);
+                    expectStill(squareSystem, squareRef);
+                    expectStill(basicSystem, basicRef);
 
-                    await browser.pause(500);
+                    await wait(ANIMATING);
 
                     AnimationController.start();
 
-                    await browser.pause(500);
-
-                    // all animations animated
-                    expect(squareSystem.position[0]).not.toBeCloseTo(
-                        squareRef[0],
-                        0
-                    );
-                    expect(squareSystem.position[1]).not.toBeCloseTo(
-                        squareRef[1],
-                        0
-                    );
-                    expect(basicSystem.position[0]).not.toBeCloseTo(
-                        basicRef[0],
-                        0
-                    );
-                    expect(basicSystem.position[1]).not.toBeCloseTo(
-                        basicRef[1],
-                        0
-                    );
+                    await wait(ANIMATING);
+                    expectMoved(squareSystem, squareRef);
+                    expectMoved(basicSystem, basicRef);
                 });
             });
         });

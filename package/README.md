@@ -2,16 +2,21 @@
 
 This is the node package that contains the MANAWAVE library.
 
-It uses [vite](https://vitejs.dev/) and [wdio](https://webdriver.io/) to develop, build, and test the library. Everything is written in Typescript.
+It uses [Vite](https://vite.dev/) to develop and build, and [Vitest browser mode](https://vitest.dev/guide/browser/) driven by [WebdriverIO](https://webdriver.io/) to test. Everything is written in TypeScript.
 
 ## Getting Started
 
+Every command below has a `mise run <task>` equivalent from the repo root, which also
+handles installing the toolchain.
+
 ### Build
 
-This will package and build MANAWAVE into `/dist`.
+This will package and build MANAWAVE into `/dist` as ESM, UMD, and a standalone IIFE
+bundle. The stylesheets are injected into the JavaScript so the library stays a single
+drop-in file.
 
 ```sh
-pnpm nx build manawave
+pnpm build
 ```
 
 ### Development
@@ -19,7 +24,7 @@ pnpm nx build manawave
 This will launch the dev website and hot reload changes to the source code.
 
 ```sh
-pnpm nx dev manawave
+pnpm dev
 ```
 
 ### Tests
@@ -27,7 +32,7 @@ pnpm nx dev manawave
 This will test MANAWAVE across browsers.
 
 ```sh
-pnpm nx test manawave
+pnpm test
 ```
 
 ## Folder Structure
@@ -56,7 +61,7 @@ Contains utility functions.
 
 ### `/test`
 
-[WDIO page objects](https://webdriver.io/docs/pageobjects/).
+Markup fixtures and the helpers that mount them into a page.
 
 ### `/example`
 
@@ -64,11 +69,27 @@ TODO: cleanup and organize
 
 ## Testing
 
-Tests should all be in one file. This is to make sure wdio doesn't launch too many browsers in parallel.
-You can enable code coverage by specifying `COVERAGE` environment variable to `true`.
+Tests live next to the code they cover, in `__test__` folders, and run **inside a real
+browser** — there is no jsdom shim, because a marquee is only meaningful against a real
+layout engine.
+
+Each test file gets its own page, so a file is the unit of isolation. Prefer
+`vi.waitFor` over sleeping: it polls a condition instead of guessing at a duration, and
+`settle()` from `test/fixtures` exists for the rarer case of proving something did *not*
+happen.
+
+Chrome and Firefox both run headless and need nothing beyond being installed —
+WebdriverIO fetches the matching drivers. Safari cannot run headless and needs a
+one-time `safaridriver --enable`, so it is opt-in:
 
 ```sh
-COVERAGE=true pnpm nx test manawave
+MANAWAVE_SAFARI=1 pnpm test
+```
+
+Code coverage is its own script:
+
+```sh
+pnpm test:coverage
 ```
 
 ## License

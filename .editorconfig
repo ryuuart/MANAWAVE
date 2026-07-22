@@ -1,9 +1,13 @@
 # Unix-style newlines with a newline ending every file
 [*]
 end_of_line = lf
+charset = utf-8
+insert_final_newline = true
 
-# Set default charset
 [*.{ts,js,py}]
 indent_style = space
 indent_size = 4
-charset = utf-8
+
+[*.{astro,mdx,md,json,yaml,yml,toml}]
+indent_style = space
+indent_size = 2

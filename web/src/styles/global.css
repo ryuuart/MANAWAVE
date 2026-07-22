@@ -1,0 +1,107 @@
+@import "tailwindcss";
+
+@font-face {
+  font-family: "PP Migra";
+  src: url("/fonts/PPMigra-Italic.woff2") format("woff2");
+  font-weight: 400;
+  font-style: italic;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "PP Migra";
+  src: url("/fonts/PPMigra-ExtraboldItalic.woff2") format("woff2");
+  font-weight: 800;
+  font-style: italic;
+  font-display: swap;
+}
+
+/*
+ * The whole site is two colours and two typefaces. Declaring them here makes
+ * them Tailwind utilities (`text-fg`, `bg-bg`, `font-display`) *and* leaves the
+ * plain custom properties in place, which each realm page overrides.
+ */
+@theme {
+  --color-bg: black;
+  --color-fg: white;
+
+  --font-body: "Crimson Pro", serif;
+  --font-display: "PP Migra", serif;
+}
+
+@layer base {
+  :root {
+    color-scheme: dark;
+  }
+
+  body {
+    background: var(--color-bg);
+    color: var(--color-fg);
+
+    margin: 0;
+
+    font-family: var(--font-body);
+
+    /* the display type is set tight on purpose; preflight's 1.5 loosens it */
+    line-height: normal;
+  }
+
+  h1,
+  h2 {
+    font-family: var(--font-display);
+    font-style: italic;
+    font-weight: 800;
+  }
+
+  a,
+  a:visited {
+    color: unset;
+
+    text-transform: uppercase;
+    text-decoration: none;
+  }
+
+  span.japanese,
+  [lang="ja"] {
+    font-family: serif;
+    font-style: normal;
+  }
+}
+
+/*
+ * The home page is one grid nested inside another: `main` centres a column, and
+ * that column is divided into five. Every section lines up against those five
+ * tracks, so they inherit them with `subgrid` instead of each redeclaring
+ * `repeat(5, 1fr)` and hoping the numbers stay in step.
+ */
+@utility block-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: calc(var(--spacing) * 2);
+}
+
+@utility block-subgrid {
+  display: grid;
+  grid-template-columns: subgrid;
+  gap: calc(var(--spacing) * 2);
+}
+
+/* The ruled line running the full height of the centred column. */
+@utility rule-y {
+  border-left: 1px solid var(--color-fg);
+  grid-area: 1 / 2 / -1 / span 1;
+}
+
+@utility sideways-lr {
+  writing-mode: vertical-rl;
+  rotate: 180deg;
+}
+
+/* "manawave" always sets in the display face, mid-sentence included. */
+@utility manawave-text {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-style: italic;
+
+  text-transform: uppercase;
+}

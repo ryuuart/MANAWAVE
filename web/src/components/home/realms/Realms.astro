@@ -3,7 +3,13 @@ import { getCollection, getEntry } from "astro:content";
 import Section from "../../../layouts/home/Section.astro";
 import RealmItem from "./RealmItem.astro";
 
-let allRealms = await getCollection("realms");
+const allRealms = await Promise.all(
+  (await getCollection("realms")).map(async (realm) => ({
+    ...realm.data,
+    url: `/realms/${realm.id}`,
+    author: (await getEntry(realm.data.author))!.data,
+  }))
+);
 ---
 
 <Section class="realms">
@@ -22,21 +28,17 @@ let allRealms = await getCollection("realms");
   </header>
   <ul>
     {
-      allRealms.map(async (realm) => {
-        const author = await getEntry(realm.data.author);
-
-        return (
-          <li>
-            <RealmItem
-              title={realm.data.title}
-              tagline={realm.data.tagline}
-              url={`/realms/${realm.slug}`}
-              color={realm.data.color.portal}
-              author={author.data}
-            />
-          </li>
-        );
-      })
+      allRealms.map((realm) => (
+        <li>
+          <RealmItem
+            title={realm.title}
+            tagline={realm.tagline}
+            url={realm.url}
+            color={realm.color.portal}
+            author={realm.author}
+          />
+        </li>
+      ))
     }
   </ul>
 </Section>

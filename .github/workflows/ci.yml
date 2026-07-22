@@ -1,0 +1,48 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  check:
+    name: Typecheck, test & build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repo
+        uses: actions/checkout@v6
+
+      - name: Set up toolchain
+        uses: jdx/mise-action@v3
+
+      - name: Install Deps
+        run: pnpm install --frozen-lockfile
+
+      # the library has to exist on disk before the site can typecheck against it
+      - name: Build manawave
+        run: pnpm build
+
+      - name: Typecheck
+        run: pnpm lint
+
+      # Chrome and Firefox both ship on the runner image; webdriverio fetches
+      # the matching drivers itself
+      - name: Run browser unit tests
+        run: pnpm test
+
+      - name: Build manawave.art
+        run: pnpm site:build
+
+      - name: Upload failure screenshots
+        if: failure()
+        uses: actions/upload-artifact@v5
+        with:
+          name: browser-test-screenshots
+          path: package/src/**/__screenshots__/**
+          if-no-files-found: ignore

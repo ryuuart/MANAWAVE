@@ -2,7 +2,7 @@
 import godText from "../../../../data/god.txt?raw";
 ---
 
-<div aria-hidden="true" class="god-text behind-1">
+<div aria-hidden="true" class="god-text z-[-1]">
   <div class="manawave-marquee-container">
     <manawave-marquee autoplay direction="down" speed="0.15" class="text-1">
       <p>{godText}</p>
@@ -15,7 +15,7 @@ import godText from "../../../../data/god.txt?raw";
 
 <style>
   .god-text {
-    grid-area: 1 / 2 / 8 / span 1;
+    grid-area: 1 / 2 / 2 / span 1;
     margin: 1.5rem;
 
     mix-blend-mode: overlay;
